@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sumoai's Reel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --cream:#f5f0e8; --dark:#141210; --warm:#c8a97e; --muted:#8a7f72; --accent:#d4603a; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--dark); color: var(--cream); font-family: 'Space Mono', monospace; overflow-x: hidden; cursor: none; }
+
+  .cursor { position:fixed; top:0; left:0; width:10px; height:10px; background:var(--accent); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+  .cursor-ring { position:fixed; top:0; left:0; width:36px; height:36px; border:1px solid var(--warm); border-radius:50%; pointer-events:none; z-index:9998; transition:transform 0.35s ease; transform:translate(-50%,-50%); opacity:0.5; }
+
+  .filmstrip { position:fixed; top:0; left:0; right:0; height:28px; background:var(--dark); border-bottom:1px solid #2a2520; display:flex; align-items:center; z-index:100; overflow:hidden; }
+  .filmstrip-hole { min-width:18px; height:12px; border:1px solid #3a342c; border-radius:2px; margin:0 6px; flex-shrink:0; }
+
+  nav { position:fixed; top:28px; left:0; right:0; padding:16px 48px; display:flex; justify-content:space-between; align-items:center; z-index:99; background:linear-gradient(to bottom, var(--dark) 60%, transparent); }
+  .nav-logo { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:300; letter-spacing:0.04em; color:var(--cream); text-decoration:none; }
+  .nav-logo em { font-style:italic; color:var(--warm); }
+  nav ul { list-style:none; display:flex; gap:32px; }
+  nav a { color:var(--muted); text-decoration:none; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; transition:color 0.2s; }
+  nav a:hover { color:var(--cream); }
+
+  .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:120px 48px 80px; position:relative; }
+  .hero-label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:24px; opacity:0; animation:fadeUp 0.8s 0.3s forwards; }
+  .hero h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(52px,8vw,108px); font-weight:300; line-height:0.95; opacity:0; animation:fadeUp 0.9s 0.5s forwards; }
+  .hero h1 em { font-style:italic; color:var(--warm); display:block; }
+  .hero-sub { margin-top:32px; max-width:420px; font-size:12px; line-height:1.9; color:var(--muted); letter-spacing:0.04em; opacity:0; animation:fadeUp 0.9s 0.75s forwards; }
+  .hero-counter { position:absolute; bottom:48px; right:48px; font-size:11px; color:var(--muted); letter-spacing:0.1em; opacity:0; animation:fadeIn 1s 1.2s forwards; }
+  .hero-line { position:absolute; bottom:0; left:48px; width:1px; height:80px; background:linear-gradient(to bottom, transparent, var(--warm)); opacity:0; animation:fadeIn 1s 1s forwards; }
+
+  #about { padding:120px 48px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; border-top:1px solid #1e1a16; }
+  .section-number { font-size:10px; letter-spacing:0.2em; color:var(--accent); margin-bottom:20px; display:block; }
+  #about h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(32px,4vw,52px); font-weight:300; line-height:1.15; }
+  #about h2 em { font-style:italic; color:var(--warm); }
+  .about-text { font-size:12px; line-height:2.1; color:var(--muted); letter-spacing:0.03em; }
+  .about-text p+p { margin-top:20px; }
+  .about-tags { display:flex; flex-wrap:wrap; gap:10px; margin-top:36px; }
+  .tag { padding:6px 14px; border:1px solid #2a2520; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); transition:border-color 0.2s,color 0.2s; }
+  .tag:hover { border-color:var(--warm); color:var(--warm); }
+
+  #photos { padding:120px 48px; border-top:1px solid #1e1a16; }
+  #photos header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:60px; }
+  #photos h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(32px,4vw,52px); font-weight:300; }
+  #photos h2 em { font-style:italic; color:var(--warm); }
+
+  .photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+  .photo-card { position:relative; overflow:hidden; background:#1a1612; aspect-ratio:3/4; cursor:none; }
+  .photo-card:nth-child(1) { grid-column:span 2; aspect-ratio:16/9; }
+  .photo-card:nth-child(5) { grid-column:span 2; aspect-ratio:16/9; }
+  .photo-card img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.6s ease,filter 0.4s ease; filter:brightness(0.85) saturate(0.9); }
+  .photo-card:hover img { transform:scale(1.04); filter:brightness(0.65) saturate(0.8); }
+  .photo-overlay { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:20px; background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 60%); opacity:0; transition:opacity 0.35s; }
+  .photo-card:hover .photo-overlay { opacity:1; }
+  .photo-meta { font-size:10px; letter-spacing:0.1em; color:var(--warm); text-transform:uppercase; }
+  .photo-title { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; color:var(--cream); margin-top:4px; }
+  .photo-card::after { content:''; position:absolute; inset:0; border:1px solid transparent; transition:border-color 0.3s; pointer-events:none; }
+  .photo-card:hover::after { border-color:var(--warm); }
+
+  #dramas { padding:120px 48px; border-top:1px solid #1e1a16; }
+  #dramas h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(32px,4vw,52px); font-weight:300; margin-bottom:56px; }
+  #dramas h2 em { font-style:italic; color:var(--warm); }
+  .drama-list { display:flex; flex-direction:column; }
+  .drama-item { display:grid; grid-template-columns:56px 1fr auto; align-items:center; gap:24px; padding:24px 0; border-bottom:1px solid #1e1a16; transition:padding-left 0.2s; }
+  .drama-item:hover { padding-left:8px; }
+  .drama-num { font-size:10px; color:var(--accent); letter-spacing:0.1em; text-align:right; }
+  .drama-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--cream); }
+  .drama-title span { display:block; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-top:4px; }
+  .drama-rating { font-size:10px; color:var(--warm); }
+
+  #posts { padding:120px 48px; border-top:1px solid #1e1a16; }
+  #posts h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(32px,4vw,52px); font-weight:300; margin-bottom:56px; }
+  #posts h2 em { font-style:italic; color:var(--warm); }
+  .post-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:2px; }
+  .post-card { padding:40px 36px; background:#100e0c; transition:background 0.25s; cursor:none; }
+  .post-card:hover { background:#1a1612; }
+  .post-date { font-size:10px; color:var(--accent); letter-spacing:0.12em; margin-bottom:16px; display:block; }
+  .post-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; line-height:1.3; color:var(--cream); margin-bottom:14px; }
+  .post-excerpt { font-size:11px; color:var(--muted); line-height:1.9; letter-spacing:0.03em; }
+  .post-more { display:inline-block; margin-top:20px; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--warm); text-decoration:none; border-bottom:1px solid var(--warm); padding-bottom:2px; transition:opacity 0.2s; }
+  .post-more:hover { opacity:0.6; }
+
+  footer { padding:60px 48px; border-top:1px solid #1e1a16; display:flex; justify-content:space-between; align-items:center; }
+  .footer-logo { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; color:var(--muted); }
+  .footer-logo em { font-style:italic; color:var(--warm); }
+  footer p { font-size:10px; color:#3a342c; letter-spacing:0.08em; }
+  .filmstrip-bottom { height:28px; background:var(--dark); border-top:1px solid #2a2520; display:flex; align-items:center; overflow:hidden; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.8s ease,transform 0.8s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  @media(max-width:768px){
+    nav{padding:12px 24px} nav ul{gap:16px}
+    .hero{padding:100px 24px 60px}
+    #about{grid-template-columns:1fr;gap:40px;padding:80px 24px}
+    #photos,#dramas,#posts{padding:80px 24px}
+    .photo-grid{grid-template-columns:1fr 1fr}
+    .photo-card:nth-child(1),.photo-card:nth-child(5){grid-column:span 2}
+    .post-grid{grid-template-columns:1fr}
+    footer{flex-direction:column;gap:16px;text-align:center;padding:40px 24px}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="filmstrip" id="filmstrip"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Sumoai's <em>Reel</em></a>
+  <ul>
+    <li><a href="#about">關於</a></li>
+    <li><a href="#photos">照片</a></li>
+    <li><a href="#dramas">追劇</a></li>
+    <li><a href="#posts">文章</a></li>
+    <li><a href="#threads">Threads</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <p class="hero-label">— 生活・影像・記錄</p>
+  <h1>Sumoai's<em>Reel.</em></h1>
+  <p class="hero-sub">看劇、拍照、記錄生活的每一格。<br>這裡是我選擇留下的畫面。</p>
+  <div class="hero-counter">001 / ∞</div>
+  <div class="hero-line"></div>
+</section>
+
+<section id="about">
+  <div class="reveal">
+    <span class="section-number">— 01 / ABOUT</span>
+    <h2>關於<br>這個<em>地方</em></h2>
+  </div>
+  <div class="reveal">
+    <div class="about-text">
+      <p>這裡是 Sumoai 的個人空間。沒有特定主題，只是把喜歡的東西放在這裡——追過的劇、拍過的照片、想記下來的日常。</p>
+      <p>Reel 是影片膠卷，也是片刻的集合。每一格都是真實發生過的某個瞬間。</p>
+    </div>
+    <div class="about-tags">
+      <div class="tag">看劇</div>
+      <div class="tag">拍照</div>
+      <div class="tag">生活記錄</div>
+      <div class="tag">首爾控</div>
+      <div class="tag">美食</div>
+    </div>
+  </div>
+</section>
+
+<section id="photos">
+  <header class="reveal">
+    <h2>照片<em>牆</em></h2>
+    <span class="section-number">— 02 / PHOTOS</span>
+  </header>
+  <div class="photo-grid reveal">
+
+    <div class="photo-card">
+      <img src="taipei101.jpg" alt="台北101">
+      <div class="photo-overlay">
+        <div class="photo-meta">台北</div>
+        <div class="photo-title">101 的縫隙</div>
+      </div>
+    </div>
+
+    <div class="photo-card">
+      <img src="cat.jpg" alt="貓咪">
+      <div class="photo-overlay">
+        <div class="photo-meta">日常</div>
+        <div class="photo-title">在看你</div>
+      </div>
+    </div>
+
+    <div class="photo-card">
+      <img src="ramen.jpg" alt="拉麵">
+      <div class="photo-overlay">
+        <div class="photo-meta">美食</div>
+        <div class="photo-title">一碗很認真的麵</div>
+      </div>
+    </div>
+
+    <div class="photo-card">
+      <img src="coffee.jpg" alt="咖啡">
+      <div class="photo-overlay">
+        <div class="photo-meta">日常</div>
+        <div class="photo-title">某個午後</div>
+      </div>
+    </div>
+
+    <div class="photo-card">
+      <img src="oldbuilding.jpg" alt="老建築">
+      <div class="photo-overlay">
+        <div class="photo-meta">台北街頭</div>
+        <div class="photo-title">時間停在這裡</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="dramas">
+  <h2 class="reveal">最近<em>在追</em></h2>
+  <div class="drama-list reveal">
+    <div class="drama-item">
+      <span class="drama-num">01</span>
+      <div><div class="drama-title">繁花<span>2023 · 王家衛</span></div></div>
+      <div class="drama-rating">★★★★★</div>
+    </div>
+    <div class="drama-item">
+      <span class="drama-num">02</span>
+      <div><div class="drama-title">My Mister<span>2018 · IU</span></div></div>
+      <div class="drama-rating">★★★★★</div>
+    </div>
+    <div class="drama-item">
+      <span class="drama-num">03</span>
+      <div><div class="drama-title">在這裡加你追的劇<span>年份 · 主演</span></div></div>
+      <div class="drama-rating">★★★★☆</div>
+    </div>
+  </div>
+</section>
+
+<section id="posts">
+  <h2 class="reveal">文字<em>記錄</em></h2>
+  <div class="post-grid reveal">
+    <div class="post-card">
+      <span class="post-date">2026.04.10</span>
+      <div class="post-title">首爾四天三夜，用鏡頭記下的每一格</div>
+      <p class="post-excerpt">聖水、弘大、明洞。這座城市很吵，但有些角落安靜得像在拍電影。帶著相機走了四天，留下幾百張照片和一些說不清楚的感覺。</p>
+      <a href="#" class="post-more">閱讀更多 →</a>
+    </div>
+    <div class="post-card">
+      <span class="post-date">2026.03.22</span>
+      <div class="post-title">繁花看完了，王家衛的顏色太重</div>
+      <p class="post-excerpt">整部劇的色調像泡在蜂蜜裡。看的時候覺得悶，看完才發現一直在回想那些場景。這大概就是好劇的定義。</p>
+      <a href="#" class="post-more">閱讀更多 →</a>
+    </div>
+  </div>
+</section>
+
+<section id="threads" style="padding:120px 48px; border-top:1px solid #1e1a16;">
+  <h2 class="reveal" style="font-family:'Cormorant Garamond',serif; font-size:clamp(32px,4vw,52px); font-weight:300; margin-bottom:56px;">
+    Threads <em style="font-style:italic; color:var(--warm);">碎念</em>
+  </h2>
+  <div class="reveal" style="display:flex; flex-wrap:wrap; gap:24px; justify-content:flex-start;">
+
+    <div style="max-width:500px; width:100%;">
+      <blockquote class="text-post-media" data-text-post-permalink="https://www.threads.com/@moai431711/post/DXBQ1wBFG3h" data-text-post-version="0" id="ig-tp-DXBQ1wBFG3h" style="background:#1a1612; border-width:1px; border-style:solid; border-color:#2a2520; border-radius:16px; max-width:500px; margin:0; min-width:270px; padding:0; width:100%;">
+        <a href="https://www.threads.com/@moai431711/post/DXBQ1wBFG3h" style="background:#1a1612; line-height:0; padding:0; text-align:center; text-decoration:none; width:100%; font-family:-apple-system,BlinkMacSystemFont,sans-serif;" target="_blank">
+          <div style="padding:40px; display:flex; flex-direction:column; align-items:center;">
+            <div style="display:block; height:32px; width:32px; padding-bottom:20px;">
+              <svg aria-label="Threads" height="32px" role="img" viewBox="0 0 192 192" width="32px" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#c8a97e" d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.881 72.2328C81.6116 63.5383 90.6052 61.6848 97.2286 61.6848C97.3051 61.6848 97.3819 61.6848 97.4576 61.6855C105.707 61.7381 111.932 64.1366 115.961 68.814C118.893 72.2193 120.854 76.925 121.825 82.8638C114.511 81.6207 106.601 81.2385 98.145 81.7233C74.3247 83.0954 59.0111 96.9879 60.0396 116.292C60.5615 126.084 65.4397 134.508 73.775 140.011C80.8224 144.663 89.899 146.938 99.3323 146.423C111.79 145.74 121.563 140.987 128.381 132.296C133.559 125.696 136.834 117.143 138.28 106.366C144.217 109.949 148.617 114.664 151.047 120.332C155.179 129.967 155.42 145.8 142.501 158.708C131.182 170.016 117.576 174.908 97.0135 175.059C74.2042 174.89 56.9538 167.575 45.7381 153.317C35.2355 139.966 29.8077 120.682 29.6052 96C29.8077 71.3178 35.2355 52.0336 45.7381 38.6827C56.9538 24.4249 74.2039 17.11 97.0132 16.9405C119.988 17.1113 137.539 24.4614 149.184 38.788C154.894 45.8136 159.199 54.6488 162.037 64.9503L178.184 60.6422C174.744 47.9622 169.331 37.0357 161.965 27.974C147.036 9.60668 125.202 0.195148 97.0695 0H96.9569C68.8816 0.19447 47.2921 9.6418 32.7883 28.0793C19.8819 44.4864 13.2244 67.3157 13.0007 95.9325L13 96L13.0007 96.0675C13.2244 124.684 19.8819 147.514 32.7883 163.921C47.2921 182.358 68.8816 191.806 96.9569 192H97.0695C122.03 191.827 139.624 185.292 154.118 170.811C173.081 151.866 172.51 128.119 166.26 113.541C161.776 103.087 153.227 94.5962 141.537 88.9883ZM98.4405 129.507C88.0005 130.095 77.1544 125.409 76.6196 115.372C76.2232 107.93 81.9158 99.626 99.0812 98.6368C101.047 98.5234 102.976 98.468 104.871 98.468C111.106 98.468 116.939 99.0737 122.242 100.233C120.264 124.935 108.662 128.946 98.4405 129.507Z"/>
+              </svg>
+            </div>
+            <div style="font-size:15px; line-height:21px; color:var(--warm); font-weight:600;">在 Threads 查看</div>
+          </div>
+        </a>
+      </blockquote>
+    </div>
+
+    <div style="max-width:320px; padding-top:8px;">
+      <p style="font-size:10px; letter-spacing:0.2em; color:var(--accent); margin-bottom:16px;">— THREADS / @moai431711</p>
+      <p style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; line-height:1.5; color:var(--cream); margin-bottom:24px;">日常碎念，<em style="font-style:italic; color:var(--warm);">想到什麼說什麼。</em></p>
+      <a href="https://www.threads.com/@moai431711" target="_blank" style="font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--warm); text-decoration:none; border-bottom:1px solid var(--warm); padding-bottom:2px;">追蹤 Threads →</a>
+    </div>
+  </div>
+</section>
+<script async src="https://www.threads.com/embed.js"></script>
+
+<footer>
+  <div class="footer-logo">Sumoai's <em>Reel</em></div>
+  <p>— 記錄存在過的片刻 —</p>
+</footer>
+<div class="filmstrip-bottom" id="filmstripBottom"></div>
+
+<script>
+  function makeStrip(el){const n=Math.ceil(el.offsetWidth/30);for(let i=0;i<n;i++){const h=document.createElement('div');h.className='filmstrip-hole';el.appendChild(h);}}
+  makeStrip(document.getElementById('filmstrip'));
+  makeStrip(document.getElementById('filmstripBottom'));
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animateCursor(){cursor.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;requestAnimationFrame(animateCursor);}
+  animateCursor();
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
