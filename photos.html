@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>照片 — Sumoai's Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:#E8622A;min-height:100vh;
+    font-family:'Space Mono',monospace;
+    overflow-x:hidden;position:relative;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);
+    background-size:28px 28px;pointer-events:none;z-index:0;
+  }
+  .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+  .c1{width:480px;height:480px;background:#D4501F;top:-140px;right:-100px;opacity:0.4;}
+  .c2{width:300px;height:300px;background:#C94318;bottom:-90px;left:-70px;opacity:0.35;}
+
+  /* NAV */
+  .topnav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:16px 48px;
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(232,98,42,0.85);backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .logo{
+    font-family:'Cormorant Garamond',serif;
+    font-size:18px;font-weight:300;
+    color:#FFF5E6;text-decoration:none;letter-spacing:0.04em;
+  }
+  .logo em{font-style:italic;color:#FFD4A8;}
+  nav{display:flex;flex-wrap:wrap;gap:8px;}
+  nav a{
+    padding:7px 16px;
+    border:1px solid rgba(255,245,230,0.3);
+    border-radius:99px;font-size:10px;
+    letter-spacing:0.1em;text-transform:uppercase;
+    color:#FFF5E6;text-decoration:none;
+    background:rgba(255,255,255,0.08);
+    transition:background 0.2s,border-color 0.2s;
+  }
+  nav a:hover,nav a.active{background:rgba(255,255,255,0.22);border-color:rgba(255,245,230,0.7);}
+
+  .page-content{
+    position:relative;z-index:10;
+    max-width:860px;margin:0 auto;
+    padding:110px 48px 80px;
+  }
+  .page-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(40px,7vw,72px);font-weight:300;
+    color:#FFF5E6;line-height:1;margin-bottom:8px;
+  }
+  .page-title em{font-style:italic;color:#FFD4A8;}
+  .page-label{
+    font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+    color:rgba(255,245,230,0.5);margin-bottom:48px;display:block;
+  }
+  .divider{
+    width:48px;height:1px;
+    background:rgba(255,245,230,0.3);
+    margin:32px 0;
+  }
+
+  @media(max-width:600px){
+    .topnav{padding:12px 20px;}
+    .page-content{padding:90px 24px 60px;}
+    nav a{padding:6px 12px;font-size:9px;}
+  }
+
+  .photo-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+  }
+  .photo-card{
+    position:relative;overflow:hidden;
+    background:rgba(0,0,0,0.2);
+    aspect-ratio:3/4;border-radius:4px;
+  }
+  .photo-card:nth-child(1){grid-column:span 2;aspect-ratio:16/9;}
+  .photo-card:nth-child(5){grid-column:span 2;aspect-ratio:16/9;}
+  .photo-card img{
+    width:100%;height:100%;object-fit:cover;
+    display:block;
+    transition:transform 0.5s ease,filter 0.4s ease;
+    filter:brightness(0.9) saturate(0.95);
+  }
+  .photo-card:hover img{transform:scale(1.04);filter:brightness(0.75);}
+  .photo-overlay{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:16px;
+    background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 60%);
+    opacity:0;transition:opacity 0.3s;
+  }
+  .photo-card:hover .photo-overlay{opacity:1;}
+  .photo-meta{font-size:9px;letter-spacing:0.1em;color:#FFD4A8;text-transform:uppercase;}
+  .photo-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:#FFF5E6;margin-top:3px;}
+  @media(max-width:600px){
+    .photo-grid{grid-template-columns:1fr 1fr;}
+    .photo-card:nth-child(1),.photo-card:nth-child(5){grid-column:span 2;}
+  }
+</style>
+</head>
+<body>
+<div class="bg-circle c1"></div>
+<div class="bg-circle c2"></div>
+<div class="topnav">
+  <a href="index.html" class="logo">Sumoai's <em>Reel</em></a>
+  <nav>
+    <a href="index.html">首頁</a>
+    <a href="about.html">關於</a>
+    <a href="photos.html">照片</a>
+    <a href="dramas.html">追劇</a>
+    <a href="posts.html">文章</a>
+    <a href="threads.html">Threads</a>
+  </nav>
+</div>
+<div class="page-content">
+  <h1 class="page-title">照片<em>牆</em></h1>
+  <span class="page-label">— 02 / PHOTOS</span>
+  <div class="photo-grid">
+    <div class="photo-card">
+      <img src="taipei101.jpg" alt="台北101">
+      <div class="photo-overlay"><div class="photo-meta">台北</div><div class="photo-title">101 的縫隙</div></div>
+    </div>
+    <div class="photo-card">
+      <img src="cat.jpg" alt="貓咪">
+      <div class="photo-overlay"><div class="photo-meta">日常</div><div class="photo-title">在看你</div></div>
+    </div>
+    <div class="photo-card">
+      <img src="ramen.jpg" alt="拉麵">
+      <div class="photo-overlay"><div class="photo-meta">美食</div><div class="photo-title">一碗很認真的麵</div></div>
+    </div>
+    <div class="photo-card">
+      <img src="coffee.jpg" alt="咖啡">
+      <div class="photo-overlay"><div class="photo-meta">日常</div><div class="photo-title">某個午後</div></div>
+    </div>
+    <div class="photo-card">
+      <img src="oldbuilding.jpg" alt="老建築">
+      <div class="photo-overlay"><div class="photo-meta">台北街頭</div><div class="photo-title">時間停在這裡</div></div>
+    </div>
+  </div>
+</div></body></html>

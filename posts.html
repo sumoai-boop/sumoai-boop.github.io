@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文章 — Sumoai's Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:#E8622A;min-height:100vh;
+    font-family:'Space Mono',monospace;
+    overflow-x:hidden;position:relative;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);
+    background-size:28px 28px;pointer-events:none;z-index:0;
+  }
+  .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+  .c1{width:480px;height:480px;background:#D4501F;top:-140px;right:-100px;opacity:0.4;}
+  .c2{width:300px;height:300px;background:#C94318;bottom:-90px;left:-70px;opacity:0.35;}
+
+  /* NAV */
+  .topnav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:16px 48px;
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(232,98,42,0.85);backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .logo{
+    font-family:'Cormorant Garamond',serif;
+    font-size:18px;font-weight:300;
+    color:#FFF5E6;text-decoration:none;letter-spacing:0.04em;
+  }
+  .logo em{font-style:italic;color:#FFD4A8;}
+  nav{display:flex;flex-wrap:wrap;gap:8px;}
+  nav a{
+    padding:7px 16px;
+    border:1px solid rgba(255,245,230,0.3);
+    border-radius:99px;font-size:10px;
+    letter-spacing:0.1em;text-transform:uppercase;
+    color:#FFF5E6;text-decoration:none;
+    background:rgba(255,255,255,0.08);
+    transition:background 0.2s,border-color 0.2s;
+  }
+  nav a:hover,nav a.active{background:rgba(255,255,255,0.22);border-color:rgba(255,245,230,0.7);}
+
+  .page-content{
+    position:relative;z-index:10;
+    max-width:860px;margin:0 auto;
+    padding:110px 48px 80px;
+  }
+  .page-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(40px,7vw,72px);font-weight:300;
+    color:#FFF5E6;line-height:1;margin-bottom:8px;
+  }
+  .page-title em{font-style:italic;color:#FFD4A8;}
+  .page-label{
+    font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+    color:rgba(255,245,230,0.5);margin-bottom:48px;display:block;
+  }
+  .divider{
+    width:48px;height:1px;
+    background:rgba(255,245,230,0.3);
+    margin:32px 0;
+  }
+
+  @media(max-width:600px){
+    .topnav{padding:12px 20px;}
+    .page-content{padding:90px 24px 60px;}
+    nav a{padding:6px 12px;font-size:9px;}
+  }
+
+  .post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
+  .post-card{
+    padding:36px 32px;
+    background:rgba(0,0,0,0.15);
+    transition:background 0.25s;border-radius:4px;
+  }
+  .post-card:hover{background:rgba(0,0,0,0.28);}
+  .post-date{font-size:10px;color:#FFD4A8;letter-spacing:0.12em;margin-bottom:14px;display:block;}
+  .post-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:24px;font-weight:300;line-height:1.3;
+    color:#FFF5E6;margin-bottom:12px;
+  }
+  .post-excerpt{font-size:11px;color:rgba(255,245,230,0.65);line-height:1.9;letter-spacing:0.03em;}
+  .post-more{
+    display:inline-block;margin-top:18px;
+    font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+    color:#FFD4A8;text-decoration:none;
+    border-bottom:1px solid rgba(255,212,168,0.5);padding-bottom:2px;
+    transition:opacity 0.2s;
+  }
+  .post-more:hover{opacity:0.6;}
+  @media(max-width:600px){.post-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="bg-circle c1"></div>
+<div class="bg-circle c2"></div>
+<div class="topnav">
+  <a href="index.html" class="logo">Sumoai's <em>Reel</em></a>
+  <nav>
+    <a href="index.html">首頁</a>
+    <a href="about.html">關於</a>
+    <a href="photos.html">照片</a>
+    <a href="dramas.html">追劇</a>
+    <a href="posts.html">文章</a>
+    <a href="threads.html">Threads</a>
+  </nav>
+</div>
+<div class="page-content">
+  <h1 class="page-title">文字<em>記錄</em></h1>
+  <span class="page-label">— 04 / POSTS</span>
+  <div class="post-grid">
+    <div class="post-card">
+      <span class="post-date">2026.04.10</span>
+      <div class="post-title">首爾四天三夜，用鏡頭記下的每一格</div>
+      <p class="post-excerpt">聖水、弘大、明洞。這座城市很吵，但有些角落安靜得像在拍電影。帶著相機走了四天，留下幾百張照片和一些說不清楚的感覺。</p>
+      <a href="#" class="post-more">閱讀更多 →</a>
+    </div>
+    <div class="post-card">
+      <span class="post-date">2026.03.22</span>
+      <div class="post-title">繁花看完了，王家衛的顏色太重</div>
+      <p class="post-excerpt">整部劇的色調像泡在蜂蜜裡。看的時候覺得悶，看完才發現一直在回想那些場景。這大概就是好劇的定義。</p>
+      <a href="#" class="post-more">閱讀更多 →</a>
+    </div>
+  </div>
+</div></body></html>
