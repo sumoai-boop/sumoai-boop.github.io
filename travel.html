@@ -145,7 +145,7 @@ const W=860,H=500;
 const svg=d3.select('#map-svg');
 const countriesG=svg.select('#countries-g');
 const pinsG=svg.select('#pins-g');
-const proj=d3.geoMercator().center([110,25]).scale(680).translate([W/2,H/2]);
+const proj=d3.geoMercator().center([110,25]).scale(900).translate([W/2,H/2]);
 const pathGen=d3.geoPath(proj);
 
 const zoom=d3.zoom().scaleExtent([0.8,8]).on('zoom',(e)=>{
@@ -216,7 +216,7 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
   const taoyuan=[121.23,25.08];
   const flights=[
     {city:'澳門',times:1},{city:'香港',times:1},{city:'宿霧',times:1},
-    {city:'上海',times:1},{city:'杭州',times:1},{city:'沖繩',times:1},
+    {city:'上海',times:1},{city:'沖繩',times:1},
     {city:'曼谷',times:2},{city:'大阪',times:2},{city:'東京',times:2},{city:'首爾',times:2},
   ];
   const cityMap={};
