@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix TOP 10 — Sumoai's Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#141414;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;position:relative;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(229,9,20,0.12) 0%,transparent 60%);pointer-events:none;z-index:0;}
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(232,98,42,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.1);}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:#FFF5E6;text-decoration:none;letter-spacing:0.04em;}
+  .logo em{font-style:italic;color:#FFD4A8;}
+  nav{display:flex;flex-wrap:wrap;gap:8px;}
+  nav a{padding:7px 16px;border:1px solid rgba(255,245,230,0.3);border-radius:99px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#FFF5E6;text-decoration:none;background:rgba(255,255,255,0.08);transition:background 0.2s;}
+  nav a:hover,nav a.active{background:rgba(255,255,255,0.22);border-color:rgba(255,245,230,0.7);}
+  .page-content{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:100px 48px 80px;}
+  .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,72px);font-weight:300;color:#FFF5E6;line-height:1;margin-bottom:6px;}
+  .page-title em{font-style:italic;color:#E50914;}
+  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,245,230,0.4);margin-bottom:36px;display:block;}
+
+  /* 篩選列 */
+  .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px;align-items:center;}
+  .filter-select{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:99px;padding:8px 16px;color:#FFF5E6;font-family:'Space Mono',monospace;font-size:10px;outline:none;cursor:pointer;letter-spacing:0.08em;}
+  .filter-select option{background:#1a1a1a;}
+  .week-label{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;font-family:monospace;}
+
+  /* 類別 tab */
+  .tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+  .tab{padding:8px 18px;border:1px solid rgba(255,255,255,0.15);border-radius:99px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);cursor:pointer;transition:all 0.2s;background:transparent;}
+  .tab.active{background:#E50914;border-color:#E50914;color:#fff;}
+  .tab:hover:not(.active){border-color:rgba(255,255,255,0.4);color:#fff;}
+
+  /* TOP 10 列表 */
+  .top10-list{display:flex;flex-direction:column;gap:2px;}
+  .top10-item{display:flex;align-items:center;gap:20px;padding:14px 18px;border-radius:8px;transition:background 0.2s;cursor:default;position:relative;}
+  .top10-item:hover{background:rgba(255,255,255,0.05);}
+  .rank-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:rgba(255,255,255,0.12);line-height:1;min-width:52px;text-align:right;flex-shrink:0;}
+  .rank-num.top3{color:rgba(229,9,20,0.35);}
+  .item-info{flex:1;min-width:0;}
+  .item-title{color:#FFF5E6;font-size:14px;font-weight:400;letter-spacing:0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .item-views{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;margin-top:4px;}
+  .item-badge{font-size:9px;letter-spacing:0.1em;padding:3px 10px;border-radius:99px;flex-shrink:0;}
+  .badge-new{background:rgba(229,9,20,0.25);color:#ff6b6b;border:1px solid rgba(229,9,20,0.3);}
+  .badge-up{background:rgba(80,200,80,0.15);color:#7ecb7e;border:1px solid rgba(80,200,80,0.2);}
+  .badge-down{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);}
+
+  /* 週次選擇器 */
+  .week-nav{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+  .week-btn{background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:99px;color:rgba(255,255,255,0.5);font-family:monospace;font-size:11px;padding:6px 14px;cursor:pointer;transition:all 0.2s;}
+  .week-btn:hover{border-color:rgba(255,255,255,0.4);color:#fff;}
+  .week-btn.disabled{opacity:0.3;cursor:default;pointer-events:none;}
+  .current-week{font-size:11px;color:#FFF5E6;letter-spacing:0.08em;font-family:monospace;flex:1;text-align:center;}
+
+  /* 載入狀態 */
+  .loading{text-align:center;padding:60px 0;color:rgba(255,255,255,0.3);font-size:12px;letter-spacing:0.15em;}
+  .loading span{display:inline-block;animation:pulse 1.5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:0.3;}50%{opacity:0.8;}}
+
+  /* Netflix 說明 */
+  .source-note{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.08em;margin-top:32px;text-align:center;}
+  .source-note a{color:rgba(229,9,20,0.6);text-decoration:none;}
+  .source-note a:hover{color:#E50914;}
+
+  @media(max-width:600px){
+    .topnav{padding:12px 20px;}
+    .page-content{padding:88px 16px 60px;}
+    nav a{padding:6px 10px;font-size:9px;}
+    .rank-num{font-size:36px;min-width:36px;}
+    .item-title{font-size:13px;}
+  }
+</style>
+</head>
+<body>
+<div class="topnav">
+  <a href="index.html" class="logo">Sumoai's <em>Reel</em></a>
+  <nav>
+    <a href="index.html">首頁</a>
+    <a href="about.html">關於</a>
+    <a href="photos.html">照片</a>
+    <a href="dramas.html">追劇</a>
+    <a href="travel.html">旅遊足跡</a>
+    <a href="netflix.html" class="active">TOP 10</a>
+    <a href="threads.html">Threads</a>
+  </nav>
+</div>
+
+<div class="page-content">
+  <h1 class="page-title">Netflix <em>TOP 10</em></h1>
+  <span class="page-label">— 全球每週排行 · 資料來源 Netflix Tudum</span>
+
+  <div class="tabs">
+    <div class="tab active" data-cat="movies-en">🎬 電影 (英語)</div>
+    <div class="tab" data-cat="movies-non-en">🌍 電影 (非英語)</div>
+    <div class="tab" data-cat="shows-en">📺 影集 (英語)</div>
+    <div class="tab" data-cat="shows-non-en">🌏 影集 (非英語)</div>
+  </div>
+
+  <div class="week-nav">
+    <button class="week-btn" id="prevWeek">← 上週</button>
+    <div class="current-week" id="weekDisplay">載入中...</div>
+    <button class="week-btn disabled" id="nextWeek">下週 →</button>
+  </div>
+
+  <div class="top10-list" id="top10List">
+    <div class="loading"><span>載入資料中...</span></div>
+  </div>
+
+  <div class="source-note">資料來源：<a href="https://www.netflix.com/tudum/top10" target="_blank">netflix.com/tudum/top10</a> · 每週更新</div>
+</div>
+
+<script>
+// Netflix Tudum Top 10 資料（透過 Claude API 即時抓取）
+const WEEKS = [
+  "3/23/26 - 3/29/26","3/16/26 - 3/22/26","3/9/26 - 3/15/26","3/2/26 - 3/8/26",
+  "2/23/26 - 3/1/26","2/16/26 - 2/22/26","2/9/26 - 2/15/26","2/2/26 - 2/8/26",
+  "1/26/26 - 2/1/26","1/19/26 - 1/25/26","1/12/26 - 1/18/26","1/5/26 - 1/11/26",
+];
+
+// 已知資料（本週）
+const KNOWN_DATA = {
+  "3/23/26 - 3/29/26": {
+    "movies-en": [
+      {rank:1,title:"Peaky Blinders: The Immortal Man",views:"19.4M",weeks:2},
+      {rank:2,title:"War Machine",views:"10.3M",weeks:4},
+      {rank:3,title:"Anaconda",views:"7.9M",weeks:1},
+      {rank:4,title:"KPop Demon Hunters",views:"4.9M",weeks:41},
+      {rank:5,title:"The Bad Guys 2",views:"4.3M",weeks:1},
+      {rank:6,title:"Minions: The Rise of Gru",views:"3.9M",weeks:12},
+      {rank:7,title:"What Happens in Vegas",views:"3.2M",weeks:3},
+      {rank:8,title:"40 Acres",views:"3.1M",weeks:1},
+      {rank:9,title:"The Rise of the Red Hot Chili Peppers",views:"2.8M",weeks:1},
+      {rank:10,title:"Louis Theroux: Inside the Manosphere",views:"2.4M",weeks:3},
+    ]
+  }
+};
+
+let currentWeekIdx = 0;
+let currentCat = 'movies-en';
+
+function getBadge(weeks) {
+  if(weeks===1) return '<span class="item-badge badge-new">NEW</span>';
+  return '';
+}
+
+function renderList(data) {
+  const list = document.getElementById('top10List');
+  if(!data || data.length===0) {
+    list.innerHTML = `<div class="loading"><span>此週資料尚未收錄</span></div>`;
+    return;
+  }
+  list.innerHTML = data.map((item,i) => `
+    <div class="top10-item">
+      <div class="rank-num ${i<3?'top3':''}">${String(item.rank).padStart(2,'0')}</div>
+      <div class="item-info">
+        <div class="item-title">${item.title}</div>
+        <div class="item-views">${item.views} views this week</div>
+      </div>
+      ${getBadge(item.weeks)}
+    </div>
+  `).join('');
+}
+
+function updateWeek() {
+  const week = WEEKS[currentWeekIdx];
+  document.getElementById('weekDisplay').textContent = week;
+  document.getElementById('prevWeek').classList.toggle('disabled', currentWeekIdx >= WEEKS.length-1);
+  document.getElementById('nextWeek').classList.toggle('disabled', currentWeekIdx <= 0);
+
+  const weekData = KNOWN_DATA[week];
+  if(weekData && weekData[currentCat]) {
+    renderList(weekData[currentCat]);
+  } else {
+    // 使用 Claude API 動態抓取
+    fetchWithClaude(week, currentCat);
+  }
+}
+
+async function fetchWithClaude(week, cat) {
+  document.getElementById('top10List').innerHTML = '<div class="loading"><span>資料載入中...</span></div>';
+  const catMap = {
+    'movies-en': 'Movies | English',
+    'movies-non-en': 'Movies | Non-English',
+    'shows-en': 'Shows | English',
+    'shows-non-en': 'Shows | Non-English'
+  };
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{
+          role:'user',
+          content:`Search Netflix Tudum top 10 for the week ${week}, category "${catMap[cat]}". Return ONLY a JSON array with exactly 10 objects: [{rank:1,title:"...",views:"...M"},...]. No markdown, no explanation.`
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    if(!KNOWN_DATA[week]) KNOWN_DATA[week] = {};
+    KNOWN_DATA[week][cat] = parsed;
+    renderList(parsed);
+  } catch(e) {
+    document.getElementById('top10List').innerHTML = '<div class="loading"><span>資料暫時無法載入，請稍後再試</span></div>';
+  }
+}
+
+// 事件
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentCat = tab.dataset.cat;
+    updateWeek();
+  });
+});
+
+document.getElementById('prevWeek').addEventListener('click', () => {
+  if(currentWeekIdx < WEEKS.length-1) { currentWeekIdx++; updateWeek(); }
+});
+document.getElementById('nextWeek').addEventListener('click', () => {
+  if(currentWeekIdx > 0) { currentWeekIdx--; updateWeek(); }
+});
+
+updateWeek();
+</script>
+</body>
+</html>
