@@ -8,11 +8,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{background:#E8622A;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;position:relative;}
-  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0;}
+  body{background:#0B1220;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;position:relative;}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.8) 1px,transparent 1px),radial-gradient(circle,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:120px 120px,60px 60px;background-position:0 0,30px 30px;pointer-events:none;z-index:0;opacity:0.25;}
+  body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(30,60,120,0.4) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(60,20,80,0.35) 0%,transparent 50%),radial-gradient(ellipse at 60% 80%,rgba(20,50,80,0.3) 0%,transparent 50%);pointer-events:none;z-index:0;}
   .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
-  .c1{width:480px;height:480px;background:#D4501F;top:-140px;right:-100px;opacity:0.4;}
-  .c2{width:300px;height:300px;background:#C94318;bottom:-90px;left:-70px;opacity:0.35;}
+  .c1{width:600px;height:600px;background:radial-gradient(circle,rgba(232,98,42,0.08),transparent 70%);top:-150px;right:-100px;}
+  .c2{width:400px;height:400px;background:radial-gradient(circle,rgba(100,150,255,0.06),transparent 70%);bottom:-100px;left:-80px;}
   .topnav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(232,98,42,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.1);}
   .logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:#FFF5E6;text-decoration:none;letter-spacing:0.04em;}
   .logo em{font-style:italic;color:#FFD4A8;}
@@ -22,7 +23,7 @@
   .page-content{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:100px 48px 80px;}
   .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,72px);font-weight:300;color:#FFF5E6;line-height:1;margin-bottom:6px;}
   .page-title em{font-style:italic;color:#FFD4A8;}
-  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,245,230,0.5);margin-bottom:32px;display:block;}
+  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,220,255,0.45);margin-bottom:32px;display:block;}
   #main-map{width:100%;height:500px;border-radius:12px;overflow:hidden;z-index:1;}
 
   .leaflet-tooltip.city-label{background:transparent;border:none;box-shadow:none;color:#222;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;text-shadow:0 1px 2px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.8);padding:0;}
@@ -37,10 +38,10 @@
   #seoul-section.visible{display:block;}
   .section-header{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;}
   .section-city{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#FFF5E6;}
-  .section-sub{font-size:10px;color:rgba(255,245,230,0.45);letter-spacing:0.1em;}
+  .section-sub{font-size:10px;color:rgba(200,220,255,0.45);letter-spacing:0.1em;}
   #seoul-map{width:100%;height:520px;border-radius:12px;overflow:hidden;z-index:1;}
   .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;}
-  .legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(255,245,230,0.75);font-family:monospace;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(200,220,255,0.75);font-family:monospace;}
   .legend-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,0.6);flex-shrink:0;}
   .legend-line{width:24px;height:3px;border-radius:2px;flex-shrink:0;}
 
@@ -52,9 +53,9 @@
   .photo-thumb:hover img{transform:scale(1.05);filter:brightness(0.75);}
 
   .trips-section{margin-top:40px;}
-  .trips-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,245,230,0.5);margin-bottom:20px;display:block;}
+  .trips-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,220,255,0.45);margin-bottom:20px;display:block;}
   .trips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
-  .trip-card{background:rgba(0,0,0,0.18);border:1px solid rgba(255,245,230,0.1);border-radius:10px;padding:14px 16px;}
+  .trip-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px;}
   .trip-city{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#FFF5E6;margin-bottom:8px;}
   .trip-date{font-size:10px;color:rgba(255,212,168,0.7);letter-spacing:0.05em;font-family:monospace;line-height:1.8;}
 
