@@ -255,9 +255,17 @@ function render(){
   data.forEach(m=>{
     const ic=m.venue.includes('🎬');
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="color:rgba(200,169,110,0.55);font-size:10px;white-space:nowrap">${m.date}</td><td style="font-size:14px">${m.lang}</td><td><div class="title-cell" onclick="showPoster(m)">${m.title}</div><div class="orig-cell">${m.orig!=='nan'?m.orig:''}</div></td><td style="color:rgba(200,169,110,0.7)">${m.year>0?m.year:''}</td><td><span class="score-badge ${sc(m.score)}">${st(m.score)}</span></td><td style="color:#C8A96E;font-weight:500">${st(m.imdb)}</td><td style="color:#C8A96E;font-weight:500">${st(m.douban)}</td><td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td><td style="color:rgba(200,169,110,0.6);font-size:11px">${m.dist!=='nan'?m.dist:''}</td><td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
+    const idx=data.indexOf(m);
+    tr.innerHTML=`<td style="color:rgba(200,169,110,0.55);font-size:10px;white-space:nowrap">${m.date}</td><td style="font-size:14px">${m.lang}</td><td><div class="title-cell" data-idx="${idx}">${m.title}</div><div class="orig-cell">${m.orig!=='nan'?m.orig:''}</div></td><td style="color:rgba(200,169,110,0.7)">${m.year>0?m.year:''}</td><td><span class="score-badge ${sc(m.score)}">${st(m.score)}</span></td><td style="color:#C8A96E;font-weight:500">${st(m.imdb)}</td><td style="color:#C8A96E;font-weight:500">${st(m.douban)}</td><td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td><td style="color:rgba(200,169,110,0.6);font-size:11px">${m.dist!=='nan'?m.dist:''}</td><td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
     tbody.appendChild(tr);
   });
+  // delegated click on title
+  tbody.onclick=e=>{
+    const cell=e.target.closest('.title-cell');
+    if(!cell)return;
+    const idx=parseInt(cell.dataset.idx);
+    if(!isNaN(idx))showPoster(DATA[idx]);
+  };
   document.getElementById('resultCount').textContent=`顯示 ${data.length} / ${DATA.length} 部`;
   const avg=(DATA.reduce((s,m)=>s+m.score,0)/DATA.length).toFixed(2);
   const best=[...DATA].sort((a,b)=>b.personal-a.personal)[0];
@@ -277,6 +285,61 @@ document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.targe
 
 buildTop5();
 render();
+
+// ── TMDB 海報 ──
+const TMDB_KEY='e174d0983218845b167176a27b04b83f';
+const IMG_BASE='https://image.tmdb.org/t/p/w300';
+const posterModal=document.getElementById('posterModal');
+const posterImg=document.getElementById('posterImg');
+const posterLoading=document.getElementById('posterLoading');
+
+document.getElementById('posterClose').onclick=()=>posterModal.classList.remove('open');
+posterModal.onclick=e=>{if(e.target===posterModal)posterModal.classList.remove('open');};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')posterModal.classList.remove('open');});
+
+async function showPoster(m){
+  posterModal.classList.add('open');
+  posterImg.style.display='none';
+  posterLoading.style.display='flex';
+  posterLoading.textContent='載入中...';
+  document.getElementById('posterZH').textContent=m.title;
+  document.getElementById('posterOrig').textContent=m.orig!=='nan'?m.orig:'';
+  document.getElementById('posterTags').innerHTML='';
+  document.getElementById('posterOverview').textContent='';
+  document.getElementById('pScorePersonal').textContent=m.personal>0?m.personal.toFixed(1):'—';
+  document.getElementById('pScoreTotal').textContent=m.score>0?m.score.toFixed(2):'—';
+  document.getElementById('pScoreIMDB').textContent=m.imdb>0?m.imdb:'—';
+  document.getElementById('pScoreDouban').textContent=m.douban>0?m.douban:'—';
+  try{
+    const query=m.orig!=='nan'?m.orig:m.title;
+    let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}&language=zh-TW`);
+    let data=await res.json();
+    let movie=data.results&&data.results[0];
+    if(!movie&&m.orig!=='nan'){
+      res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      data=await res.json();
+      movie=data.results&&data.results[0];
+    }
+    if(movie){
+      if(movie.poster_path){
+        posterImg.onload=()=>{posterLoading.style.display='none';posterImg.style.display='block';};
+        posterImg.onerror=()=>{posterLoading.textContent='無海報';};
+        posterImg.src=IMG_BASE+movie.poster_path;
+      }else{posterLoading.textContent='無海報';}
+      if(movie.genre_ids&&movie.genre_ids.length){
+        const gm={28:'動作',12:'冒險',16:'動畫',35:'喜劇',80:'犯罪',99:'紀錄',18:'劇情',10751:'家庭',14:'奇幻',36:'歷史',27:'恐怖',10402:'音樂',9648:'懸疑',10749:'愛情',878:'科幻',53:'驚悚',10752:'戰爭',37:'西部'};
+        document.getElementById('posterTags').innerHTML=movie.genre_ids.slice(0,4).map(id=>gm[id]?`<span class="poster-tag">${gm[id]}</span>`:'').join('');
+      }
+      if(movie.overview){
+        document.getElementById('posterOverview').textContent=movie.overview;
+      }else{
+        const r2=await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${TMDB_KEY}&language=en-US`);
+        const d2=await r2.json();
+        document.getElementById('posterOverview').textContent=d2.overview||'暫無簡介';
+      }
+    }else{posterLoading.textContent='查無資料';}
+  }catch(e){posterLoading.textContent='載入失敗';}
+}
 </script>
 <!-- 海報燈箱 -->
 <div class="poster-modal" id="posterModal">
@@ -301,77 +364,6 @@ render();
   </div>
 </div>
 
-<script>
-const TMDB_KEY='e174d0983218845b167176a27b04b83f';
-const IMG_BASE='https://image.tmdb.org/t/p/w300';
 
-const modal=document.getElementById('posterModal');
-const posterImg=document.getElementById('posterImg');
-const posterLoading=document.getElementById('posterLoading');
-
-document.getElementById('posterClose').onclick=()=>modal.classList.remove('open');
-modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open');};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')modal.classList.remove('open');});
-
-async function showPoster(m){
-  modal.classList.add('open');
-  posterImg.style.display='none';
-  posterLoading.style.display='flex';
-  document.getElementById('posterZH').textContent=m.title;
-  document.getElementById('posterOrig').textContent=m.orig!=='nan'?m.orig:'';
-  document.getElementById('posterTags').innerHTML='';
-  document.getElementById('posterOverview').textContent='';
-  document.getElementById('pScorePersonal').textContent=m.personal>0?m.personal.toFixed(1):'—';
-  document.getElementById('pScoreTotal').textContent=m.score>0?m.score.toFixed(2):'—';
-  document.getElementById('pScoreIMDB').textContent=m.imdb>0?m.imdb:'—';
-  document.getElementById('pScoreDouban').textContent=m.douban>0?m.douban:'—';
-
-  try{
-    // 先用原文片名搜，再用中文
-    const query=m.orig!=='nan'?m.orig:m.title;
-    const url=`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}&year=${m.year>0?m.year:''}&language=zh-TW`;
-    const res=await fetch(url);
-    const data=await res.json();
-    let movie=data.results&&data.results[0];
-
-    // 如果原文搜不到，用中文片名再試
-    if(!movie&&m.orig!=='nan'){
-      const res2=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
-      const data2=await res2.json();
-      movie=data2.results&&data2.results[0];
-    }
-
-    if(movie){
-      // 海報
-      if(movie.poster_path){
-        posterImg.src=IMG_BASE+movie.poster_path;
-        posterImg.onload=()=>{posterLoading.style.display='none';posterImg.style.display='block';};
-        posterImg.onerror=()=>{posterLoading.textContent='無海報';};
-      } else {
-        posterLoading.textContent='無海報';
-      }
-      // 類型
-      if(movie.genre_ids&&movie.genre_ids.length){
-        const genreMap={28:'動作',12:'冒險',16:'動畫',35:'喜劇',80:'犯罪',99:'紀錄',18:'劇情',10751:'家庭',14:'奇幻',36:'歷史',27:'恐怖',10402:'音樂',9648:'懸疑',10749:'愛情',878:'科幻',10770:'電視電影',53:'驚悚',10752:'戰爭',37:'西部'};
-        const tags=movie.genre_ids.slice(0,4).map(id=>genreMap[id]||'').filter(Boolean);
-        document.getElementById('posterTags').innerHTML=tags.map(t=>`<span class="poster-tag">${t}</span>`).join('');
-      }
-      // 簡介
-      if(movie.overview){
-        document.getElementById('posterOverview').textContent=movie.overview;
-      } else {
-        // 用英文再抓一次取簡介
-        const res3=await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${TMDB_KEY}&language=en-US`);
-        const d3=await res3.json();
-        document.getElementById('posterOverview').textContent=d3.overview||'暫無簡介';
-      }
-    } else {
-      posterLoading.textContent='查無資料';
-    }
-  }catch(e){
-    posterLoading.textContent='載入失敗';
-  }
-}
-</script>
 </body>
 </html>
