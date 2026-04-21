@@ -59,7 +59,7 @@
   .name-cell{color:#F5E6C0;font-size:14px;font-weight:500;}
   .branch-cell{color:rgba(180,140,60,0.5);font-size:10px;margin-top:2px;}
   .type-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;background:rgba(180,140,60,0.12);color:#C9A84C;border:1px solid rgba(180,140,60,0.2);white-space:nowrap;}
-  .score-badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;}
+  .score-badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:15px;font-weight:700;}
   .s-high{background:#E8622A;color:#1a0800;font-weight:800;}
   .s-plain{background:rgba(180,140,60,0.12);color:#C8A96E;border:1px solid rgba(180,140,60,0.25);}
   .revisit-dot{display:inline-block;width:8px;height:8px;background:#E8622A;border-radius:50%;}
@@ -261,8 +261,8 @@ function render(){
       </td>
       <td><span class="type-badge">${r.type}</span></td>
       <td style="font-size:11px;color:rgba(200,170,100,0.8);white-space:nowrap">${r.city}${r.district?'・'+r.district:''}</td>
-      <td><span class="score-badge ${sc(r.score)}">${r.score>0?r.score.toFixed(3):'—'}</span></td>
-      <td style="color:rgba(220,190,130,0.85);font-size:12px;text-align:center;font-weight:500">${r.google>0?r.google.toFixed(1):'—'}</td>
+      <td><span class="score-badge ${sc(r.score)}">${r.score>0?r.score.toFixed(2):'—'}</span></td>
+      <td style="color:#4FC3F7;font-size:15px;text-align:center;font-weight:700;letter-spacing:0.02em">${r.google>0?r.google.toFixed(1):'—'}</td>
       <td style="color:rgba(200,170,100,0.75);font-size:12px;text-align:center">${fmt(r.taste)}</td>
       <td style="color:rgba(200,170,100,0.75);font-size:12px;text-align:center">${fmt(r.env)}</td>
       <td style="color:rgba(200,170,100,0.75);font-size:12px;text-align:center">${fmt(r.service)}</td>
