@@ -43,6 +43,8 @@
   .filter-input::placeholder{color:rgba(200,169,110,0.35);}
   .filter-select{background:rgba(10,8,5,0.8);border:1px solid rgba(255,180,50,0.2);border-radius:99px;padding:8px 14px;color:#C8A96E;font-family:'Space Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
   .filter-select option{background:#1a1208;}
+  .filter-reset{background:rgba(232,98,42,0.15);border:1px solid rgba(232,98,42,0.45);border-radius:99px;padding:8px 16px;color:#E8622A;font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:0.08em;transition:all 0.2s;white-space:nowrap;}
+  .filter-reset:hover{background:rgba(232,98,42,0.35);color:#fff;}
   .result-count{font-size:10px;color:rgba(200,169,110,0.4);letter-spacing:0.1em;margin-bottom:12px;}
   .table-wrap{background:rgba(255,210,160,0.04);border:1px solid rgba(232,98,42,0.4);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
@@ -50,8 +52,10 @@
   .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#C8A96E;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
   .movie-table tr:hover td{background:rgba(232,98,42,0.08);}
-  .title-cell{color:#F5E6C8;font-size:18px;font-weight:500;cursor:pointer;transition:color 0.2s;display:inline-block;}
-  .title-cell:hover{color:#FFD4A8;text-decoration:underline;text-underline-offset:3px;}
+  .title-cell{color:#F5E6C8;font-size:18px;font-weight:500;cursor:pointer;display:inline-block;position:relative;}
+  .title-cell::after{content:'';position:absolute;left:0;bottom:-1px;width:0;height:1px;background:#E8622A;transition:width 0.25s ease;}
+  .title-cell:hover{color:#FFD4A8;}
+  .title-cell:hover::after{width:100%;}
   .orig-cell{color:rgba(255,245,230,0.35);font-size:9px;margin-top:2px;}
   .score-badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;}
   .score-high{background:#E8622A;color:#1a0e00;}
@@ -60,6 +64,10 @@
   .venue-cinema{color:#FFB800;font-size:10px;font-weight:500;}
   .venue-home{color:rgba(200,169,110,0.35);font-size:10px;}
   .no-result{text-align:center;padding:48px 0;color:rgba(200,169,110,0.3);font-size:13px;letter-spacing:0.1em;}
+  .active-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:0;}
+  .af-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(232,98,42,0.15);border:1px solid rgba(232,98,42,0.4);border-radius:99px;padding:3px 10px;font-size:10px;color:#FFB060;cursor:pointer;}
+  .af-tag:hover{background:rgba(232,98,42,0.3);}
+  .af-tag .af-x{font-size:11px;opacity:0.7;}
 
   /* ── 海報燈箱 ── */
   .pm{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
@@ -99,6 +107,8 @@
   .cal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#F5E6C8;letter-spacing:0.05em;}
   .cal-btn{background:transparent;border:1px solid rgba(232,98,42,0.4);border-radius:99px;color:#E8622A;font-size:22px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all 0.2s;}
   .cal-btn:hover{background:rgba(232,98,42,0.15);border-color:rgba(232,98,42,0.8);}
+  .cal-today-btn{background:rgba(232,98,42,0.2);border:1px solid rgba(232,98,42,0.5);border-radius:99px;color:#E8622A;font-size:10px;padding:5px 14px;cursor:pointer;font-family:'Space Mono',monospace;letter-spacing:0.06em;transition:all 0.2s;}
+  .cal-today-btn:hover{background:rgba(232,98,42,0.45);color:#fff;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
   .cal-dow{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,169,110,0.5);text-align:center;padding-bottom:8px;}
   .cal-cell{min-height:62px;border-radius:8px;padding:6px;position:relative;cursor:default;transition:background 0.15s;}
@@ -131,6 +141,8 @@
   .cal-arrow:hover{background:rgba(232,98,42,0.75);}
   .cal-arrow-l{left:2px;}
   .cal-arrow-r{right:2px;}
+  .cal-cell.is-today .cal-date-bar{background:linear-gradient(90deg,rgba(255,180,30,0.75),rgba(232,98,42,0.75));box-shadow:0 0 8px rgba(255,180,30,0.4);}
+  .cal-cell.is-today .cal-date-num{color:#fff;text-shadow:0 0 6px rgba(255,200,50,0.7);}
   .cal-day-thumb{width:44px;height:64px;border-radius:6px;overflow:hidden;flex-shrink:0;background:rgba(180,140,60,0.08);}
   .cal-day-thumb img{width:100%;height:100%;object-fit:cover;}
   .cal-day-thumb-empty{width:100%;height:100%;}
@@ -178,6 +190,7 @@
       <button class="cal-btn" id="calPrev">&#8249;</button>
       <span class="cal-title" id="calTitle"></span>
       <button class="cal-btn" id="calNext">&#8250;</button>
+      <button class="cal-today-btn" id="calToday">最新</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
   </div>
@@ -194,6 +207,7 @@
   <div class="section-divider" style="margin-top:40px;"></div>
   <div class="filters">
     <input class="filter-input" id="searchInput" placeholder="搜尋片名...">
+    <button class="filter-reset" id="resetBtn" title="重置所有篩選">↺ 重置</button>
     <select class="filter-select" id="langSelect">
       <option value="">全部國家</option>
       <option value="🇺🇸">🇺🇸 美國 (107)</option><option value="🇰🇷">🇰🇷 韓國 (26)</option>
@@ -264,6 +278,7 @@
     </select>
   </div>
   <div class="result-count" id="resultCount"></div>
+  <div class="active-filters" id="activeFilters"></div>
   <div class="table-wrap">
     <table class="movie-table">
       <thead><tr>
@@ -360,6 +375,24 @@ function render(){
     tbody.appendChild(tr);
   });
   document.getElementById('resultCount').textContent=`顯示 ${data.length} / ${DATA.length} 部`;
+  // 顯示篩選標籤
+  const afEl = document.getElementById('activeFilters');
+  afEl.innerHTML='';
+  const tags=[
+    {key:'q',val:q,label:'搜尋: '+q,clear:()=>{q='';document.getElementById('searchInput').value='';}},
+    {key:'fLang',val:fLang,label:fLang,clear:()=>{fLang='';document.getElementById('langSelect').value='';}},
+    {key:'fYear',val:fYear,label:fYear+'年',clear:()=>{fYear='';document.getElementById('yearSelect').value='';}},
+    {key:'fVenue',val:fVenue,label:fVenue,clear:()=>{fVenue='';document.getElementById('venueSelect').value='';}},
+    {key:'fDist',val:fDist,label:fDist,clear:()=>{fDist='';document.getElementById('distSelect').value='';}},
+  ];
+  tags.forEach(t=>{
+    if(!t.val) return;
+    const tag=document.createElement('span');
+    tag.className='af-tag';
+    tag.innerHTML=t.label+' <span class="af-x">✕</span>';
+    tag.onclick=()=>{t.clear();render();};
+    afEl.appendChild(tag);
+  });
   const avg=(DATA.reduce((s,m)=>s+m.score,0)/DATA.length).toFixed(2);
   // 計算每月平均觀看部數
   const monthMap={};
@@ -372,10 +405,20 @@ function render(){
   const months=Object.keys(monthMap);
   const avgPerMonth=months.length>0?(DATA.length/months.length):0;
   const cin=DATA.filter(m=>m.venue.includes('🎬')).length;
-  document.getElementById('sTotal').textContent=DATA.length+' 部';
-  document.getElementById('sAvg').textContent=avg;
-  document.getElementById('sBest').textContent=avgPerMonth.toFixed(1)+' 部';
-  document.getElementById('sCinema').textContent=cin+' 場';
+  function countUp(el, target, suffix, decimals=0, duration=900){
+    const start=0, step=16;
+    let cur=start, steps=Math.ceil(duration/step);
+    const inc=(target-start)/steps;
+    const timer=setInterval(()=>{
+      cur+=inc; steps--;
+      if(steps<=0){clearInterval(timer);el.textContent=target.toFixed(decimals)+suffix;return;}
+      el.textContent=cur.toFixed(decimals)+suffix;
+    },step);
+  }
+  countUp(document.getElementById('sTotal'), DATA.length, ' 部');
+  countUp(document.getElementById('sAvg'), parseFloat(avg), '', 2, 1000);
+  countUp(document.getElementById('sBest'), avgPerMonth, ' 部', 1, 800);
+  countUp(document.getElementById('sCinema'), cin, ' 場');
 }
 
 // ── 海報燈箱 ──
@@ -385,7 +428,9 @@ const pmPlaceholder=document.getElementById('pmPlaceholder');
 
 document.getElementById('pmClose').onclick=()=>pm.classList.remove('open');
 pm.addEventListener('click',e=>{if(e.target===pm)pm.classList.remove('open');});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')pm.classList.remove('open');});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){pm.classList.remove('open');document.getElementById('calDayMovies').style.display='none';}
+});
 
 async function openPoster(m){
   pm.classList.add('open');
@@ -431,6 +476,16 @@ async function openPoster(m){
 }
 
 document.getElementById('searchInput').addEventListener('input',e=>{q=e.target.value;render();});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  q='';fLang='';fVenue='';fYear='';fDist='';sort='date-desc';
+  document.getElementById('searchInput').value='';
+  document.getElementById('langSelect').value='';
+  document.getElementById('yearSelect').value='';
+  document.getElementById('venueSelect').value='';
+  document.getElementById('distSelect').value='';
+  document.getElementById('sortSelect').value='date-desc';
+  render();
+});
 document.getElementById('langSelect').addEventListener('change',e=>{fLang=e.target.value;render();});
 document.getElementById('yearSelect').addEventListener('change',e=>{fYear=e.target.value;render();});
 document.getElementById('venueSelect').addEventListener('change',e=>{fVenue=e.target.value;render();});
@@ -557,7 +612,8 @@ render();
       const dateStr = curYear+'-'+(String(curMonth+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
       const movies = dateMap[dateStr]||[];
       const el = document.createElement('div');
-      el.className = 'cal-cell' + (movies.length?' has-movie':'');
+      const todayStr = (new Date()).toISOString().substring(0,10);
+      el.className = 'cal-cell' + (movies.length?' has-movie':'') + (dateStr===todayStr?' is-today':'');
       el.dataset.date = dateStr;
 
       if(movies.length){
@@ -625,6 +681,11 @@ render();
   };
   document.getElementById('calNext').onclick=()=>{
     curMonth++; if(curMonth>11){curMonth=0;curYear++;}
+    document.getElementById('calDayMovies').style.display='none';
+    renderCal();
+  };
+  document.getElementById('calToday').onclick=()=>{
+    if(dates.length){const d=new Date(dates[0]);curYear=d.getFullYear();curMonth=d.getMonth();}
     document.getElementById('calDayMovies').style.display='none';
     renderCal();
   };
