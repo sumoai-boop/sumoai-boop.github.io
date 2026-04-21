@@ -8,8 +8,8 @@
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{background:#0D0D0D;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;position:relative;}
-  body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.012) 3px,rgba(255,255,255,0.012) 4px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,200,100,0.025) 60px,rgba(255,200,100,0.025) 61px);pointer-events:none;z-index:0;}
-  body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,180,50,0.07) 0%,transparent 60%);pointer-events:none;z-index:0;}
+  body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.03) 3px,rgba(255,255,255,0.03) 4px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,200,100,0.055) 60px,rgba(255,200,100,0.055) 61px);pointer-events:none;z-index:0;}
+  body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,180,50,0.16) 0%,transparent 65%);pointer-events:none;z-index:0;}
   .topnav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(232,98,42,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.1);}
   .logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:#FFF5E6;text-decoration:none;letter-spacing:0.04em;}
   .logo em{font-style:italic;color:#FFD4A8;}
@@ -21,8 +21,8 @@
   .page-title em{font-style:italic;color:#FFB800;}
   .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:32px;display:block;}
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px;}
-  .stat-card{background:rgba(255,180,50,0.06);border:1px solid rgba(255,180,50,0.12);border-radius:10px;padding:14px 16px;}
-  .stat-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:6px;}
+  .stat-card{background:rgba(255,180,50,0.06);border:1px solid rgba(255,180,50,0.12);border-radius:10px;padding:14px 16px;text-align:center;}
+  .stat-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:6px;text-align:center;}
   .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#F5E6C8;}
   .stat-val em{font-style:italic;color:#FFB800;font-size:18px;}
   .top5-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:16px;display:block;}
@@ -44,12 +44,12 @@
   .filter-select{background:rgba(10,8,5,0.8);border:1px solid rgba(255,180,50,0.2);border-radius:99px;padding:8px 14px;color:#C8A96E;font-family:'Space Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
   .filter-select option{background:#1a1208;}
   .result-count{font-size:10px;color:rgba(200,169,110,0.4);letter-spacing:0.1em;margin-bottom:12px;}
-  .table-wrap{background:rgba(255,210,160,0.04);border:1px solid rgba(255,180,50,0.1);border-radius:12px;overflow:hidden;}
+  .table-wrap{background:rgba(255,210,160,0.04);border:1px solid rgba(232,98,42,0.4);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
-  .movie-table th{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,169,110,0.55);padding:12px 14px;border-bottom:1px solid rgba(255,180,50,0.1);text-align:left;background:rgba(255,180,50,0.05);white-space:nowrap;}
-  .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(255,180,50,0.06);font-size:12px;color:#C8A96E;vertical-align:middle;}
+  .movie-table th{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(220,180,100,0.75);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:left;background:rgba(232,98,42,0.06);white-space:nowrap;}
+  .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#C8A96E;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
-  .movie-table tr:hover td{background:rgba(255,180,50,0.07);}
+  .movie-table tr:hover td{background:rgba(232,98,42,0.08);}
   .title-cell{color:#F5E6C8;font-size:18px;font-weight:500;cursor:pointer;transition:color 0.2s;display:inline-block;}
   .title-cell:hover{color:#FFD4A8;text-decoration:underline;text-underline-offset:3px;}
   .orig-cell{color:rgba(255,245,230,0.35);font-size:9px;margin-top:2px;}
@@ -115,7 +115,7 @@
   <div class="stats">
     <div class="stat-card"><div class="stat-label">總觀影</div><div class="stat-val" id="sTotal">—</div></div>
     <div class="stat-card"><div class="stat-label">平均總分</div><div class="stat-val" id="sAvg">—</div></div>
-    <div class="stat-card"><div class="stat-label">最高個人評分</div><div class="stat-val" id="sBest">—</div></div>
+    <div class="stat-card"><div class="stat-label">平均總分最高發行商</div><div class="stat-val" id="sBest">—</div></div>
     <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema">—</div></div>
   </div>
   <span class="top5-label">— 個人最愛 TOP 5</span>
@@ -290,11 +290,26 @@ function render(){
   });
   document.getElementById('resultCount').textContent=`顯示 ${data.length} / ${DATA.length} 部`;
   const avg=(DATA.reduce((s,m)=>s+m.score,0)/DATA.length).toFixed(2);
-  const best=[...DATA].sort((a,b)=>b.personal-a.personal)[0];
+  // 計算平均總分最高的發行商（至少2部）
+  const distMap={};
+  DATA.forEach(m=>{
+    if(m.dist&&m.dist!=='nan'){
+      if(!distMap[m.dist])distMap[m.dist]={sum:0,count:0};
+      distMap[m.dist].sum+=m.score;
+      distMap[m.dist].count++;
+    }
+  });
+  let bestDist='',bestDistAvg=0;
+  Object.entries(distMap).forEach(([d,v])=>{
+    if(v.count>=2){
+      const a=v.sum/v.count;
+      if(a>bestDistAvg){bestDistAvg=a;bestDist=d;}
+    }
+  });
   const cin=DATA.filter(m=>m.venue.includes('🎬')).length;
   document.getElementById('sTotal').textContent=DATA.length+' 部';
   document.getElementById('sAvg').textContent=avg;
-  document.getElementById('sBest').innerHTML=best.personal.toFixed(1)+'<em> '+best.title+'</em>';
+  document.getElementById('sBest').innerHTML='<em>'+bestDist+'</em> '+bestDistAvg.toFixed(2);
   document.getElementById('sCinema').textContent=cin+' 場';
 }
 
