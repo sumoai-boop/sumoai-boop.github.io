@@ -114,14 +114,21 @@
   .cal-day-header span{font-family:'Cormorant Garamond',serif;font-size:18px;color:#F5E6C8;}
   .cal-day-close{background:transparent;border:none;color:rgba(200,170,100,0.4);font-size:18px;cursor:pointer;}
   .cal-day-close:hover{color:#F5E6C8;}
-  .cal-loading{grid-column:1/-1;text-align:center;padding:40px;color:rgba(200,169,110,0.4);font-size:11px;letter-spacing:0.1em;}
-  .cal-posters{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;}
-  .cal-poster-wrap{position:relative;flex:1;min-width:0;border-radius:5px;overflow:hidden;aspect-ratio:2/3;background:rgba(180,140,60,0.08);}
-  .cal-poster-wrap.cal-poster-text{display:flex;align-items:center;justify-content:center;padding:2px;background:rgba(232,98,42,0.08);}
-  .cal-poster-wrap.cal-poster-text span{font-size:8px;color:#FFB060;text-align:center;word-break:break-all;line-height:1.2;}
-  .cal-poster-img{width:100%;height:100%;object-fit:cover;display:block;}
-  .cal-poster-score{position:absolute;bottom:2px;right:2px;font-size:8px;font-weight:700;background:rgba(0,0,0,0.75);color:#FFD060;border-radius:3px;padding:1px 3px;line-height:1.3;}
-  .cal-poster-more{font-size:9px;color:rgba(232,98,42,0.7);align-self:center;padding-left:2px;white-space:nowrap;}
+  /* 日期列底色標示 */
+  .cal-date-bar{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,rgba(232,98,42,0.55),rgba(180,60,10,0.3));border-radius:5px 5px 0 0;padding:3px 6px;margin-bottom:4px;}
+  .cal-date-num{font-size:12px;font-weight:700;color:#fff;line-height:1;}
+  .cal-date-other{font-size:11px;color:rgba(200,169,110,0.25);padding:3px 6px;}
+  .cal-counter{font-size:9px;color:rgba(255,220,180,0.8);letter-spacing:0.05em;}
+  /* 海報區 */
+  .cal-poster-area{display:flex;align-items:center;gap:2px;width:100%;}
+  .cal-poster-wrap{position:relative;flex:1;min-width:0;border-radius:5px;overflow:hidden;aspect-ratio:2/3;background:rgba(180,140,60,0.08);cursor:pointer;}
+  .cal-poster-wrap:hover .cal-poster-img{opacity:0.8;}
+  .cal-poster-text-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:4px;font-size:8px;color:#FFB060;text-align:center;word-break:break-all;line-height:1.3;background:rgba(232,98,42,0.08);}
+  .cal-poster-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;}
+  .cal-poster-score{position:absolute;bottom:2px;right:2px;font-size:8px;font-weight:700;background:rgba(0,0,0,0.8);border-radius:3px;padding:1px 4px;line-height:1.4;}
+  /* 切換箭頭 */
+  .cal-arrow{background:rgba(0,0,0,0.55);border:none;color:rgba(255,200,120,0.9);font-size:16px;cursor:pointer;border-radius:4px;padding:0 3px;height:100%;display:flex;align-items:center;flex-shrink:0;transition:background 0.15s;line-height:1;}
+  .cal-arrow:hover{background:rgba(232,98,42,0.6);}
   .cal-day-thumb{width:44px;height:64px;border-radius:6px;overflow:hidden;flex-shrink:0;background:rgba(180,140,60,0.08);}
   .cal-day-thumb img{width:100%;height:100%;object-fit:cover;}
   .cal-day-thumb-empty{width:100%;height:100%;}
@@ -444,8 +451,9 @@ render();
     curYear = now.getFullYear(); curMonth = now.getMonth();
   }
 
-  // poster cache: title -> url
   const posterCache = {};
+  // 每格目前顯示的 index
+  const cellIdx = {};
 
   function buildDateMap(){
     const map = {};
@@ -461,10 +469,10 @@ render();
   const DOWS = ['一','二','三','四','五','六','日'];
   const sc = s => s>=8?'score-high':s>=6?'score-mid':'score-low';
 
-  // 抓單部電影海報
   async function fetchPoster(movie){
     const title = movie.title;
-    if(posterCache[title]) return posterCache[title];
+    if(posterCache[title]!==undefined) return posterCache[title];
+    posterCache[title] = null; // 防重複
     try {
       const q1 = movie.orig!=='nan' ? movie.orig : movie.title;
       let res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q1)}&language=zh-TW`);
@@ -481,29 +489,43 @@ render();
     } catch(e){ return null; }
   }
 
-  // 批次預抓當月電影海報
   async function prefetchMonthPosters(){
     const daysInMonth = new Date(curYear, curMonth+1, 0).getDate();
-    const movieSet = new Set();
+    const arr = [];
     for(let d=1;d<=daysInMonth;d++){
       const ds = curYear+'-'+(String(curMonth+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
-      (dateMap[ds]||[]).forEach(m=>{ if(!posterCache[m.title]) movieSet.add(m); });
+      (dateMap[ds]||[]).forEach(m=>{ if(posterCache[m.title]===undefined) arr.push(m); });
     }
-    // 最多同時抓10部
-    const arr = [...movieSet];
     for(let i=0;i<arr.length;i+=6){
       await Promise.all(arr.slice(i,i+6).map(m=>fetchPoster(m)));
     }
+  }
+
+  // 更新單格海報顯示
+  function updateCell(dateStr, movies, idx){
+    cellIdx[dateStr] = idx;
+    const cell = document.querySelector(`.cal-cell[data-date="${dateStr}"]`);
+    if(!cell) return;
+    const m = movies[idx];
+    const pUrl = posterCache[m.title];
+    const imgEl = cell.querySelector('.cal-poster-img');
+    const textEl = cell.querySelector('.cal-poster-text-fb');
+    const scoreEl = cell.querySelector('.cal-poster-score');
+    const counterEl = cell.querySelector('.cal-counter');
+    if(imgEl && pUrl){ imgEl.src=pUrl; imgEl.style.display='block'; if(textEl) textEl.style.display='none'; }
+    else if(imgEl){ imgEl.style.display='none'; if(textEl){ textEl.style.display='flex'; textEl.textContent=m.title; } }
+    if(scoreEl) scoreEl.className='cal-poster-score '+sc(m.personal);
+    if(scoreEl) scoreEl.textContent = m.personal>0?m.personal.toFixed(1):'?';
+    if(counterEl) counterEl.textContent = (idx+1)+'/'+movies.length;
   }
 
   async function renderCal(){
     const title = document.getElementById('calTitle');
     const grid = document.getElementById('calGrid');
     title.textContent = curYear + ' 年 ' + (curMonth+1) + ' 月';
-    grid.innerHTML = '<div class="cal-loading">載入海報中…</div>';
+    grid.innerHTML = '<div class="cal-loading" style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(200,169,110,0.4);font-size:11px;letter-spacing:0.1em;">載入海報中…</div>';
 
     await prefetchMonthPosters();
-
     grid.innerHTML = '';
 
     // 星期標題
@@ -519,12 +541,12 @@ render();
     const daysInMonth = new Date(curYear, curMonth+1, 0).getDate();
     const prevDays = new Date(curYear, curMonth, 0).getDate();
 
-    // 前月補位
+    // 前月
     for(let i=0;i<startDow;i++){
       const d = prevDays - startDow + 1 + i;
       const el = document.createElement('div');
       el.className='cal-cell other-month';
-      el.innerHTML='<div class="cal-date">'+d+'</div>';
+      el.innerHTML=`<div class="cal-date cal-date-other">${d}</div>`;
       grid.appendChild(el);
     }
 
@@ -534,63 +556,64 @@ render();
       const movies = dateMap[dateStr]||[];
       const el = document.createElement('div');
       el.className = 'cal-cell' + (movies.length?' has-movie':'');
-
-      let inner = '<div class="cal-date">'+d+'</div>';
+      el.dataset.date = dateStr;
 
       if(movies.length){
-        // 顯示海報
-        inner += '<div class="cal-posters">';
-        const show = movies.slice(0,3); // 最多3張
-        show.forEach(m=>{
-          const pUrl = posterCache[m.title];
-          if(pUrl){
-            inner += `<div class="cal-poster-wrap" title="${m.title}"><img class="cal-poster-img" src="${pUrl}" alt="${m.title}" loading="lazy"><div class="cal-poster-score ${sc(m.personal)}">${m.personal>0?m.personal.toFixed(1):'?'}</div></div>`;
-          } else {
-            // 無海報用文字替代
-            inner += `<div class="cal-poster-wrap cal-poster-text" title="${m.title}"><span>${m.title}</span></div>`;
-          }
+        const idx = cellIdx[dateStr]||0;
+        const m = movies[idx];
+        const pUrl = posterCache[m.title];
+        const multi = movies.length>1;
+        el.innerHTML = `
+          <div class="cal-date-bar">
+            <span class="cal-date-num">${d}</span>
+            ${multi?`<span class="cal-counter">${idx+1}/${movies.length}</span>`:''}
+          </div>
+          <div class="cal-poster-area">
+            ${multi?`<button class="cal-arrow cal-arrow-l" data-date="${dateStr}">&#8249;</button>`:''}
+            <div class="cal-poster-wrap">
+              ${pUrl
+                ? `<img class="cal-poster-img" src="${pUrl}" alt="${m.title}">`
+                : `<div class="cal-poster-img" style="display:none"></div>`}
+              <div class="cal-poster-text-fb" style="display:${pUrl?'none':'flex'}">${m.title}</div>
+              <div class="cal-poster-score ${sc(m.personal)}">${m.personal>0?m.personal.toFixed(1):'?'}</div>
+            </div>
+            ${multi?`<button class="cal-arrow cal-arrow-r" data-date="${dateStr}">&#8250;</button>`:''}
+          </div>`;
+
+        // 點海報主體 → 燈箱
+        el.querySelector('.cal-poster-wrap').addEventListener('click',()=>{
+          const ci = cellIdx[dateStr]||0;
+          openPoster(movies[ci]);
         });
-        if(movies.length>3) inner += `<div class="cal-poster-more">+${movies.length-3}</div>`;
-        inner += '</div>';
-        el.addEventListener('click',()=>showDayMovies(dateStr, movies));
+
+        // 左右箭頭
+        if(multi){
+          el.querySelector('.cal-arrow-l').addEventListener('click', e=>{
+            e.stopPropagation();
+            const ci = cellIdx[dateStr]||0;
+            updateCell(dateStr, movies, (ci-1+movies.length)%movies.length);
+          });
+          el.querySelector('.cal-arrow-r').addEventListener('click', e=>{
+            e.stopPropagation();
+            const ci = cellIdx[dateStr]||0;
+            updateCell(dateStr, movies, (ci+1)%movies.length);
+          });
+        }
+      } else {
+        el.innerHTML = `<div class="cal-date-bar"><span class="cal-date-num">${d}</span></div>`;
       }
-      el.innerHTML = inner;
       grid.appendChild(el);
     }
 
-    // 後月補位
+    // 後月
     const total = startDow + daysInMonth;
     const remain = total%7===0?0:7-(total%7);
     for(let i=1;i<=remain;i++){
       const el = document.createElement('div');
       el.className='cal-cell other-month';
-      el.innerHTML='<div class="cal-date">'+i+'</div>';
+      el.innerHTML=`<div class="cal-date cal-date-other">${i}</div>`;
       grid.appendChild(el);
     }
-  }
-
-  function showDayMovies(dateStr, movies){
-    const panel = document.getElementById('calDayMovies');
-    const titleEl = document.getElementById('calDayTitle');
-    const list = document.getElementById('calDayList');
-    const d = new Date(dateStr);
-    titleEl.textContent = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 · '+movies.length+' 部';
-    list.innerHTML = '';
-    movies.forEach(m=>{
-      const pUrl = posterCache[m.title];
-      const row = document.createElement('div');
-      row.className='cal-day-item';
-      row.innerHTML=`
-        <div class="cal-day-thumb">${pUrl?`<img src="${pUrl}" alt="${m.title}">`:'<div class="cal-day-thumb-empty"></div>'}</div>
-        <div style="flex:1;min-width:0;">
-          <div class="cal-day-title" onclick="openPoster(DATA.find(x=>x.title==='${m.title.replace(/'/g,"\'")}'))">${m.title}</div>
-          <div class="cal-day-orig">${m.orig!=='nan'?m.orig:''}</div>
-        </div>
-        <span class="cal-day-score ${sc(m.personal)}">${m.personal>0?m.personal.toFixed(1):'—'}</span>`;
-      list.appendChild(row);
-    });
-    panel.style.display='block';
-    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
   document.getElementById('calPrev').onclick=()=>{
