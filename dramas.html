@@ -120,15 +120,17 @@
   .cal-date-other{font-size:11px;color:rgba(200,169,110,0.25);padding:3px 6px;}
   .cal-counter{font-size:9px;color:rgba(255,220,180,0.8);letter-spacing:0.05em;}
   /* 海報區 */
-  .cal-poster-area{display:flex;align-items:center;gap:2px;width:100%;}
-  .cal-poster-wrap{position:relative;flex:1;min-width:0;border-radius:5px;overflow:hidden;aspect-ratio:2/3;background:rgba(180,140,60,0.08);cursor:pointer;}
-  .cal-poster-wrap:hover .cal-poster-img{opacity:0.8;}
+  .cal-poster-area{position:relative;width:100%;}
+  .cal-poster-wrap{position:relative;width:100%;border-radius:5px;overflow:hidden;aspect-ratio:2/3;background:rgba(180,140,60,0.08);cursor:pointer;}
+  .cal-poster-wrap:hover .cal-poster-img{opacity:0.85;}
   .cal-poster-text-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:4px;font-size:8px;color:#FFB060;text-align:center;word-break:break-all;line-height:1.3;background:rgba(232,98,42,0.08);}
   .cal-poster-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;}
-  .cal-poster-score{position:absolute;bottom:2px;right:2px;font-size:8px;font-weight:700;background:rgba(0,0,0,0.8);border-radius:3px;padding:1px 4px;line-height:1.4;}
-  /* 切換箭頭 */
-  .cal-arrow{background:rgba(0,0,0,0.55);border:none;color:rgba(255,200,120,0.9);font-size:16px;cursor:pointer;border-radius:4px;padding:0 3px;height:100%;display:flex;align-items:center;flex-shrink:0;transition:background 0.15s;line-height:1;}
-  .cal-arrow:hover{background:rgba(232,98,42,0.6);}
+  .cal-poster-score{position:absolute;bottom:3px;right:3px;font-size:8px;font-weight:700;background:rgba(0,0,0,0.82);border-radius:3px;padding:1px 4px;line-height:1.4;}
+  /* 切換箭頭：疊在海報上 */
+  .cal-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);border:none;color:rgba(255,200,120,0.95);font-size:18px;cursor:pointer;border-radius:4px;padding:4px 5px;line-height:1;z-index:5;transition:background 0.15s;}
+  .cal-arrow:hover{background:rgba(232,98,42,0.75);}
+  .cal-arrow-l{left:2px;}
+  .cal-arrow-r{right:2px;}
   .cal-day-thumb{width:44px;height:64px;border-radius:6px;overflow:hidden;flex-shrink:0;background:rgba(180,140,60,0.08);}
   .cal-day-thumb img{width:100%;height:100%;object-fit:cover;}
   .cal-day-thumb-empty{width:100%;height:100%;}
