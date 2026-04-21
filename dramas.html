@@ -22,7 +22,7 @@
   .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:32px;display:block;}
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px;}
   .stat-card{background:rgba(255,180,50,0.06);border:1px solid rgba(255,180,50,0.12);border-radius:10px;padding:14px 16px;text-align:center;}
-  .stat-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:6px;text-align:center;}
+  .stat-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(232,150,80,0.85);margin-bottom:8px;text-align:center;font-family:'Space Mono',monospace;}
   .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#F5E6C8;}
   .stat-val em{font-style:italic;color:#FFB800;font-size:18px;}
   .top5-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,169,110,0.45);margin-bottom:16px;display:block;}
@@ -54,7 +54,7 @@
   .title-cell:hover{color:#FFD4A8;text-decoration:underline;text-underline-offset:3px;}
   .orig-cell{color:rgba(255,245,230,0.35);font-size:9px;margin-top:2px;}
   .score-badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;}
-  .score-high{background:#FFB800;}
+  .score-high{background:#E8622A;color:#1a0e00;}
   .score-mid{background:#5B8DB8;}
   .score-low{background:#2E6B4F;}
   .venue-cinema{color:#FFB800;font-size:10px;font-weight:500;}
@@ -115,7 +115,7 @@
   <div class="stats">
     <div class="stat-card"><div class="stat-label">總觀影</div><div class="stat-val" id="sTotal">—</div></div>
     <div class="stat-card"><div class="stat-label">平均總分</div><div class="stat-val" id="sAvg">—</div></div>
-    <div class="stat-card"><div class="stat-label">平均總分最高發行商</div><div class="stat-val" id="sBest">—</div></div>
+    <div class="stat-card"><div class="stat-label">每月平均觀看</div><div class="stat-val" id="sBest">—</div></div>
     <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema">—</div></div>
   </div>
   <span class="top5-label">— 個人最愛 TOP 5</span>
@@ -290,26 +290,20 @@ function render(){
   });
   document.getElementById('resultCount').textContent=`顯示 ${data.length} / ${DATA.length} 部`;
   const avg=(DATA.reduce((s,m)=>s+m.score,0)/DATA.length).toFixed(2);
-  // 計算平均總分最高的發行商（至少2部）
-  const distMap={};
+  // 計算每月平均觀看部數
+  const monthMap={};
   DATA.forEach(m=>{
-    if(m.dist&&m.dist!=='nan'){
-      if(!distMap[m.dist])distMap[m.dist]={sum:0,count:0};
-      distMap[m.dist].sum+=m.score;
-      distMap[m.dist].count++;
+    if(m.date){
+      const ym=m.date.substring(0,7);
+      monthMap[ym]=(monthMap[ym]||0)+1;
     }
   });
-  let bestDist='',bestDistAvg=0;
-  Object.entries(distMap).forEach(([d,v])=>{
-    if(v.count>=2){
-      const a=v.sum/v.count;
-      if(a>bestDistAvg){bestDistAvg=a;bestDist=d;}
-    }
-  });
+  const months=Object.keys(monthMap);
+  const avgPerMonth=months.length>0?(DATA.length/months.length):0;
   const cin=DATA.filter(m=>m.venue.includes('🎬')).length;
   document.getElementById('sTotal').textContent=DATA.length+' 部';
   document.getElementById('sAvg').textContent=avg;
-  document.getElementById('sBest').innerHTML='<em>'+bestDist+'</em> '+bestDistAvg.toFixed(2);
+  document.getElementById('sBest').textContent=avgPerMonth.toFixed(1)+' 部';
   document.getElementById('sCinema').textContent=cin+' 場';
 }
 
