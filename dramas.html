@@ -48,7 +48,7 @@
   .result-count{font-size:10px;color:rgba(200,169,110,0.4);letter-spacing:0.1em;margin-bottom:12px;}
   .table-wrap{background:rgba(255,210,160,0.04);border:1px solid rgba(232,98,42,0.4);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
-  .movie-table th{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(220,180,100,0.75);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:left;background:rgba(232,98,42,0.06);white-space:nowrap;}
+  .movie-table th{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(240,200,120,0.95);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:center;background:rgba(232,98,42,0.06);white-space:nowrap;font-weight:600;}
   .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#C8A96E;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
   .movie-table tr:hover td{background:rgba(232,98,42,0.08);}
@@ -330,7 +330,7 @@
     <table class="movie-table">
       <thead><tr>
         <th>日期</th><th>國家</th><th>種類</th><th>片名</th><th>年份</th>
-        <th>IMDB</th><th>豆瓣</th><th>個人</th><th>發行商</th><th>觀看地點</th>
+        <th>IMDB</th><th>豆瓣</th><th>評分</th><th>發行</th><th>觀看地點</th>
       </tr></thead>
       <tbody id="movieBody"></tbody>
     </table>
@@ -408,7 +408,7 @@ const DIST_LOGO={
 };
 function toDistLogo(d){
   if(!d||d==='nan') return '';
-  return DIST_LOGO[d]||'<span style="font-size:10px;color:rgba(200,169,110,0.6)">'+d+'</span>';
+  return DIST_LOGO[d]||'<span style="font-size:11px;color:rgba(240,210,150,0.9);font-weight:500">'+d+'</span>';
 }
 
 function buildTop5(){
@@ -447,16 +447,16 @@ function render(){
     const ic=m.venue.includes('🎬');
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td style="color:rgba(200,169,110,0.55);font-size:10px;white-space:nowrap">${m.date}</td>
+      <td style="color:rgba(240,210,150,0.9);font-size:11px;white-space:nowrap">${m.date}</td>
       <td style="font-size:20px;text-align:center;line-height:1">${toFlag(m.lang)}</td>
       <td style="text-align:center"><span class="type-badge ${m.type==='影集'?'type-tv':'type-movie'}">${m.type}</span></td>
       <td>
         <span class="title-cell" data-id="${m.title}">${m.title}</span>
         <div class="orig-cell">${m.orig!=='nan'?m.orig:''}</div>
       </td>
-      <td style="color:rgba(200,169,110,0.7)">${m.year>0?m.year:''}</td>
-      <td style="color:#C8A96E;font-weight:500">${st(m.imdb)}</td>
-      <td style="color:#C8A96E;font-weight:500">${st(m.douban)}</td>
+      <td style="color:rgba(240,210,150,0.9);text-align:center">${m.year>0?m.year:''}</td>
+      <td style="color:#F0D080;font-weight:600;text-align:center">${st(m.imdb)}</td>
+      <td style="color:#F0D080;font-weight:600;text-align:center">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
       <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
@@ -557,7 +557,7 @@ async function openPoster(m){
       }
       return pool[0];
     }
-    const isLatin=s=>/^[\u0020-\u024F\u1E00-\u1EFF]+$/.test(s||'');
+    const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
     const year=m.year||0;
 
     // 直接指定 TMDB ID
@@ -687,7 +687,7 @@ render();
     }
     try {
       const year = movie.year||0;
-      const isLatin = s => /^[\u0020-\u024F\u1E00-\u1EFF]+$/.test(s||'');
+      const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
       const isTV = movie.type==='影集';
 
       // 直接指定 TMDB ID（解決搜尋易出錯的片）
