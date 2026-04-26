@@ -352,6 +352,32 @@ const TMDB='e174d0983218845b167176a27b04b83f';
 const GENRE={28:'動作',12:'冒險',16:'動畫',35:'喜劇',80:'犯罪',99:'紀錄',18:'劇情',10751:'家庭',14:'奇幻',36:'歷史',27:'恐怖',10402:'音樂',9648:'懸疑',10749:'愛情',878:'科幻',53:'驚悚',10752:'戰爭',37:'西部'};
 
 // ── TOP5 ──
+
+const DIST_LOGO={
+  'Netflix':   '<img src="https://cdn.simpleicons.org/netflix/E50914" height="14" style="vertical-align:middle" alt="Netflix">',
+  'Disney':    '<img src="https://cdn.simpleicons.org/disney/FFFFFF" height="16" style="vertical-align:middle" alt="Disney">',
+  'Disney+':   '<img src="https://cdn.simpleicons.org/disneyplus/FFFFFF" height="14" style="vertical-align:middle" alt="Disney+">',
+  'HBO Max':   '<img src="https://cdn.simpleicons.org/hbo/A855F7" height="14" style="vertical-align:middle" alt="HBO">',
+  'Amazon':    '<img src="https://cdn.simpleicons.org/amazonprime/00A8E1" height="14" style="vertical-align:middle" alt="Amazon">',
+  'Apple':     '<img src="https://cdn.simpleicons.org/appletv/FFFFFF" height="14" style="vertical-align:middle" alt="Apple TV+">',
+  'Warner':    '<img src="https://cdn.simpleicons.org/warnerbros/005BAC" height="18" style="vertical-align:middle" alt="Warner">',
+  'SONY':      '<img src="https://cdn.simpleicons.org/sony/FFFFFF" height="13" style="vertical-align:middle" alt="SONY">',
+  'Paramount': '<img src="https://cdn.simpleicons.org/paramount/0064FF" height="16" style="vertical-align:middle" alt="Paramount">',
+  'Universal': '<img src="https://cdn.simpleicons.org/nbc/F4C900" height="16" style="vertical-align:middle" alt="Universal">',
+  'A24':       '<span style="font-family:serif;font-weight:900;font-size:12px;color:#fff;letter-spacing:-1px">A24</span>',
+  'Lions Gate':'<span style="font-size:10px;color:#C8A96E;font-weight:600">LIONSGATE</span>',
+  'Fox':       '<img src="https://cdn.simpleicons.org/fox/FFFFFF" height="13" style="vertical-align:middle" alt="Fox">',
+  '20th Century':'<span style="font-size:9px;color:#C8A96E;font-weight:600">20TH CENTURY</span>',
+  'MGM':       '<span style="font-size:11px;color:#C8A96E;font-weight:700;font-style:italic">MGM</span>',
+  'New Line':  '<span style="font-size:10px;color:#C8A96E;font-weight:600">NEW LINE</span>',
+  'CJ ENM':   '<span style="font-size:10px;color:#C8A96E;font-weight:600">CJ ENM</span>',
+  'Showbox':  '<span style="font-size:10px;color:#C8A96E;font-weight:600">SHOWBOX</span>',
+};
+function toDistLogo(d){
+  if(!d||d==='nan') return '';
+  return DIST_LOGO[d]||'<span style="font-size:10px;color:rgba(200,169,110,0.6)">'+d+'</span>';
+}
+
 function buildTop5(){
   const top5=[...DATA].sort((a,b)=>b.personal-a.personal).slice(0,5);
   const grid=document.getElementById('top5Grid');
@@ -399,7 +425,7 @@ function render(){
       <td style="color:#C8A96E;font-weight:500">${st(m.imdb)}</td>
       <td style="color:#C8A96E;font-weight:500">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
-      <td style="color:rgba(200,169,110,0.6);font-size:11px">${m.dist!=='nan'?m.dist:''}</td>
+      <td style="text-align:center;min-width:60px">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
     // 片名點擊
     tr.querySelector('.title-cell').addEventListener('click', ()=>openPoster(m));
