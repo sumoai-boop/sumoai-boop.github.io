@@ -34,15 +34,6 @@
   .leaflet-popup-close-button{color:#FFD4A8!important;}
   .leaflet-control-zoom a{background:rgba(255,255,255,0.85);color:#333;border-color:rgba(0,0,0,0.2);}
 
-  #seoul-section{margin-top:28px;display:none;}
-  #seoul-section.visible{display:block;}
-  .section-header{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;}
-  .section-city{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#FFF5E6;}
-  .section-sub{font-size:10px;color:rgba(200,220,255,0.45);letter-spacing:0.1em;}
-  #seoul-map{width:100%;height:520px;border-radius:12px;overflow:hidden;z-index:1;}
-  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;}
-  .legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(200,220,255,0.75);font-family:monospace;}
-  .legend-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,0.6);flex-shrink:0;}
   .legend-line{width:24px;height:3px;border-radius:2px;flex-shrink:0;}
 
   #photos-section{margin-top:28px;display:none;}
@@ -87,9 +78,9 @@
     <a href="photos.html">照片</a>
     <a href="dramas.html">追劇</a>
     <a href="food.html">食記</a>
-    <a href="food-map.html">美食地圖</a>
+    
     <a href="travel.html" class="active">旅遊足跡</a>
-    <a href="netflix.html">TOP 10</a>
+    
     <a href="threads.html">Threads</a>
   </nav>
 </div>
@@ -97,20 +88,6 @@
   <h1 class="page-title">旅遊<em>足跡</em></h1>
   <span class="page-label">— 04 / TRAVEL · 點城市圖釘查看地點或照片</span>
   <div id="main-map"></div>
-
-  <div id="seoul-section">
-    <div class="section-header">
-      <div class="section-city">首爾 2026</div>
-      <div class="section-sub">04.07 — 04.10 · 4天行程</div>
-    </div>
-    <div id="seoul-map"></div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#B8F0B0;"></div><div class="legend-line" style="background:#B8F0B0;"></div>Day1 04.07</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#5DC455;"></div><div class="legend-line" style="background:#5DC455;"></div>Day2 04.08</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#2E8B2E;"></div><div class="legend-line" style="background:#2E8B2E;"></div>Day3 04.09</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#145214;"></div><div class="legend-line" style="background:#145214;"></div>Day4 04.10</div>
-    </div>
-  </div>
 
   <div id="photos-section">
     <div class="section-header">
@@ -168,12 +145,12 @@ const cities=[
   {name:'沖繩',lat:26.21,lng:127.68,photos:[],spots:[]},
   {name:'曼谷',lat:13.75,lng:100.50,photos:[],spots:[]},
   {name:'宿霧',lat:10.32,lng:123.89,photos:[],spots:[]},
-  {name:'首爾',lat:37.57,lng:126.98,photos:[],spots:seoulSpots,type:'seoul'},
+  {name:'首爾',lat:37.57,lng:126.98,photos:[],spots:seoulSpots,type:'city'},
   {name:'澳門',lat:22.20,lng:113.54,photos:[],spots:[]},
   {name:'香港',lat:22.32,lng:114.17,photos:[],spots:[]},
 ];
 
-let seoulMap=null,lbPhotos=[],lbIdx=0;
+let lbPhotos=[],lbIdx=0;
 
 // ── 主地圖（淡色底圖）──
 const mainMap=L.map('main-map',{zoomControl:true,attributionControl:false}).setView([25,110],4);
@@ -224,40 +201,9 @@ function makeNumIcon(num,bg,fg){
   });
 }
 
-function buildSeoulMap(){
-  if(seoulMap){seoulMap.remove();seoulMap=null;}
-  seoulMap=L.map('seoul-map',{zoomControl:true,attributionControl:false});
-  // 淡色底圖
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,opacity:0.4}).addTo(seoulMap);
-
-  // 地點小橘點
-  const dot=L.divIcon({className:'',html:`<div style="width:7px;height:7px;background:#E8622A;border:1px solid #FFD4A8;border-radius:50%;opacity:0.6;"></div>`,iconSize:[7,7],iconAnchor:[3.5,3.5],popupAnchor:[0,-5]});
-  seoulSpots.forEach(s=>L.marker([s.lat,s.lng],{icon:dot}).addTo(seoulMap).bindPopup(`<b>${s.name}</b>`));
-
-  // 每天路線
-  route2Days.forEach((day,di)=>{
-    const color=DAY_COLORS[di];
-    const fg=DAY_TEXT[di];
-    L.polyline(day.map(p=>[p.lat,p.lng]),{color,weight:3.5,opacity:0.95}).addTo(seoulMap);
-    day.forEach((p,i)=>
-      L.marker([p.lat,p.lng],{icon:makeNumIcon(i+1,color,fg)}).addTo(seoulMap)
-       .bindPopup(`<b style="color:${color}">${DAY_LABELS[di]}</b><br>${p.name}`)
-    );
-  });
-
-  const allPts=route2Days.flat().map(p=>[p.lat,p.lng]);
-  seoulMap.fitBounds(allPts,{padding:[40,40]});
-  setTimeout(()=>seoulMap.invalidateSize(),200);
-}
-
 function showCity(c){
-  document.getElementById('seoul-section').classList.remove('visible');
   document.getElementById('photos-section').classList.remove('visible');
-  if(c.type==='seoul'){
-    buildSeoulMap();
-    document.getElementById('seoul-section').classList.add('visible');
-    setTimeout(()=>document.getElementById('seoul-section').scrollIntoView({behavior:'smooth',block:'start'}),100);
-  } else if(c.photos&&c.photos.length>0){
+  if(c.photos&&c.photos.length>0){
     document.getElementById('photosCityName').textContent=c.name;
     document.getElementById('photosCount').textContent=c.photos.length+' 張照片';
     const grid=document.getElementById('photoGrid');
