@@ -137,7 +137,6 @@
   .cal-poster-wrap:hover .cal-poster-img{opacity:0.85;}
   .cal-poster-text-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:4px;font-size:8px;color:#FFB060;text-align:center;word-break:break-all;line-height:1.3;background:rgba(232,98,42,0.08);}
   .cal-poster-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;}
-  .cal-poster-score{position:absolute;bottom:3px;right:3px;font-size:8px;font-weight:700;background:rgba(0,0,0,0.82);border-radius:3px;padding:1px 4px;line-height:1.4;}
   /* 切換箭頭：疊在海報上 */
   .cal-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);border:none;color:rgba(255,200,120,0.95);font-size:18px;cursor:pointer;border-radius:4px;padding:4px 5px;line-height:1;z-index:5;transition:background 0.15s;}
   .cal-arrow:hover{background:rgba(232,98,42,0.75);}
@@ -604,10 +603,30 @@ render();
     }
     try {
       const year = movie.year||0;
-      // 判斷 orig 是否為拉丁字母（英文可直接搜）
       const isLatin = s => /^[\u0020-\u024F\u1E00-\u1EFF]+$/.test(s||'');
+      const isTV = movie.type==='影集';
 
-      // 1. 英文原名搜（只有拉丁字母時）
+      // 影集優先走 TV 搜尋
+      if(isTV && movie.orig && movie.orig!=='nan'){
+        const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
+        const json = await res.json();
+        const m = json.results && json.results[0];
+        if(m && m.poster_path){
+          posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
+          return posterCache[title];
+        }
+      }
+      if(isTV){
+        const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
+        const json = await res.json();
+        const m = json.results && json.results[0];
+        if(m && m.poster_path){
+          posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
+          return posterCache[title];
+        }
+      }
+
+      // 電影：英文原名搜（拉丁字母）
       if(movie.orig && movie.orig!=='nan' && isLatin(movie.orig)){
         const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
         const json = await res.json();
@@ -617,7 +636,7 @@ render();
           return posterCache[title];
         }
       }
-      // 2. 中文片名搜（movie）
+      // 中文片名搜電影
       const res2 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
       const json2 = await res2.json();
       const m2 = pickBest(json2.results, year);
@@ -625,7 +644,7 @@ render();
         posterCache[title] = `https://image.tmdb.org/t/p/w185${m2.poster_path}`;
         return posterCache[title];
       }
-      // 3. 原名搜（非拉丁，如韓文/日文）
+      // 非拉丁原名搜電影
       if(movie.orig && movie.orig!=='nan' && !isLatin(movie.orig)){
         const res3 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
         const json3 = await res3.json();
@@ -634,24 +653,6 @@ render();
           posterCache[title] = `https://image.tmdb.org/t/p/w185${m3.poster_path}`;
           return posterCache[title];
         }
-      }
-      // 4. TV 搜尋：英文原名
-      if(movie.orig && movie.orig!=='nan'){
-        const res4 = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
-        const json4 = await res4.json();
-        const m4 = json4.results && pickBest(json4.results.map(r=>({...r,release_date:r.first_air_date})), year);
-        if(m4 && m4.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${m4.poster_path}`;
-          return posterCache[title];
-        }
-      }
-      // 5. TV 搜尋：中文片名
-      const res5 = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
-      const json5 = await res5.json();
-      const m5 = json5.results && json5.results[0];
-      if(m5 && m5.poster_path){
-        posterCache[title] = `https://image.tmdb.org/t/p/w185${m5.poster_path}`;
-        return posterCache[title];
       }
       posterCache[title] = null;
       return null;
@@ -679,12 +680,10 @@ render();
     const pUrl = posterCache[m.title];
     const imgEl = cell.querySelector('.cal-poster-img');
     const textEl = cell.querySelector('.cal-poster-text-fb');
-    const scoreEl = cell.querySelector('.cal-poster-score');
     const counterEl = cell.querySelector('.cal-counter');
     if(imgEl && pUrl){ imgEl.src=pUrl; imgEl.style.display='block'; if(textEl) textEl.style.display='none'; }
     else if(imgEl){ imgEl.style.display='none'; if(textEl){ textEl.style.display='flex'; textEl.textContent=m.title; } }
-    if(scoreEl) scoreEl.className='cal-poster-score '+sc(m.personal);
-    if(scoreEl) scoreEl.textContent = m.personal>0?m.personal.toFixed(1):'?';
+
     if(counterEl) counterEl.textContent = (idx+1)+'/'+movies.length;
   }
 
@@ -745,7 +744,7 @@ render();
                 ? `<img class="cal-poster-img" src="${pUrl}" alt="${m.title}">`
                 : `<div class="cal-poster-img" style="display:none"></div>`}
               <div class="cal-poster-text-fb" style="display:${pUrl?'none':'flex'}">${m.title}</div>
-              <div class="cal-poster-score ${sc(m.personal)}">${m.personal>0?m.personal.toFixed(1):'?'}</div>
+
             </div>
             ${multi?`<button class="cal-arrow cal-arrow-r" data-date="${dateStr}">&#8250;</button>`:''}
           </div>`;
