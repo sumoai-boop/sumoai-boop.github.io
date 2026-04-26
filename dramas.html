@@ -414,7 +414,7 @@ const st=s=>s===0?'—':s.toFixed(1);
 
 function render(){
   let data=DATA.filter(m=>{
-    if(fLang&&toFlag(m.lang)!==fLang)return false;
+    if(fLang&&m.lang!==fLang)return false;
     if(fVenue&&m.venue!==fVenue)return false;
     if(fYear&&String(m.year)!==fYear)return false;
     if(fDist&&m.dist!==fDist)return false;
@@ -519,16 +519,25 @@ async function openPoster(m){
   document.getElementById('pmIMDB').textContent=m.imdb>0?m.imdb:'—';
   document.getElementById('pmDouban').textContent=m.douban>0?m.douban:'—';
   try{
-    // 年份比對函數
+    // 年份+語言比對函數
+    const LANG_MAP2={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
+      'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
+      'IT':'it','IN':'hi','ID':'id','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
+    const origLang2 = LANG_MAP2[m.lang]||null;
     function pickBest(results, year){
       if(!results||!results.length) return null;
+      let pool = results;
+      if(origLang2){
+        const langMatch = results.filter(r=>r.original_language===origLang2);
+        if(langMatch.length) pool = langMatch;
+      }
       if(year&&year>0){
-        const exact=results.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
+        const exact=pool.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
         if(exact) return exact;
-        const near=results.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
+        const near=pool.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
         if(near) return near;
       }
-      return results[0];
+      return pool[0];
     }
     const isLatin=s=>/^[\u0020-\u024F\u1E00-\u1EFF]+$/.test(s||'');
     const year=m.year||0;
@@ -648,11 +657,35 @@ render();
       const isLatin = s => /^[\u0020-\u024F\u1E00-\u1EFF]+$/.test(s||'');
       const isTV = movie.type==='影集';
 
+      // 語言代碼 → TMDB original_language
+      const LANG_MAP={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
+        'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
+        'IT':'it','IN':'hi','ID':'id','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
+      const origLang = LANG_MAP[movie.lang]||null;
+
+      // pickBest 加入 original_language 比對
+      function pickBestWithLang(results, year, origLang){
+        if(!results||!results.length) return null;
+        let pool = results;
+        // 先用 original_language 過濾
+        if(origLang){
+          const langMatch = results.filter(r=>r.original_language===origLang);
+          if(langMatch.length) pool = langMatch;
+        }
+        if(year>0){
+          const exact = pool.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
+          if(exact) return exact;
+          const near = pool.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
+          if(near) return near;
+        }
+        return pool[0];
+      }
+
       // 影集優先走 TV 搜尋
       if(isTV && movie.orig && movie.orig!=='nan'){
         const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
         const json = await res.json();
-        const m = json.results && json.results[0];
+        const m = pickBestWithLang(json.results, year, origLang);
         if(m && m.poster_path){
           posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
           return posterCache[title];
@@ -661,18 +694,18 @@ render();
       if(isTV){
         const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
         const json = await res.json();
-        const m = json.results && json.results[0];
+        const m = pickBestWithLang(json.results, year, origLang);
         if(m && m.poster_path){
           posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
           return posterCache[title];
         }
       }
 
-      // 電影：英文原名搜（拉丁字母）
+      // 英文原名搜電影（拉丁字母）
       if(movie.orig && movie.orig!=='nan' && isLatin(movie.orig)){
         const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
         const json = await res.json();
-        const m = pickBest(json.results, year);
+        const m = pickBestWithLang(json.results, year, origLang);
         if(m && m.poster_path){
           posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
           return posterCache[title];
@@ -681,7 +714,7 @@ render();
       // 中文片名搜電影
       const res2 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
       const json2 = await res2.json();
-      const m2 = pickBest(json2.results, year);
+      const m2 = pickBestWithLang(json2.results, year, origLang);
       if(m2 && m2.poster_path){
         posterCache[title] = `https://image.tmdb.org/t/p/w185${m2.poster_path}`;
         return posterCache[title];
@@ -690,7 +723,7 @@ render();
       if(movie.orig && movie.orig!=='nan' && !isLatin(movie.orig)){
         const res3 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
         const json3 = await res3.json();
-        const m3 = pickBest(json3.results, year);
+        const m3 = pickBestWithLang(json3.results, year, origLang);
         if(m3 && m3.poster_path){
           posterCache[title] = `https://image.tmdb.org/t/p/w185${m3.poster_path}`;
           return posterCache[title];
