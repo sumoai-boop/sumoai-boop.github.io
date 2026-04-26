@@ -358,7 +358,7 @@ const DIST_LOGO={
   'Disney':     '<span style="font-size:12px;font-weight:900;color:#FFFFFF;font-family:sans-serif;letter-spacing:1px">DISNEY</span>',
   'Disney+':    '<span style="font-size:11px;font-weight:900;color:#0063e5;font-family:sans-serif">Disney+</span>',
   'HBO Max':    '<img src="https://cdn.simpleicons.org/hbo/A855F7" height="18" style="vertical-align:middle" alt="HBO">',
-  'Amazon':     '<img src="https://cdn.simpleicons.org/amazon/FF9900" height="18" style="vertical-align:middle" alt="Amazon">',
+  'Amazon':     '<span style="font-size:11px;font-weight:900;color:#FF9900;font-family:sans-serif">PRIME</span>',
   'Apple':      '<img src="https://cdn.simpleicons.org/apple/FFFFFF" height="18" style="vertical-align:middle" alt="Apple">',
   'Warner':     '<span style="font-size:11px;font-weight:900;color:#005BAC;font-family:sans-serif">WB</span>',
   'SONY':       '<img src="https://cdn.simpleicons.org/sony/FFFFFF" height="20" style="vertical-align:middle" alt="SONY">',
@@ -425,7 +425,7 @@ function render(){
       <td style="color:#C8A96E;font-weight:500">${st(m.imdb)}</td>
       <td style="color:#C8A96E;font-weight:500">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
-      <td style="text-align:center;min-width:60px">${toDistLogo(m.dist)}</td>
+      <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
     // 片名點擊
     tr.querySelector('.title-cell').addEventListener('click', ()=>openPoster(m));
