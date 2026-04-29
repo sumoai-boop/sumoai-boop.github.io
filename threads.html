@@ -77,6 +77,82 @@ blockquote.text-post-media{
   nav a{padding:5px 10px;font-size:8px;}
   .threads-wrap{grid-template-columns:1fr;}
 }
+
+  /* ── 共用 Menubar ── */
+  .global-menubar{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    height:28px;
+    background:rgba(0,0,0,0.45);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px;
+    font-size:12px;color:rgba(255,255,255,0.92);
+    letter-spacing:0.02em;
+    font-family:'Space Mono',monospace;
+  }
+  .gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
+  .gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
+  .mb-menu{padding:0 6px;border-radius:4px;cursor:default;transition:background 0.15s;font-size:12px;}
+  .mb-menu:hover{background:rgba(255,255,255,0.2);}
+
+  /* ── 共用 Dock ── */
+  .global-dock-wrap{
+    position:fixed;bottom:0;left:50%;
+    transform:translateX(-50%) translateY(calc(100% - 2px));
+    z-index:1000;
+    transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1), opacity 0.3s;
+    opacity:0;
+    padding-bottom:0;
+  }
+  .global-dock-wrap.visible{
+    transform:translateX(-50%) translateY(-12px);
+    opacity:1;
+  }
+  .global-dock{
+    display:flex;align-items:flex-end;gap:8px;
+    background:rgba(255,255,255,0.16);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:20px 20px 0 0;
+    padding:10px 14px 14px;
+    box-shadow:0 -4px 30px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .gd-item{
+    display:flex;flex-direction:column;align-items:center;
+    gap:3px;text-decoration:none;position:relative;cursor:pointer;
+  }
+  .gd-icon{
+    width:52px;height:52px;border-radius:13px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;
+    transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:0 3px 12px rgba(0,0,0,0.28);
+  }
+  .gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
+  .gd-label{
+    font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);
+    text-transform:uppercase;opacity:0;transition:opacity 0.15s;
+    white-space:nowrap;background:rgba(0,0,0,0.6);
+    padding:2px 6px;border-radius:4px;
+    position:absolute;bottom:-20px;
+    font-family:'Space Mono',monospace;
+  }
+  .gd-item:hover .gd-label{opacity:1;}
+  .gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
+  .gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
+  .ic-about  {background:linear-gradient(135deg,#667eea,#764ba2);}
+  .ic-photos {background:linear-gradient(135deg,#f093fb,#f5576c);}
+  .ic-dramas {background:linear-gradient(135deg,#1a1a2e,#e8622a);}
+  .ic-food   {background:linear-gradient(135deg,#f7971e,#ffd200);}
+  .ic-travel {background:linear-gradient(135deg,#0f2027,#2c5364);}
+  .ic-threads{background:linear-gradient(135deg,#111,#333);}
+  /* 底部觸發區 */
+  .dock-trigger-zone{
+    position:fixed;bottom:0;left:0;right:0;height:8px;z-index:999;
+  }
+
 </style>
 </head>
 <body>
@@ -307,5 +383,79 @@ blockquote.text-post-media{
 
   </div>
 </div>
+<!-- 底部觸發區 -->
+<div class="dock-trigger-zone" id="dockTrigger"></div>
+
+<!-- 全域 Dock -->
+<div class="global-dock-wrap" id="globalDock">
+  <div class="global-dock">
+    <a href="about.html" class="gd-item">
+      <div class="gd-icon ic-about">👤</div>
+      <span class="gd-label">關於</span>
+      
+    </a>
+    <a href="photos.html" class="gd-item">
+      <div class="gd-icon ic-photos">📷</div>
+      <span class="gd-label">照片</span>
+      
+    </a>
+    <a href="dramas.html" class="gd-item">
+      <div class="gd-icon ic-dramas">🎬</div>
+      <span class="gd-label">追劇</span>
+      
+    </a>
+    <a href="food.html" class="gd-item">
+      <div class="gd-icon ic-food">🍜</div>
+      <span class="gd-label">食記</span>
+      
+    </a>
+    <div class="gd-sep"></div>
+    <a href="travel.html" class="gd-item">
+      <div class="gd-icon ic-travel">✈️</div>
+      <span class="gd-label">旅遊足跡</span>
+      
+    </a>
+    <a href="threads.html" class="gd-item">
+      <div class="gd-icon ic-threads">🧵</div>
+      <span class="gd-label">Threads</span>
+      <div class="gd-dot"></div>
+    </a>
+  </div>
+</div>
+
+<script>
+// 時鐘
+(function(){
+  function updateTime(){
+    var el=document.getElementById('gmbTime');
+    if(!el) return;
+    var now=new Date();
+    var d=['日','一','二','三','四','五','六'][now.getDay()];
+    var h=String(now.getHours()).padStart(2,'0');
+    var m=String(now.getMinutes()).padStart(2,'0');
+    el.textContent='週'+d+' '+now.getMonth()+'/'+(now.getDate())+' '+h+':'+m;
+  }
+  updateTime();
+  setInterval(updateTime,10000);
+})();
+
+// Dock 自動隱藏
+(function(){
+  var dock=document.getElementById('globalDock');
+  var trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger) return;
+  var hideTimer;
+  function showDock(){
+    clearTimeout(hideTimer);
+    dock.classList.add('visible');
+  }
+  function hideDock(){
+    hideTimer=setTimeout(function(){dock.classList.remove('visible');},600);
+  }
+  trigger.addEventListener('mouseenter',showDock);
+  dock.addEventListener('mouseenter',function(){clearTimeout(hideTimer);dock.classList.add('visible');});
+  dock.addEventListener('mouseleave',hideDock);
+})();
+</script>
 </body>
 </html>
