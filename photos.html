@@ -185,22 +185,7 @@
 
 </style>
   /* ── 全域 Menubar ── */
-  .global-menubar{
-    position:fixed;top:0;left:0;right:0;z-index:9999;
-    height:28px;
-    background:rgba(0,0,0,0.55);
-    backdrop-filter:blur(20px) saturate(180%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0 16px;
-    font-size:12px;color:rgba(255,255,255,0.92);
-    letter-spacing:0.02em;
-    font-family:'Space Mono',monospace;
-  }
-  .gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
-  .gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
-  .mb-menu{padding:0 6px;border-radius:4px;cursor:default;transition:background 0.15s;font-size:12px;}
-  .mb-menu:hover{background:rgba(255,255,255,0.2);}
+  
 </head>
 <body>
 <!-- 日夜桌布（半透明） -->
@@ -222,7 +207,7 @@
 <div class="global-menubar">
   <div class="gm-left">
     <span style="font-size:16px">🗿</span>
-    <span style="font-weight:700">Sumoai's Reel</span>
+    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;cursor:pointer;position:relative;z-index:9999;">Sumoai's Reel</a>
     <span class="mb-menu">檔案</span>
     <span class="mb-menu">編輯</span>
     <span class="mb-menu">顯示方式</span>
