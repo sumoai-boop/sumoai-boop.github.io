@@ -8,18 +8,14 @@
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{
-    background:#E8622A;min-height:100vh;
+    background:transparent;min-height:100vh;
     font-family:'Space Mono',monospace;
     overflow-x:hidden;position:relative;
   }
-  body::before{
-    content:'';position:fixed;inset:0;
-    background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);
-    background-size:28px 28px;pointer-events:none;z-index:0;
-  }
-  .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
-  .c1{width:480px;height:480px;background:#D4501F;top:-140px;right:-100px;opacity:0.4;}
-  .c2{width:300px;height:300px;background:#C94318;bottom:-90px;left:-70px;opacity:0.35;}
+  body::before{display:none;}
+  .bg-circle{display:none;}
+  .c1{display:none;}
+  .c2{display:none;}
 
   /* NAV */
   .topnav{
@@ -203,8 +199,8 @@
     <svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" style="vertical-align:middle;cursor:default"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
   </div>
 </div>
-<div class="bg-circle c1"></div>
-<div class="bg-circle c2"></div>
+
+
 
 <div class="page-content">
   <h1 class="page-title">關於<em>我</em></h1>
