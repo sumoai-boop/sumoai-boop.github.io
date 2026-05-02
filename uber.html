@@ -90,6 +90,8 @@ body{
 .stat-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.8);margin-bottom:8px;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:68px;font-weight:600;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
 .stat-val em{font-style:italic;color:#00C853;font-size:68px;font-weight:600;}
+.stat-unit{font-size:38px;font-weight:600;vertical-align:baseline;}
+.stat-val em.unit{font-size:38px;}
 
 /* 表單 */
 .form-section{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:16px;padding:24px;margin-bottom:24px;}
@@ -362,12 +364,12 @@ body{
   <!-- 總覽 -->
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips">0 <em>趟</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income">NT$<em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月油錢</div><div class="stat-val" id="s-fuel">NT$<em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours">0 <em>hr</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月淨收入</div><div class="stat-val" id="s-net">NT$<em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly">NT$<em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips">0 <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月油錢</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours">0 <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月淨收入</div><div class="stat-val" id="s-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
     </div>
     <div class="chart-grid">
       <div class="chart-card"><div class="chart-title">每月收入（近6月）</div><div id="monthlyChart"><div class="empty-state"><span class="empty-icon">📊</span>新增記錄後顯示</div></div></div>
@@ -384,16 +386,16 @@ body{
         <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
         <div class="form-group"><label>上車縣市</label><select class="form-select" id="f-from-city" onchange="updateDistricts('from')"><option value="">請選擇縣市</option><option value="新北市">新北市</option><option value="台北市">台北市</option><option value="桃園市">桃園市</option><option value="宜蘭縣">宜蘭縣</option></select></div>
         <div class="form-group"><label>上車區域</label><select class="form-select" id="f-from-dist"><option value="">請先選縣市</option></select></div>
-        <div class="form-group"><label>上車道路</label><input class="form-input" type="text" id="f-from-road" placeholder="重慶路"></div>
+        <div class="form-group"><label>上車地點</label><input class="form-input" type="text" id="f-from-road" placeholder="重慶路"></div>
         <div class="form-group"><label>下車縣市</label><select class="form-select" id="f-to-city" onchange="updateDistricts('to')"><option value="">請選擇縣市</option><option value="新北市">新北市</option><option value="台北市">台北市</option><option value="桃園市">桃園市</option><option value="宜蘭縣">宜蘭縣</option></select></div>
         <div class="form-group"><label>下車區域</label><select class="form-select" id="f-to-dist"><option value="">請先選縣市</option></select></div>
-        <div class="form-group"><label>下車道路</label><input class="form-input" type="text" id="f-to-road" placeholder="板橋遠百"></div>
+        <div class="form-group"><label>下車地點</label><input class="form-input" type="text" id="f-to-road" placeholder="板橋遠百"></div>
         <div class="form-group"><label>公里數</label><input class="form-input" type="number" id="f-km" placeholder="0.00" step="0.01"></div>
         <div class="form-group"><label>行程費用</label><input class="form-input" type="number" id="f-fare" placeholder="0"></div>
         <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
-        <div class="form-group"><label>性別</label><select class="form-select" id="f-gender"><option value="">請選擇</option><option value="男">男</option><option value="女">女</option></select></div>
+      </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
         <button class="btn-add" onclick="addTrip()">新增行程</button>
@@ -425,22 +427,21 @@ body{
             <th>服務費</th>
             <th>費用明細</th>
             <th>人數</th>
-            <th>性別</th>
             <th style="width:40px"></th>
           </tr>
           <tr style="background:rgba(0,200,83,0.03);">
             <th></th><th></th>
             <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">縣市</th>
             <th style="font-size:8px">區域</th>
-            <th style="font-size:8px">道路</th>
+            <th style="font-size:8px">地點</th>
             <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">縣市</th>
             <th style="font-size:8px">區域</th>
-            <th style="font-size:8px">道路</th>
-            <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+            <th style="font-size:8px">地點</th>
+            <th></th><th></th><th></th><th></th><th></th><th></th>
           </tr>
         </thead>
         <tbody id="tripBody">
-          <tr><td colspan="15"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
+          <tr><td colspan="14"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
         </tbody>
         <tfoot id="tripFoot" style="display:none;">
           <tr style="background:rgba(0,200,83,0.08);font-weight:700;">
@@ -450,7 +451,6 @@ body{
             <td id="foot-service" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-detail" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-pax" style="padding:10px 16px;color:#00E860;"></td>
-            <td></td>
             <td></td>
           </tr>
         </tfoot>
@@ -552,13 +552,12 @@ function addTrip(){
   var service=parseFloat(document.getElementById('f-service').value)||0;
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
-  var gender=document.getElementById('f-gender').value;
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
-  trips.push({d,fc,fd,fr,tc,td:td2,tr:tr2,km,fare,service,detail,pax,gender,id:Date.now()});
+  trips.push({d,fc,fd,fr,tc,td:td2,tr:tr2,km,fare,service,detail,pax,id:Date.now()});
   saveData('uberTrips',trips);
   renderTrips();updateStats();
-  ['f-from-city','f-from-dist','f-from-road','f-to-city','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-gender'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-city','f-from-dist','f-from-road','f-to-city','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
 }
 
@@ -624,7 +623,6 @@ function renderTrips(){
       <td style="color:rgba(240,220,160,0.7)">NT$${t.service||0}</td>
       <td style="color:#00E860;font-weight:600">NT$${t.detail||0}</td>
       <td style="text-align:center">${t.pax||1}</td>
-      <td style="text-align:center">${t.gender===('男')?'<span style="color:#60AAFF">♂ 男</span>':t.gender===('女')?'<span style="color:#ff9fd8">♀ 女</span>':''}</td>
       <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
@@ -641,8 +639,8 @@ function renderTrips(){
 function exportCSV(){
   var trips=getData('uberTrips');
   if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,上車縣市,上車區域,上車道路,下車縣市,下車區域,下車道路,公里數,行程費用,服務費,費用明細,人數,性別';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.fc,t.fd,t.fr,t.tc,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1,t.gender||''].join(','));
+  var header='筆數,日期,上車縣市,上車區域,上車地點,下車縣市,下車區域,下車地點,公里數,行程費用,服務費,費用明細,人數';
+  var rows=trips.map((t,i)=>[i+1,t.d,t.fc,t.fd,t.fr,t.tc,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
@@ -749,12 +747,12 @@ function updateStats(){
   var exp=thisMonthData?(thisMonthData.fuel+thisMonthData.repair+thisMonthData.insurance+thisMonthData.other):fuel;
   var net=income-exp,hourly=hours>0?(net/hours).toFixed(0):0;
   var allTrips=getData('uberTrips');
-  document.getElementById('s-trips').innerHTML=allTrips.length+' <em>趟</em>';
-  document.getElementById('s-income').innerHTML='NT$<em>'+income+'</em>';
-  document.getElementById('s-fuel').innerHTML='NT$<em>'+fuel+'</em>';
-  document.getElementById('s-hours').innerHTML=hours.toFixed(1)+' <em>hr</em>';
-  document.getElementById('s-net').innerHTML='NT$<em>'+net+'</em>';
-  document.getElementById('s-hourly').innerHTML='NT$<em>'+hourly+'</em>';
+  document.getElementById('s-trips').innerHTML=allTrips.length+' <em class="unit">趟</em>';
+  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+income+'</em>';
+  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fuel+'</em>';
+  document.getElementById('s-hours').innerHTML=hours.toFixed(1)+' <em class="unit">hr</em>';
+  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+net+'</em>';
+  document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+hourly+'</em>';
 }
 // 縣市分區資料
 const DISTRICTS = {
