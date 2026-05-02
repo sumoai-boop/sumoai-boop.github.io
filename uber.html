@@ -88,8 +88,8 @@ body{
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(0,200,83,0.45);border-radius:14px;padding:18px 20px;}
 .stat-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.8);margin-bottom:8px;}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#ffffff;text-shadow:0 0 20px rgba(255,255,255,0.3);}
-.stat-val em{font-style:italic;color:#00C853;font-size:16px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:68px;font-weight:600;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
+.stat-val em{font-style:italic;color:#00C853;font-size:68px;font-weight:600;}
 
 /* 表單 */
 .form-section{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:16px;padding:24px;margin-bottom:24px;}
@@ -100,6 +100,9 @@ body{
 .form-input{background:rgba(255,255,255,0.06);border:1px solid rgba(0,200,83,0.2);border-radius:8px;padding:9px 12px;color:#f5edd8;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;}
 .form-input:focus{border-color:#00C853;}
 .form-input::placeholder{color:rgba(200,180,120,0.25);}
+.form-select{background:rgba(255,255,255,0.06);border:1px solid rgba(0,200,83,0.2);border-radius:8px;padding:9px 12px;color:#f5edd8;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(0,200,83,0.7)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.form-select:focus{border-color:#00C853;}
+.form-select option{background:#111;color:#f5edd8;}
 .btn-add{margin-top:16px;padding:10px 24px;background:#00C853;color:#000;border:none;border-radius:99px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all 0.2s;}
 .btn-add:hover{background:#00E860;}
 
@@ -379,17 +382,18 @@ body{
       <div class="form-title">＋ 新增行程明細</div>
       <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
         <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
-        <div class="form-group"><label>上車縣市</label><input class="form-input" type="text" id="f-from-city" placeholder="新北市"></div>
-        <div class="form-group"><label>上車區域</label><input class="form-input" type="text" id="f-from-dist" placeholder="板橋區"></div>
+        <div class="form-group"><label>上車縣市</label><select class="form-select" id="f-from-city" onchange="updateDistricts('from')"><option value="">請選擇縣市</option><option value="新北市">新北市</option><option value="台北市">台北市</option><option value="桃園市">桃園市</option><option value="宜蘭縣">宜蘭縣</option></select></div>
+        <div class="form-group"><label>上車區域</label><select class="form-select" id="f-from-dist"><option value="">請先選縣市</option></select></div>
         <div class="form-group"><label>上車道路</label><input class="form-input" type="text" id="f-from-road" placeholder="重慶路"></div>
-        <div class="form-group"><label>下車縣市</label><input class="form-input" type="text" id="f-to-city" placeholder="新北市"></div>
-        <div class="form-group"><label>下車區域</label><input class="form-input" type="text" id="f-to-dist" placeholder="板橋區"></div>
+        <div class="form-group"><label>下車縣市</label><select class="form-select" id="f-to-city" onchange="updateDistricts('to')"><option value="">請選擇縣市</option><option value="新北市">新北市</option><option value="台北市">台北市</option><option value="桃園市">桃園市</option><option value="宜蘭縣">宜蘭縣</option></select></div>
+        <div class="form-group"><label>下車區域</label><select class="form-select" id="f-to-dist"><option value="">請先選縣市</option></select></div>
         <div class="form-group"><label>下車道路</label><input class="form-input" type="text" id="f-to-road" placeholder="板橋遠百"></div>
         <div class="form-group"><label>公里數</label><input class="form-input" type="number" id="f-km" placeholder="0.00" step="0.01"></div>
         <div class="form-group"><label>行程費用</label><input class="form-input" type="number" id="f-fare" placeholder="0"></div>
         <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
+        <div class="form-group"><label>性別</label><select class="form-select" id="f-gender"><option value="">請選擇</option><option value="男">男</option><option value="女">女</option></select></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
         <button class="btn-add" onclick="addTrip()">新增行程</button>
@@ -421,6 +425,7 @@ body{
             <th>服務費</th>
             <th>費用明細</th>
             <th>人數</th>
+            <th>性別</th>
             <th style="width:40px"></th>
           </tr>
           <tr style="background:rgba(0,200,83,0.03);">
@@ -431,11 +436,11 @@ body{
             <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">縣市</th>
             <th style="font-size:8px">區域</th>
             <th style="font-size:8px">道路</th>
-            <th></th><th></th><th></th><th></th><th></th><th></th>
+            <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
           </tr>
         </thead>
         <tbody id="tripBody">
-          <tr><td colspan="14"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
+          <tr><td colspan="15"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
         </tbody>
         <tfoot id="tripFoot" style="display:none;">
           <tr style="background:rgba(0,200,83,0.08);font-weight:700;">
@@ -445,6 +450,7 @@ body{
             <td id="foot-service" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-detail" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-pax" style="padding:10px 16px;color:#00E860;"></td>
+            <td></td>
             <td></td>
           </tr>
         </tfoot>
@@ -546,12 +552,13 @@ function addTrip(){
   var service=parseFloat(document.getElementById('f-service').value)||0;
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
+  var gender=document.getElementById('f-gender').value;
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
-  trips.push({d,fc,fd,fr,tc,td:td2,tr:tr2,km,fare,service,detail,pax,id:Date.now()});
+  trips.push({d,fc,fd,fr,tc,td:td2,tr:tr2,km,fare,service,detail,pax,gender,id:Date.now()});
   saveData('uberTrips',trips);
   renderTrips();updateStats();
-  ['f-from-city','f-from-dist','f-from-road','f-to-city','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-city','f-from-dist','f-from-road','f-to-city','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-gender'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
 }
 
@@ -617,6 +624,7 @@ function renderTrips(){
       <td style="color:rgba(240,220,160,0.7)">NT$${t.service||0}</td>
       <td style="color:#00E860;font-weight:600">NT$${t.detail||0}</td>
       <td style="text-align:center">${t.pax||1}</td>
+      <td style="text-align:center">${t.gender===('男')?'<span style="color:#60AAFF">♂ 男</span>':t.gender===('女')?'<span style="color:#ff9fd8">♀ 女</span>':''}</td>
       <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
@@ -633,8 +641,8 @@ function renderTrips(){
 function exportCSV(){
   var trips=getData('uberTrips');
   if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,上車縣市,上車區域,上車道路,下車縣市,下車區域,下車道路,公里數,行程費用,服務費,費用明細,人數';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.fc,t.fd,t.fr,t.tc,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1].join(','));
+  var header='筆數,日期,上車縣市,上車區域,上車道路,下車縣市,下車區域,下車道路,公里數,行程費用,服務費,費用明細,人數,性別';
+  var rows=trips.map((t,i)=>[i+1,t.d,t.fc,t.fd,t.fr,t.tc,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1,t.gender||''].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
@@ -747,6 +755,29 @@ function updateStats(){
   document.getElementById('s-hours').innerHTML=hours.toFixed(1)+' <em>hr</em>';
   document.getElementById('s-net').innerHTML='NT$<em>'+net+'</em>';
   document.getElementById('s-hourly').innerHTML='NT$<em>'+hourly+'</em>';
+}
+// 縣市分區資料
+const DISTRICTS = {
+  '新北市': ['板橋區','三重區','中和區','永和區','新莊區','新店區','樹林區','鶯歌區','三峽區','淡水區','汐止區','瑞芳區','土城區','蘆洲區','五股區','泰山區','林口區','深坑區','石碇區','坪林區','三芝區','石門區','八里區','平溪區','雙溪區','貢寮區','金山區','萬里區','烏來區'],
+  '台北市': ['中正區','大同區','中山區','松山區','大安區','萬華區','信義區','士林區','北投區','內湖區','南港區','文山區'],
+  '桃園市': ['桃園區','中壢區','大溪區','楊梅區','蘆竹區','大園區','龜山區','八德區','龍潭區','平鎮區','新屋區','觀音區','復興區'],
+  '宜蘭縣': ['宜蘭市','羅東鎮','蘇澳鎮','頭城鎮','礁溪鄉','壯圍鄉','員山鄉','冬山鄉','五結鄉','三星鄉','大同鄉','南澳鄉']
+};
+function updateDistricts(type){
+  var cityId = type==='from' ? 'f-from-city' : 'f-to-city';
+  var distId = type==='from' ? 'f-from-dist' : 'f-to-dist';
+  var city = document.getElementById(cityId).value;
+  var distSel = document.getElementById(distId);
+  distSel.innerHTML = '<option value="">請選擇區域</option>';
+  if(city && DISTRICTS[city]){
+    DISTRICTS[city].forEach(function(d){
+      var opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      distSel.appendChild(opt);
+    });
+  } else {
+    distSel.innerHTML = '<option value="">請先選縣市</option>';
+  }
 }
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
