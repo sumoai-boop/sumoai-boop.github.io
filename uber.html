@@ -396,7 +396,6 @@ body{
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
       </div>
-      </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
         <button class="btn-add" onclick="addTrip()">新增行程</button>
         <button class="btn-add" onclick="importCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📂 匯入 CSV</button>
@@ -424,8 +423,8 @@ body{
             <th colspan="3" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
             <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
             <th onclick="sortTrips('fare')" style="cursor:pointer">行程費用 ↕</th>
-            <th>服務費</th>
-            <th>費用明細</th>
+            <th onclick="sortTrips('service')" style="cursor:pointer">服務費 ↕</th>
+            <th onclick="sortTrips('detail')" style="cursor:pointer">費用明細 ↕</th>
             <th>人數</th>
             <th style="width:40px"></th>
           </tr>
