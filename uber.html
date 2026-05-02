@@ -707,8 +707,8 @@ function renderWeekly(){
         <div class="week-label" style="min-width:70px">${w.date.slice(5)}</div>
         <div class="week-track"><div class="week-fill" style="width:${w.income/max*100}%"></div></div>
         <div class="week-amount">NT$${w.income}</div>
-        <div style="font-size:9px;color:rgba(200,180,120,0.4);margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
-        <div style="font-size:9px;color:rgba(200,180,120,0.4);margin-left:4px;min-width:90px">${hStr}</div>
+        <div style="font-size:13px;color:#f0dca8;margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
+        <div style="font-size:13px;color:#60AAFF;margin-left:4px;min-width:110px">${hStr}</div>
         <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
       </div>`;
     }).join('')+'</div>';
