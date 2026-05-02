@@ -461,10 +461,11 @@ body{
     <div class="form-section">
       <div class="form-title">＋ 新增每日收入</div>
       <div class="form-grid">
-        <div class="form-group"><label>日期</label><input class="form-input" type="date" id="fw-date"></div>
-        <div class="form-group"><label>總收入 (NT$)</label><input class="form-input" type="number" id="fw-income" placeholder="0"></div>
-        <div class="form-group"><label>時數（小時）</label><input class="form-input" type="number" id="fw-hours" placeholder="0" min="0"></div>
-        <div class="form-group"><label>時數（分鐘）</label><input class="form-input" type="number" id="fw-mins" placeholder="0" min="0" max="59"></div>
+        <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fw-date"></div>
+        <div class="form-group"><label style="font-size:12px">總收入 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fw-income" placeholder="0"></div>
+        <div class="form-group"><label style="font-size:12px">行程數</label><input class="form-input" style="font-size:15px" type="number" id="fw-trips" placeholder="0" min="0"></div>
+        <div class="form-group"><label style="font-size:12px">時數（小時）</label><input class="form-input" style="font-size:15px" type="number" id="fw-hours" placeholder="0" min="0"></div>
+        <div class="form-group"><label style="font-size:12px">時數（分鐘）</label><input class="form-input" style="font-size:15px" type="number" id="fw-mins" placeholder="0" min="0" max="59"></div>
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
@@ -681,13 +682,14 @@ updateStats();
 function addWeekly(){
   var date=document.getElementById('fw-date').value;
   var income=parseFloat(document.getElementById('fw-income').value)||0;
+  var tripCount=parseInt(document.getElementById('fw-trips').value)||0;
   var hours=parseInt(document.getElementById('fw-hours').value)||0;
   var mins=parseInt(document.getElementById('fw-mins').value)||0;
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
-  w.unshift({date,income,hours,mins,id:Date.now()});
+  w.unshift({date,income,tripCount,hours,mins,id:Date.now()});
   saveData('uberWeekly',w);renderWeekly();updateStats();
-  ['fw-income','fw-hours','fw-mins'].forEach(id=>document.getElementById(id).value='');
+  ['fw-income','fw-trips','fw-hours','fw-mins'].forEach(id=>document.getElementById(id).value='');
 }
 function deleteWeekly(id){
   if(!confirm('確定刪除這筆記錄？'))return;
@@ -705,7 +707,8 @@ function renderWeekly(){
         <div class="week-label" style="min-width:70px">${w.date.slice(5)}</div>
         <div class="week-track"><div class="week-fill" style="width:${w.income/max*100}%"></div></div>
         <div class="week-amount">NT$${w.income}</div>
-        <div style="font-size:9px;color:rgba(200,180,120,0.4);margin-left:8px;min-width:90px">${hStr}</div>
+        <div style="font-size:9px;color:rgba(200,180,120,0.4);margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
+        <div style="font-size:9px;color:rgba(200,180,120,0.4);margin-left:4px;min-width:90px">${hStr}</div>
         <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
       </div>`;
     }).join('')+'</div>';
