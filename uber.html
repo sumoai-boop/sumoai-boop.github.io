@@ -358,7 +358,7 @@ body{
     <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
     <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
     <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
-    <button class="tab-btn" onclick="switchTab('monthly',this)">每月支出</button>
+    <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
   </div>
 
   <!-- 總覽 -->
@@ -472,22 +472,19 @@ body{
     <div id="weeklyList"><div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div></div>
   </div>
 
-  <!-- 每月支出 -->
+  <!-- 每日支出 -->
   <div class="tab-panel" id="tab-monthly">
     <div class="form-section">
-      <div class="form-title">＋ 新增月支出</div>
+      <div class="form-title">＋ 新增每日支出</div>
       <div class="form-grid">
-        <div class="form-group"><label>年月</label><input class="form-input" type="month" id="fm-month"></div>
-        <div class="form-group"><label>總收入 (NT$)</label><input class="form-input" type="number" id="fm-income" placeholder="0"></div>
-        <div class="form-group"><label>油錢 (NT$)</label><input class="form-input" type="number" id="fm-fuel" placeholder="0"></div>
-        <div class="form-group"><label>保養/維修 (NT$)</label><input class="form-input" type="number" id="fm-repair" placeholder="0"></div>
-        <div class="form-group"><label>保險 (NT$)</label><input class="form-input" type="number" id="fm-insurance" placeholder="0"></div>
-        <div class="form-group"><label>其他支出 (NT$)</label><input class="form-input" type="number" id="fm-other" placeholder="0"></div>
-        <div class="form-group"><label>總時數 (hr)</label><input class="form-input" type="number" id="fm-hours" placeholder="0.0" step="0.1"></div>
+        <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
+        <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養維修">保養維修</option><option value="交通罰鍰">交通罰鍰</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option></select></div>
+        <div class="form-group"><label style="font-size:12px">金額 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
+        <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="備註說明"></div>
       </div>
-      <button class="btn-add" onclick="addMonthly()">新增月記錄</button>
+      <button class="btn-add" onclick="addMonthly()">新增支出</button>
     </div>
-    <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無月支出記錄</div></div>
+    <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
   </div>
 </div>
 
@@ -713,37 +710,46 @@ function renderWeekly(){
       </div>`;
     }).join('')+'</div>';
 }
-// 月
+// 每日支出
 function addMonthly(){
-  var month=document.getElementById('fm-month').value;
-  var income=parseFloat(document.getElementById('fm-income').value)||0;
-  var fuel=parseFloat(document.getElementById('fm-fuel').value)||0;
-  var repair=parseFloat(document.getElementById('fm-repair').value)||0;
-  var insurance=parseFloat(document.getElementById('fm-insurance').value)||0;
-  var other=parseFloat(document.getElementById('fm-other').value)||0;
-  var hours=parseFloat(document.getElementById('fm-hours').value)||0;
-  if(!month){alert('請選擇年月');return;}
+  var date=document.getElementById('fm-date').value;
+  var type=document.getElementById('fm-type').value;
+  var amount=parseFloat(document.getElementById('fm-amount').value)||0;
+  var note=document.getElementById('fm-note').value.trim();
+  if(!date){alert('請選擇日期');return;}
+  if(!type){alert('請選擇支出類型');return;}
   var m=getData('uberMonthly');
-  m.unshift({month,income,fuel,repair,insurance,other,hours,id:Date.now()});
-  saveData('uberMonthly',m);renderMonthly();updateStats();
-  ['fm-income','fm-fuel','fm-repair','fm-insurance','fm-other','fm-hours'].forEach(id=>document.getElementById(id).value='');
+  m.unshift({date,type,amount,note,id:Date.now()});
+  saveData('uberMonthly',m);renderMonthly();
+  ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fm-type').value='';
 }
+function deleteMonthly(id){
+  if(!confirm('確定刪除這筆支出？'))return;
+  saveData('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
+  renderMonthly();
+}
+const TYPE_COLOR={'油錢':'#ff6b6b','保養維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe'};
 function renderMonthly(){
   var monthly=getData('uberMonthly'),el=document.getElementById('monthlyList');
-  if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無月支出記錄</div>';return;}
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;"><table style="width:100%;border-collapse:collapse;"><thead><tr>'+
-    ['月份','收入','油錢','保養/維修','保險','其他','時數','淨收入'].map(h=>`<th style="padding:11px 14px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')+
-    '</tr></thead><tbody>'+monthly.map(m=>{
-      var exp=m.fuel+m.repair+m.insurance+m.other,net=m.income-exp;
-      return `<tr><td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#f5edd8;">${m.month}</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#00C853;">NT$${m.income}</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#ff6b6b;">NT$${m.fuel}</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#ff9f43;">NT$${m.repair}</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#ff9f43;">NT$${m.insurance}</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#ff9f43;">NT$${m.other}</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:#c8b88e;">${m.hours}hr</td>
-        <td style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:${net>=0?'#00E860':'#ff6b6b'};font-weight:600;">NT$${net}</td></tr>`;
-    }).join('')+'</tbody></table></div>';
+  if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
+  var total=monthly.reduce((s,m)=>s+m.amount,0);
+  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
+    +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
+    +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:11px 16px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
+    +'</tr></thead><tbody>'
+    +monthly.map(m=>{
+      var col=TYPE_COLOR[m.type]||'#f0dca8';
+      return `<tr>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#f5edd8;font-size:13px;">${m.date}</td>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:3px 10px;border-radius:99px;font-size:11px;letter-spacing:0.05em;">${m.type}</span></td>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:14px;font-weight:600;">NT$${m.amount}</td>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:12px;">${m.note||'—'}</td>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;"><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
+      </tr>`;
+    }).join('')
+    +`</tbody><tfoot><tr><td colspan="2" style="padding:11px 16px;font-size:10px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:11px 16px;color:#ff6b6b;font-size:14px;font-weight:700;">NT$${total}</td><td colspan="2"></td></tr></tfoot>`
+    +'</table></div>';
 }
 // 統計
 function updateStats(){
