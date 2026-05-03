@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Uber 記錄 — Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100vh;}
@@ -88,10 +88,11 @@ body{
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(0,200,83,0.45);border-radius:14px;padding:18px 20px;}
 .stat-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.8);margin-bottom:8px;}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:68px;font-weight:600;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
-.stat-val em{font-style:italic;color:#00C853;font-size:68px;font-weight:600;}
-.stat-unit{font-size:38px;font-weight:600;vertical-align:baseline;}
-.stat-val em.unit{font-size:38px;}
+.stat-val{font-family:'Playfair Display',serif;font-size:68px;font-weight:700;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
+.stat-val em{font-style:normal;color:#00C853;font-size:68px;font-weight:700;}
+.stat-unit{font-size:38px;font-weight:700;vertical-align:baseline;}
+.stat-val em.unit{font-size:38px;color:#ffffff;}
+.stat-val em.num{color:#00C853;}
 
 /* 表單 */
 .form-section{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:16px;padding:24px;margin-bottom:24px;}
@@ -364,10 +365,10 @@ body{
   <!-- 總覽 -->
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips">0 <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours">0 <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">本月淨收入</div><div class="stat-val" id="s-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
     </div>
@@ -769,10 +770,10 @@ function updateStats(){
   var net=income-exp;
   // 平均時薪 = 收入 / 時數
   var hourly=hours>0?(income/hours).toFixed(0):0;
-  document.getElementById('s-trips').innerHTML=tripCount+' <em class="unit">趟</em>';
+  document.getElementById('s-trips').innerHTML='<em class="num">'+tripCount+'</em> <em class="unit">趟</em>';
   document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+income+'</em>';
   document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+exp+'</em>';
-  document.getElementById('s-hours').innerHTML=hours.toFixed(1)+' <em class="unit">hr</em>';
+  document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
   document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+net+'</em>';
   document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+hourly+'</em>';
 }
