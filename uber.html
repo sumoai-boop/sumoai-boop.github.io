@@ -385,11 +385,9 @@ body{
       <div class="form-title">＋ 新增行程明細</div>
       <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
         <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
-        <div class="form-group"><label>上車縣市</label><select class="form-select" id="f-from-city" onchange="updateDistricts('from')"><option value="">請選擇縣市</option><option value="新北市">新北市</option><option value="台北市">台北市</option><option value="桃園市">桃園市</option><option value="宜蘭縣">宜蘭縣</option></select></div>
-        <div class="form-group"><label>上車區域</label><select class="form-select" id="f-from-dist"><option value="">請先選縣市</option></select></div>
+        <div class="form-group"><label>上車區域</label><input class="form-input" type="text" id="f-from-dist" placeholder="板橋區"></div>
         <div class="form-group"><label>上車地點</label><input class="form-input" type="text" id="f-from-road" placeholder="重慶路"></div>
-        <div class="form-group"><label>下車縣市</label><select class="form-select" id="f-to-city" onchange="updateDistricts('to')"><option value="">請選擇縣市</option><option value="新北市">新北市</option><option value="台北市">台北市</option><option value="桃園市">桃園市</option><option value="宜蘭縣">宜蘭縣</option></select></div>
-        <div class="form-group"><label>下車區域</label><select class="form-select" id="f-to-dist"><option value="">請先選縣市</option></select></div>
+        <div class="form-group"><label>下車區域</label><input class="form-input" type="text" id="f-to-dist" placeholder="新莊區"></div>
         <div class="form-group"><label>下車地點</label><input class="form-input" type="text" id="f-to-road" placeholder="板橋遠百"></div>
         <div class="form-group"><label>公里數</label><input class="form-input" type="number" id="f-km" placeholder="0.00" step="0.01"></div>
         <div class="form-group"><label>行程費用</label><input class="form-input" type="number" id="f-fare" placeholder="0"></div>
