@@ -533,6 +533,8 @@ function switchTab(id,btn){
 // 資料
 function getData(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
 function saveData(key,data){localStorage.setItem(key,JSON.stringify(data));}
+// 千分點格式化
+function fmt(n){return Number(n).toLocaleString('zh-TW');}
 // 行程
 var tripSortKey='date', tripSortAsc=false;
 
@@ -616,9 +618,9 @@ function renderTrips(){
       <td>${t.td||''}</td>
       <td style="color:#fff">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1)">${(t.km||0).toFixed(2)}</td>
-      <td style="color:#00C853">NT$${t.fare||0}</td>
-      <td style="color:rgba(240,220,160,0.7)">NT$${t.service||0}</td>
-      <td style="color:#00E860;font-weight:600">NT$${t.detail||0}</td>
+      <td style="color:#00C853">NT$${fmt(t.fare||0)}</td>
+      <td style="color:rgba(240,220,160,0.7)">NT$${fmt(t.service||0)}</td>
+      <td style="color:#00E860;font-weight:600">NT$${fmt(t.detail||0)}</td>
       <td style="text-align:center">${t.pax||1}</td>
       <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
@@ -627,9 +629,9 @@ function renderTrips(){
   // 合計列
   tfoot.style.display='';
   document.getElementById('foot-km').textContent=totalKm.toFixed(2)+' km';
-  document.getElementById('foot-fare').textContent='NT$'+totalFare;
-  document.getElementById('foot-service').textContent='NT$'+totalService;
-  document.getElementById('foot-detail').textContent='NT$'+totalDetail;
+  document.getElementById('foot-fare').textContent='NT$'+fmt(totalFare);
+  document.getElementById('foot-service').textContent='NT$'+fmt(totalService);
+  document.getElementById('foot-detail').textContent='NT$'+fmt(totalDetail);
   document.getElementById('foot-pax').textContent=totalPax+' 人次';
 }
 
@@ -704,7 +706,7 @@ function renderWeekly(){
       return `<div class="week-bar" style="align-items:center;">
         <div class="week-label" style="min-width:70px;font-size:13px;color:#f5edd8">${w.date.slice(5)}</div>
         <div class="week-track"><div class="week-fill" style="width:${w.income/max*100}%"></div></div>
-        <div class="week-amount" style="font-size:13px">NT$${w.income}</div>
+        <div class="week-amount" style="font-size:13px">NT$${fmt(w.income)}</div>
         <div style="font-size:13px;color:#f0dca8;margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
         <div style="font-size:13px;color:#60AAFF;margin-left:4px;min-width:110px">${hStr}</div>
         <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
@@ -744,12 +746,12 @@ function renderMonthly(){
       return `<tr>
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#f5edd8;font-size:17px;">${m.date}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:4px 14px;border-radius:99px;font-size:15px;letter-spacing:0.05em;">${m.type}</span></td>
-        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:18px;font-weight:600;">NT$${m.amount}</td>
+        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:18px;font-weight:600;">NT$${fmt(m.amount)}</td>
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'—'}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;"><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
       </tr>`;
     }).join('')
-    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${total}</td><td colspan="2"></td></tr></tfoot>`
+    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
 // 統計
@@ -770,12 +772,12 @@ function updateStats(){
   var net=income-exp;
   // 平均時薪 = 收入 / 時數
   var hourly=hours>0?(income/hours).toFixed(0):0;
-  document.getElementById('s-trips').innerHTML='<em class="num">'+tripCount+'</em> <em class="unit">趟</em>';
-  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+income+'</em>';
-  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+exp+'</em>';
+  document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
+  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
+  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
   document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
-  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+net+'</em>';
-  document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+hourly+'</em>';
+  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(net)+'</em>';
+  document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
 }
 // 縣市分區資料
 const DISTRICTS = {
