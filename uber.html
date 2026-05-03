@@ -396,6 +396,7 @@ body{
         <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
+        <div class="form-group"><label>備註</label><input class="form-input" type="text" id="f-note" placeholder="備註說明"></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
         <button class="btn-add" onclick="addTrip()">新增行程</button>
@@ -420,37 +421,37 @@ body{
           <tr>
             <th style="width:40px">#</th>
             <th onclick="sortTrips('date')" style="cursor:pointer">日期 ↕</th>
-            <th colspan="3" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車地點</th>
-            <th colspan="3" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
+            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車地點</th>
+            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
             <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
             <th onclick="sortTrips('fare')" style="cursor:pointer">行程費用 ↕</th>
             <th onclick="sortTrips('service')" style="cursor:pointer">服務費 ↕</th>
             <th onclick="sortTrips('detail')" style="cursor:pointer">費用明細 ↕</th>
             <th>人數</th>
+            <th>備註</th>
             <th style="width:40px"></th>
           </tr>
           <tr style="background:rgba(0,200,83,0.03);">
             <th></th><th></th>
-            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">縣市</th>
-            <th style="font-size:8px">區域</th>
+            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">區域</th>
             <th style="font-size:8px">地點</th>
-            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">縣市</th>
-            <th style="font-size:8px">區域</th>
+            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">區域</th>
             <th style="font-size:8px">地點</th>
-            <th></th><th></th><th></th><th></th><th></th><th></th>
+            <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
           </tr>
         </thead>
         <tbody id="tripBody">
-          <tr><td colspan="14"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
+          <tr><td colspan="13"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
         </tbody>
         <tfoot id="tripFoot" style="display:none;">
           <tr style="background:rgba(0,200,83,0.08);font-weight:700;">
-            <td colspan="8" style="padding:10px 16px;color:rgba(240,220,160,0.8);font-size:11px;letter-spacing:0.1em;">合計</td>
+            <td colspan="6" style="padding:10px 16px;color:rgba(240,220,160,0.8);font-size:11px;letter-spacing:0.1em;">合計</td>
             <td id="foot-km" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-fare" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-service" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-detail" style="padding:10px 16px;color:#00E860;"></td>
             <td id="foot-pax" style="padding:10px 16px;color:#00E860;"></td>
+            <td></td>
             <td></td>
           </tr>
         </tfoot>
@@ -540,10 +541,8 @@ var tripSortKey='date', tripSortAsc=false;
 
 function addTrip(){
   var d=document.getElementById('f-date').value;
-  var fc=document.getElementById('f-from-city').value.trim();
   var fd=document.getElementById('f-from-dist').value.trim();
   var fr=document.getElementById('f-from-road').value.trim();
-  var tc=document.getElementById('f-to-city').value.trim();
   var td2=document.getElementById('f-to-dist').value.trim();
   var tr2=document.getElementById('f-to-road').value.trim();
   var km=parseFloat(document.getElementById('f-km').value)||0;
@@ -551,12 +550,13 @@ function addTrip(){
   var service=parseFloat(document.getElementById('f-service').value)||0;
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
+  var note=document.getElementById('f-note').value.trim();
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
-  trips.push({d,fc,fd,fr,tc,td:td2,tr:tr2,km,fare,service,detail,pax,id:Date.now()});
+  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:Date.now()});
   saveData('uberTrips',trips);
   renderTrips();updateStats();
-  ['f-from-city','f-from-dist','f-from-road','f-to-city','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
 }
 
@@ -584,7 +584,7 @@ function renderTrips(){
   var fd=document.getElementById('tripFilterDate').value;
 
   // 篩選
-  if(q) trips=trips.filter(t=>[t.fc,t.fd,t.fr,t.tc,t.td,t.tr].join(' ').toLowerCase().includes(q));
+  if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr].join(' ').toLowerCase().includes(q));
   if(fd) trips=trips.filter(t=>t.d===fd);
 
   // 排序
@@ -599,7 +599,7 @@ function renderTrips(){
   document.getElementById('tripCount').textContent=`共 ${trips.length} 筆`;
 
   if(!trips.length){
-    tbody.innerHTML='<tr><td colspan="14"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>';
+    tbody.innerHTML='<tr><td colspan="13"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>';
     tfoot.style.display='none';
     return;
   }
@@ -611,17 +611,16 @@ function renderTrips(){
     return `<tr>
       <td style="color:rgba(240,220,160,0.5);font-size:11px">${i+1}</td>
       <td>${t.d||''}</td>
-      <td style="border-left:1px solid rgba(0,200,83,0.1)">${t.fc||''}</td>
-      <td>${t.fd||''}</td>
+      <td style="border-left:1px solid rgba(0,200,83,0.1)">${t.fd||''}</td>
       <td style="color:#fff">${t.fr||''}</td>
-      <td style="border-left:1px solid rgba(0,200,83,0.1)">${t.tc||''}</td>
-      <td>${t.td||''}</td>
+      <td style="border-left:1px solid rgba(0,200,83,0.1)">${t.td||''}</td>
       <td style="color:#fff">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1)">${(t.km||0).toFixed(2)}</td>
       <td style="color:#00C853">NT$${fmt(t.fare||0)}</td>
       <td style="color:rgba(240,220,160,0.7)">NT$${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-weight:600">NT$${fmt(t.detail||0)}</td>
       <td style="text-align:center">${t.pax||1}</td>
+      <td style="color:rgba(240,220,160,0.6)">${t.note||'—'}</td>
       <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
@@ -638,8 +637,8 @@ function renderTrips(){
 function exportCSV(){
   var trips=getData('uberTrips');
   if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,上車縣市,上車區域,上車地點,下車縣市,下車區域,下車地點,公里數,行程費用,服務費,費用明細,人數';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.fc,t.fd,t.fr,t.tc,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1].join(','));
+  var header='筆數,日期,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,服務費,費用明細,人數,備註';
+  var rows=trips.map((t,i)=>[i+1,t.d,t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
