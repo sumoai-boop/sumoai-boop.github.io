@@ -418,7 +418,7 @@ body{
         <thead>
           <tr>
             <th style="width:40px">#</th>
-            <th onclick="sortTrips('date')" style="cursor:pointer">日期 ↕</th>
+            <th onclick="sortTrips('d')" style="cursor:pointer">日期 ↕</th>
             <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車地點</th>
             <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
             <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
@@ -535,7 +535,7 @@ function saveData(key,data){localStorage.setItem(key,JSON.stringify(data));}
 // 千分點格式化
 function fmt(n){return Number(n).toLocaleString('zh-TW');}
 // 行程
-var tripSortKey='date', tripSortAsc=false;
+var tripSortKey='d', tripSortAsc=false;
 
 function addTrip(){
   var d=document.getElementById('f-date').value;
