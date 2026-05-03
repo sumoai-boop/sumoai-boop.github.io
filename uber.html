@@ -607,7 +607,7 @@ function renderTrips(){
     totalKm+=(t.km||0);totalFare+=(t.fare||0);
     totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
     return `<tr>
-      <td style="color:rgba(240,220,160,0.5);font-size:11px">${i+1}</td>
+      <td style="color:rgba(240,220,160,0.5);font-size:11px">${trips.length-i}</td>
       <td>${t.d||''}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1)">${t.fd||''}</td>
       <td style="color:#fff">${t.fr||''}</td>
