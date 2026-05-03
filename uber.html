@@ -366,7 +366,7 @@ body{
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips">0 <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月油錢</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours">0 <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">本月淨收入</div><div class="stat-val" id="s-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
@@ -720,14 +720,14 @@ function addMonthly(){
   if(!type){alert('請選擇支出類型');return;}
   var m=getData('uberMonthly');
   m.unshift({date,type,amount,note,id:Date.now()});
-  saveData('uberMonthly',m);renderMonthly();
+  saveData('uberMonthly',m);renderMonthly();updateStats();
   ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
 }
 function deleteMonthly(id){
   if(!confirm('確定刪除這筆支出？'))return;
   saveData('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
-  renderMonthly();
+  renderMonthly();updateStats();
 }
 const TYPE_COLOR={'油錢':'#ff6b6b','保養維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe'};
 function renderMonthly(){
@@ -754,17 +754,24 @@ function renderMonthly(){
 // 統計
 function updateStats(){
   var now=new Date(),thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  var trips=getData('uberTrips').filter(t=>t.d&&t.d.startsWith(thisMonth));
-  var monthly=getData('uberMonthly'),thisMonthData=monthly.find(m=>m.month===thisMonth);
-  var income=thisMonthData?thisMonthData.income:trips.reduce((s,t)=>s+t.fare,0);
-  var fuel=thisMonthData?thisMonthData.fuel:trips.reduce((s,t)=>s+t.fuel,0);
-  var hours=thisMonthData?thisMonthData.hours:trips.reduce((s,t)=>s+t.hours,0);
-  var exp=thisMonthData?(thisMonthData.fuel+thisMonthData.repair+thisMonthData.insurance+thisMonthData.other):fuel;
-  var net=income-exp,hourly=hours>0?(net/hours).toFixed(0):0;
-  var allTrips=getData('uberTrips');
-  document.getElementById('s-trips').innerHTML=allTrips.length+' <em class="unit">趟</em>';
+  // 本月收入 & 時數：從「每日收入」表
+  var weekly=getData('uberWeekly').filter(function(w){return w.date&&w.date.startsWith(thisMonth);});
+  var income=weekly.reduce(function(s,w){return s+w.income;},0);
+  var totalMins=weekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
+  var hours=totalMins/60;
+  var tripCount=weekly.reduce(function(s,w){return s+(w.tripCount||0);},0);
+  // 若每日收入沒有行程數，fallback 到行程記錄表
+  if(!tripCount) tripCount=getData('uberTrips').length;
+  // 本月支出：從「每日支出」表
+  var monthly=getData('uberMonthly').filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
+  var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
+  // 淨收入 = 收入 - 支出
+  var net=income-exp;
+  // 平均時薪 = 收入 / 時數
+  var hourly=hours>0?(income/hours).toFixed(0):0;
+  document.getElementById('s-trips').innerHTML=tripCount+' <em class="unit">趟</em>';
   document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+income+'</em>';
-  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fuel+'</em>';
+  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+exp+'</em>';
   document.getElementById('s-hours').innerHTML=hours.toFixed(1)+' <em class="unit">hr</em>';
   document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+net+'</em>';
   document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+hourly+'</em>';
