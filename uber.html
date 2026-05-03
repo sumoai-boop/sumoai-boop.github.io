@@ -479,7 +479,7 @@ body{
       <div class="form-title">＋ 新增每日支出</div>
       <div class="form-grid">
         <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
-        <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養維修">保養維修</option><option value="交通罰鍰">交通罰鍰</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option></select></div>
+        <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="交通罰鍰">交通罰鍰</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option></select></div>
         <div class="form-group"><label style="font-size:12px">金額 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
         <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="備註說明"></div>
       </div>
@@ -730,7 +730,7 @@ function deleteMonthly(id){
   saveData('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
 }
-const TYPE_COLOR={'油錢':'#ff6b6b','保養維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe'};
+const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff'};
 function renderMonthly(){
   var monthly=getData('uberMonthly'),el=document.getElementById('monthlyList');
   if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
