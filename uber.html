@@ -737,19 +737,19 @@ function renderMonthly(){
   var total=monthly.reduce((s,m)=>s+m.amount,0);
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
-    +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:11px 16px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
+    +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
     +'</tr></thead><tbody>'
     +monthly.map(m=>{
       var col=TYPE_COLOR[m.type]||'#f0dca8';
       return `<tr>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#f5edd8;font-size:13px;">${m.date}</td>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:3px 10px;border-radius:99px;font-size:11px;letter-spacing:0.05em;">${m.type}</span></td>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:14px;font-weight:600;">NT$${m.amount}</td>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:12px;">${m.note||'—'}</td>
+        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#f5edd8;font-size:17px;">${m.date}</td>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:4px 14px;border-radius:99px;font-size:15px;letter-spacing:0.05em;">${m.type}</span></td>
+        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:18px;font-weight:600;">NT$${m.amount}</td>
+        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'—'}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;"><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
       </tr>`;
     }).join('')
-    +`</tbody><tfoot><tr><td colspan="2" style="padding:11px 16px;font-size:10px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:11px 16px;color:#ff6b6b;font-size:14px;font-weight:700;">NT$${total}</td><td colspan="2"></td></tr></tfoot>`
+    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${total}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
 // 統計
