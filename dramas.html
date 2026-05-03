@@ -1350,8 +1350,19 @@ render();
     var fileInfo = await getResp.json();
     var sha = fileInfo.sha;
 
-    // 2. 解碼目前內容
-    var currentContent = atob(fileInfo.content.replace(/\n/g, ''));
+    // 2. 解碼目前內容（大檔案 content 為空，改用 download_url）
+    var currentContent;
+    if(fileInfo.content && fileInfo.content.trim() !== ''){
+      currentContent = atob(fileInfo.content.replace(/\n/g, ''));
+    } else if(fileInfo.download_url){
+      showToast('⏳ 檔案較大，正在下載...', false);
+      var dlResp = await fetch(fileInfo.download_url);
+      if(!dlResp.ok){ showToast('❌ 下載失敗（' + dlResp.status + '）', true); return false; }
+      currentContent = await dlResp.text();
+    } else {
+      showToast('❌ 無法取得檔案內容', true);
+      return false;
+    }
 
     // 3. 在 DATA=[ 開頭插入新記錄（用正則，容許空格/換行變化）
     var dataMatch = currentContent.match(/const\s+DATA\s*=\s*\[/);
