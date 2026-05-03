@@ -1262,14 +1262,7 @@ render();
 
       <div class="ar-actions">
         <button class="ar-btn-cancel" id="arCancelBtn">取消</button>
-        <button class="ar-btn-submit" id="arSubmitBtn">✦ 產生 JSON</button>
-      </div>
-
-      <div id="arExportWrap">
-        <div id="arExportLabel">📋 複製後貼入 dramas.html 的 DATA=[ 開頭第一筆，並在結尾加上逗號</div>
-        <div id="arJsonOutput"></div>
-        <div class="ar-success" id="arSuccess">✓ 已複製到剪貼簿！</div>
-        <button class="ar-copy-btn" id="arCopyBtn">複製 JSON</button>
+        <button class="ar-btn-submit" id="arSubmitBtn">✦ 新增到列表</button>
       </div>
 
     </div>
@@ -1291,8 +1284,6 @@ render();
   function closeModal(){
     modal.classList.remove('open');
     document.body.style.overflow='';
-    document.getElementById('arExportWrap').classList.remove('show');
-    document.getElementById('arSuccess').classList.remove('show');
   }
   document.getElementById('addRecordFab').addEventListener('click',openModal);
   document.getElementById('addModalClose').addEventListener('click',closeModal);
@@ -1318,25 +1309,53 @@ render();
     if(!year)missing.push('上映年份');
     if(!persV)missing.push('個人評分');
     if(missing.length){alert('請填寫必填欄位：'+missing.join('、'));return;}
-    var r={date:date,year:year,type:type,lang:lang,title:title};
-    if(orig)r.orig=orig;
-    if(imdbV)r.imdb=parseFloat(imdbV);
-    if(doubV)r.douban=parseFloat(doubV);
-    r.personal=parseFloat(persV);
-    if(dist)r.dist=dist;
-    r.venue=venue;
-    document.getElementById('arJsonOutput').textContent=JSON.stringify(r);
-    document.getElementById('arExportWrap').classList.add('show');
-    document.getElementById('arSuccess').classList.remove('show');
-    document.getElementById('arExportWrap').scrollIntoView({behavior:'smooth',block:'nearest'});
-  });
 
-  document.getElementById('arCopyBtn').addEventListener('click',function(){
-    var text=document.getElementById('arJsonOutput').textContent;
-    var msg=document.getElementById('arSuccess');
-    function showMsg(){msg.classList.add('show');setTimeout(function(){msg.classList.remove('show');},2500);}
-    if(navigator.clipboard){navigator.clipboard.writeText(text).then(showMsg);}
-    else{var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showMsg();}
+    // 建立記錄物件
+    var r={date:date,year:year,type:type,lang:lang,title:title,orig:orig||''};
+    r.imdb=imdbV?parseFloat(imdbV):0;
+    r.douban=doubV?parseFloat(doubV):0;
+    r.personal=parseFloat(persV);
+    r.dist=dist||'';
+    r.venue=venue;
+
+    // 直接插入 DATA 陣列並重新渲染
+    DATA.unshift(r);
+    render();
+    if(typeof buildTop5==='function')buildTop5();
+    if(typeof renderCal==='function')renderCal();
+
+    // 更新篩選器下拉選單（若有新國家/年份）
+    (function(){
+      var ySel=document.getElementById('yearSelect');
+      var yVal=String(year);
+      var found=false;
+      for(var i=0;i<ySel.options.length;i++){if(ySel.options[i].value===yVal){found=true;break;}}
+      if(!found){var op=document.createElement('option');op.value=yVal;op.textContent=yVal;ySel.appendChild(op);}
+    })();
+
+    // 關閉 Modal 並顯示成功提示
+    closeModal();
+    // 短暫顯示成功 toast
+    var toast=document.getElementById('arToast');
+    if(!toast){
+      toast=document.createElement('div');
+      toast.id='arToast';
+      toast.style.cssText='position:fixed;bottom:100px;right:32px;z-index:11000;background:linear-gradient(135deg,#e8622a,#ffb432);color:#fff;font-family:"Space Mono",monospace;font-size:13px;font-weight:700;padding:12px 20px;border-radius:10px;box-shadow:0 4px 20px rgba(232,98,42,0.5);opacity:0;transform:translateY(10px);transition:opacity 0.3s,transform 0.3s;pointer-events:none;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent='✦ 已新增「'+title+'」到列表！';
+    requestAnimationFrame(function(){toast.style.opacity='1';toast.style.transform='translateY(0)';});
+    setTimeout(function(){toast.style.opacity='0';toast.style.transform='translateY(10px)';},2800);
+
+    // 重置表單
+    document.getElementById('ar_title').value='';
+    document.getElementById('ar_orig').value='';
+    document.getElementById('ar_imdb').value='';
+    document.getElementById('ar_douban').value='';
+    document.getElementById('ar_personal').value='';
+    document.getElementById('ar_dist').value='';
+    document.getElementById('ar_date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('ar_year').value=new Date().getFullYear();
   });
 })();
 </script>
