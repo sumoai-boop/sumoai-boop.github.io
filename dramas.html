@@ -1353,10 +1353,10 @@ render();
     // 2. 解碼目前內容
     var currentContent = atob(fileInfo.content.replace(/\n/g, ''));
 
-    // 3. 在 DATA=[ 開頭插入新記錄
-    var dataStart = currentContent.indexOf('const DATA=[');
-    if(dataStart === -1){ showToast('❌ 找不到 DATA 陣列', true); return false; }
-    var insertAt = dataStart + 'const DATA=['.length;
+    // 3. 在 DATA=[ 開頭插入新記錄（用正則，容許空格/換行變化）
+    var dataMatch = currentContent.match(/const\s+DATA\s*=\s*\[/);
+    if(!dataMatch){ showToast('❌ 找不到 DATA 陣列', true); return false; }
+    var insertAt = dataMatch.index + dataMatch[0].length;
     var recordJson = JSON.stringify(newRecord);
     var newContent = currentContent.slice(0, insertAt) + recordJson + ',' + currentContent.slice(insertAt);
 
