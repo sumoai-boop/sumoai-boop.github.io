@@ -377,7 +377,7 @@ window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Toke
     .then(r=>r.json())
     .then(fi=>{
       if(!fi.content) return;
-      var json=JSON.parse(atob(fi.content.split('\n').join('')));
+      var raw=atob(fi.content.split('\n').join(''));var json=JSON.parse(decodeURIComponent(escape(raw)));
       if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
       if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
       if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
