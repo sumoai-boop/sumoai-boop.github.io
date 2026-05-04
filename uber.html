@@ -134,26 +134,13 @@ body{
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .chart-grid{grid-template-columns:1fr;}
 }
+#s-income em,#s-total-income em{color:#4A9EFF!important;}
+#s-fuel em,#s-total-exp em{color:#FF4444!important;}
+#s-net em,#s-total-net em{color:#FFD700!important;}
 #s-fuel em{color:#FF4444!important;}
-
-/* 強制各統計欄顏色 */
-#s-income em, #s-total-income em { color:#4A9EFF!important; }
-#s-fuel em, #s-total-exp em      { color:#FF4444!important; }
-#s-net em, #s-total-net em       { color:#FFD700!important; }
 </style>
 </head>
 <body>
-<script>
-var UBER_TRIPS   = /*__TRIPS_START__*/[{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"重慶路","tc":"新北市","td":"板橋區","tr":"板橋遠百","km":1.41,"fare":115,"service":29,"detail":86,"pax":1,"id":1777689311756},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"府中站","tc":"新北市","td":"板橋區","tr":"中山路一段","km":1.07,"fare":85,"service":21,"detail":64,"pax":2,"id":1777691090128},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"南雅西路二段","tc":"新北市","td":"板橋區","tr":"府中站","km":1.64,"fare":113,"service":28,"detail":85,"pax":1,"id":1777691124681},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"林園街","tc":"新北市","td":"板橋區","tr":"板橋大遠百","km":1.88,"fare":130,"service":33,"detail":97,"pax":4,"id":1777691157377},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"文化路二段","tc":"新北市","td":"板橋區","tr":"豐禾婦產科","km":2.36,"fare":134,"service":34,"detail":100,"pax":2,"id":1777691193673},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"中山路一段","tc":"新北市","td":"新莊區","tr":"迴龍站","km":9.4,"fare":353,"service":88,"detail":265,"pax":1,"id":1777691251586},{"d":"2026-05-01","fc":"桃園市","fd":"龜山區","fr":"萬壽路一段","tc":"新北市","td":"新莊區","tr":"新樹路","km":3.94,"fare":181,"service":45,"detail":136,"pax":2,"id":1777691278267},{"d":"2026-05-01","fc":"新北市","fd":"新莊區","fr":"中正路","tc":"新北市","td":"三重區","tr":"成功路","km":10.46,"fare":282,"service":71,"detail":211,"pax":1,"id":1777691306691},{"d":"2026-05-01","fc":"新北市","fd":"永和區","fr":"環河東路一段","tc":"新北市","td":"中和區","tr":"景新街","km":3.78,"fare":300,"service":75,"detail":225,"pax":2,"id":1777691331163},{"d":"2026-05-01","fc":"新北市","fd":"中和區","fr":"大勇街","tc":"新北市","td":"中和區","tr":"中正路","km":5.07,"fare":222,"service":56,"detail":166,"pax":1,"id":1777691354395},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"大觀路一段","tc":"新北市","td":"板橋區","tr":"板橋車站","km":2.25,"fare":207,"service":52,"detail":155,"pax":1,"id":1777691379492},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"板橋車站","tc":"臺北市","td":"文山區","tr":"木柵路一段","km":11.22,"fare":418,"service":105,"detail":313,"pax":1,"id":1777691402468},{"d":"2026-05-01","fc":"臺北市","fd":"文山區","fr":"辛亥路","tc":"臺北市","td":"萬華區","tr":"青年公園","km":14.33,"fare":389,"service":97,"detail":292,"pax":2,"id":1777691429516},{"d":"2026-05-02","fc":"新北市","fd":"板橋區","fr":"國慶路","tc":"新北市","td":"樹林區","tr":"佳園路三段","km":10.17,"fare":414,"service":104,"detail":310,"pax":2,"id":1777738619544},{"d":"2026-05-02","fc":"新北市","fd":"板橋區","fr":"篤行路三段","tc":"新北市","td":"板橋區","tr":"板橋車站","km":6.03,"fare":286,"service":72,"detail":214,"pax":1,"id":1777738731090},{"d":"2026-05-02","fc":"新北市","fd":"板橋區","fr":"雨農路","tc":"新北市","td":"三重區","tr":"中央南路","km":8.18,"fare":299,"service":75,"detail":224,"pax":1,"id":1777738823980},{"d":"2026-05-02","fc":"新北市","fd":"三重區","fr":"中央南路","tc":"台北市","td":"大同區","tr":"迪化街二段","km":2.86,"fare":156,"service":39,"detail":117,"pax":2,"id":1777738860829},{"d":"2026-05-02","fc":"台北市","fd":"大同區","fr":"環河北路","tc":"台北市","td":"大同區","tr":"京站","km":3.16,"fare":176,"service":44,"detail":132,"pax":1,"id":1777738896837},{"d":"2026-05-02","fc":"台北市","fd":"信義區","fr":"松德路","tc":"台北市","td":"中山區","tr":"MAJI集食行樂","km":10.66,"fare":380,"service":95,"detail":285,"pax":2,"id":1777738999328},{"d":"2026-05-02","fd":"三重區","fr":"重新路一段","td":"林口區","tr":"八德路","km":17.07,"fare":550,"service":138,"detail":412,"pax":2,"note":"香港","id":1777810867603},{"d":"2026-05-02","fd":"林口區","fr":"八德路","td":"龜山區","tr":"樂善二路","km":4.93,"fare":239,"service":60,"detail":179,"pax":2,"note":"","id":1777810901259},{"d":"2026-05-02","fd":"龜山區","fr":"文康街","td":"龜山區","tr":"忠義路二段","km":5.56,"fare":162,"service":41,"detail":121,"pax":1,"note":"","id":1777810931083},{"d":"2026-05-03","fd":"土城區","fr":"樂活山中湖庭園餐廳","td":"板橋區","tr":"大明街","km":7.54,"fare":312,"service":78,"detail":234,"pax":4,"note":"","id":1777812011089},{"d":"2026-05-03","fd":"萬華區","fr":"三水街","td":"大同區","tr":"延平北路二段","km":4.69,"fare":217,"service":54,"detail":163,"pax":2,"note":"","id":1777812121307},{"d":"2026-05-03","fd":"大同區","fr":"涼州街","td":"萬華區","tr":"西門町","km":2.44,"fare":149,"service":37,"detail":112,"pax":2,"note":"香港","id":1777812209237},{"d":"2026-05-03","fd":"萬華區","fr":"龍山寺","td":"板橋區","tr":"華江一路","km":3.71,"fare":171,"service":43,"detail":128,"pax":1,"note":"","id":1777812248166},{"d":"2026-05-03","fd":"板橋區","fr":"華江一路","td":"三重區","tr":"中央南路","km":6.59,"fare":241,"service":60,"detail":181,"pax":2,"note":"","id":1777812275590},{"d":"2026-05-03","fd":"三重區","fr":"台北橋站","td":"大同區","tr":"長安西路","km":2.88,"fare":156,"service":39,"detail":117,"pax":1,"note":"","id":1777812359768},{"d":"2026-05-03","fd":"大同區","fr":"迪化街一段","td":"中正區","tr":"中華路一段","km":1.62,"fare":118,"service":30,"detail":88,"pax":4,"note":"","id":1777812519659},{"d":"2026-05-03","fd":"中正區","fr":"延平南路","td":"中正區","tr":"衡陽路","km":0.72,"fare":98,"service":25,"detail":73,"pax":2,"note":"外國","id":1777812617165},{"d":"2026-05-03","fd":"中正區","fr":"衡陽路","td":"萬華區","tr":"西門町","km":0.49,"fare":85,"service":21,"detail":64,"pax":1,"note":"外國","id":1777812690630},{"d":"2026-05-03","fd":"萬華區","fr":"青年路","td":"中山區","tr":"中山北路一段","km":8.57,"fare":347,"service":87,"detail":260,"pax":1,"note":"","id":1777812731239},{"d":"2026-05-03","fd":"大同區","fr":"京站","td":"大同區","tr":"京站","km":0,"fare":40,"service":10,"detail":30,"pax":1,"note":"取消","id":1777812771512},{"d":"2026-05-03","fd":"大同區","fr":"京站","td":"中山區","tr":"新生北路二段","km":2.42,"fare":128,"service":32,"detail":96,"pax":4,"note":"日本","id":1777812889978},{"d":"2026-05-03","fd":"中正區","fr":"台北車站","td":"中正區","tr":"和平西路二段","km":3.49,"fare":218,"service":55,"detail":163,"pax":2,"note":"","id":1777812934084},{"d":"2026-05-04","fd":"萬華區","fr":"東園街","td":"板橋區","tr":"光復街","km":2.74,"fare":347,"service":87,"detail":260,"pax":1,"note":"","id":1777907738016},{"d":"2026-05-04","fd":"中和區","fr":"板南路","td":"板橋區","tr":"松柏街","km":4.5,"fare":282,"service":71,"detail":211,"pax":1,"note":"","id":1777908089494}]/*__TRIPS_END__*/;
-var UBER_WEEKLY  = /*__WEEKLY_START__*/[{"date":"2026-05-01","income":2195,"tripCount":13,"hours":6,"mins":7,"points":23,"id":1777906433478},{"date":"2026-05-02","income":1994,"tripCount":9,"hours":3,"mins":48,"points":19,"id":1777906259650},{"date":"2026-05-03","income":1709,"tripCount":12,"hours":3,"mins":55,"points":36,"id":1777906243194},{"date":"2026-05-04","income":859,"tripCount":4,"hours":2,"mins":3,"points":6,"id":1777906193425}]/*__WEEKLY_END__*/;
-var UBER_MONTHLY = /*__MONTHLY_START__*/[{"date":"2026-05-01","type":"汽車百貨","amount":428,"note":"車架","id":1777907693774},{"date":"2026-05-01","type":"停車費","amount":45,"note":"羅東夜市停車場","id":1777907669846},{"date":"2026-05-01","type":"停車費","amount":240,"note":"日月亭停車場","id":1777907643758},{"date":"2026-05-01","type":"汽車百貨","amount":7000,"note":"隔熱紙","id":1777906781533},{"date":"2026-05-01","type":"油錢","amount":847,"note":"26.79公升","id":1777906626361}]/*__MONTHLY_END__*/;
-// 初始化 localStorage
-(function(){
-  if(UBER_TRIPS.length)   localStorage.setItem('uberTrips',   JSON.stringify(UBER_TRIPS));
-  if(UBER_WEEKLY.length)  localStorage.setItem('uberWeekly',  JSON.stringify(UBER_WEEKLY));
-  if(UBER_MONTHLY.length) localStorage.setItem('uberMonthly', JSON.stringify(UBER_MONTHLY));
-})();
-</script>
 
 
 
@@ -362,7 +349,8 @@ function switchTab(id,btn){
 }
 // 資料
 // ── GitHub 設定 ──
-const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_PATH='uber.html', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_uber';
+const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_uber';
+const GH_DATA_PATH='uber-data.json'; // 獨立 JSON 檔，不改 HTML
 
 function getData(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return[];}}
 function saveData(key,data){localStorage.setItem(key,JSON.stringify(data));}
@@ -373,7 +361,6 @@ function showToast(msg,isErr){
   t.textContent=msg;t.style.background=isErr?'rgba(180,30,30,0.95)':'rgba(30,80,50,0.95)';t.style.color='#fff';t.style.opacity='1';
   clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
 }
-
 function getToken(){
   var tk=localStorage.getItem(GH_TOKEN_KEY);
   if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
@@ -381,64 +368,52 @@ function getToken(){
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
+// 頁面載入時從 JSON 檔讀取最新資料
+(function(){
+  var token=localStorage.getItem(GH_TOKEN_KEY);
+  if(!token) return;
+  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
+  fetch(api+'?ref='+GH_BRANCH, {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
+    .then(r=>r.json())
+    .then(fi=>{
+      if(!fi.content) return;
+      var json=JSON.parse(atob(fi.content.split('\n').join('')));
+      if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
+      if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
+      if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
+      if(typeof renderTrips==='function') renderTrips();
+      if(typeof updateStats==='function') updateStats();
+      if(typeof renderWeekly==='function') renderWeekly();
+      if(typeof renderMonthly==='function') renderMonthly();
+    }).catch(e=>console.warn('載入失敗:',e));
+})();
+
 var _pushing=false;
 async function pushToGitHub(){
   if(_pushing){showToast('⏳ 推送中，請稍候...',false);return;}
   _pushing=true;
-  try{ await _doPush(); }finally{ _pushing=false; }
+  try{
+    var token=getToken();if(!token)return;
+    var trips=getData('uberTrips'),weekly=getData('uberWeekly'),monthly=getData('uberMonthly');
+    var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
+    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+    showToast('⏳ 連線 GitHub...',false);
+    var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
+    if(!r.ok){
+      if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
+      else showToast('❌ 連線失敗('+r.status+')',true);
+      return;
+    }
+    var fi=await r.json();
+    var sha=fi.sha;
+    var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly};
+    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
+    showToast('⏳ 推送中...',false);
+    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
+    if(!pr.ok){var e2=await pr.json();showToast('❌ 推送失敗：'+(e2.message||pr.status),true);}
+    else showToast('✦ 已儲存至 GitHub',false);
+  }finally{_pushing=false;}
 }
-async function _doPush(){
-  var token=getToken();if(!token)return;
-  var trips=getData('uberTrips'), weekly=getData('uberWeekly'), monthly=getData('uberMonthly');
-  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_PATH;
-  var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-
-  // 每次都重新抓最新 SHA 和內容
-  showToast('⏳ 連線 GitHub...',false);
-  var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-  if(!r.ok){
-    if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
-    else showToast('❌ 連線失敗('+r.status+')',true);
-    return;
-  }
-  var fi=await r.json();
-  var sha=fi.sha;
-  var html;
-
-  if(fi.content && fi.content.trim()!==''){
-    // 小檔案：GitHub 直接回傳 base64 content
-    html = decodeURIComponent(escape(atob(fi.content.split('\n').join(''))));
-  } else if(fi.download_url){
-    showToast('⏳ 下載中...',false);
-    var dr=await fetch(fi.download_url+'?t='+Date.now());
-    if(!dr.ok){showToast('❌ 下載失敗('+dr.status+')',true);return;}
-    html=await dr.text();
-  } else {
-    showToast('❌ 無法取得檔案',true);return;
-  }
-
-  function replaceMarker(h,marker,data){
-    var s='/*__'+marker+'_START__*/';
-    var e='/*__'+marker+'_END__*/';
-    var si=h.indexOf(s),ei=h.indexOf(e);
-    if(si===-1||ei===-1){showToast('❌ 找不到標記:'+marker,true);return h;}
-    return h.slice(0,si+s.length)+JSON.stringify(data)+h.slice(ei);
-  }
-  html=replaceMarker(html,'TRIPS',trips);
-  html=replaceMarker(html,'WEEKLY',weekly);
-  html=replaceMarker(html,'MONTHLY',monthly);
-
-  var encoded=btoa(unescape(encodeURIComponent(html)));
-  showToast('⏳ 推送中...',false);
-  var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
-  if(!pr.ok){
-    var e2=await pr.json();
-    showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
-  } else {
-    showToast('✦ 已儲存至 GitHub',false);
-  }
-}
-
 async function saveAndPush(key,data){saveData(key,data);await pushToGitHub();}
 // 千分點格式化
 function fmt(n){return Number(n).toLocaleString('zh-TW');}
@@ -669,8 +644,9 @@ function updateStats(){
   var income=weekly.reduce(function(s,w){return s+w.income;},0);
   var totalMins=weekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
   var hours=totalMins/60;
-  // 本月行程數：直接從行程記錄表計算
-  var tripCount=getData('uberTrips').filter(function(t){return t.d&&t.d.startsWith(thisMonth);}).length;
+  var tripCount=weekly.reduce(function(s,w){return s+(w.tripCount||0);},0);
+  // 若每日收入沒有行程數，fallback 到行程記錄表
+  if(!tripCount) tripCount=getData('uberTrips').length;
   // 本月支出：從「每日支出」表
   var monthly=getData('uberMonthly').filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
   var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
