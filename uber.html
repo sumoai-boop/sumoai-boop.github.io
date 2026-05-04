@@ -419,9 +419,11 @@ async function pushToGitHub(){
       localStorage.removeItem('gh_json_sha'); // 清除快取，下次重抓
       showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
     } else {
-      // 推送成功後取得新 SHA 存快取
-      var r2=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-      if(r2.ok){var fi2=await r2.json();localStorage.setItem('gh_json_sha',fi2.sha);}
+      // 推送成功：從回應直接取新 SHA，不需要再發請求
+      var prData=await pr.json();
+      var newSha=prData.content && prData.content.sha;
+      if(newSha) localStorage.setItem('gh_json_sha', newSha);
+      else localStorage.removeItem('gh_json_sha');
       showToast('✦ 已儲存至 GitHub',false);
     }
   }finally{_pushing=false;}
