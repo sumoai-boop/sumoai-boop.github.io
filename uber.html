@@ -135,17 +135,12 @@ body{
   .chart-grid{grid-template-columns:1fr;}
 }
 #s-fuel em{color:#FF4444!important;}
-
-/* 強制各統計欄顏色 */
-#s-income em, #s-total-income em { color:#4A9EFF!important; }
-#s-fuel em, #s-total-exp em      { color:#FF4444!important; }
-#s-net em, #s-total-net em       { color:#FFD700!important; }
 </style>
 </head>
 <body>
 <script>
-var UBER_TRIPS   = /*__TRIPS_START__*/[{"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "重慶路", "tc": "新北市", "td": "板橋區", "tr": "板橋遠百", "km": 1.41, "fare": 115, "service": 29, "detail": 86, "pax": 1, "id": 1777689311756}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "府中站", "tc": "新北市", "td": "板橋區", "tr": "中山路一段", "km": 1.07, "fare": 85, "service": 21, "detail": 64, "pax": 2, "id": 1777691090128}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "南雅西路二段", "tc": "新北市", "td": "板橋區", "tr": "府中站", "km": 1.64, "fare": 113, "service": 28, "detail": 85, "pax": 1, "id": 1777691124681}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "林園街", "tc": "新北市", "td": "板橋區", "tr": "板橋大遠百", "km": 1.88, "fare": 130, "service": 33, "detail": 97, "pax": 4, "id": 1777691157377}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "文化路二段", "tc": "新北市", "td": "板橋區", "tr": "豐禾婦產科", "km": 2.36, "fare": 134, "service": 34, "detail": 100, "pax": 2, "id": 1777691193673}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "中山路一段", "tc": "新北市", "td": "新莊區", "tr": "迴龍站", "km": 9.4, "fare": 353, "service": 88, "detail": 265, "pax": 1, "id": 1777691251586}, {"d": "2026-05-01", "fc": "桃園市", "fd": "龜山區", "fr": "萬壽路一段", "tc": "新北市", "td": "新莊區", "tr": "新樹路", "km": 3.94, "fare": 181, "service": 45, "detail": 136, "pax": 2, "id": 1777691278267}, {"d": "2026-05-01", "fc": "新北市", "fd": "新莊區", "fr": "中正路", "tc": "新北市", "td": "三重區", "tr": "成功路", "km": 10.46, "fare": 282, "service": 71, "detail": 211, "pax": 1, "id": 1777691306691}, {"d": "2026-05-01", "fc": "新北市", "fd": "永和區", "fr": "環河東路一段", "tc": "新北市", "td": "中和區", "tr": "景新街", "km": 3.78, "fare": 300, "service": 75, "detail": 225, "pax": 2, "id": 1777691331163}, {"d": "2026-05-01", "fc": "新北市", "fd": "中和區", "fr": "大勇街", "tc": "新北市", "td": "中和區", "tr": "中正路", "km": 5.07, "fare": 222, "service": 56, "detail": 166, "pax": 1, "id": 1777691354395}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "大觀路一段", "tc": "新北市", "td": "板橋區", "tr": "板橋車站", "km": 2.25, "fare": 207, "service": 52, "detail": 155, "pax": 1, "id": 1777691379492}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "板橋車站", "tc": "臺北市", "td": "文山區", "tr": "木柵路一段", "km": 11.22, "fare": 418, "service": 105, "detail": 313, "pax": 1, "id": 1777691402468}, {"d": "2026-05-01", "fc": "臺北市", "fd": "文山區", "fr": "辛亥路", "tc": "臺北市", "td": "萬華區", "tr": "青年公園", "km": 14.33, "fare": 389, "service": 97, "detail": 292, "pax": 2, "id": 1777691429516}, {"d": "2026-05-02", "fc": "新北市", "fd": "板橋區", "fr": "國慶路", "tc": "新北市", "td": "樹林區", "tr": "佳園路三段", "km": 10.17, "fare": 414, "service": 104, "detail": 310, "pax": 2, "id": 1777738619544}, {"d": "2026-05-02", "fc": "新北市", "fd": "板橋區", "fr": "篤行路三段", "tc": "新北市", "td": "板橋區", "tr": "板橋車站", "km": 6.03, "fare": 286, "service": 72, "detail": 214, "pax": 1, "id": 1777738731090}, {"d": "2026-05-02", "fc": "新北市", "fd": "板橋區", "fr": "雨農路", "tc": "新北市", "td": "三重區", "tr": "中央南路", "km": 8.18, "fare": 299, "service": 75, "detail": 224, "pax": 1, "id": 1777738823980}, {"d": "2026-05-02", "fc": "新北市", "fd": "三重區", "fr": "中央南路", "tc": "台北市", "td": "大同區", "tr": "迪化街二段", "km": 2.86, "fare": 156, "service": 39, "detail": 117, "pax": 2, "id": 1777738860829}, {"d": "2026-05-02", "fc": "台北市", "fd": "大同區", "fr": "環河北路", "tc": "台北市", "td": "大同區", "tr": "京站", "km": 3.16, "fare": 176, "service": 44, "detail": 132, "pax": 1, "id": 1777738896837}, {"d": "2026-05-02", "fc": "台北市", "fd": "信義區", "fr": "松德路", "tc": "台北市", "td": "中山區", "tr": "MAJI集食行樂", "km": 10.66, "fare": 380, "service": 95, "detail": 285, "pax": 2, "id": 1777738999328}, {"d": "2026-05-02", "fd": "三重區", "fr": "重新路一段", "td": "林口區", "tr": "八德路", "km": 17.07, "fare": 550, "service": 138, "detail": 412, "pax": 2, "note": "香港", "id": 1777810867603}, {"d": "2026-05-02", "fd": "林口區", "fr": "八德路", "td": "龜山區", "tr": "樂善二路", "km": 4.93, "fare": 239, "service": 60, "detail": 179, "pax": 2, "note": "", "id": 1777810901259}, {"d": "2026-05-02", "fd": "龜山區", "fr": "文康街", "td": "龜山區", "tr": "忠義路二段", "km": 5.56, "fare": 162, "service": 41, "detail": 121, "pax": 1, "note": "", "id": 1777810931083}, {"d": "2026-05-03", "fd": "土城區", "fr": "樂活山中湖庭園餐廳", "td": "板橋區", "tr": "大明街", "km": 7.54, "fare": 312, "service": 78, "detail": 234, "pax": 4, "note": "", "id": 1777812011089}, {"d": "2026-05-03", "fd": "萬華區", "fr": "三水街", "td": "大同區", "tr": "延平北路二段", "km": 4.69, "fare": 217, "service": 54, "detail": 163, "pax": 2, "note": "", "id": 1777812121307}, {"d": "2026-05-03", "fd": "大同區", "fr": "涼州街", "td": "萬華區", "tr": "西門町", "km": 2.44, "fare": 149, "service": 37, "detail": 112, "pax": 2, "note": "香港", "id": 1777812209237}, {"d": "2026-05-03", "fd": "萬華區", "fr": "龍山寺", "td": "板橋區", "tr": "華江一路", "km": 3.71, "fare": 171, "service": 43, "detail": 128, "pax": 1, "note": "", "id": 1777812248166}, {"d": "2026-05-03", "fd": "板橋區", "fr": "華江一路", "td": "三重區", "tr": "中央南路", "km": 6.59, "fare": 241, "service": 60, "detail": 181, "pax": 2, "note": "", "id": 1777812275590}, {"d": "2026-05-03", "fd": "三重區", "fr": "台北橋站", "td": "大同區", "tr": "長安西路", "km": 2.88, "fare": 156, "service": 39, "detail": 117, "pax": 1, "note": "", "id": 1777812359768}, {"d": "2026-05-03", "fd": "大同區", "fr": "迪化街一段", "td": "中正區", "tr": "中華路一段", "km": 1.62, "fare": 118, "service": 30, "detail": 88, "pax": 4, "note": "", "id": 1777812519659}, {"d": "2026-05-03", "fd": "中正區", "fr": "延平南路", "td": "中正區", "tr": "衡陽路", "km": 0.72, "fare": 98, "service": 25, "detail": 73, "pax": 2, "note": "外國", "id": 1777812617165}, {"d": "2026-05-03", "fd": "中正區", "fr": "衡陽路", "td": "萬華區", "tr": "西門町", "km": 0.49, "fare": 85, "service": 21, "detail": 64, "pax": 1, "note": "外國", "id": 1777812690630}, {"d": "2026-05-03", "fd": "萬華區", "fr": "青年路", "td": "中山區", "tr": "中山北路一段", "km": 8.57, "fare": 347, "service": 87, "detail": 260, "pax": 1, "note": "", "id": 1777812731239}, {"d": "2026-05-03", "fd": "大同區", "fr": "京站", "td": "大同區", "tr": "京站", "km": 0, "fare": 40, "service": 10, "detail": 30, "pax": 1, "note": "取消", "id": 1777812771512}, {"d": "2026-05-03", "fd": "大同區", "fr": "京站", "td": "中山區", "tr": "新生北路二段", "km": 2.42, "fare": 128, "service": 32, "detail": 96, "pax": 4, "note": "日本", "id": 1777812889978}, {"d": "2026-05-03", "fd": "中正區", "fr": "台北車站", "td": "中正區", "tr": "和平西路二段", "km": 3.49, "fare": 218, "service": 55, "detail": 163, "pax": 2, "note": "", "id": 1777812934084}]/*__TRIPS_END__*/;
-var UBER_WEEKLY  = /*__WEEKLY_START__*/[]/*__WEEKLY_END__*/;
+var UBER_TRIPS   = /*__TRIPS_START__*/[{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"重慶路","tc":"新北市","td":"板橋區","tr":"板橋遠百","km":1.41,"fare":115,"service":29,"detail":86,"pax":1,"id":1777689311756},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"府中站","tc":"新北市","td":"板橋區","tr":"中山路一段","km":1.07,"fare":85,"service":21,"detail":64,"pax":2,"id":1777691090128},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"南雅西路二段","tc":"新北市","td":"板橋區","tr":"府中站","km":1.64,"fare":113,"service":28,"detail":85,"pax":1,"id":1777691124681},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"林園街","tc":"新北市","td":"板橋區","tr":"板橋大遠百","km":1.88,"fare":130,"service":33,"detail":97,"pax":4,"id":1777691157377},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"文化路二段","tc":"新北市","td":"板橋區","tr":"豐禾婦產科","km":2.36,"fare":134,"service":34,"detail":100,"pax":2,"id":1777691193673},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"中山路一段","tc":"新北市","td":"新莊區","tr":"迴龍站","km":9.4,"fare":353,"service":88,"detail":265,"pax":1,"id":1777691251586},{"d":"2026-05-01","fc":"桃園市","fd":"龜山區","fr":"萬壽路一段","tc":"新北市","td":"新莊區","tr":"新樹路","km":3.94,"fare":181,"service":45,"detail":136,"pax":2,"id":1777691278267},{"d":"2026-05-01","fc":"新北市","fd":"新莊區","fr":"中正路","tc":"新北市","td":"三重區","tr":"成功路","km":10.46,"fare":282,"service":71,"detail":211,"pax":1,"id":1777691306691},{"d":"2026-05-01","fc":"新北市","fd":"永和區","fr":"環河東路一段","tc":"新北市","td":"中和區","tr":"景新街","km":3.78,"fare":300,"service":75,"detail":225,"pax":2,"id":1777691331163},{"d":"2026-05-01","fc":"新北市","fd":"中和區","fr":"大勇街","tc":"新北市","td":"中和區","tr":"中正路","km":5.07,"fare":222,"service":56,"detail":166,"pax":1,"id":1777691354395},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"大觀路一段","tc":"新北市","td":"板橋區","tr":"板橋車站","km":2.25,"fare":207,"service":52,"detail":155,"pax":1,"id":1777691379492},{"d":"2026-05-01","fc":"新北市","fd":"板橋區","fr":"板橋車站","tc":"臺北市","td":"文山區","tr":"木柵路一段","km":11.22,"fare":418,"service":105,"detail":313,"pax":1,"id":1777691402468},{"d":"2026-05-01","fc":"臺北市","fd":"文山區","fr":"辛亥路","tc":"臺北市","td":"萬華區","tr":"青年公園","km":14.33,"fare":389,"service":97,"detail":292,"pax":2,"id":1777691429516},{"d":"2026-05-02","fc":"新北市","fd":"板橋區","fr":"國慶路","tc":"新北市","td":"樹林區","tr":"佳園路三段","km":10.17,"fare":414,"service":104,"detail":310,"pax":2,"id":1777738619544},{"d":"2026-05-02","fc":"新北市","fd":"板橋區","fr":"篤行路三段","tc":"新北市","td":"板橋區","tr":"板橋車站","km":6.03,"fare":286,"service":72,"detail":214,"pax":1,"id":1777738731090},{"d":"2026-05-02","fc":"新北市","fd":"板橋區","fr":"雨農路","tc":"新北市","td":"三重區","tr":"中央南路","km":8.18,"fare":299,"service":75,"detail":224,"pax":1,"id":1777738823980},{"d":"2026-05-02","fc":"新北市","fd":"三重區","fr":"中央南路","tc":"台北市","td":"大同區","tr":"迪化街二段","km":2.86,"fare":156,"service":39,"detail":117,"pax":2,"id":1777738860829},{"d":"2026-05-02","fc":"台北市","fd":"大同區","fr":"環河北路","tc":"台北市","td":"大同區","tr":"京站","km":3.16,"fare":176,"service":44,"detail":132,"pax":1,"id":1777738896837},{"d":"2026-05-02","fc":"台北市","fd":"信義區","fr":"松德路","tc":"台北市","td":"中山區","tr":"MAJI集食行樂","km":10.66,"fare":380,"service":95,"detail":285,"pax":2,"id":1777738999328},{"d":"2026-05-02","fd":"三重區","fr":"重新路一段","td":"林口區","tr":"八德路","km":17.07,"fare":550,"service":138,"detail":412,"pax":2,"note":"香港","id":1777810867603},{"d":"2026-05-02","fd":"林口區","fr":"八德路","td":"龜山區","tr":"樂善二路","km":4.93,"fare":239,"service":60,"detail":179,"pax":2,"note":"","id":1777810901259},{"d":"2026-05-02","fd":"龜山區","fr":"文康街","td":"龜山區","tr":"忠義路二段","km":5.56,"fare":162,"service":41,"detail":121,"pax":1,"note":"","id":1777810931083},{"d":"2026-05-03","fd":"土城區","fr":"樂活山中湖庭園餐廳","td":"板橋區","tr":"大明街","km":7.54,"fare":312,"service":78,"detail":234,"pax":4,"note":"","id":1777812011089},{"d":"2026-05-03","fd":"萬華區","fr":"三水街","td":"大同區","tr":"延平北路二段","km":4.69,"fare":217,"service":54,"detail":163,"pax":2,"note":"","id":1777812121307},{"d":"2026-05-03","fd":"大同區","fr":"涼州街","td":"萬華區","tr":"西門町","km":2.44,"fare":149,"service":37,"detail":112,"pax":2,"note":"香港","id":1777812209237},{"d":"2026-05-03","fd":"萬華區","fr":"龍山寺","td":"板橋區","tr":"華江一路","km":3.71,"fare":171,"service":43,"detail":128,"pax":1,"note":"","id":1777812248166},{"d":"2026-05-03","fd":"板橋區","fr":"華江一路","td":"三重區","tr":"中央南路","km":6.59,"fare":241,"service":60,"detail":181,"pax":2,"note":"","id":1777812275590},{"d":"2026-05-03","fd":"三重區","fr":"台北橋站","td":"大同區","tr":"長安西路","km":2.88,"fare":156,"service":39,"detail":117,"pax":1,"note":"","id":1777812359768},{"d":"2026-05-03","fd":"大同區","fr":"迪化街一段","td":"中正區","tr":"中華路一段","km":1.62,"fare":118,"service":30,"detail":88,"pax":4,"note":"","id":1777812519659},{"d":"2026-05-03","fd":"中正區","fr":"延平南路","td":"中正區","tr":"衡陽路","km":0.72,"fare":98,"service":25,"detail":73,"pax":2,"note":"外國","id":1777812617165},{"d":"2026-05-03","fd":"中正區","fr":"衡陽路","td":"萬華區","tr":"西門町","km":0.49,"fare":85,"service":21,"detail":64,"pax":1,"note":"外國","id":1777812690630},{"d":"2026-05-03","fd":"萬華區","fr":"青年路","td":"中山區","tr":"中山北路一段","km":8.57,"fare":347,"service":87,"detail":260,"pax":1,"note":"","id":1777812731239},{"d":"2026-05-03","fd":"大同區","fr":"京站","td":"大同區","tr":"京站","km":0,"fare":40,"service":10,"detail":30,"pax":1,"note":"取消","id":1777812771512},{"d":"2026-05-03","fd":"大同區","fr":"京站","td":"中山區","tr":"新生北路二段","km":2.42,"fare":128,"service":32,"detail":96,"pax":4,"note":"日本","id":1777812889978},{"d":"2026-05-03","fd":"中正區","fr":"台北車站","td":"中正區","tr":"和平西路二段","km":3.49,"fare":218,"service":55,"detail":163,"pax":2,"note":"","id":1777812934084}]/*__TRIPS_END__*/;
+var UBER_WEEKLY  = /*__WEEKLY_START__*/[{"date":"2026-05-01","income":2195,"tripCount":13,"hours":6,"mins":7,"points":23,"id":1777906433478},{"date":"2026-05-02","income":1994,"tripCount":9,"hours":3,"mins":48,"points":19,"id":1777906259650},{"date":"2026-05-03","income":1709,"tripCount":12,"hours":3,"mins":55,"points":36,"id":1777906243194},{"date":"2026-05-04","income":859,"tripCount":4,"hours":2,"mins":3,"points":6,"id":1777906193425}]/*__WEEKLY_END__*/;
 var UBER_MONTHLY = /*__MONTHLY_START__*/[]/*__MONTHLY_END__*/;
 // 初始化 localStorage
 (function(){
@@ -296,7 +291,6 @@ var UBER_MONTHLY = /*__MONTHLY_START__*/[]/*__MONTHLY_END__*/;
         <div class="form-group"><label style="font-size:12px">行程數</label><input class="form-input" style="font-size:15px" type="number" id="fw-trips" placeholder="0" min="0"></div>
         <div class="form-group"><label style="font-size:12px">時數（小時）</label><input class="form-input" style="font-size:15px" type="number" id="fw-hours" placeholder="0" min="0"></div>
         <div class="form-group"><label style="font-size:12px">時數（分鐘）</label><input class="form-input" style="font-size:15px" type="number" id="fw-mins" placeholder="0" min="0" max="59"></div>
-        <div class="form-group"><label style="font-size:12px">積分</label><input class="form-input" style="font-size:15px" type="number" id="fw-points" placeholder="0" min="0"></div>
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
@@ -386,45 +380,52 @@ async function pushToGitHub(){
   var trips=getData('uberTrips'), weekly=getData('uberWeekly'), monthly=getData('uberMonthly');
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_PATH;
   var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+  // 優先用快取的 SHA，避免短時間內連續推送衝突
+  var cachedSha = localStorage.getItem('gh_uber_sha');
+  var cachedHtml = localStorage.getItem('gh_uber_html');
+
   showToast('⏳ 連線 GitHub...',false);
   var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-  if(!r.ok){
-    if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
-    else showToast('❌ 連線失敗('+r.status+')',true);
-    return;
-  }
+  if(!r.ok){if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}else showToast('❌ 連線失敗('+r.status+')',true);return;}
   var fi=await r.json();
   var sha=fi.sha;
 
-  showToast('⏳ 下載中...',false);
-  var dr=await fetch(fi.download_url+'?t='+Date.now());
-  if(!dr.ok){showToast('❌ 下載失敗('+dr.status+')',true);return;}
-  var html=await dr.text();
+  var html;
+  if(cachedSha===sha && cachedHtml){
+    // SHA 未變，直接用快取的 HTML
+    html=cachedHtml;
+  } else {
+    showToast('⏳ 下載中...',false);
+    var dr=await fetch(fi.download_url+'?t='+Date.now());
+    if(!dr.ok){showToast('❌ 下載失敗',true);return;}
+    html=await dr.text();
+  }
 
-  function replaceMarker(h,marker,data){
+  function replaceMarker(h, marker, data){
     var s='/*__'+marker+'_START__*/';
     var e='/*__'+marker+'_END__*/';
-    var si=h.indexOf(s),ei=h.indexOf(e);
-    if(si===-1||ei===-1){showToast('❌ 找不到標記:'+marker,true);return h;}
+    var si=h.indexOf(s), ei=h.indexOf(e);
+    if(si===-1||ei===-1)return h;
     return h.slice(0,si+s.length)+JSON.stringify(data)+h.slice(ei);
   }
   html=replaceMarker(html,'TRIPS',trips);
   html=replaceMarker(html,'WEEKLY',weekly);
   html=replaceMarker(html,'MONTHLY',monthly);
 
-  var encoded;
-  try{
-    encoded=btoa(unescape(encodeURIComponent(html)));
-  }catch(encErr){
-    showToast('❌ 編碼失敗:'+encErr.message,true);return;
-  }
-
-  showToast('⏳ 推送中...',false);
+  var encoded=btoa(unescape(encodeURIComponent(html)));
   var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
   if(!pr.ok){
     var e2=await pr.json();
     showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
+    // 清除快取，下次重新抓
+    localStorage.removeItem('gh_uber_sha');
+    localStorage.removeItem('gh_uber_html');
   } else {
+    // 推送成功後，快取新的 SHA 和 HTML
+    var newShaResp=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
+    var newFi=await newShaResp.json();
+    localStorage.setItem('gh_uber_sha', newFi.sha);
+    localStorage.setItem('gh_uber_html', html);
     showToast('✦ 已儲存至 GitHub',false);
   }
 }
@@ -580,12 +581,11 @@ function addWeekly(){
   var tripCount=parseInt(document.getElementById('fw-trips').value)||0;
   var hours=parseInt(document.getElementById('fw-hours').value)||0;
   var mins=parseInt(document.getElementById('fw-mins').value)||0;
-  var points=parseInt(document.getElementById('fw-points').value)||0;
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
-  w.unshift({date,income,tripCount,hours,mins,points,id:Date.now()});
+  w.unshift({date,income,tripCount,hours,mins,id:Date.now()});
   saveAndPush('uberWeekly',w);renderWeekly();updateStats();
-  ['fw-income','fw-trips','fw-hours','fw-mins','fw-points'].forEach(id=>document.getElementById(id).value='');
+  ['fw-income','fw-trips','fw-hours','fw-mins'].forEach(id=>document.getElementById(id).value='');
 }
 function deleteWeekly(id){
   if(!confirm('確定刪除這筆記錄？'))return;
@@ -605,7 +605,6 @@ function renderWeekly(){
         <div class="week-amount" style="font-size:13px">NT$${fmt(w.income)}</div>
         <div style="font-size:13px;color:#f0dca8;margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
         <div style="font-size:13px;color:#60AAFF;margin-left:4px;min-width:110px">${hStr}</div>
-        <div style="font-size:13px;color:#FFD700;margin-left:8px;min-width:60px">${w.points||0}分</div>
         <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
       </div>`;
     }).join('')+'</div>';
