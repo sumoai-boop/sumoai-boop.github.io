@@ -145,13 +145,37 @@ body{
 </script>
 <script>
 (function(){
-  try{
-    var raw = document.getElementById('gh-data').textContent;
-    var obj = JSON.parse(raw);
-    if(obj.uberTrips && obj.uberTrips.length) localStorage.setItem('uberTrips', JSON.stringify(obj.uberTrips));
-    if(obj.uberWeekly && obj.uberWeekly.length) localStorage.setItem('uberWeekly', JSON.stringify(obj.uberWeekly));
-    if(obj.uberMonthly && obj.uberMonthly.length) localStorage.setItem('uberMonthly', JSON.stringify(obj.uberMonthly));
-  }catch(e){console.error('gh-data init error:',e);}
+  // 從 GitHub 讀取最新資料
+  var token = localStorage.getItem('gh_token_uber');
+  if(!token) return; // 尚未設定 token，跳過
+  var apiBase = 'https://api.github.com/repos/sumoai-boop/sumoai-boop.github.io/contents/uber.html';
+  fetch(apiBase + '?ref=main&t=' + Date.now(), {
+    headers: {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
+  }).then(function(r){ return r.json(); }).then(function(fileInfo){
+    var currentContent;
+    if(fileInfo.content && fileInfo.content.trim()!==''){
+      currentContent = decodeURIComponent(escape(atob(fileInfo.content.replace(/\n/g,''))));
+    } else if(fileInfo.download_url){
+      return fetch(fileInfo.download_url + '?t=' + Date.now())
+        .then(function(r){ return r.text(); })
+        .then(function(text){ loadDataFromHTML(text); });
+    }
+    if(currentContent) loadDataFromHTML(currentContent);
+  }).catch(function(e){ console.warn('GitHub sync failed:', e); });
+
+  function loadDataFromHTML(html){
+    try{
+      var raw = html.match(/<script[^>]*id="gh-data"[^>]*>([\s\S]*?)<\/script>/);
+      if(!raw) return;
+      var obj = JSON.parse(raw[1]);
+      if(obj.uberTrips) localStorage.setItem('uberTrips', JSON.stringify(obj.uberTrips));
+      if(obj.uberWeekly) localStorage.setItem('uberWeekly', JSON.stringify(obj.uberWeekly));
+      if(obj.uberMonthly) localStorage.setItem('uberMonthly', JSON.stringify(obj.uberMonthly));
+      // 重新渲染
+      if(typeof renderTrips==='function') renderTrips();
+      if(typeof updateStats==='function') updateStats();
+    }catch(e){ console.error('loadDataFromHTML error:',e); }
+  }
 })();
 </script>
 </head>
