@@ -47,23 +47,23 @@
   .del-btn{background:rgba(180,40,40,0.15);border:1px solid rgba(220,60,60,0.4);border-radius:6px;color:rgba(220,100,100,0.8);font-size:12px;cursor:pointer;padding:3px 8px;transition:all 0.2s;line-height:1;}
   .del-btn:hover{background:rgba(220,60,60,0.4);color:#fff;border-color:rgba(220,60,60,0.8);}
   .result-count{font-size:13px;color:rgba(220,190,130,0.8);letter-spacing:0.06em;margin-bottom:12px;font-weight:500;}
-  .table-wrap{background:rgba(160,155,150,0.5);border:1px solid rgba(130,110,90,0.5);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
+  .table-wrap{background:rgba(30,50,90,0.75);border:1px solid rgba(50,80,140,0.6);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
-  .movie-table th{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(80,40,5,0.95);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:center;background:rgba(232,98,42,0.06);white-space:nowrap;font-weight:600;}
+  .movie-table th{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,230,255,0.95);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:center;background:rgba(20,40,80,0.5);white-space:nowrap;font-weight:600;}
   .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#4A2A08;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
-  .movie-table tr:hover td{background:rgba(232,98,42,0.08);}
-  .title-cell{color:#2C1A0E;font-size:18px;font-weight:500;cursor:pointer;display:inline-block;position:relative;}
+  .movie-table tr:hover td{background:rgba(255,255,255,0.08);}
+  .title-cell{color:#E8F4FF;font-size:18px;font-weight:500;cursor:pointer;display:inline-block;position:relative;}
   .title-cell::after{content:'';position:absolute;left:0;bottom:-1px;width:0;height:1px;background:#E8622A;transition:width 0.25s ease;}
   .title-cell:hover{color:#3D2010;}
   .title-cell:hover::after{width:100%;}
   .orig-cell{color:#ffffff;font-size:10px;margin-top:2px;}
   .score-badge{display:inline-block;font-size:15px;font-weight:700;}
-  .score-high{color:#B84000;}
-  .score-mid{color:#1E5FAA;}
-  .score-low{color:#1A7A30;}
-  .venue-cinema{color:#7A4500;font-size:10px;font-weight:500;}
-  .venue-home{color:rgba(60,30,5,0.6);font-size:10px;}
+  .score-high{color:#FF8C00;}
+  .score-mid{color:#1A1A1A;}
+  .score-low{color:#FF2222;text-shadow:0 0 6px rgba(255,0,0,0.6)30;}
+  .venue-cinema{color:#FFD580;font-size:10px;font-weight:500;}
+  .venue-home{color:rgba(180,220,255,0.8);font-size:10px;}
   .type-movie{display:inline-block;padding:3px 9px;border-radius:99px;font-size:12px;background:transparent;color:#EF4444;border:1.5px solid #EF4444;font-weight:700;}
   .type-tv{display:inline-block;padding:3px 9px;border-radius:99px;font-size:12px;background:transparent;color:#2DD4BF;border:1.5px solid #2DD4BF;font-weight:700;}
   .no-result{text-align:center;padding:48px 0;color:rgba(60,30,5,0.55);font-size:13px;letter-spacing:0.1em;}
@@ -105,15 +105,15 @@
   }
 
   /* ── 電影行事曆 ── */
-  .cal-wrap{background:rgba(160,155,150,0.5);border:1px solid rgba(130,110,90,0.5);border-radius:14px;padding:24px;margin-bottom:24px;box-shadow:0 0 20px rgba(232,98,42,0.08);}
+  .cal-wrap{background:rgba(30,50,90,0.75);border:1px solid rgba(50,80,140,0.6);border-radius:14px;padding:24px;margin-bottom:24px;box-shadow:0 0 20px rgba(232,98,42,0.08);}
   .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-  .cal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#2C1A0E;letter-spacing:0.05em;}
-  .cal-btn{background:transparent;border:1px solid rgba(232,98,42,0.4);border-radius:99px;color:#E8622A;font-size:22px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all 0.2s;}
+  .cal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#FFFFFF;letter-spacing:0.05em;}
+  .cal-btn{background:transparent;border:1px solid rgba(255,180,100,0.7);border-radius:99px;color:#FFB060;font-size:22px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all 0.2s;}
   .cal-btn:hover{background:rgba(232,98,42,0.15);border-color:rgba(232,98,42,0.8);}
-  .cal-today-btn{background:rgba(232,98,42,0.2);border:1px solid rgba(232,98,42,0.5);border-radius:99px;color:#E8622A;font-size:10px;padding:5px 14px;cursor:pointer;font-family:'Space Mono',monospace;letter-spacing:0.06em;transition:all 0.2s;}
+  .cal-today-btn{background:rgba(255,140,50,0.35);border:1px solid rgba(255,160,80,0.8);border-radius:99px;color:#FFD080;font-size:10px;padding:5px 14px;cursor:pointer;font-family:'Space Mono',monospace;letter-spacing:0.06em;transition:all 0.2s;}
   .cal-today-btn:hover{background:rgba(232,98,42,0.45);color:#fff;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
-  .cal-dow{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,169,110,0.5);text-align:center;padding-bottom:8px;}
+  .cal-dow{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.75);text-align:center;padding-bottom:8px;}
   .cal-cell{min-height:62px;border-radius:8px;padding:6px;position:relative;cursor:default;transition:background 0.15s;}
   .cal-cell.has-movie{background:rgba(232,98,42,0.08);border:1px solid rgba(232,98,42,0.25);cursor:pointer;}
   .cal-cell.has-movie:hover{background:rgba(232,98,42,0.18);border-color:rgba(232,98,42,0.6);}
@@ -579,7 +579,7 @@ function render(){
     const ic=m.venue.includes('🎬');
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td style="color:#4A2800;font-size:11px;white-space:nowrap">${m.date}</td>
+      <td style="color:rgba(180,220,255,0.85);font-size:11px;white-space:nowrap">${m.date}</td>
       <td style="font-size:20px;text-align:center;line-height:1">${toFlag(m.lang)}</td>
       <td style="text-align:center"><span class="type-badge ${m.type==='影集'?'type-tv':'type-movie'}">${m.type}</span></td>
       <td>
@@ -587,8 +587,8 @@ function render(){
         <div class="orig-cell">${m.orig!=='nan'?m.orig:''}</div>
       </td>
       <td style="color:#4A2800;text-align:center">${m.year>0?m.year:''}</td>
-      <td style="color:#5C3000;font-weight:600;text-align:center">${st(m.imdb)}</td>
-      <td style="color:#5C3000;font-weight:600;text-align:center">${st(m.douban)}</td>
+      <td style="color:#FFD580;font-weight:600;text-align:center">${st(m.imdb)}</td>
+      <td style="color:#FFD580;font-weight:600;text-align:center">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
       <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
