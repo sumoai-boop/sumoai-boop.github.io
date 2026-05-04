@@ -519,24 +519,24 @@ const TMDB_ID_OVERRIDE={
 };
 
 const DIST_LOGO={
-  'Netflix':    '<span style="font-size:11px;font-weight:600;color:#E50914">Netflix</span>',
-  'Disney':     '<span style="font-size:12px;font-weight:900;color:#1A7A30;font-family:sans-serif;letter-spacing:1px">DISNEY</span>',
-  'Disney+':    '<span style="font-size:11px;font-weight:900;color:#0063e5;font-family:sans-serif">Disney+</span>',
-  'HBO Max':    '<span style="font-size:11px;font-weight:600;color:#3D2010">HBO</span>',
-  'Amazon':     '<span style="font-size:11px;font-weight:900;color:#FF9900;font-family:sans-serif">PRIME</span>',
-  'Apple':      '<span style="font-size:11px;font-weight:600;color:#3D2010">Apple</span>',
-  'Warner':     '<span style="font-size:11px;font-weight:900;color:#005BAC;font-family:sans-serif">WB</span>',
-  'SONY':       '<span style="font-size:13px;font-weight:900;color:#FFFFFF;font-family:sans-serif;letter-spacing:1px">SONY</span>',
-  'Paramount':  '<span style="font-size:11px;font-weight:600;color:#3D2010">Paramount</span>',
-  'Universal':  '<span style="font-size:11px;font-weight:900;color:#FFFFFF;font-family:sans-serif">UNIVERSAL</span>',
-  'A24':        '<span style="font-family:serif;font-weight:900;font-size:14px;color:#2C1A0E;letter-spacing:-1px">A24</span>',
-  'Lions Gate': '<span style="font-size:10px;color:#C8A96E;font-weight:700;letter-spacing:0.5px">LIONSGATE</span>',
-  'Fox':        '<span style="font-size:11px;font-weight:600;color:#3D2010">Fox</span>',
-  '20th Century':'<span style="font-size:9px;color:#C8A96E;font-weight:600">20TH CENTURY</span>',
-  'MGM':        '<span style="font-size:13px;color:#C8A96E;font-weight:700;font-style:italic">MGM</span>',
-  'New Line':   '<span style="font-size:10px;color:#C8A96E;font-weight:600">NEW LINE</span>',
-  'CJ ENM':     '<span style="font-size:10px;color:#C8A96E;font-weight:600">CJ ENM</span>',
-  'Showbox':    '<span style="font-size:10px;color:#C8A96E;font-weight:600">SHOWBOX</span>',
+  'Netflix':     '<span style="font-size:12px;font-weight:700;color:#E50914">Netflix</span>',
+  'Disney':      '<span style="font-size:12px;font-weight:700;color:#1A7A30;letter-spacing:1px">DISNEY</span>',
+  'Disney+':     '<span style="font-size:12px;font-weight:700;color:#0063e5">Disney+</span>',
+  'HBO Max':     '<span style="font-size:12px;font-weight:700;color:#6A1FC2">HBO Max</span>',
+  'Amazon':      '<span style="font-size:12px;font-weight:700;color:#FF9900">PRIME</span>',
+  'Apple':       '<span style="font-size:12px;font-weight:700;color:#555555">Apple</span>',
+  'Warner':      '<span style="font-size:12px;font-weight:700;color:#005BAC">WB</span>',
+  'SONY':        '<span style="font-size:12px;font-weight:700;color:#111111">SONY</span>',
+  'Paramount':   '<span style="font-size:12px;font-weight:700;color:#003087">Paramount</span>',
+  'Universal':   '<span style="font-size:12px;font-weight:700;color:#333333">UNIVERSAL</span>',
+  'A24':         '<span style="font-size:12px;font-weight:700;color:#111111;letter-spacing:-1px">A24</span>',
+  'Lions Gate':  '<span style="font-size:12px;font-weight:700;color:#AA6600">LIONSGATE</span>',
+  'Fox':         '<span style="font-size:12px;font-weight:700;color:#CC0000">Fox</span>',
+  '20th Century':'<span style="font-size:12px;font-weight:700;color:#333333">20TH CENTURY</span>',
+  'MGM':         '<span style="font-size:12px;font-weight:700;color:#AA8800;font-style:italic">MGM</span>',
+  'New Line':    '<span style="font-size:12px;font-weight:700;color:#333333">NEW LINE</span>',
+  'CJ ENM':      '<span style="font-size:12px;font-weight:700;color:#0055AA">CJ ENM</span>',
+  'Showbox':     '<span style="font-size:12px;font-weight:700;color:#333333">SHOWBOX</span>',
 };
 function toDistLogo(d){
   if(!d||d==='nan') return '';
@@ -644,7 +644,7 @@ function render(){
     const ic=m.venue.includes('🎬');
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td style="color:#111111;font-size:11px;white-space:nowrap">${m.date}</td>
+      <td style="color:#111111;font-size:11px;font-weight:700;white-space:nowrap">${m.date}</td>
       <td style="font-size:20px;text-align:center;line-height:1">${toFlag(m.lang)}</td>
       <td style="text-align:center"><span class="type-badge ${m.type==='影集'?'type-tv':'type-movie'}">${m.type}</span></td>
       <td>
