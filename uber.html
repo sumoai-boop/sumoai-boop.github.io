@@ -398,20 +398,32 @@ async function pushToGitHub(){
     var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
     var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 連線 GitHub...',false);
-    var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-    if(!r.ok){
-      if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
-      else showToast('❌ 連線失敗('+r.status+')',true);
-      return;
+    // 用快取的 SHA，避免連續推送衝突
+    var sha=localStorage.getItem('gh_json_sha');
+    if(!sha){
+      var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
+      if(!r.ok){
+        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
+        else showToast('❌ 連線失敗('+r.status+')',true);
+        return;
+      }
+      var fi=await r.json();
+      sha=fi.sha;
     }
-    var fi=await r.json();
-    var sha=fi.sha;
     var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
     showToast('⏳ 推送中...',false);
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
-    if(!pr.ok){var e2=await pr.json();showToast('❌ 推送失敗：'+(e2.message||pr.status),true);}
-    else showToast('✦ 已儲存至 GitHub',false);
+    if(!pr.ok){
+      var e2=await pr.json();
+      localStorage.removeItem('gh_json_sha'); // 清除快取，下次重抓
+      showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
+    } else {
+      // 推送成功後取得新 SHA 存快取
+      var r2=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
+      if(r2.ok){var fi2=await r2.json();localStorage.setItem('gh_json_sha',fi2.sha);}
+      showToast('✦ 已儲存至 GitHub',false);
+    }
   }finally{_pushing=false;}
 }
 async function saveAndPush(key,data){saveData(key,data);await pushToGitHub();}
