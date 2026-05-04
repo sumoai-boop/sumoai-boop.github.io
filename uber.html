@@ -145,46 +145,34 @@ body{
 </script>
 <script>
 (function(){
-  // 1. 先從 gh-data 載入資料（同步，立即可用）
-  try{
-    var raw = document.getElementById('gh-data').textContent;
-    var obj = JSON.parse(raw);
-    if(obj.uberTrips && obj.uberTrips.length) localStorage.setItem('uberTrips', JSON.stringify(obj.uberTrips));
-    if(obj.uberWeekly && obj.uberWeekly.length) localStorage.setItem('uberWeekly', JSON.stringify(obj.uberWeekly));
-    if(obj.uberMonthly && obj.uberMonthly.length) localStorage.setItem('uberMonthly', JSON.stringify(obj.uberMonthly));
-  }catch(e){}
-
-  // 2. 再從 GitHub 抓最新資料（非同步，完成後重新渲染）
   var token = localStorage.getItem('gh_token_uber');
   if(!token) return;
-  fetch('https://raw.githubusercontent.com/sumoai-boop/sumoai-boop.github.io/main/uber.html?t=' + Date.now())
-    .then(function(r){ return r.text(); })
+  var apiBase = 'https://api.github.com/repos/sumoai-boop/sumoai-boop.github.io/contents/uber.html';
+  var headers = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'};
+
+  fetch(apiBase+'?ref=main&t='+Date.now(), {headers:headers})
+    .then(function(r){ return r.json(); })
+    .then(function(fileInfo){
+      if(!fileInfo.download_url) return;
+      return fetch(fileInfo.download_url+'?t='+Date.now());
+    })
+    .then(function(r){ if(r) return r.text(); })
     .then(function(html){
-      var m = html.match(/<script[^>]*id="gh-data"[^>]*type="application\/json"[^>]*>([\s\S]*?)<\/script>/);
-      if(!m) m = html.match(/<script[^>]*id="gh-data"[^>]*>([\s\S]*?)<\/script>/);
-      if(!m) return;
-      var obj = JSON.parse(m[1]);
-      var changed = false;
-      if(obj.uberTrips){
-        var cur = localStorage.getItem('uberTrips');
-        var neo = JSON.stringify(obj.uberTrips);
-        if(cur !== neo){ localStorage.setItem('uberTrips', neo); changed = true; }
-      }
-      if(obj.uberWeekly){
-        var cur2 = localStorage.getItem('uberWeekly');
-        var neo2 = JSON.stringify(obj.uberWeekly);
-        if(cur2 !== neo2){ localStorage.setItem('uberWeekly', neo2); changed = true; }
-      }
-      if(obj.uberMonthly){
-        var cur3 = localStorage.getItem('uberMonthly');
-        var neo3 = JSON.stringify(obj.uberMonthly);
-        if(cur3 !== neo3){ localStorage.setItem('uberMonthly', neo3); changed = true; }
-      }
-      if(changed){
+      if(!html) return;
+      try{
+        var m = html.match(/<script[^>]*id="gh-data"[^>]*>([\s\S]*?)<\/script>/);
+        if(!m) return;
+        var obj = JSON.parse(m[1].trim());
+        if(obj.uberTrips !== undefined) localStorage.setItem('uberTrips', JSON.stringify(obj.uberTrips));
+        if(obj.uberWeekly !== undefined) localStorage.setItem('uberWeekly', JSON.stringify(obj.uberWeekly));
+        if(obj.uberMonthly !== undefined) localStorage.setItem('uberMonthly', JSON.stringify(obj.uberMonthly));
         if(typeof renderTrips==='function') renderTrips();
         if(typeof updateStats==='function') updateStats();
-      }
-    }).catch(function(e){ console.warn('GitHub sync:', e); });
+        if(typeof renderWeekly==='function') renderWeekly();
+        if(typeof renderMonthly==='function') renderMonthly();
+      }catch(e){ console.error('sync error:',e); }
+    })
+    .catch(function(e){ console.warn('GitHub sync failed:',e); });
 })();
 </script>
 </head>
@@ -428,10 +416,10 @@ async function pushToGitHub(newTrips,newWeekly,newMonthly){
   var getResp=await fetch(apiBase+'?ref='+GH_BRANCH,{headers});
   if(!getResp.ok){if(getResp.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}else showToast('❌ 連線失敗('+getResp.status+')',true);return;}
   var fileInfo=await getResp.json();var sha=fileInfo.sha;
-  var currentContent;
-  if(fileInfo.content&&fileInfo.content.trim()!==''){currentContent=decodeURIComponent(escape(atob(fileInfo.content.replace(/\n/g,''))));}
-  else if(fileInfo.download_url){showToast('⏳ 下載中...',false);var dlResp=await fetch(fileInfo.download_url);currentContent=await dlResp.text();}
-  else{showToast('❌ 無法取得檔案',true);return;}
+  showToast('⏳ 下載檔案中...',false);
+  var dlResp=await fetch(fileInfo.download_url+'?t='+Date.now());
+  if(!dlResp.ok){showToast('❌ 下載失敗',true);return;}
+  var currentContent=await dlResp.text();
 
   // 更新 gh-data JSON 區塊
   var newObj = {uberTrips:newTrips, uberWeekly:newWeekly, uberMonthly:newMonthly};
