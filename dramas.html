@@ -560,35 +560,64 @@ function buildTop5(){
 
 async function fetchPosterForCard(m, imgEl){
   try{
-    const TMDB_KEY = 'e174d0983218845b167176a27b04b83f';
+    const LANG_MAP2={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
+      'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
+      'IT':'it','IN':'hi','ID':'id','TR':'tr','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
+    const origLang2 = LANG_MAP2[m.lang]||null;
     const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
     const year = m.year||0;
-    let url = null;
 
-    // 1. 先試英文原名
-    if(m.orig && m.orig!=='nan' && isLatin(m.orig)){
-      const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
-      const d = await r.json();
-      const hit = d.results && d.results.find(x=>x.poster_path);
-      if(hit) url = `https://image.tmdb.org/t/p/w300${hit.poster_path}`;
-    }
-    // 2. 再試中文片名
-    if(!url){
-      const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
-      const d = await r.json();
-      const hit = d.results && d.results.find(x=>x.poster_path);
-      if(hit) url = `https://image.tmdb.org/t/p/w300${hit.poster_path}`;
-    }
-    // 3. 試 TV
-    if(!url){
-      const r = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
-      const d = await r.json();
-      const hit = d.results && d.results.find(x=>x.poster_path);
-      if(hit) url = `https://image.tmdb.org/t/p/w300${hit.poster_path}`;
+    function pickBest(results, year){
+      if(!results||!results.length) return null;
+      let pool = results;
+      if(origLang2){
+        const langMatch = results.filter(r=>r.original_language===origLang2);
+        if(langMatch.length) pool = langMatch;
+      }
+      if(year&&year>0){
+        const exact=pool.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
+        if(exact) return exact;
+        const near=pool.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
+        if(near) return near;
+      }
+      return pool[0];
     }
 
-    if(url) imgEl.src = url;
-    else imgEl.style.display = 'none';
+    let poster = null;
+
+    // 直接指定 TMDB ID
+    if(TMDB_ID_OVERRIDE[m.title]){
+      const r=await fetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
+      const d=await r.json();
+      if(d.poster_path) poster=d.poster_path;
+    }
+
+    if(!poster && m.orig && m.orig!=='nan' && isLatin(m.orig)){
+      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+      const d=await r.json();
+      const hit=pickBest(d.results, year);
+      if(hit&&hit.poster_path) poster=hit.poster_path;
+    }
+    if(!poster){
+      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      const d=await r.json();
+      const hit=pickBest(d.results, year);
+      if(hit&&hit.poster_path) poster=hit.poster_path;
+    }
+    if(!poster && m.orig && m.orig!=='nan' && !isLatin(m.orig)){
+      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+      const d=await r.json();
+      const hit=pickBest(d.results, year);
+      if(hit&&hit.poster_path) poster=hit.poster_path;
+    }
+    if(!poster){
+      const r=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      const d=await r.json();
+      if(d.results&&d.results[0]&&d.results[0].poster_path) poster=d.results[0].poster_path;
+    }
+
+    if(poster) imgEl.src=`https://image.tmdb.org/t/p/w300${poster}`;
+    else imgEl.style.display='none';
   }catch(e){ imgEl.style.display='none'; }
 }
 
