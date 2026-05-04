@@ -57,13 +57,13 @@
   .title-cell::after{content:'';position:absolute;left:0;bottom:-1px;width:0;height:1px;background:#E8622A;transition:width 0.25s ease;}
   .title-cell:hover{color:#3D2010;}
   .title-cell:hover::after{width:100%;}
-  .orig-cell{color:#ffffff;font-size:10px;margin-top:2px;}
-  .score-badge{display:inline-block;font-size:15px;font-weight:700;}
+  .orig-cell{color:#111111;font-size:10px;margin-top:2px;}
+  .score-badge{display:inline-block;font-size:18px;font-weight:700;}
   .score-high{color:#FF8C00;}
   .score-mid{color:#1A1A1A;}
   .score-low{color:#FF2222;text-shadow:0 0 6px rgba(255,0,0,0.6)30;}
-  .venue-cinema{color:#FFD580;font-size:10px;font-weight:500;}
-  .venue-home{color:rgba(180,220,255,0.8);font-size:10px;}
+  .venue-cinema{color:#111111;font-size:10px;font-weight:500;}
+  .venue-home{color:#111111;font-size:10px;}
   .type-movie{display:inline-block;padding:3px 9px;border-radius:99px;font-size:12px;background:transparent;color:#111111;border:1.5px solid #111111;font-weight:700;}
   .type-tv{display:inline-block;padding:3px 9px;border-radius:99px;font-size:12px;background:transparent;color:#2DD4BF;border:1.5px solid #2DD4BF;font-weight:700;}
   .no-result{text-align:center;padding:48px 0;color:rgba(60,30,5,0.55);font-size:13px;letter-spacing:0.1em;}
@@ -644,19 +644,19 @@ function render(){
     const ic=m.venue.includes('🎬');
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td style="color:rgba(180,220,255,0.85);font-size:11px;white-space:nowrap">${m.date}</td>
+      <td style="color:#ffffff;font-size:11px;white-space:nowrap">${m.date}</td>
       <td style="font-size:20px;text-align:center;line-height:1">${toFlag(m.lang)}</td>
       <td style="text-align:center"><span class="type-badge ${m.type==='影集'?'type-tv':'type-movie'}">${m.type}</span></td>
       <td>
         <span class="title-cell" data-id="${m.title}">${m.title}</span>
-        <div class="orig-cell">${m.orig!=='nan'?m.orig:''}</div>
+        <div class="orig-cell" style="color:#111111">${m.orig!=='nan'?m.orig:''}</div>
       </td>
-      <td style="color:#4A2800;text-align:center">${m.year>0?m.year:''}</td>
-      <td style="color:#FFD580;font-weight:600;text-align:center">${st(m.imdb)}</td>
-      <td style="color:#FFD580;font-weight:600;text-align:center">${st(m.douban)}</td>
+      <td style="color:#ffffff;font-size:15px;font-weight:700;text-align:center">${m.year>0?m.year:''}</td>
+      <td style="color:#ffffff;font-size:15px;font-weight:700;text-align:center">${st(m.imdb)}</td>
+      <td style="color:#ffffff;font-size:15px;font-weight:700;text-align:center">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
       <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
-      <td class="${ic?'venue-cinema':'venue-home'}">${m.venue}</td>`;
+      <td class="${ic?'venue-cinema':'venue-home'}" style="color:#111111">${m.venue}</td>`;
     // 片名點擊
     tr.querySelector('.title-cell').addEventListener('click', ()=>openPoster(m));
     tbody.appendChild(tr);
