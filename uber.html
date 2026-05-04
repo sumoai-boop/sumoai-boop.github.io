@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uber è¨é â Sumoai's Reel</title>
+<title>Uber 記錄 — Sumoai's Reel</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -64,7 +64,7 @@ body{
 .ic-uber{background:linear-gradient(135deg,#000,#1a1a1a);border:2px solid rgba(255,255,255,0.3);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 
-/* ä¸»å§å®¹ */
+/* 主內容 */
 .page-content{
   position:relative;
   z-index:10;
@@ -84,7 +84,7 @@ body{
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
 
-/* çµ±è¨å¡ */
+/* 統計卡 */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(0,200,83,0.45);border-radius:14px;padding:18px 20px;}
 .stat-label{font-size:25px;letter-spacing:0.05em;color:rgba(240,220,160,0.8);margin-bottom:8px;}
@@ -94,7 +94,7 @@ body{
 .stat-val em.unit{font-size:38px;color:#ffffff;}
 .stat-val em.num{color:#00C853;}
 
-/* è¡¨å® */
+/* 表單 */
 .form-section{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:16px;padding:24px;margin-bottom:24px;}
 .form-title{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#00E860;margin-bottom:16px;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
@@ -109,7 +109,7 @@ body{
 .btn-add{margin-top:16px;padding:10px 24px;background:#00C853;color:#000;border:none;border-radius:99px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all 0.2s;}
 .btn-add:hover{background:#00E860;}
 
-/* è¡¨æ ¼ */
+/* 表格 */
 .trip-table-wrap{background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.45);border-radius:14px;overflow:hidden;}
 .trip-table{width:100%;border-collapse:collapse;}
 .trip-table th{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#00E860;padding:9px 8px;border-bottom:1px solid rgba(0,200,83,0.4);background:rgba(0,200,83,0.15);text-align:left;}
@@ -117,7 +117,7 @@ body{
 .trip-table tr:last-child td{border-bottom:none;}
 .trip-table tr:hover td{background:rgba(0,200,83,0.12);}
 
-/* é±æ¢ */
+/* 週條 */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
 .chart-card{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:14px;padding:22px;}
 .chart-title{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.9);margin-bottom:16px;}
@@ -137,7 +137,7 @@ body{
 </style>
 <script id="gh-data" type="application/json">
 {
-  "uberTrips": [{"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "éæ¶è·¯", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "æ¿æ©é ç¾", "km": 1.41, "fare": 115, "service": 29, "detail": 86, "pax": 1, "id": 1777689311756}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "åºä¸­ç«", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "ä¸­å±±è·¯ä¸æ®µ", "km": 1.07, "fare": 85, "service": 21, "detail": 64, "pax": 2, "id": 1777691090128}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "åéè¥¿è·¯äºæ®µ", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "åºä¸­ç«", "km": 1.64, "fare": 113, "service": 28, "detail": 85, "pax": 1, "id": 1777691124681}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "æåè¡", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "æ¿æ©å¤§é ç¾", "km": 1.88, "fare": 130, "service": 33, "detail": 97, "pax": 4, "id": 1777691157377}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "æåè·¯äºæ®µ", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "è±ç¦¾å©¦ç¢ç§", "km": 2.36, "fare": 134, "service": 34, "detail": 100, "pax": 2, "id": 1777691193673}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "ä¸­å±±è·¯ä¸æ®µ", "tc": "æ°åå¸", "td": "æ°èå", "tr": "è¿´é¾ç«", "km": 9.4, "fare": 353, "service": 88, "detail": 265, "pax": 1, "id": 1777691251586}, {"d": "2026-05-01", "fc": "æ¡åå¸", "fd": "é¾å±±å", "fr": "è¬å£½è·¯ä¸æ®µ", "tc": "æ°åå¸", "td": "æ°èå", "tr": "æ°æ¨¹è·¯", "km": 3.94, "fare": 181, "service": 45, "detail": 136, "pax": 2, "id": 1777691278267}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ°èå", "fr": "ä¸­æ­£è·¯", "tc": "æ°åå¸", "td": "ä¸éå", "tr": "æåè·¯", "km": 10.46, "fare": 282, "service": 71, "detail": 211, "pax": 1, "id": 1777691306691}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ°¸åå", "fr": "ç°æ²³æ±è·¯ä¸æ®µ", "tc": "æ°åå¸", "td": "ä¸­åå", "tr": "æ¯æ°è¡", "km": 3.78, "fare": 300, "service": 75, "detail": 225, "pax": 2, "id": 1777691331163}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "ä¸­åå", "fr": "å¤§åè¡", "tc": "æ°åå¸", "td": "ä¸­åå", "tr": "ä¸­æ­£è·¯", "km": 5.07, "fare": 222, "service": 56, "detail": 166, "pax": 1, "id": 1777691354395}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "å¤§è§è·¯ä¸æ®µ", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "æ¿æ©è»ç«", "km": 2.25, "fare": 207, "service": 52, "detail": 155, "pax": 1, "id": 1777691379492}, {"d": "2026-05-01", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "æ¿æ©è»ç«", "tc": "èºåå¸", "td": "æå±±å", "tr": "æ¨æµè·¯ä¸æ®µ", "km": 11.22, "fare": 418, "service": 105, "detail": 313, "pax": 1, "id": 1777691402468}, {"d": "2026-05-01", "fc": "èºåå¸", "fd": "æå±±å", "fr": "è¾äº¥è·¯", "tc": "èºåå¸", "td": "è¬è¯å", "tr": "éå¹´å¬å", "km": 14.33, "fare": 389, "service": 97, "detail": 292, "pax": 2, "id": 1777691429516}, {"d": "2026-05-02", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "åæ¶è·¯", "tc": "æ°åå¸", "td": "æ¨¹æå", "tr": "ä½³åè·¯ä¸æ®µ", "km": 10.17, "fare": 414, "service": 104, "detail": 310, "pax": 2, "id": 1777738619544}, {"d": "2026-05-02", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "ç¯¤è¡è·¯ä¸æ®µ", "tc": "æ°åå¸", "td": "æ¿æ©å", "tr": "æ¿æ©è»ç«", "km": 6.03, "fare": 286, "service": 72, "detail": 214, "pax": 1, "id": 1777738731090}, {"d": "2026-05-02", "fc": "æ°åå¸", "fd": "æ¿æ©å", "fr": "é¨è¾²è·¯", "tc": "æ°åå¸", "td": "ä¸éå", "tr": "ä¸­å¤®åè·¯", "km": 8.18, "fare": 299, "service": 75, "detail": 224, "pax": 1, "id": 1777738823980}, {"d": "2026-05-02", "fc": "æ°åå¸", "fd": "ä¸éå", "fr": "ä¸­å¤®åè·¯", "tc": "å°åå¸", "td": "å¤§åå", "tr": "è¿ªåè¡äºæ®µ", "km": 2.86, "fare": 156, "service": 39, "detail": 117, "pax": 2, "id": 1777738860829}, {"d": "2026-05-02", "fc": "å°åå¸", "fd": "å¤§åå", "fr": "ç°æ²³åè·¯", "tc": "å°åå¸", "td": "å¤§åå", "tr": "äº¬ç«", "km": 3.16, "fare": 176, "service": 44, "detail": 132, "pax": 1, "id": 1777738896837}, {"d": "2026-05-02", "fc": "å°åå¸", "fd": "ä¿¡ç¾©å", "fr": "æ¾å¾·è·¯", "tc": "å°åå¸", "td": "ä¸­å±±å", "tr": "MAJIéé£è¡æ¨", "km": 10.66, "fare": 380, "service": 95, "detail": 285, "pax": 2, "id": 1777738999328}, {"d": "2026-05-02", "fd": "ä¸éå", "fr": "éæ°è·¯ä¸æ®µ", "td": "æå£å", "tr": "å«å¾·è·¯", "km": 17.07, "fare": 550, "service": 138, "detail": 412, "pax": 2, "note": "é¦æ¸¯", "id": 1777810867603}, {"d": "2026-05-02", "fd": "æå£å", "fr": "å«å¾·è·¯", "td": "é¾å±±å", "tr": "æ¨åäºè·¯", "km": 4.93, "fare": 239, "service": 60, "detail": 179, "pax": 2, "note": "", "id": 1777810901259}, {"d": "2026-05-02", "fd": "é¾å±±å", "fr": "æåº·è¡", "td": "é¾å±±å", "tr": "å¿ ç¾©è·¯äºæ®µ", "km": 5.56, "fare": 162, "service": 41, "detail": 121, "pax": 1, "note": "", "id": 1777810931083}, {"d": "2026-05-03", "fd": "ååå", "fr": "æ¨æ´»å±±ä¸­æ¹åº­åé¤å»³", "td": "æ¿æ©å", "tr": "å¤§æè¡", "km": 7.54, "fare": 312, "service": 78, "detail": 234, "pax": 4, "note": "", "id": 1777812011089}, {"d": "2026-05-03", "fd": "è¬è¯å", "fr": "ä¸æ°´è¡", "td": "å¤§åå", "tr": "å»¶å¹³åè·¯äºæ®µ", "km": 4.69, "fare": 217, "service": 54, "detail": 163, "pax": 2, "note": "", "id": 1777812121307}, {"d": "2026-05-03", "fd": "å¤§åå", "fr": "æ¶¼å·è¡", "td": "è¬è¯å", "tr": "è¥¿éçº", "km": 2.44, "fare": 149, "service": 37, "detail": 112, "pax": 2, "note": "é¦æ¸¯", "id": 1777812209237}, {"d": "2026-05-03", "fd": "è¬è¯å", "fr": "é¾å±±å¯º", "td": "æ¿æ©å", "tr": "è¯æ±ä¸è·¯", "km": 3.71, "fare": 171, "service": 43, "detail": 128, "pax": 1, "note": "", "id": 1777812248166}, {"d": "2026-05-03", "fd": "æ¿æ©å", "fr": "è¯æ±ä¸è·¯", "td": "ä¸éå", "tr": "ä¸­å¤®åè·¯", "km": 6.59, "fare": 241, "service": 60, "detail": 181, "pax": 2, "note": "", "id": 1777812275590}, {"d": "2026-05-03", "fd": "ä¸éå", "fr": "å°åæ©ç«", "td": "å¤§åå", "tr": "é·å®è¥¿è·¯", "km": 2.88, "fare": 156, "service": 39, "detail": 117, "pax": 1, "note": "", "id": 1777812359768}, {"d": "2026-05-03", "fd": "å¤§åå", "fr": "è¿ªåè¡ä¸æ®µ", "td": "ä¸­æ­£å", "tr": "ä¸­è¯è·¯ä¸æ®µ", "km": 1.62, "fare": 118, "service": 30, "detail": 88, "pax": 4, "note": "", "id": 1777812519659}, {"d": "2026-05-03", "fd": "ä¸­æ­£å", "fr": "å»¶å¹³åè·¯", "td": "ä¸­æ­£å", "tr": "è¡¡é½è·¯", "km": 0.72, "fare": 98, "service": 25, "detail": 73, "pax": 2, "note": "å¤å", "id": 1777812617165}, {"d": "2026-05-03", "fd": "ä¸­æ­£å", "fr": "è¡¡é½è·¯", "td": "è¬è¯å", "tr": "è¥¿éçº", "km": 0.49, "fare": 85, "service": 21, "detail": 64, "pax": 1, "note": "å¤å", "id": 1777812690630}, {"d": "2026-05-03", "fd": "è¬è¯å", "fr": "éå¹´è·¯", "td": "ä¸­å±±å", "tr": "ä¸­å±±åè·¯ä¸æ®µ", "km": 8.57, "fare": 347, "service": 87, "detail": 260, "pax": 1, "note": "", "id": 1777812731239}, {"d": "2026-05-03", "fd": "å¤§åå", "fr": "äº¬ç«", "td": "å¤§åå", "tr": "äº¬ç«", "km": 0, "fare": 40, "service": 10, "detail": 30, "pax": 1, "note": "åæ¶", "id": 1777812771512}, {"d": "2026-05-03", "fd": "å¤§åå", "fr": "äº¬ç«", "td": "ä¸­å±±å", "tr": "æ°çåè·¯äºæ®µ", "km": 2.42, "fare": 128, "service": 32, "detail": 96, "pax": 4, "note": "æ¥æ¬", "id": 1777812889978}, {"d": "2026-05-03", "fd": "ä¸­æ­£å", "fr": "å°åè»ç«", "td": "ä¸­æ­£å", "tr": "åå¹³è¥¿è·¯äºæ®µ", "km": 3.49, "fare": 218, "service": 55, "detail": 163, "pax": 2, "note": "", "id": 1777812934084}],
+  "uberTrips": [{"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "重慶路", "tc": "新北市", "td": "板橋區", "tr": "板橋遠百", "km": 1.41, "fare": 115, "service": 29, "detail": 86, "pax": 1, "id": 1777689311756}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "府中站", "tc": "新北市", "td": "板橋區", "tr": "中山路一段", "km": 1.07, "fare": 85, "service": 21, "detail": 64, "pax": 2, "id": 1777691090128}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "南雅西路二段", "tc": "新北市", "td": "板橋區", "tr": "府中站", "km": 1.64, "fare": 113, "service": 28, "detail": 85, "pax": 1, "id": 1777691124681}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "林園街", "tc": "新北市", "td": "板橋區", "tr": "板橋大遠百", "km": 1.88, "fare": 130, "service": 33, "detail": 97, "pax": 4, "id": 1777691157377}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "文化路二段", "tc": "新北市", "td": "板橋區", "tr": "豐禾婦產科", "km": 2.36, "fare": 134, "service": 34, "detail": 100, "pax": 2, "id": 1777691193673}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "中山路一段", "tc": "新北市", "td": "新莊區", "tr": "迴龍站", "km": 9.4, "fare": 353, "service": 88, "detail": 265, "pax": 1, "id": 1777691251586}, {"d": "2026-05-01", "fc": "桃園市", "fd": "龜山區", "fr": "萬壽路一段", "tc": "新北市", "td": "新莊區", "tr": "新樹路", "km": 3.94, "fare": 181, "service": 45, "detail": 136, "pax": 2, "id": 1777691278267}, {"d": "2026-05-01", "fc": "新北市", "fd": "新莊區", "fr": "中正路", "tc": "新北市", "td": "三重區", "tr": "成功路", "km": 10.46, "fare": 282, "service": 71, "detail": 211, "pax": 1, "id": 1777691306691}, {"d": "2026-05-01", "fc": "新北市", "fd": "永和區", "fr": "環河東路一段", "tc": "新北市", "td": "中和區", "tr": "景新街", "km": 3.78, "fare": 300, "service": 75, "detail": 225, "pax": 2, "id": 1777691331163}, {"d": "2026-05-01", "fc": "新北市", "fd": "中和區", "fr": "大勇街", "tc": "新北市", "td": "中和區", "tr": "中正路", "km": 5.07, "fare": 222, "service": 56, "detail": 166, "pax": 1, "id": 1777691354395}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "大觀路一段", "tc": "新北市", "td": "板橋區", "tr": "板橋車站", "km": 2.25, "fare": 207, "service": 52, "detail": 155, "pax": 1, "id": 1777691379492}, {"d": "2026-05-01", "fc": "新北市", "fd": "板橋區", "fr": "板橋車站", "tc": "臺北市", "td": "文山區", "tr": "木柵路一段", "km": 11.22, "fare": 418, "service": 105, "detail": 313, "pax": 1, "id": 1777691402468}, {"d": "2026-05-01", "fc": "臺北市", "fd": "文山區", "fr": "辛亥路", "tc": "臺北市", "td": "萬華區", "tr": "青年公園", "km": 14.33, "fare": 389, "service": 97, "detail": 292, "pax": 2, "id": 1777691429516}, {"d": "2026-05-02", "fc": "新北市", "fd": "板橋區", "fr": "國慶路", "tc": "新北市", "td": "樹林區", "tr": "佳園路三段", "km": 10.17, "fare": 414, "service": 104, "detail": 310, "pax": 2, "id": 1777738619544}, {"d": "2026-05-02", "fc": "新北市", "fd": "板橋區", "fr": "篤行路三段", "tc": "新北市", "td": "板橋區", "tr": "板橋車站", "km": 6.03, "fare": 286, "service": 72, "detail": 214, "pax": 1, "id": 1777738731090}, {"d": "2026-05-02", "fc": "新北市", "fd": "板橋區", "fr": "雨農路", "tc": "新北市", "td": "三重區", "tr": "中央南路", "km": 8.18, "fare": 299, "service": 75, "detail": 224, "pax": 1, "id": 1777738823980}, {"d": "2026-05-02", "fc": "新北市", "fd": "三重區", "fr": "中央南路", "tc": "台北市", "td": "大同區", "tr": "迪化街二段", "km": 2.86, "fare": 156, "service": 39, "detail": 117, "pax": 2, "id": 1777738860829}, {"d": "2026-05-02", "fc": "台北市", "fd": "大同區", "fr": "環河北路", "tc": "台北市", "td": "大同區", "tr": "京站", "km": 3.16, "fare": 176, "service": 44, "detail": 132, "pax": 1, "id": 1777738896837}, {"d": "2026-05-02", "fc": "台北市", "fd": "信義區", "fr": "松德路", "tc": "台北市", "td": "中山區", "tr": "MAJI集食行樂", "km": 10.66, "fare": 380, "service": 95, "detail": 285, "pax": 2, "id": 1777738999328}, {"d": "2026-05-02", "fd": "三重區", "fr": "重新路一段", "td": "林口區", "tr": "八德路", "km": 17.07, "fare": 550, "service": 138, "detail": 412, "pax": 2, "note": "香港", "id": 1777810867603}, {"d": "2026-05-02", "fd": "林口區", "fr": "八德路", "td": "龜山區", "tr": "樂善二路", "km": 4.93, "fare": 239, "service": 60, "detail": 179, "pax": 2, "note": "", "id": 1777810901259}, {"d": "2026-05-02", "fd": "龜山區", "fr": "文康街", "td": "龜山區", "tr": "忠義路二段", "km": 5.56, "fare": 162, "service": 41, "detail": 121, "pax": 1, "note": "", "id": 1777810931083}, {"d": "2026-05-03", "fd": "土城區", "fr": "樂活山中湖庭園餐廳", "td": "板橋區", "tr": "大明街", "km": 7.54, "fare": 312, "service": 78, "detail": 234, "pax": 4, "note": "", "id": 1777812011089}, {"d": "2026-05-03", "fd": "萬華區", "fr": "三水街", "td": "大同區", "tr": "延平北路二段", "km": 4.69, "fare": 217, "service": 54, "detail": 163, "pax": 2, "note": "", "id": 1777812121307}, {"d": "2026-05-03", "fd": "大同區", "fr": "涼州街", "td": "萬華區", "tr": "西門町", "km": 2.44, "fare": 149, "service": 37, "detail": 112, "pax": 2, "note": "香港", "id": 1777812209237}, {"d": "2026-05-03", "fd": "萬華區", "fr": "龍山寺", "td": "板橋區", "tr": "華江一路", "km": 3.71, "fare": 171, "service": 43, "detail": 128, "pax": 1, "note": "", "id": 1777812248166}, {"d": "2026-05-03", "fd": "板橋區", "fr": "華江一路", "td": "三重區", "tr": "中央南路", "km": 6.59, "fare": 241, "service": 60, "detail": 181, "pax": 2, "note": "", "id": 1777812275590}, {"d": "2026-05-03", "fd": "三重區", "fr": "台北橋站", "td": "大同區", "tr": "長安西路", "km": 2.88, "fare": 156, "service": 39, "detail": 117, "pax": 1, "note": "", "id": 1777812359768}, {"d": "2026-05-03", "fd": "大同區", "fr": "迪化街一段", "td": "中正區", "tr": "中華路一段", "km": 1.62, "fare": 118, "service": 30, "detail": 88, "pax": 4, "note": "", "id": 1777812519659}, {"d": "2026-05-03", "fd": "中正區", "fr": "延平南路", "td": "中正區", "tr": "衡陽路", "km": 0.72, "fare": 98, "service": 25, "detail": 73, "pax": 2, "note": "外國", "id": 1777812617165}, {"d": "2026-05-03", "fd": "中正區", "fr": "衡陽路", "td": "萬華區", "tr": "西門町", "km": 0.49, "fare": 85, "service": 21, "detail": 64, "pax": 1, "note": "外國", "id": 1777812690630}, {"d": "2026-05-03", "fd": "萬華區", "fr": "青年路", "td": "中山區", "tr": "中山北路一段", "km": 8.57, "fare": 347, "service": 87, "detail": 260, "pax": 1, "note": "", "id": 1777812731239}, {"d": "2026-05-03", "fd": "大同區", "fr": "京站", "td": "大同區", "tr": "京站", "km": 0, "fare": 40, "service": 10, "detail": 30, "pax": 1, "note": "取消", "id": 1777812771512}, {"d": "2026-05-03", "fd": "大同區", "fr": "京站", "td": "中山區", "tr": "新生北路二段", "km": 2.42, "fare": 128, "service": 32, "detail": 96, "pax": 4, "note": "日本", "id": 1777812889978}, {"d": "2026-05-03", "fd": "中正區", "fr": "台北車站", "td": "中正區", "tr": "和平西路二段", "km": 3.49, "fare": 218, "service": 55, "detail": 163, "pax": 2, "note": "", "id": 1777812934084}],
   "uberWeekly": [],
   "uberMonthly": []
 }
@@ -162,11 +162,11 @@ body{
 <!-- Menubar -->
 <div class="global-menubar">
   <div class="gm-left">
-    <span style="font-size:16px">ð¿</span>
+    <span style="font-size:16px">🗿</span>
     <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
-    <span class="mb-menu">æªæ¡</span><span class="mb-menu">ç·¨è¼¯</span>
-    <span class="mb-menu">é¡¯ç¤ºæ¹å¼</span><span class="mb-menu">åå¾</span>
-    <span class="mb-menu">è¦çª</span><span class="mb-menu">è¼å©èªªæ</span>
+    <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span>
+    <span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span>
+    <span class="mb-menu">視窗</span><span class="mb-menu">輔助說明</span>
   </div>
   <div class="gm-right">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></svg>
@@ -178,103 +178,103 @@ body{
   </div>
 </div>
 
-<!-- ä¸»å§å®¹ -->
+<!-- 主內容 -->
 <div class="page-content">
-  <h1 class="page-title">Uber <em>è¨é</em></h1>
-  <span class="page-label">â 06 / UBER Â· è¡ç¨æ¶æ¯è¨é</span>
+  <h1 class="page-title">Uber <em>記錄</em></h1>
+  <span class="page-label">— 06 / UBER · 行程收支記錄</span>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview',this)">ç¸½è¦½</button>
-    <button class="tab-btn" onclick="switchTab('trips',this)">è¡ç¨è¨é</button>
-    <button class="tab-btn" onclick="switchTab('weekly',this)">æ¯æ¥æ¶å¥</button>
-    <button class="tab-btn" onclick="switchTab('monthly',this)">æ¯æ¥æ¯åº</button>
+    <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
+    <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
+    <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
+    <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
   </div>
 
-  <!-- ç¸½è¦½ -->
+  <!-- 總覽 -->
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">ç¸½è¡ç¨æ¸</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">è¶</em></div></div>
-      <div class="stat-card"><div class="stat-label">æ¬æææ¸</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
-      <div class="stat-card"><div class="stat-label">å¹³åæèª</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">æ¬ææ¶å¥</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">æ¬ææ¯åº</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">æ¬ææ·¨å©</div><div class="stat-val" id="s-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">ç¸½æ¶å¥</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">ç¸½æ¯åº</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">ç¸½æ·¨å©</div><div class="stat-val" id="s-total-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月淨利</div><div class="stat-val" id="s-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總淨利</div><div class="stat-val" id="s-total-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
     </div>
     <div class="chart-grid">
-      <div class="chart-card"><div class="chart-title">æ¯ææ¶å¥ï¼è¿6æï¼</div><div id="monthlyChart"><div class="empty-state"><span class="empty-icon">ð</span>æ°å¢è¨éå¾é¡¯ç¤º</div></div></div>
-      <div class="chart-card"><div class="chart-title">æ¬ææ¯åºåå¸</div><div id="expenseChart"><div class="empty-state"><span class="empty-icon">ð°</span>æ°å¢è¨éå¾é¡¯ç¤º</div></div></div>
+      <div class="chart-card"><div class="chart-title">每月收入（近6月）</div><div id="monthlyChart"><div class="empty-state"><span class="empty-icon">📊</span>新增記錄後顯示</div></div></div>
+      <div class="chart-card"><div class="chart-title">本月支出分布</div><div id="expenseChart"><div class="empty-state"><span class="empty-icon">💰</span>新增記錄後顯示</div></div></div>
     </div>
   </div>
 
-  <!-- è¡ç¨è¨é -->
+  <!-- 行程記錄 -->
   <div class="tab-panel" id="tab-trips">
-    <!-- æ°å¢è¡ç¨è¡¨å® -->
+    <!-- 新增行程表單 -->
     <div class="form-section">
-      <div class="form-title">ï¼ æ°å¢è¡ç¨æç´°</div>
+      <div class="form-title">＋ 新增行程明細</div>
       <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
-        <div class="form-group"><label>æ¥æ</label><input class="form-input" type="date" id="f-date"></div>
-        <div class="form-group"><label>ä¸è»åå</label><select class="form-select" id="f-from-dist"><option value="">è«é¸æåå</option><option value="æ¿æ©å">æ¿æ©å</option><option value="ä¸éå">ä¸éå</option><option value="ä¸­åå">ä¸­åå</option><option value="æ°¸åå">æ°¸åå</option><option value="æ°èå">æ°èå</option><option value="æ°åºå">æ°åºå</option><option value="æ¨¹æå">æ¨¹æå</option><option value="é¶¯æ­å">é¶¯æ­å</option><option value="ä¸å³½å">ä¸å³½å</option><option value="æ·¡æ°´å">æ·¡æ°´å</option><option value="æ±æ­¢å">æ±æ­¢å</option><option value="çè³å">çè³å</option><option value="ååå">ååå</option><option value="èæ´²å">èæ´²å</option><option value="äºè¡å">äºè¡å</option><option value="æ³°å±±å">æ³°å±±å</option><option value="æå£å">æå£å</option><option value="æ·±åå">æ·±åå</option><option value="ç³ç¢å">ç³ç¢å</option><option value="åªæå">åªæå</option><option value="ä¸èå">ä¸èå</option><option value="ç³éå">ç³éå</option><option value="å«éå">å«éå</option><option value="å¹³æºªå">å¹³æºªå</option><option value="éæºªå">éæºªå</option><option value="è²¢å¯®å">è²¢å¯®å</option><option value="éå±±å">éå±±å</option><option value="è¬éå">è¬éå</option><option value="çä¾å">çä¾å</option><option value="ä¸­æ­£å">ä¸­æ­£å</option><option value="å¤§åå">å¤§åå</option><option value="ä¸­å±±å">ä¸­å±±å</option><option value="æ¾å±±å">æ¾å±±å</option><option value="å¤§å®å">å¤§å®å</option><option value="è¬è¯å">è¬è¯å</option><option value="ä¿¡ç¾©å">ä¿¡ç¾©å</option><option value="å£«æå">å£«æå</option><option value="åæå">åæå</option><option value="å§æ¹å">å§æ¹å</option><option value="åæ¸¯å">åæ¸¯å</option><option value="æå±±å">æå±±å</option><option value="æ¡åå">æ¡åå</option><option value="ä¸­å£¢å">ä¸­å£¢å</option><option value="å¤§æºªå">å¤§æºªå</option><option value="æ¥æ¢å">æ¥æ¢å</option><option value="èç«¹å">èç«¹å</option><option value="å¤§åå">å¤§åå</option><option value="é¾å±±å">é¾å±±å</option><option value="å«å¾·å">å«å¾·å</option><option value="é¾æ½­å">é¾æ½­å</option><option value="å¹³é®å">å¹³é®å</option><option value="æ°å±å">æ°å±å</option><option value="è§é³å">è§é³å</option><option value="å¾©èå">å¾©èå</option><option value="å®è­å¸">å®è­å¸</option><option value="ç¾æ±é®">ç¾æ±é®</option><option value="èæ¾³é®">èæ¾³é®</option><option value="é ­åé®">é ­åé®</option><option value="ç¤æºªé">ç¤æºªé</option><option value="å£¯åé">å£¯åé</option><option value="å¡å±±é">å¡å±±é</option><option value="å¬å±±é">å¬å±±é</option><option value="äºçµé">äºçµé</option><option value="ä¸æé">ä¸æé</option><option value="å¤§åé">å¤§åé</option><option value="åæ¾³é">åæ¾³é</option></select></div>
-        <div class="form-group"><label>ä¸è»å°é»</label><input class="form-input" type="text" id="f-from-road" placeholder="éæ¶è·¯"></div>
-        <div class="form-group"><label>ä¸è»åå</label><select class="form-select" id="f-to-dist"><option value="">è«é¸æåå</option><option value="æ¿æ©å">æ¿æ©å</option><option value="ä¸éå">ä¸éå</option><option value="ä¸­åå">ä¸­åå</option><option value="æ°¸åå">æ°¸åå</option><option value="æ°èå">æ°èå</option><option value="æ°åºå">æ°åºå</option><option value="æ¨¹æå">æ¨¹æå</option><option value="é¶¯æ­å">é¶¯æ­å</option><option value="ä¸å³½å">ä¸å³½å</option><option value="æ·¡æ°´å">æ·¡æ°´å</option><option value="æ±æ­¢å">æ±æ­¢å</option><option value="çè³å">çè³å</option><option value="ååå">ååå</option><option value="èæ´²å">èæ´²å</option><option value="äºè¡å">äºè¡å</option><option value="æ³°å±±å">æ³°å±±å</option><option value="æå£å">æå£å</option><option value="æ·±åå">æ·±åå</option><option value="ç³ç¢å">ç³ç¢å</option><option value="åªæå">åªæå</option><option value="ä¸èå">ä¸èå</option><option value="ç³éå">ç³éå</option><option value="å«éå">å«éå</option><option value="å¹³æºªå">å¹³æºªå</option><option value="éæºªå">éæºªå</option><option value="è²¢å¯®å">è²¢å¯®å</option><option value="éå±±å">éå±±å</option><option value="è¬éå">è¬éå</option><option value="çä¾å">çä¾å</option><option value="ä¸­æ­£å">ä¸­æ­£å</option><option value="å¤§åå">å¤§åå</option><option value="ä¸­å±±å">ä¸­å±±å</option><option value="æ¾å±±å">æ¾å±±å</option><option value="å¤§å®å">å¤§å®å</option><option value="è¬è¯å">è¬è¯å</option><option value="ä¿¡ç¾©å">ä¿¡ç¾©å</option><option value="å£«æå">å£«æå</option><option value="åæå">åæå</option><option value="å§æ¹å">å§æ¹å</option><option value="åæ¸¯å">åæ¸¯å</option><option value="æå±±å">æå±±å</option><option value="æ¡åå">æ¡åå</option><option value="ä¸­å£¢å">ä¸­å£¢å</option><option value="å¤§æºªå">å¤§æºªå</option><option value="æ¥æ¢å">æ¥æ¢å</option><option value="èç«¹å">èç«¹å</option><option value="å¤§åå">å¤§åå</option><option value="é¾å±±å">é¾å±±å</option><option value="å«å¾·å">å«å¾·å</option><option value="é¾æ½­å">é¾æ½­å</option><option value="å¹³é®å">å¹³é®å</option><option value="æ°å±å">æ°å±å</option><option value="è§é³å">è§é³å</option><option value="å¾©èå">å¾©èå</option><option value="å®è­å¸">å®è­å¸</option><option value="ç¾æ±é®">ç¾æ±é®</option><option value="èæ¾³é®">èæ¾³é®</option><option value="é ­åé®">é ­åé®</option><option value="ç¤æºªé">ç¤æºªé</option><option value="å£¯åé">å£¯åé</option><option value="å¡å±±é">å¡å±±é</option><option value="å¬å±±é">å¬å±±é</option><option value="äºçµé">äºçµé</option><option value="ä¸æé">ä¸æé</option><option value="å¤§åé">å¤§åé</option><option value="åæ¾³é">åæ¾³é</option></select></div>
-        <div class="form-group"><label>ä¸è»å°é»</label><input class="form-input" type="text" id="f-to-road" placeholder="æ¿æ©é ç¾"></div>
-        <div class="form-group"><label>å¬éæ¸</label><input class="form-input" type="number" id="f-km" placeholder="0.00" step="0.01"></div>
-        <div class="form-group"><label>è¡ç¨è²»ç¨</label><input class="form-input" type="number" id="f-fare" placeholder="0"></div>
-        <div class="form-group"><label>æåè²»</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
-        <div class="form-group"><label>è²»ç¨æç´°</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
-        <div class="form-group"><label>äººæ¸</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
-        <div class="form-group"><label>åè¨»</label><input class="form-input" type="text" id="f-note" placeholder="åè¨»èªªæ"></div>
+        <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
+        <div class="form-group"><label>上車區域</label><select class="form-select" id="f-from-dist"><option value="">請選擇區域</option><option value="板橋區">板橋區</option><option value="三重區">三重區</option><option value="中和區">中和區</option><option value="永和區">永和區</option><option value="新莊區">新莊區</option><option value="新店區">新店區</option><option value="樹林區">樹林區</option><option value="鶯歌區">鶯歌區</option><option value="三峽區">三峽區</option><option value="淡水區">淡水區</option><option value="汐止區">汐止區</option><option value="瑞芳區">瑞芳區</option><option value="土城區">土城區</option><option value="蘆洲區">蘆洲區</option><option value="五股區">五股區</option><option value="泰山區">泰山區</option><option value="林口區">林口區</option><option value="深坑區">深坑區</option><option value="石碇區">石碇區</option><option value="坪林區">坪林區</option><option value="三芝區">三芝區</option><option value="石門區">石門區</option><option value="八里區">八里區</option><option value="平溪區">平溪區</option><option value="雙溪區">雙溪區</option><option value="貢寮區">貢寮區</option><option value="金山區">金山區</option><option value="萬里區">萬里區</option><option value="烏來區">烏來區</option><option value="中正區">中正區</option><option value="大同區">大同區</option><option value="中山區">中山區</option><option value="松山區">松山區</option><option value="大安區">大安區</option><option value="萬華區">萬華區</option><option value="信義區">信義區</option><option value="士林區">士林區</option><option value="北投區">北投區</option><option value="內湖區">內湖區</option><option value="南港區">南港區</option><option value="文山區">文山區</option><option value="桃園區">桃園區</option><option value="中壢區">中壢區</option><option value="大溪區">大溪區</option><option value="楊梅區">楊梅區</option><option value="蘆竹區">蘆竹區</option><option value="大園區">大園區</option><option value="龜山區">龜山區</option><option value="八德區">八德區</option><option value="龍潭區">龍潭區</option><option value="平鎮區">平鎮區</option><option value="新屋區">新屋區</option><option value="觀音區">觀音區</option><option value="復興區">復興區</option><option value="宜蘭市">宜蘭市</option><option value="羅東鎮">羅東鎮</option><option value="蘇澳鎮">蘇澳鎮</option><option value="頭城鎮">頭城鎮</option><option value="礁溪鄉">礁溪鄉</option><option value="壯圍鄉">壯圍鄉</option><option value="員山鄉">員山鄉</option><option value="冬山鄉">冬山鄉</option><option value="五結鄉">五結鄉</option><option value="三星鄉">三星鄉</option><option value="大同鄉">大同鄉</option><option value="南澳鄉">南澳鄉</option></select></div>
+        <div class="form-group"><label>上車地點</label><input class="form-input" type="text" id="f-from-road" placeholder="重慶路"></div>
+        <div class="form-group"><label>下車區域</label><select class="form-select" id="f-to-dist"><option value="">請選擇區域</option><option value="板橋區">板橋區</option><option value="三重區">三重區</option><option value="中和區">中和區</option><option value="永和區">永和區</option><option value="新莊區">新莊區</option><option value="新店區">新店區</option><option value="樹林區">樹林區</option><option value="鶯歌區">鶯歌區</option><option value="三峽區">三峽區</option><option value="淡水區">淡水區</option><option value="汐止區">汐止區</option><option value="瑞芳區">瑞芳區</option><option value="土城區">土城區</option><option value="蘆洲區">蘆洲區</option><option value="五股區">五股區</option><option value="泰山區">泰山區</option><option value="林口區">林口區</option><option value="深坑區">深坑區</option><option value="石碇區">石碇區</option><option value="坪林區">坪林區</option><option value="三芝區">三芝區</option><option value="石門區">石門區</option><option value="八里區">八里區</option><option value="平溪區">平溪區</option><option value="雙溪區">雙溪區</option><option value="貢寮區">貢寮區</option><option value="金山區">金山區</option><option value="萬里區">萬里區</option><option value="烏來區">烏來區</option><option value="中正區">中正區</option><option value="大同區">大同區</option><option value="中山區">中山區</option><option value="松山區">松山區</option><option value="大安區">大安區</option><option value="萬華區">萬華區</option><option value="信義區">信義區</option><option value="士林區">士林區</option><option value="北投區">北投區</option><option value="內湖區">內湖區</option><option value="南港區">南港區</option><option value="文山區">文山區</option><option value="桃園區">桃園區</option><option value="中壢區">中壢區</option><option value="大溪區">大溪區</option><option value="楊梅區">楊梅區</option><option value="蘆竹區">蘆竹區</option><option value="大園區">大園區</option><option value="龜山區">龜山區</option><option value="八德區">八德區</option><option value="龍潭區">龍潭區</option><option value="平鎮區">平鎮區</option><option value="新屋區">新屋區</option><option value="觀音區">觀音區</option><option value="復興區">復興區</option><option value="宜蘭市">宜蘭市</option><option value="羅東鎮">羅東鎮</option><option value="蘇澳鎮">蘇澳鎮</option><option value="頭城鎮">頭城鎮</option><option value="礁溪鄉">礁溪鄉</option><option value="壯圍鄉">壯圍鄉</option><option value="員山鄉">員山鄉</option><option value="冬山鄉">冬山鄉</option><option value="五結鄉">五結鄉</option><option value="三星鄉">三星鄉</option><option value="大同鄉">大同鄉</option><option value="南澳鄉">南澳鄉</option></select></div>
+        <div class="form-group"><label>下車地點</label><input class="form-input" type="text" id="f-to-road" placeholder="板橋遠百"></div>
+        <div class="form-group"><label>公里數</label><input class="form-input" type="number" id="f-km" placeholder="0.00" step="0.01"></div>
+        <div class="form-group"><label>行程費用</label><input class="form-input" type="number" id="f-fare" placeholder="0"></div>
+        <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
+        <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
+        <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
+        <div class="form-group"><label>備註</label><input class="form-input" type="text" id="f-note" placeholder="備註說明"></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
-        <button class="btn-add" onclick="addTrip()">æ°å¢è¡ç¨</button>
-        <button class="btn-add" onclick="importCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">ð å¯å¥ CSV</button>
-        <button class="btn-add" onclick="exportCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">ð¤ å¯åº CSV</button>
+        <button class="btn-add" onclick="addTrip()">新增行程</button>
+        <button class="btn-add" onclick="importCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📂 匯入 CSV</button>
+        <button class="btn-add" onclick="exportCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📤 匯出 CSV</button>
         <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">
         <span id="tripCount" style="font-size:11px;color:rgba(0,200,83,0.7);margin-left:8px;"></span>
       </div>
     </div>
 
-    <!-- æå° + ç¯©é¸å -->
+    <!-- 搜尋 + 篩選列 -->
     <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-      <input class="form-input" id="tripSearch" oninput="renderTrips()" placeholder="ð æå°å°é»..." style="flex:1;min-width:180px;padding:8px 12px;">
+      <input class="form-input" id="tripSearch" oninput="renderTrips()" placeholder="🔍 搜尋地點..." style="flex:1;min-width:180px;padding:8px 12px;">
       <input class="form-input" type="date" id="tripFilterDate" onchange="renderTrips()" style="width:150px;padding:8px 12px;">
-      <button onclick="clearTripFilter()" style="padding:8px 14px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(240,220,160,0.7);cursor:pointer;font-size:11px;font-family:'Space Mono',monospace;">æ¸é¤ç¯©é¸</button>
+      <button onclick="clearTripFilter()" style="padding:8px 14px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(240,220,160,0.7);cursor:pointer;font-size:11px;font-family:'Space Mono',monospace;">清除篩選</button>
     </div>
 
-    <!-- è¡ç¨æç´°è¡¨æ ¼ -->
+    <!-- 行程明細表格 -->
     <div class="trip-table-wrap" style="overflow-x:auto;">
       <table class="trip-table" id="tripTable" style="width:100%;">
         <thead>
           <tr>
             <th style="width:40px">#</th>
-            <th onclick="sortTrips('d')" style="cursor:pointer">æ¥æ â</th>
-            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">ä¸è»å°é»</th>
-            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">ä¸è»å°é»</th>
-            <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">å¬éæ¸ â</th>
-            <th onclick="sortTrips('fare')" style="cursor:pointer">è¡ç¨è²»ç¨ â</th>
-            <th onclick="sortTrips('service')" style="cursor:pointer">æåè²» â</th>
-            <th onclick="sortTrips('detail')" style="cursor:pointer">è²»ç¨æç´° â</th>
-            <th>äººæ¸</th>
-            <th>åè¨»</th>
+            <th onclick="sortTrips('d')" style="cursor:pointer">日期 ↕</th>
+            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車地點</th>
+            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
+            <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
+            <th onclick="sortTrips('fare')" style="cursor:pointer">行程費用 ↕</th>
+            <th onclick="sortTrips('service')" style="cursor:pointer">服務費 ↕</th>
+            <th onclick="sortTrips('detail')" style="cursor:pointer">費用明細 ↕</th>
+            <th>人數</th>
+            <th>備註</th>
             <th style="width:40px"></th>
           </tr>
           <tr style="background:rgba(0,200,83,0.03);">
             <th></th><th></th>
-            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">åå</th>
-            <th style="font-size:8px">å°é»</th>
-            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">åå</th>
-            <th style="font-size:8px">å°é»</th>
+            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">區域</th>
+            <th style="font-size:8px">地點</th>
+            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">區域</th>
+            <th style="font-size:8px">地點</th>
             <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
           </tr>
         </thead>
         <tbody id="tripBody">
-          <tr><td colspan="13"><div class="empty-state"><span class="empty-icon">ð</span>å°ç¡è¡ç¨è¨é</div></td></tr>
+          <tr><td colspan="13"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>
         </tbody>
         <tfoot id="tripFoot" style="display:none;">
           <tr style="background:rgba(0,200,83,0.15);font-weight:700;border-top:2px solid rgba(0,200,83,0.5);">
-            <td colspan="6" style="padding:14px 16px;color:#FFD700;font-size:16px;letter-spacing:0.15em;text-transform:uppercase;">åè¨</td>
+            <td colspan="6" style="padding:14px 16px;color:#FFD700;font-size:16px;letter-spacing:0.15em;text-transform:uppercase;">合計</td>
             <td id="foot-km" style="padding:14px 16px;color:#FFD700;font-size:16px;font-weight:800;"></td>
             <td id="foot-fare" style="padding:14px 16px;color:#FFD700;font-size:16px;font-weight:800;"></td>
             <td id="foot-service" style="padding:14px 16px;color:#FFD700;font-size:16px;font-weight:800;"></td>
@@ -290,32 +290,32 @@ body{
 
 <div class="tab-panel" id="tab-weekly">
     <div class="form-section">
-      <div class="form-title">ï¼ æ°å¢æ¯æ¥æ¶å¥</div>
+      <div class="form-title">＋ 新增每日收入</div>
       <div class="form-grid">
-        <div class="form-group"><label style="font-size:12px">æ¥æ</label><input class="form-input" style="font-size:15px" type="date" id="fw-date"></div>
-        <div class="form-group"><label style="font-size:12px">ç¸½æ¶å¥ (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fw-income" placeholder="0"></div>
-        <div class="form-group"><label style="font-size:12px">è¡ç¨æ¸</label><input class="form-input" style="font-size:15px" type="number" id="fw-trips" placeholder="0" min="0"></div>
-        <div class="form-group"><label style="font-size:12px">ææ¸ï¼å°æï¼</label><input class="form-input" style="font-size:15px" type="number" id="fw-hours" placeholder="0" min="0"></div>
-        <div class="form-group"><label style="font-size:12px">ææ¸ï¼åéï¼</label><input class="form-input" style="font-size:15px" type="number" id="fw-mins" placeholder="0" min="0" max="59"></div>
+        <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fw-date"></div>
+        <div class="form-group"><label style="font-size:12px">總收入 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fw-income" placeholder="0"></div>
+        <div class="form-group"><label style="font-size:12px">行程數</label><input class="form-input" style="font-size:15px" type="number" id="fw-trips" placeholder="0" min="0"></div>
+        <div class="form-group"><label style="font-size:12px">時數（小時）</label><input class="form-input" style="font-size:15px" type="number" id="fw-hours" placeholder="0" min="0"></div>
+        <div class="form-group"><label style="font-size:12px">時數（分鐘）</label><input class="form-input" style="font-size:15px" type="number" id="fw-mins" placeholder="0" min="0" max="59"></div>
       </div>
-      <button class="btn-add" onclick="addWeekly()">æ°å¢è¨é</button>
+      <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
-    <div id="weeklyList"><div class="empty-state"><span class="empty-icon">ð</span>å°ç¡æ¯æ¥æ¶å¥è¨é</div></div>
+    <div id="weeklyList"><div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div></div>
   </div>
 
-  <!-- æ¯æ¥æ¯åº -->
+  <!-- 每日支出 -->
   <div class="tab-panel" id="tab-monthly">
     <div class="form-section">
-      <div class="form-title">ï¼ æ°å¢æ¯æ¥æ¯åº</div>
+      <div class="form-title">＋ 新增每日支出</div>
       <div class="form-grid">
-        <div class="form-group"><label style="font-size:12px">æ¥æ</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
-        <div class="form-group"><label style="font-size:12px">æ¯åºé¡å</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">è«é¸æ</option><option value="æ²¹é¢">æ²¹é¢</option><option value="ä¿é¤/ç¶­ä¿®">ä¿é¤/ç¶­ä¿®</option><option value="äº¤éç½°é°">äº¤éç½°é°</option><option value="åè»è²»">åè»è²»</option><option value="æ±½è»ç¾è²¨">æ±½è»ç¾è²¨</option><option value="ä¿éª/è²»ç¨">ä¿éª/è²»ç¨</option></select></div>
-        <div class="form-group"><label style="font-size:12px">éé¡ (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
-        <div class="form-group"><label style="font-size:12px">åè¨»</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="åè¨»èªªæ"></div>
+        <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
+        <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="交通罰鍰">交通罰鍰</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option></select></div>
+        <div class="form-group"><label style="font-size:12px">金額 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
+        <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="備註說明"></div>
       </div>
-      <button class="btn-add" onclick="addMonthly()">æ°å¢æ¯åº</button>
+      <button class="btn-add" onclick="addMonthly()">新增支出</button>
     </div>
-    <div id="monthlyList"><div class="empty-state"><span class="empty-icon">ð°</span>å°ç¡æ¯åºè¨é</div></div>
+    <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
   </div>
 </div>
 
@@ -323,25 +323,25 @@ body{
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
-    <a href="about.html" class="gd-item"><div class="gd-icon ic-about">ð¤</div><span class="gd-label">éæ¼</span></a>
-    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos">ð·</div><span class="gd-label">ç§ç</span></a>
-    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas">ð¬</div><span class="gd-label">è¿½å</span></a>
-    <a href="food.html" class="gd-item"><div class="gd-icon ic-food">ð</div><span class="gd-label">é£è¨</span></a>
+    <a href="about.html" class="gd-item"><div class="gd-icon ic-about">👤</div><span class="gd-label">關於</span></a>
+    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos">📷</div><span class="gd-label">照片</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas">🎬</div><span class="gd-label">追劇</span></a>
+    <a href="food.html" class="gd-item"><div class="gd-icon ic-food">🍜</div><span class="gd-label">食記</span></a>
     <div class="gd-sep"></div>
-    <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel">âï¸</div><span class="gd-label">æéè¶³è·¡</span></a>
-    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads">ð§µ</div><span class="gd-label">Threads</span></a>
-    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber">ð</div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
+    <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel">✈️</div><span class="gd-label">旅遊足跡</span></a>
+    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads">🧵</div><span class="gd-label">Threads</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber">🚗</div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
   </div>
 </div>
 
 <script>
-// æé
+// 時鐘
 (function(){
   function t(){
     var el=document.getElementById('gmbTime');if(!el)return;
-    var now=new Date(),d=['æ¥','ä¸','äº','ä¸','å','äº','å­'][now.getDay()];
+    var now=new Date(),d=['日','一','二','三','四','五','六'][now.getDay()];
     var h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0');
-    el.textContent='é±'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
+    el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
   }t();setInterval(t,10000);
 })();
 // Dock
@@ -360,8 +360,8 @@ function switchTab(id,btn){
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
 }
-// è³æ
-// ââ GitHub è¨­å® ââ
+// 資料
+// ── GitHub 設定 ──
 const GH_OWNER = 'sumoai-boop';
 const GH_REPO  = 'sumoai-boop.github.io';
 const GH_PATH  = 'uber.html';
@@ -380,24 +380,24 @@ function showToast(msg, isErr){
 
 function getToken(){
   var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token){token=prompt('è«è¼¸å¥ GitHub Personal Access Tokenï¼éæ repo å¯«å¥æ¬éï¼ï¼');if(!token) return null;localStorage.setItem(GH_TOKEN_KEY,token.trim());}
+  if(!token){token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!token) return null;localStorage.setItem(GH_TOKEN_KEY,token.trim());}
   return token.trim();
 }
 
-window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token å·²æ¸é¤');};
+window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 async function pushToGitHub(newTrips,newWeekly,newMonthly){
   var token=getToken();if(!token) return;
   var apiBase='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_PATH;
   var headers={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-  showToast('â³ é£ç· GitHub...',false);
+  showToast('⏳ 連線 GitHub...',false);
   var getResp=await fetch(apiBase+'?ref='+GH_BRANCH,{headers});
-  if(!getResp.ok){if(getResp.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('â Token ç¡æ',true);}else showToast('â é£ç·å¤±æ('+getResp.status+')',true);return;}
+  if(!getResp.ok){if(getResp.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}else showToast('❌ 連線失敗('+getResp.status+')',true);return;}
   var fileInfo=await getResp.json();var sha=fileInfo.sha;
   var currentContent;
-  if(fileInfo.content&&fileInfo.content.trim()!==''){currentContent=atob(fileInfo.content.replace(/\n/g,''));}
-  else if(fileInfo.download_url){showToast('â³ ä¸è¼ä¸­...',false);var dlResp=await fetch(fileInfo.download_url);currentContent=await dlResp.text();}
-  else{showToast('â ç¡æ³åå¾æªæ¡',true);return;}
+  if(fileInfo.content&&fileInfo.content.trim()!==''){currentContent=decodeURIComponent(escape(atob(fileInfo.content.replace(/\n/g,''))));}
+  else if(fileInfo.download_url){showToast('⏳ 下載中...',false);var dlResp=await fetch(fileInfo.download_url);currentContent=await dlResp.text();}
+  else{showToast('❌ 無法取得檔案',true);return;}
 
   function replaceMarker(html,key,data){
     var s='__DATA_'+key+'__';var e='__END_'+key+'__';
@@ -409,9 +409,9 @@ async function pushToGitHub(newTrips,newWeekly,newMonthly){
   currentContent=replaceMarker(currentContent,'uberMonthly',newMonthly);
 
   var encoded=btoa(unescape(encodeURIComponent(currentContent)));
-  var pushResp=await fetch(apiBase,{method:'PUT',headers,body:JSON.stringify({message:'æ´æ°Uberè¨é',content:encoded,sha,branch:GH_BRANCH})});
-  if(!pushResp.ok){var err=await pushResp.json();showToast('â æ¨éå¤±æï¼'+(err.message||pushResp.status),true);}
-  else showToast('â¦ å·²å²å­è³ GitHub',false);
+  var pushResp=await fetch(apiBase,{method:'PUT',headers,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha,branch:GH_BRANCH})});
+  if(!pushResp.ok){var err=await pushResp.json();showToast('❌ 推送失敗：'+(err.message||pushResp.status),true);}
+  else showToast('✦ 已儲存至 GitHub',false);
 }
 
 async function saveAndPush(key,data){
@@ -419,9 +419,9 @@ async function saveAndPush(key,data){
   var trips=getData('uberTrips');var weekly=getData('uberWeekly');var monthly=getData('uberMonthly');
   await pushToGitHub(trips,weekly,monthly);
 }
-// ååé»æ ¼å¼å
+// 千分點格式化
 function fmt(n){return Number(n).toLocaleString('zh-TW');}
-// è¡ç¨
+// 行程
 var tripSortKey='d', tripSortAsc=false;
 
 function addTrip(){
@@ -436,7 +436,7 @@ function addTrip(){
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
   var note=document.getElementById('f-note').value.trim();
-  if(!d){alert('è«å¡«å¯«æ¥æ');return;}
+  if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
   trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:Date.now()});
   saveAndPush('uberTrips', trips);
@@ -446,7 +446,7 @@ function addTrip(){
 }
 
 function deleteTrip(id){
-  if(!confirm('ç¢ºå®åªé¤éç­è¡ç¨ï¼'))return;
+  if(!confirm('確定刪除這筆行程？'))return;
   saveData('uberTrips',getData('uberTrips').filter(t=>t.id!==id));
   renderTrips();updateStats();
 }
@@ -468,11 +468,11 @@ function renderTrips(){
   var q=(document.getElementById('tripSearch').value||'').toLowerCase();
   var fd=document.getElementById('tripFilterDate').value;
 
-  // ç¯©é¸
+  // 篩選
   if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr].join(' ').toLowerCase().includes(q));
   if(fd) trips=trips.filter(t=>t.d===fd);
 
-  // æåº
+  // 排序
   trips.sort((a,b)=>{
     var va=a[tripSortKey]||0, vb=b[tripSortKey]||0;
     if(typeof va==='string') return tripSortAsc?va.localeCompare(vb):vb.localeCompare(va);
@@ -481,10 +481,10 @@ function renderTrips(){
 
   var tbody=document.getElementById('tripBody');
   var tfoot=document.getElementById('tripFoot');
-  document.getElementById('tripCount').textContent=`å± ${trips.length} ç­`;
+  document.getElementById('tripCount').textContent=`共 ${trips.length} 筆`;
 
   if(!trips.length){
-    tbody.innerHTML='<tr><td colspan="13"><div class="empty-state"><span class="empty-icon">ð</span>å°ç¡è¡ç¨è¨é</div></td></tr>';
+    tbody.innerHTML='<tr><td colspan="13"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>';
     tfoot.style.display='none';
     return;
   }
@@ -505,24 +505,24 @@ function renderTrips(){
       <td style="color:rgba(240,220,160,0.7)">NT$${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-weight:600">NT$${fmt(t.detail||0)}</td>
       <td style="text-align:center">${t.pax||1}</td>
-      <td style="color:rgba(240,220,160,0.6)">${t.note||'â'}</td>
-      <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">â</span></td>
+      <td style="color:rgba(240,220,160,0.6)">${t.note||'—'}</td>
+      <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
 
-  // åè¨å
+  // 合計列
   tfoot.style.display='';
   document.getElementById('foot-km').textContent=totalKm.toFixed(2)+' km';
   document.getElementById('foot-fare').textContent='NT$'+fmt(totalFare);
   document.getElementById('foot-service').textContent='NT$'+fmt(totalService);
   document.getElementById('foot-detail').textContent='NT$'+fmt(totalDetail);
-  document.getElementById('foot-pax').textContent=totalPax+' äººæ¬¡';
+  document.getElementById('foot-pax').textContent=totalPax+' 人次';
 }
 
 function exportCSV(){
   var trips=getData('uberTrips');
-  if(!trips.length){alert('å°ç¡è³æå¯å¯åº');return;}
-  var header='ç­æ¸,æ¥æ,ä¸è»åå,ä¸è»å°é»,ä¸è»åå,ä¸è»å°é»,å¬éæ¸,è¡ç¨è²»ç¨,æåè²»,è²»ç¨æç´°,äººæ¸,åè¨»';
+  if(!trips.length){alert('尚無資料可匯出');return;}
+  var header='筆數,日期,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,服務費,費用明細,人數,備註';
   var rows=trips.map((t,i)=>[i+1,t.d,t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
@@ -538,7 +538,7 @@ function handleCSV(e){
   var reader=new FileReader();
   reader.onload=function(ev){
     var lines=ev.target.result.split('\n').filter(l=>l.trim());
-    if(lines.length<2){alert('CSV æ ¼å¼ä¸æ­£ç¢º');return;}
+    if(lines.length<2){alert('CSV 格式不正確');return;}
     var trips=getData('uberTrips');
     var added=0;
     for(var i=1;i<lines.length;i++){
@@ -554,7 +554,7 @@ function handleCSV(e){
       added++;
     }
     saveAndPush('uberTrips', trips);renderTrips();updateStats();
-    alert('å·²å¯å¥ '+added+' ç­è¡ç¨');
+    alert('已匯入 '+added+' 筆行程');
   };
   reader.readAsText(file,'UTF-8');
   e.target.value='';
@@ -562,49 +562,49 @@ function handleCSV(e){
 
 updateStats();
 
-// æ¯æ¥æ¶å¥
+// 每日收入
 function addWeekly(){
   var date=document.getElementById('fw-date').value;
   var income=parseFloat(document.getElementById('fw-income').value)||0;
   var tripCount=parseInt(document.getElementById('fw-trips').value)||0;
   var hours=parseInt(document.getElementById('fw-hours').value)||0;
   var mins=parseInt(document.getElementById('fw-mins').value)||0;
-  if(!date){alert('è«é¸ææ¥æ');return;}
+  if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
   w.unshift({date,income,tripCount,hours,mins,id:Date.now()});
   saveAndPush('uberWeekly', w);renderWeekly();updateStats();
   ['fw-income','fw-trips','fw-hours','fw-mins'].forEach(id=>document.getElementById(id).value='');
 }
 function deleteWeekly(id){
-  if(!confirm('ç¢ºå®åªé¤éç­è¨éï¼'))return;
+  if(!confirm('確定刪除這筆記錄？'))return;
   saveData('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
   renderWeekly();updateStats();
 }
 function renderWeekly(){
   var weekly=getData('uberWeekly'),el=document.getElementById('weeklyList');
-  if(!weekly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">ð</span>å°ç¡æ¯æ¥æ¶å¥è¨é</div>';return;}
+  if(!weekly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div>';return;}
   var max=Math.max(...weekly.map(w=>w.income),1);
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:24px;">'+
     weekly.map(w=>{
-      var hStr=(w.hours||0)+'å°æ'+(w.mins||0)+'åé';
+      var hStr=(w.hours||0)+'小時'+(w.mins||0)+'分鐘';
       return `<div class="week-bar" style="align-items:center;">
         <div class="week-label" style="min-width:70px;font-size:13px;color:#f5edd8">${w.date.slice(5)}</div>
         <div class="week-track"><div class="week-fill" style="width:${w.income/max*100}%"></div></div>
         <div class="week-amount" style="font-size:13px">NT$${fmt(w.income)}</div>
-        <div style="font-size:13px;color:#f0dca8;margin-left:8px;min-width:50px">${w.tripCount||0}è¶</div>
+        <div style="font-size:13px;color:#f0dca8;margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
         <div style="font-size:13px;color:#60AAFF;margin-left:4px;min-width:110px">${hStr}</div>
-        <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">â</span>
+        <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
       </div>`;
     }).join('')+'</div>';
 }
-// æ¯æ¥æ¯åº
+// 每日支出
 function addMonthly(){
   var date=document.getElementById('fm-date').value;
   var type=document.getElementById('fm-type').value;
   var amount=parseFloat(document.getElementById('fm-amount').value)||0;
   var note=document.getElementById('fm-note').value.trim();
-  if(!date){alert('è«é¸ææ¥æ');return;}
-  if(!type){alert('è«é¸ææ¯åºé¡å');return;}
+  if(!date){alert('請選擇日期');return;}
+  if(!type){alert('請選擇支出類型');return;}
   var m=getData('uberMonthly');
   m.unshift({date,type,amount,note,id:Date.now()});
   saveAndPush('uberMonthly', m);renderMonthly();updateStats();
@@ -612,18 +612,18 @@ function addMonthly(){
   document.getElementById('fm-type').value='';
 }
 function deleteMonthly(id){
-  if(!confirm('ç¢ºå®åªé¤éç­æ¯åºï¼'))return;
+  if(!confirm('確定刪除這筆支出？'))return;
   saveData('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
 }
-const TYPE_COLOR={'æ²¹é¢':'#ff6b6b','ä¿é¤/ç¶­ä¿®':'#ff9f43','äº¤éç½°é°':'#ee5a24','åè»è²»':'#f7b731','æ±½è»ç¾è²¨':'#a29bfe','ä¿éª/è²»ç¨':'#74b9ff'};
+const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff'};
 function renderMonthly(){
   var monthly=getData('uberMonthly'),el=document.getElementById('monthlyList');
-  if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">ð°</span>å°ç¡æ¯åºè¨é</div>';return;}
+  if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
   var total=monthly.reduce((s,m)=>s+m.amount,0);
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
-    +['æ¥æ','æ¯åºé¡å','éé¡','åè¨»',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
+    +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
     +'</tr></thead><tbody>'
     +monthly.map(m=>{
       var col=TYPE_COLOR[m.type]||'#f0dca8';
@@ -631,39 +631,39 @@ function renderMonthly(){
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#E8EAF0;font-size:17px;">${m.date}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:4px 14px;border-radius:99px;font-size:15px;letter-spacing:0.05em;">${m.type}</span></td>
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:18px;font-weight:600;">NT$${fmt(m.amount)}</td>
-        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'â'}</td>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;"><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">â</span></td>
+        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'—'}</td>
+        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;"><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
       </tr>`;
     }).join('')
-    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">åè¨ ${monthly.length} ç­</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
+    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
-// çµ±è¨
+// 統計
 function updateStats(){
   var now=new Date(),thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  // æ¬ææ¶å¥ & ææ¸ï¼å¾ãæ¯æ¥æ¶å¥ãè¡¨
+  // 本月收入 & 時數：從「每日收入」表
   var weekly=getData('uberWeekly').filter(function(w){return w.date&&w.date.startsWith(thisMonth);});
   var income=weekly.reduce(function(s,w){return s+w.income;},0);
   var totalMins=weekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
   var hours=totalMins/60;
   var tripCount=weekly.reduce(function(s,w){return s+(w.tripCount||0);},0);
-  // è¥æ¯æ¥æ¶å¥æ²æè¡ç¨æ¸ï¼fallback å°è¡ç¨è¨éè¡¨
+  // 若每日收入沒有行程數，fallback 到行程記錄表
   if(!tripCount) tripCount=getData('uberTrips').length;
-  // æ¬ææ¯åºï¼å¾ãæ¯æ¥æ¯åºãè¡¨
+  // 本月支出：從「每日支出」表
   var monthly=getData('uberMonthly').filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
   var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
-  // æ·¨æ¶å¥ = æ¶å¥ - æ¯åº
+  // 淨收入 = 收入 - 支出
   var net=income-exp;
-  // å¹³åæèª = æ¶å¥ / ææ¸
+  // 平均時薪 = 收入 / 時數
   var hourly=hours>0?(income/hours).toFixed(0):0;
-  // ç¸½æ¶å¥ãç¸½æ¯åºãç¸½æ·¨å©ï¼æææéï¼
+  // 總收入、總支出、總淨利（所有時間）
   var allWeekly=getData('uberWeekly');
   var allMonthly=getData('uberMonthly');
   var totalIncome=allWeekly.reduce(function(s,w){return s+w.income;},0);
   var totalExp=allMonthly.reduce(function(s,m){return s+m.amount;},0);
   var totalNet=totalIncome-totalExp;
 
-  document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">è¶</em>';
+  document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
   document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
   document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
@@ -673,19 +673,19 @@ function updateStats(){
   document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
   document.getElementById('s-total-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalNet)+'</em>';
 }
-// ç¸£å¸ååè³æ
+// 縣市分區資料
 const DISTRICTS = {
-  'æ°åå¸': ['æ¿æ©å','ä¸éå','ä¸­åå','æ°¸åå','æ°èå','æ°åºå','æ¨¹æå','é¶¯æ­å','ä¸å³½å','æ·¡æ°´å','æ±æ­¢å','çè³å','ååå','èæ´²å','äºè¡å','æ³°å±±å','æå£å','æ·±åå','ç³ç¢å','åªæå','ä¸èå','ç³éå','å«éå','å¹³æºªå','éæºªå','è²¢å¯®å','éå±±å','è¬éå','çä¾å'],
-  'å°åå¸': ['ä¸­æ­£å','å¤§åå','ä¸­å±±å','æ¾å±±å','å¤§å®å','è¬è¯å','ä¿¡ç¾©å','å£«æå','åæå','å§æ¹å','åæ¸¯å','æå±±å'],
-  'æ¡åå¸': ['æ¡åå','ä¸­å£¢å','å¤§æºªå','æ¥æ¢å','èç«¹å','å¤§åå','é¾å±±å','å«å¾·å','é¾æ½­å','å¹³é®å','æ°å±å','è§é³å','å¾©èå'],
-  'å®è­ç¸£': ['å®è­å¸','ç¾æ±é®','èæ¾³é®','é ­åé®','ç¤æºªé','å£¯åé','å¡å±±é','å¬å±±é','äºçµé','ä¸æé','å¤§åé','åæ¾³é']
+  '新北市': ['板橋區','三重區','中和區','永和區','新莊區','新店區','樹林區','鶯歌區','三峽區','淡水區','汐止區','瑞芳區','土城區','蘆洲區','五股區','泰山區','林口區','深坑區','石碇區','坪林區','三芝區','石門區','八里區','平溪區','雙溪區','貢寮區','金山區','萬里區','烏來區'],
+  '台北市': ['中正區','大同區','中山區','松山區','大安區','萬華區','信義區','士林區','北投區','內湖區','南港區','文山區'],
+  '桃園市': ['桃園區','中壢區','大溪區','楊梅區','蘆竹區','大園區','龜山區','八德區','龍潭區','平鎮區','新屋區','觀音區','復興區'],
+  '宜蘭縣': ['宜蘭市','羅東鎮','蘇澳鎮','頭城鎮','礁溪鄉','壯圍鄉','員山鄉','冬山鄉','五結鄉','三星鄉','大同鄉','南澳鄉']
 };
 function updateDistricts(type){
   var cityId = type==='from' ? 'f-from-city' : 'f-to-city';
   var distId = type==='from' ? 'f-from-dist' : 'f-to-dist';
   var city = document.getElementById(cityId).value;
   var distSel = document.getElementById(distId);
-  distSel.innerHTML = '<option value="">è«é¸æåå</option>';
+  distSel.innerHTML = '<option value="">請選擇區域</option>';
   if(city && DISTRICTS[city]){
     DISTRICTS[city].forEach(function(d){
       var opt = document.createElement('option');
@@ -693,10 +693,10 @@ function updateDistricts(type){
       distSel.appendChild(opt);
     });
   } else {
-    distSel.innerHTML = '<option value="">è«åé¸ç¸£å¸</option>';
+    distSel.innerHTML = '<option value="">請先選縣市</option>';
   }
 }
-// åå§å
+// 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
 renderTrips();renderWeekly();renderMonthly();updateStats();
 </script>
