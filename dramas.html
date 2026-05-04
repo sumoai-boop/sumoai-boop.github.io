@@ -560,10 +560,36 @@ function buildTop5(){
 
 async function fetchPosterForCard(m, imgEl){
   try{
-    const url = await fetchPoster(m);
+    const TMDB_KEY = 'e174d0983218845b167176a27b04b83f';
+    const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
+    const year = m.year||0;
+    let url = null;
+
+    // 1. 先試英文原名
+    if(m.orig && m.orig!=='nan' && isLatin(m.orig)){
+      const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+      const d = await r.json();
+      const hit = d.results && d.results.find(x=>x.poster_path);
+      if(hit) url = `https://image.tmdb.org/t/p/w300${hit.poster_path}`;
+    }
+    // 2. 再試中文片名
+    if(!url){
+      const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      const d = await r.json();
+      const hit = d.results && d.results.find(x=>x.poster_path);
+      if(hit) url = `https://image.tmdb.org/t/p/w300${hit.poster_path}`;
+    }
+    // 3. 試 TV
+    if(!url){
+      const r = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      const d = await r.json();
+      const hit = d.results && d.results.find(x=>x.poster_path);
+      if(hit) url = `https://image.tmdb.org/t/p/w300${hit.poster_path}`;
+    }
+
     if(url) imgEl.src = url;
-    else imgEl.src = POSTERS[0]||'';
-  }catch(e){}
+    else imgEl.style.display = 'none';
+  }catch(e){ imgEl.style.display='none'; }
 }
 
 // ── 篩選 ──
