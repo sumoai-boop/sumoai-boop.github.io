@@ -75,7 +75,7 @@
   /* ── 海報燈箱 ── */
   .pm{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.92);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
   .pm.open{display:flex;}
-  .pm-inner{position:relative;display:flex;flex-direction:column;align-items:center;max-width:600px;width:100%;background:#18120a;border:2px solid rgba(232,98,42,0.5);border-radius:20px;padding:40px 36px 32px;gap:24px;margin:auto;box-shadow:0 0 30px rgba(232,98,42,0.2),0 0 60px rgba(232,98,42,0.08),inset 0 0 30px rgba(232,98,42,0.04);}
+  .pm-inner{position:relative;display:flex;flex-direction:column;align-items:center;max-width:600px;width:100%;background:#F5EDE0;border:2px solid rgba(180,100,30,0.5);border-radius:20px;padding:40px 36px 32px;gap:24px;margin:auto;box-shadow:0 0 30px rgba(232,98,42,0.2),0 0 60px rgba(232,98,42,0.08),inset 0 0 30px rgba(232,98,42,0.04);}
   .pm-close{position:absolute;top:14px;right:16px;background:transparent;border:none;color:rgba(200,170,100,0.4);font-size:22px;cursor:pointer;line-height:1;z-index:10;}
   .pm-close:hover{color:#F5E6C0;}
   .pm-img-wrap{width:100%;display:flex;justify-content:center;}
@@ -246,9 +246,11 @@
   #addRecordForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   #addRecordForm .ar-full{grid-column:1/-1;}
   .ar-field{display:flex;flex-direction:column;gap:5px;}
-  .ar-label{font-size:10.5px;font-weight:600;letter-spacing:0.1em;color:rgba(255,180,50,0.6);text-transform:uppercase;}
+  
+  .ar-input::placeholder{color:rgba(80,40,5,0.5);}
+  .ar-label{font-size:10.5px;font-weight:600;letter-spacing:0.1em;color:rgba(140,70,10,0.9);text-transform:uppercase;}
   .ar-label span{color:rgba(232,98,42,0.85);margin-left:1px;}
-  .ar-input,.ar-select{background:rgba(255,180,50,0.05);border:1px solid rgba(255,180,50,0.18);border-radius:8px;color:#2C1A0E;font-size:13.5px;padding:8px 11px;outline:none;width:100%;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;font-family:'Space Mono',monospace;-webkit-appearance:none;}
+  .ar-input,.ar-select{background:rgba(255,255,255,0.85);border:1px solid rgba(180,100,30,0.4);border-radius:8px;color:#1A0A00;font-size:13.5px;padding:8px 11px;outline:none;width:100%;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;font-family:'Space Mono',monospace;-webkit-appearance:none;}
   .ar-input:focus,.ar-select:focus{border-color:rgba(232,98,42,0.55);background:rgba(232,98,42,0.07);box-shadow:0 0 0 2.5px rgba(232,98,42,0.14);}
   .ar-input::placeholder{color:rgba(245,230,200,0.22);}
   .ar-select option{background:#1a1208;color:#2C1A0E;}
