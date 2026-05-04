@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>追劇 — Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;} body,p,td,th,span,div,a,label{color:inherit;}
   body{background:#F4EFE6;color:#2C1A0E;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;position:relative;}
@@ -22,7 +22,7 @@
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px;}
   .stat-card{background:rgba(200,130,50,0.15);border:1px solid rgba(180,100,30,0.35);border-radius:10px;padding:14px 16px;text-align:center;}
   .stat-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(120,50,5,0.9);margin-bottom:8px;text-align:center;font-family:'Space Mono',monospace;}
-  .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#2C1A0E;}
+  .stat-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#2C1A0E;}
   .stat-val em{font-style:italic;color:#7A4500;font-size:18px;}
   .top5-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(60,30,5,0.7);margin-bottom:16px;display:block;}
   .top5-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:48px;}
@@ -306,10 +306,10 @@ body::before { background: transparent !important; }
   <h1 class="page-title">電影<em>記錄</em></h1>
   <span class="page-label">— 03 / DRAMAS · 點片名查看海報</span>
   <div class="stats">
-    <div class="stat-card"><div class="stat-label">總觀影</div><div class="stat-val" id="sTotal">—</div></div>
-    <div class="stat-card"><div class="stat-label">平均個人評分</div><div class="stat-val" id="sAvg">—</div></div>
-    <div class="stat-card"><div class="stat-label">每月平均觀看</div><div class="stat-val" id="sBest">—</div></div>
-    <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema">—</div></div>
+    <div class="stat-card"><div class="stat-label">總觀影</div><div class="stat-val" id="sTotal" style="color:#1A3A6A;">—</div></div>
+    <div class="stat-card"><div class="stat-label">平均個人評分</div><div class="stat-val" id="sAvg" style="color:#C05000;">—</div></div>
+    <div class="stat-card"><div class="stat-label">每月平均觀看</div><div class="stat-val" id="sBest" style="color:#1A6A3A;">—</div></div>
+    <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema" style="color:#5A1A7A;">—</div></div>
   </div>
   <span class="top5-label">— 個人最愛 TOP 5</span>
   <div class="top5-grid" id="top5Grid"></div>
@@ -519,7 +519,7 @@ const TMDB_ID_OVERRIDE={
 };
 
 const DIST_LOGO={
-  'Netflix':    '<span style="font-size:11px;font-weight:600;color:#3D2010">Netflix</span>',
+  'Netflix':    '<span style="font-size:11px;font-weight:600;color:#E50914">Netflix</span>',
   'Disney':     '<span style="font-size:12px;font-weight:900;color:#1A7A30;font-family:sans-serif;letter-spacing:1px">DISNEY</span>',
   'Disney+':    '<span style="font-size:11px;font-weight:900;color:#0063e5;font-family:sans-serif">Disney+</span>',
   'HBO Max':    '<span style="font-size:11px;font-weight:600;color:#3D2010">HBO</span>',
@@ -546,14 +546,24 @@ function toDistLogo(d){
 function buildTop5(){
   const top5=[...DATA].sort((a,b)=>b.personal-a.personal).slice(0,5);
   const grid=document.getElementById('top5Grid');
-  POSTERS.forEach((src,i)=>{
-    const m=top5[i];
+  grid.innerHTML='';
+  top5.forEach((m,i)=>{
     const card=document.createElement('div');
     card.className='poster-card';
-    card.innerHTML=`<img src="${src}" alt="${m.title}"><div class="poster-overlay"></div><div class="poster-info"><div class="poster-rank">${RANKS[i]}</div><div class="poster-title">${m.title}</div><div><span class="poster-score-num">${m.personal.toFixed(1)}</span><span class="poster-score-label">個人評分</span></div></div>`;
+    card.innerHTML=`<img src="" alt="${m.title}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"><div class="poster-overlay"></div><div class="poster-info"><div class="poster-rank" style="color:#FFD700;font-weight:700;font-size:11px;letter-spacing:0.1em;">${RANKS[i]}</div><div class="poster-title" style="color:#fff;font-size:14px;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.8);">${m.title}</div><div><span class="poster-score-num" style="color:#FFD700;font-size:18px;font-weight:700;">${m.personal.toFixed(1)}</span><span class="poster-score-label" style="color:rgba(255,255,255,0.8);font-size:10px;margin-left:4px;">個人評分</span></div></div>`;
     card.onclick=()=>openPoster(m);
     grid.appendChild(card);
+    // 動態抓 TMDB 海報
+    fetchPosterForCard(m, card.querySelector('img'));
   });
+}
+
+async function fetchPosterForCard(m, imgEl){
+  try{
+    const url = await fetchPoster(m);
+    if(url) imgEl.src = url;
+    else imgEl.src = POSTERS[0]||'';
+  }catch(e){}
 }
 
 // ── 篩選 ──
