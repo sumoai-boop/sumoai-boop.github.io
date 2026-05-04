@@ -433,14 +433,13 @@ async function pushToGitHub(newTrips,newWeekly,newMonthly){
   else if(fileInfo.download_url){showToast('⏳ 下載中...',false);var dlResp=await fetch(fileInfo.download_url);currentContent=await dlResp.text();}
   else{showToast('❌ 無法取得檔案',true);return;}
 
-  function replaceMarker(html,key,data){
-    var s='__DATA_'+key+'__';var e='__END_'+key+'__';
-    var re=new RegExp(s+'[\\s\\S]*?'+e);
-    return html.replace(re,s+JSON.stringify(data)+e);
-  }
-  currentContent=replaceMarker(currentContent,'uberTrips',newTrips);
-  currentContent=replaceMarker(currentContent,'uberWeekly',newWeekly);
-  currentContent=replaceMarker(currentContent,'uberMonthly',newMonthly);
+  // 更新 gh-data JSON 區塊
+  var newObj = {uberTrips:newTrips, uberWeekly:newWeekly, uberMonthly:newMonthly};
+  var newJson = JSON.stringify(newObj, null, 2);
+  currentContent = currentContent.replace(
+    /(<script[^>]*id="gh-data"[^>]*>)([\s\S]*?)(<\/script>)/,
+    function(m, open, body, close){ return open + '\n' + newJson + '\n' + close; }
+  );
 
   var encoded=btoa(unescape(encodeURIComponent(currentContent)));
   var pushResp=await fetch(apiBase,{method:'PUT',headers,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha,branch:GH_BRANCH})});
