@@ -555,7 +555,17 @@
       "id": 1777900000003
     }
   ],
-  "uberWeekly": [],
+  "uberWeekly": [
+    {
+      "date": "2026-05-04",
+      "income": 859,
+      "tripCount": 4,
+      "hours": 2,
+      "mins": 3,
+      "points": 6,
+      "id": 1777908829141
+    }
+  ],
   "uberMonthly": [
     {
       "date": "2026-05-01",
