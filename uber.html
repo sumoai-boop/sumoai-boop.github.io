@@ -646,9 +646,8 @@ function updateStats(){
   var income=weekly.reduce(function(s,w){return s+w.income;},0);
   var totalMins=weekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
   var hours=totalMins/60;
-  var tripCount=weekly.reduce(function(s,w){return s+(w.tripCount||0);},0);
-  // 若每日收入沒有行程數，fallback 到行程記錄表
-  if(!tripCount) tripCount=getData('uberTrips').length;
+  var allTrips=getData('uberTrips');
+  var tripCount=allTrips.filter(function(t){return t.d&&t.d.startsWith(thisMonth);}).length;
   // 本月支出：從「每日支出」表
   var monthly=getData('uberMonthly').filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
   var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
@@ -666,12 +665,12 @@ function updateStats(){
   document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
   document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
-  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
+  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em style="color:#4A9EFF">'+fmt(income)+'</em>';
   document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
-  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(net)+'</em>';
-  document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalIncome)+'</em>';
-  document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
-  document.getElementById('s-total-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalNet)+'</em>';
+  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em style="color:#FFD700">'+fmt(net)+'</em>';
+  document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em style="color:#4A9EFF">'+fmt(totalIncome)+'</em>';
+  document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em style="color:#FF4444">'+fmt(totalExp)+'</em>';
+  document.getElementById('s-total-net').innerHTML='<span class="stat-unit">NT$</span><em style="color:#FFD700">'+fmt(totalNet)+'</em>';
 }
 // 縣市分區資料
 const DISTRICTS = {
