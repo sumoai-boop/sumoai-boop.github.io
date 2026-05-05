@@ -350,31 +350,12 @@ body::before { background: transparent !important; }
     </select>
     <select class="filter-select" id="venueSelect">
       <option value="">全部地點</option>
-      <option value="🏠 家庭劇院">🏠 家庭劇院 (127)</option>
-      <option value="🎬 台北松仁威秀">🎬 台北松仁威秀 (16)</option>
-      <option value="🎬 中和環球威秀">🎬 中和環球威秀 (12)</option>
-      <option value="🎬 喜滿客京華影城">🎬 喜滿客京華影城 (12)</option>
-      <option value="🎬 台北信義威秀">🎬 台北信義威秀 (10)</option>
-      <option value="🎬 林口outlet威秀">🎬 林口outlet威秀 (5)</option>
-      <option value="🎬 桃園青埔新光">🎬 桃園青埔新光 (3)</option>
-      <option value="🎬 台中大遠百威秀">🎬 台中大遠百威秀 (2)</option>
-      <option value="🎬 板橋大遠百威秀">🎬 板橋大遠百威秀 (2)</option>
-      <option value="🎬 桃園統領威秀">🎬 桃園統領威秀 (1)</option>
-      <option value="🎬 美麗華影城">🎬 美麗華影城 (1)</option>
-      <option value="🎬 台北大巨蛋秀泰">🎬 台北大巨蛋秀泰 (1)</option>
-      <option value="🎬 台北京站威秀">🎬 台北京站威秀 (1)</option>
-      <option value="🎬 台北哈拉影城">🎬 台北哈拉影城 (1)</option>
-      <option value="🎬 新店裕隆城威秀">🎬 新店裕隆城威秀 (1)</option>
-      <option value="🎬 台北欣欣秀泰">🎬 台北欣欣秀泰 (1)</option>
-      <option value="🎬 欣欣秀泰">🎬 欣欣秀泰 (1)</option>
     </select>
     <select class="filter-select" id="distSelect">
       <option value="">全部發行商</option>
     </select>
     <select class="filter-select" id="typeSelect">
       <option value="">全部種類</option>
-      <option value="電影">🎬 電影 (230)</option>
-      <option value="影集">📺 影集 (46)</option>
     </select>
     <select class="filter-select" id="sortSelect">
       <option value="date-desc">最新觀看</option>
@@ -678,6 +659,27 @@ function buildFilters(){
     Object.entries(dists).sort((a,b)=>b[1]-a[1])
       .map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
   distSel.value = curDist;
+
+  // 觀看地點
+  const venueSel = document.getElementById('venueSelect');
+  const curVenue = venueSel.value;
+  const venues = {};
+  DATA.forEach(m => { if(m.venue) venues[m.venue] = (venues[m.venue]||0) + 1; });
+  venueSel.innerHTML = '<option value="">全部地點</option>' +
+    Object.entries(venues).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
+  venueSel.value = curVenue;
+
+  // 種類
+  const typeSel = document.getElementById('typeSelect');
+  const curType = typeSel.value;
+  const types = {};
+  DATA.forEach(m => { if(m.type) types[m.type] = (types[m.type]||0) + 1; });
+  const TYPE_ICON = {'電影':'🎬','影集':'📺','紀錄片':'🎥','動畫':'🎨'};
+  typeSel.innerHTML = '<option value="">全部種類</option>' +
+    Object.entries(types).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${TYPE_ICON[k]||''}${k} (${v})</option>`).join('');
+  typeSel.value = curType;
 }
 
 // ── 海報燈箱 ──
