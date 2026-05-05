@@ -1336,14 +1336,14 @@ render();
             var arr = JSON.parse(text);
             DATA.length = 0;
             arr.forEach(function(d){ DATA.push(d); });
-            render(); buildTop5(); if(typeof renderCal==='function') renderCal();
+            render(); buildTop5(); renderCal();
           });
       }
       if(raw){
         var arr = JSON.parse(raw);
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
-        render(); buildTop5(); if(typeof renderCal==='function') renderCal();
+        render(); buildTop5(); renderCal();
       }
     }).catch(function(e){ console.warn('dramas sync:', e); });
 
