@@ -1313,24 +1313,12 @@ render();
   var GH_PATH  = 'dramas.html';
   var GH_BRANCH = 'main';
 
-  // ── 從 GitHub 讀取最新資料 ──
+  // ── 從 GitHub Pages 讀取最新資料（公開，不需 Token）──
   (function(){
-    var token = localStorage.getItem(GH_TOKEN_KEY);
-    if(!token) return;
-    var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
-    fetch(api + '?ref=' + GH_BRANCH + '&t=' + Date.now(), {
-      headers: {'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json'}
-    }).then(function(r){ return r.json(); }).then(function(fi){
-      if(!fi || !fi.sha) return;
-      var html;
-      if(fi.content && fi.content.trim() !== ''){
-        html = decodeURIComponent(escape(atob(fi.content.split('\n').join(''))));
-      } else if(fi.download_url){
-        return fetch(fi.download_url + '?t=' + Date.now())
-          .then(function(r){ return r.text(); })
-          .then(function(text){ loadNewData(text); });
-      }
-      if(html) loadNewData(html);
+    // 直接抓 GitHub Pages 的最新版本
+    var pageUrl = 'https://sumoai-boop.github.io/dramas.html?t=' + Date.now();
+    fetch(pageUrl).then(function(r){ return r.text(); }).then(function(html){
+      loadNewData(html);
     }).catch(function(e){ console.warn('dramas sync:', e); });
 
     function loadNewData(html){
@@ -1340,14 +1328,18 @@ render();
       var newDataStr = html.slice(m + 'const DATA=['.length, e);
       try{
         var newData = JSON.parse('[' + newDataStr + ']');
-        if(newData.length > 0 && newData.length >= DATA.length){
+        if(newData.length === 0) return;
+        // 只要 GitHub 的資料跟本地不同就更新
+        var localJson = JSON.stringify(DATA.map(function(d){return d.date+d.title;}));
+        var remoteJson = JSON.stringify(newData.map(function(d){return d.date+d.title;}));
+        if(localJson !== remoteJson){
           DATA.length = 0;
           newData.forEach(function(d){ DATA.push(d); });
           render();
           if(typeof buildTop5 === 'function') buildTop5();
           if(typeof renderCal === 'function') renderCal();
         }
-      }catch(e){ console.warn('parse error:', e); }
+      }catch(err){ console.warn('parse error:', err); }
     }
   })();
 
