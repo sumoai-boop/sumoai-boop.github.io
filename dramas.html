@@ -826,7 +826,7 @@ render();
     curYear = now.getFullYear(); curMonth = now.getMonth();
   }
 
-  const posterCache = {};
+  const posterCache = (function(){ try{ return JSON.parse(localStorage.getItem('_posterCache')||'{}')}catch{return{}} })();
   // 每格目前顯示的 index
   const cellIdx = {};
 
@@ -948,7 +948,9 @@ render();
       }
       posterCache[title] = null;
       return null;
-    } catch(e){ return null; }
+    } catch(e){ return null; } finally{
+      try{ localStorage.setItem('_posterCache', JSON.stringify(posterCache)); }catch{}
+    }
   }
 
   async function prefetchMonthPosters(){
@@ -1337,14 +1339,14 @@ render();
             var arr = JSON.parse(text);
             DATA.length = 0;
             arr.forEach(function(d){ DATA.push(d); });
-            render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
+            render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
           });
       }
       if(raw){
         var arr = JSON.parse(raw);
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
-        render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
+        render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
       }
     }).catch(function(e){ console.warn('dramas sync:', e); });
 
