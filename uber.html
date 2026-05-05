@@ -284,6 +284,7 @@ body{
         <div class="form-group"><label style="font-size:12px">時數（小時）</label><input class="form-input" style="font-size:15px" type="number" id="fw-hours" placeholder="0" min="0"></div>
         <div class="form-group"><label style="font-size:12px">時數（分鐘）</label><input class="form-input" style="font-size:15px" type="number" id="fw-mins" placeholder="0" min="0" max="59"></div>
         <div class="form-group"><label style="font-size:12px">積分</label><input class="form-input" style="font-size:15px" type="number" id="fw-points" placeholder="0" min="0"></div>
+        <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fw-note" placeholder="備註說明"></div>
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
@@ -595,11 +596,12 @@ function addWeekly(){
   var hours=parseInt(document.getElementById('fw-hours').value)||0;
   var mins=parseInt(document.getElementById('fw-mins').value)||0;
   var points=parseInt(document.getElementById('fw-points').value)||0;
+  var note=document.getElementById('fw-note').value.trim();
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
-  w.unshift({date,income,tripCount,hours,mins,points,id:Date.now()});
+  w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
   saveAndPush('uberWeekly',w);renderWeekly();updateStats();
-  ['fw-income','fw-trips','fw-hours','fw-mins','fw-points'].forEach(id=>document.getElementById(id).value='');
+  ['fw-income','fw-trips','fw-hours','fw-mins','fw-points','fw-note'].forEach(id=>document.getElementById(id).value='');
 }
 function deleteWeekly(id){
   if(!confirm('確定刪除這筆記錄？'))return;
@@ -620,6 +622,7 @@ function renderWeekly(){
         <div style="font-size:13px;color:#f0dca8;margin-left:8px;min-width:50px">${w.tripCount||0}趟</div>
         <div style="font-size:13px;color:#60AAFF;margin-left:4px;min-width:110px">${hStr}</div>
         <div style="font-size:13px;color:#FFD700;margin-left:8px;min-width:60px">${w.points||0}分</div>
+        <div style="font-size:12px;color:rgba(200,200,200,0.7);margin-left:8px">${w.note||''}</div>
         <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
       </div>`;
     }).join('')+'</div>';
