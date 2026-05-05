@@ -303,6 +303,19 @@ body{
       </div>
       <button class="btn-add" onclick="addMonthly()">新增支出</button>
     </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <input type="text" id="monthly-search" placeholder="🔍 搜尋備註或地點..." oninput="renderMonthly()" style="flex:1;min-width:180px;background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:99px;padding:8px 16px;color:#E8EAF0;font-size:13px;outline:none;font-family:monospace;">
+      <select id="monthly-type-filter" onchange="renderMonthly()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:99px;padding:8px 14px;color:#E8EAF0;font-size:13px;outline:none;font-family:monospace;">
+        <option value="">全部類型</option>
+        <option value="油錢">油錢</option>
+        <option value="保養/維修">保養/維修</option>
+        <option value="交通罰鍰">交通罰鍰</option>
+        <option value="停車費">停車費</option>
+        <option value="汽車百貨">汽車百貨</option>
+        <option value="保險/費用">保險/費用</option>
+        <option value="其他">其他</option>
+      </select>
+    </div>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
   </div>
 </div>
@@ -648,7 +661,15 @@ function deleteMonthly(id){
 }
 const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff'};
 function renderMonthly(){
-  var monthly=getData('uberMonthly'),el=document.getElementById('monthlyList');
+  var allMonthly=getData('uberMonthly').sort((a,b)=>b.date.localeCompare(a.date));
+  var q=(document.getElementById('monthly-search')?document.getElementById('monthly-search').value:'').toLowerCase();
+  var tf=(document.getElementById('monthly-type-filter')?document.getElementById('monthly-type-filter').value:'');
+  var monthly=allMonthly.filter(function(m){
+    var matchQ=!q||(m.note&&m.note.toLowerCase().includes(q))||(m.type&&m.type.toLowerCase().includes(q));
+    var matchT=!tf||(m.type===tf);
+    return matchQ&&matchT;
+  });
+  var el=document.getElementById('monthlyList');
   if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
   var total=monthly.reduce((s,m)=>s+m.amount,0);
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
