@@ -1337,14 +1337,14 @@ render();
             var arr = JSON.parse(text);
             DATA.length = 0;
             arr.forEach(function(d){ DATA.push(d); });
-            render(); buildTop5(); renderCal();
+            render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); renderCal();
           });
       }
       if(raw){
         var arr = JSON.parse(raw);
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
-        render(); buildTop5(); renderCal();
+        render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); renderCal();
       }
     }).catch(function(e){ console.warn('dramas sync:', e); });
 
