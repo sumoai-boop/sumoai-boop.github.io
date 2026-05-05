@@ -344,51 +344,9 @@ body::before { background: transparent !important; }
     <button class="filter-reset" id="resetBtn" title="重置所有篩選">↺ 重置</button>
     <select class="filter-select" id="langSelect">
       <option value="">全部國家</option>
-<option value="US">🇺🇸 美國 (134)</option>
-<option value="KR">🇰🇷 韓國 (46)</option>
-<option value="JP">🇯🇵 日本 (19)</option>
-<option value="CN">🇨🇳 中國 (16)</option>
-<option value="ES">🇪🇸 西班牙 (11)</option>
-<option value="TW">🇹🇼 台灣 (10)</option>
-<option value="HK">🇭🇰 香港 (9)</option>
-<option value="GB">🇬🇧 英國 (7)</option>
-<option value="IN">🇮🇳 印度 (5)</option>
-<option value="DE">🇩🇪 德國 (4)</option>
-<option value="FR">🇫🇷 法國 (3)</option>
-<option value="IT">🇮🇹 義大利 (2)</option>
-<option value="ID">🇮🇩 印尼 (2)</option>
-<option value="TR">🇹🇷 土耳其 (1)</option>
-<option value="IR">🇮🇷 伊朗 (1)</option>
-<option value="PL">PL PL (1)</option>
-<option value="AU">🇦🇺 澳洲 (1)</option>
-<option value="CH">🇨🇭 瑞士 (1)</option>
-<option value="MY">🇲🇾 馬來西亞 (1)</option>
-<option value="NL">🇳🇱 荷蘭 (1)</option>
-<option value="SE">SE SE (1)</option>
     </select>
     <select class="filter-select" id="yearSelect">
       <option value="">全部年份</option>
-<option value="2026">2026 (32)</option>
-<option value="2025">2025 (109)</option>
-<option value="2024">2024 (63)</option>
-<option value="2023">2023 (23)</option>
-<option value="2022">2022 (9)</option>
-<option value="2021">2021 (5)</option>
-<option value="2020">2020 (3)</option>
-<option value="2019">2019 (4)</option>
-<option value="2018">2018 (9)</option>
-<option value="2017">2017 (7)</option>
-<option value="2016">2016 (1)</option>
-<option value="2015">2015 (1)</option>
-<option value="2014">2014 (1)</option>
-<option value="2011">2011 (1)</option>
-<option value="2009">2009 (1)</option>
-<option value="2008">2008 (2)</option>
-<option value="2005">2005 (1)</option>
-<option value="2004">2004 (1)</option>
-<option value="2003">2003 (1)</option>
-<option value="2001">2001 (1)</option>
-<option value="1995">1995 (1)</option>
     </select>
     <select class="filter-select" id="venueSelect">
       <option value="">全部地點</option>
@@ -412,38 +370,6 @@ body::before { background: transparent !important; }
     </select>
     <select class="filter-select" id="distSelect">
       <option value="">全部發行商</option>
-<option value="Netflix">Netflix (91)</option>
-<option value="其他">其他 (46)</option>
-<option value="Warner">Warner (18)</option>
-<option value="Disney">Disney (16)</option>
-<option value="Universal">Universal (14)</option>
-<option value="SONY">SONY (14)</option>
-<option value="Paramount">Paramount (12)</option>
-<option value="Lions Gate">Lions Gate (7)</option>
-<option value="A24">A24 (7)</option>
-<option value="Disney+">Disney+ (6)</option>
-<option value="東寶">東寶 (5)</option>
-<option value="樂天">樂天 (4)</option>
-<option value="Fox">Fox (4)</option>
-<option value="NEW">NEW (4)</option>
-<option value="HBO Max">HBO Max (4)</option>
-<option value="20th Century">20th Century (3)</option>
-<option value="CJ ENM">CJ ENM (3)</option>
-<option value="Amazon">Amazon (2)</option>
-<option value="日本電視">日本電視 (2)</option>
-<option value="天津貓眼">天津貓眼 (2)</option>
-<option value="Europa">Europa (1)</option>
-<option value="光線動畫">光線動畫 (1)</option>
-<option value="Apple">Apple (1)</option>
-<option value="New Line">New Line (1)</option>
-<option value="哥倫比亞">哥倫比亞 (1)</option>
-<option value="MGM">MGM (1)</option>
-<option value="BY4M">BY4M (1)</option>
-<option value="東映">東映 (1)</option>
-<option value="Showbox">Showbox (1)</option>
-<option value="朝日">朝日 (1)</option>
-<option value="KBS">KBS (1)</option>
-<option value="英皇">英皇 (1)</option>
     </select>
     <select class="filter-select" id="typeSelect">
       <option value="">全部種類</option>
@@ -710,6 +636,7 @@ function render(){
   countUp(document.getElementById('sAvg'), parseFloat(avg), '', 2, 1000);
   countUp(document.getElementById('sBest'), avgPerMonth, ' 部', 1, 800);
   countUp(document.getElementById('sCinema'), cin, ' 場');
+  buildFilters();
 }
 
 // ── 動態建立篩選選單 ──
