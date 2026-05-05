@@ -2,6 +2,16 @@
   "uberTrips": [],
   "uberWeekly": [
     {
+      "date": "2026-05-03",
+      "income": 1709,
+      "tripCount": 12,
+      "hours": 3,
+      "mins": 55,
+      "points": 36,
+      "note": "",
+      "id": 1777947748991
+    },
+    {
       "date": "2026-05-04",
       "income": 859,
       "tripCount": 4,
