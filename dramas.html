@@ -45,6 +45,8 @@
   .filter-reset{background:rgba(232,98,42,0.15);border:1px solid rgba(232,98,42,0.45);border-radius:99px;padding:9px 16px;color:#E8622A;font-family:'Space Mono',monospace;font-size:13px;cursor:pointer;letter-spacing:0.05em;transition:all 0.2s;white-space:nowrap;font-weight:500;}
   .filter-reset:hover{background:rgba(232,98,42,0.35);color:#fff;}
   .del-btn{background:rgba(180,40,40,0.15);border:1px solid rgba(220,60,60,0.4);border-radius:6px;color:rgba(220,100,100,0.8);font-size:12px;cursor:pointer;padding:3px 8px;transition:all 0.2s;line-height:1;}
+  .edit-btn{background:rgba(50,100,200,0.15);border:1px solid rgba(80,140,255,0.4);border-radius:6px;color:rgba(100,160,255,0.9);font-size:12px;cursor:pointer;padding:3px 8px;transition:all 0.2s;line-height:1;margin-right:4px;}
+  .edit-btn:hover{background:rgba(80,140,255,0.35);color:#fff;border-color:rgba(80,140,255,0.8);}
   .del-btn:hover{background:rgba(220,60,60,0.4);color:#fff;border-color:rgba(220,60,60,0.8);}
   .result-count{font-size:13px;color:rgba(220,190,130,0.8);letter-spacing:0.06em;margin-bottom:12px;font-weight:500;}
   .table-wrap{background:rgba(30,50,90,0.75);border:1px solid rgba(50,80,140,0.6);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
@@ -568,9 +570,11 @@ function render(){
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
       <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}" style="color:#111111;font-size:14px;font-weight:700">${m.venue}</td>
-      <td style="text-align:center"><button class="del-btn" title="刪除此記錄">✕</button></td>`;
+      <td style="text-align:center;white-space:nowrap"><button class="edit-btn" title="編輯此記錄">✎</button><button class="del-btn" title="刪除此記錄">✕</button></td>`;
     // 片名點擊
     tr.querySelector('.title-cell').addEventListener('click', ()=>openPoster(m));
+    // 編輯按鈕
+    tr.querySelector('.edit-btn').addEventListener('click', ()=>openEditModal(m));
     // 刪除按鈕
     tr.querySelector('.del-btn').addEventListener('click', ()=>deleteRecord(m));
     tbody.appendChild(tr);
@@ -1369,6 +1373,9 @@ render();
   }
   function closeModal(){
     modal.classList.remove('open');
+    window._editTarget = null;
+    document.querySelector('.ar-title').textContent = '新增觀影記錄';
+    document.getElementById('arSubmitBtn').textContent = '✦ 新增到列表';
     document.body.style.overflow = '';
   }
   document.getElementById('addRecordFab').addEventListener('click', openModal);
@@ -1476,7 +1483,17 @@ render();
     r.venue   = venue;
 
     // 立即更新頁面 UI
-    DATA.unshift(r);
+    if(window._editTarget){
+      // 編輯模式：取代舊記錄
+      const idx = DATA.findIndex(m => m.title===window._editTarget.title && m.date===window._editTarget.date && m.personal===window._editTarget.personal);
+      if(idx !== -1) DATA.splice(idx, 1, r);
+      else DATA.unshift(r);
+      window._editTarget = null;
+      document.querySelector('.ar-title').textContent = '新增觀影記錄';
+      document.getElementById('arSubmitBtn').textContent = '✦ 新增到列表';
+    } else {
+      DATA.unshift(r);
+    }
     render();
     if(typeof buildTop5 === 'function') buildTop5();
     if(typeof renderCal === 'function') renderCal();
@@ -1513,6 +1530,31 @@ render();
   window.clearGHToken = function(){ localStorage.removeItem(GH_TOKEN_KEY); alert('Token 已清除'); };
 
   // ── 刪除記錄 ──
+
+  // ── 編輯記錄 ──
+  function openEditModal(m){
+    // 填入現有資料
+    document.getElementById('ar_date').value    = m.date || '';
+    document.getElementById('ar_type').value    = m.type || '電影';
+    document.getElementById('ar_title').value   = m.title || '';
+    document.getElementById('ar_orig').value    = (m.orig && m.orig!=='nan') ? m.orig : '';
+    document.getElementById('ar_lang').value    = m.lang || 'US';
+    document.getElementById('ar_year').value    = m.year || '';
+    document.getElementById('ar_imdb').value    = m.imdb || '';
+    document.getElementById('ar_douban').value  = m.douban || '';
+    document.getElementById('ar_personal').value= m.personal || '';
+    document.getElementById('ar_dist').value    = m.dist || '';
+    document.getElementById('ar_venue').value   = m.venue || '🏠 家庭劇院';
+
+    // 標記為編輯模式，記錄原始資料
+    window._editTarget = m;
+    document.querySelector('.ar-title').textContent = '✎ 編輯觀影記錄';
+    document.getElementById('arSubmitBtn').textContent = '✔ 儲存變更';
+
+    // 開啟 modal
+    document.getElementById('addModal').classList.add('open');
+  }
+
   async function deleteRecord(target){
     if(!confirm('確定要刪除「' + target.title + '」嗎？\n此操作會從網站永久移除。')) return;
     const idx = DATA.findIndex(m => m.title === target.title && m.date === target.date && m.personal === target.personal);
