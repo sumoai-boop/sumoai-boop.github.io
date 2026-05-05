@@ -3,6 +3,13 @@
   "uberWeekly": [],
   "uberMonthly": [
     {
+      "date": "2026-05-04",
+      "type": "汽車百貨",
+      "amount": 6590,
+      "note": "HP惠普 S989W",
+      "id": 1777947545397
+    },
+    {
       "date": "2026-05-01",
       "type": "保險/費用",
       "amount": 2000,
