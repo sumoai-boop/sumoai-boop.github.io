@@ -3,6 +3,13 @@
   "uberWeekly": [],
   "uberMonthly": [
     {
+      "date": "2026-05-01",
+      "type": "油錢",
+      "amount": 847,
+      "note": "26.79公升",
+      "id": 1777944714997
+    },
+    {
       "date": "2026-05-04",
       "type": "油錢",
       "amount": 807,
