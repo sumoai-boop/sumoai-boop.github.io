@@ -486,7 +486,7 @@ function addTrip(){
 
 function deleteTrip(id){
   if(!confirm('確定刪除這筆行程？'))return;
-  saveData('uberTrips',getData('uberTrips').filter(t=>t.id!==id));
+  saveAndPush('uberTrips',getData('uberTrips').filter(t=>t.id!==id));
   renderTrips();updateStats();
 }
 
@@ -618,7 +618,7 @@ function addWeekly(){
 }
 function deleteWeekly(id){
   if(!confirm('確定刪除這筆記錄？'))return;
-  saveData('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
+  saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
   renderWeekly();updateStats();
 }
 function renderWeekly(){
@@ -656,7 +656,7 @@ function addMonthly(){
 }
 function deleteMonthly(id){
   if(!confirm('確定刪除這筆支出？'))return;
-  saveData('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
+  saveAndPush('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
 }
 const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff'};
