@@ -712,6 +712,47 @@ function render(){
   countUp(document.getElementById('sCinema'), cin, ' 場');
 }
 
+// ── 動態建立篩選選單 ──
+function buildFilters(){
+  const counts = {};
+  const years = {};
+  const dists = {};
+  DATA.forEach(m => {
+    counts[m.lang] = (counts[m.lang]||0) + 1;
+    if(m.year) years[m.year] = (years[m.year]||0) + 1;
+    if(m.dist && m.dist !== 'nan') dists[m.dist] = (dists[m.dist]||0) + 1;
+  });
+
+  const LANG_NAME = {'US':'🇺🇸 美國','KR':'🇰🇷 韓國','JP':'🇯🇵 日本','TW':'🇹🇼 台灣','CN':'🇨🇳 中國','HK':'🇭🇰 香港',
+    'GB':'🇬🇧 英國','FR':'🇫🇷 法國','DE':'🇩🇪 德國','ES':'🇪🇸 西班牙','IT':'🇮🇹 義大利','AU':'🇦🇺 澳洲',
+    'IN':'🇮🇳 印度','ID':'🇮🇩 印尼','TR':'🇹🇷 土耳其','IR':'🇮🇷 伊朗','NL':'🇳🇱 荷蘭','CH':'🇨🇭 瑞士',
+    'MY':'🇲🇾 馬來西亞','SE':'🇸🇪 瑞典','PL':'🇵🇱 波蘭','BE':'🇧🇪 比利時','DK':'🇩🇰 丹麥','NO':'🇳🇴 挪威'};
+
+  // 國家
+  const langSel = document.getElementById('langSelect');
+  const curLang = langSel.value;
+  langSel.innerHTML = '<option value="">全部國家</option>' +
+    Object.entries(counts).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${LANG_NAME[k]||k} (${v})</option>`).join('');
+  langSel.value = curLang;
+
+  // 年份
+  const yearSel = document.getElementById('yearSelect');
+  const curYear = yearSel.value;
+  yearSel.innerHTML = '<option value="">全部年份</option>' +
+    Object.entries(years).sort((a,b)=>b[0]-a[0])
+      .map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
+  yearSel.value = curYear;
+
+  // 發行商
+  const distSel = document.getElementById('distSelect');
+  const curDist = distSel.value;
+  distSel.innerHTML = '<option value="">全部發行商</option>' +
+    Object.entries(dists).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
+  distSel.value = curDist;
+}
+
 // ── 海報燈箱 ──
 const pm=document.getElementById('pm');
 const pmImg=document.getElementById('pmImg');
