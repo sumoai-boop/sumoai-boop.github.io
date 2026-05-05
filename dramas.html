@@ -1097,12 +1097,7 @@ render();
     document.getElementById('calDayMovies').style.display='none';
   };
 
-  // 等資料載入後再 render 行事曆海報
-  if(DATA.length > 0){
-    renderCal();
-  } else {
-    window._calPending = true; // 標記等資料
-  }
+  renderCal();
 })();
 
 </script>
@@ -1342,14 +1337,14 @@ render();
             var arr = JSON.parse(text);
             DATA.length = 0;
             arr.forEach(function(d){ DATA.push(d); });
-            render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); window._calPending = false; renderCal();
+            render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
           });
       }
       if(raw){
         var arr = JSON.parse(raw);
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
-        render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); window._calPending = false; renderCal();
+        render(); buildTop5(); Object.keys(posterCache).forEach(k=>delete posterCache[k]); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
       }
     }).catch(function(e){ console.warn('dramas sync:', e); });
 
