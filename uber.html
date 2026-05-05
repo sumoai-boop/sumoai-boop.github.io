@@ -368,25 +368,40 @@ function getToken(){
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
-// 頁面載入時從 JSON 檔讀取最新資料
-(function(){
+// 頁面載入時從 GitHub 讀取最新資料
+function loadFromGitHub(){
   var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token) return;
+  if(!token){
+    token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
+    if(!token) return;
+    localStorage.setItem(GH_TOKEN_KEY, token.trim());
+    token=token.trim();
+  }
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-  fetch(api+'?ref='+GH_BRANCH, {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
-    .then(r=>r.json())
+  fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(), {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
+    .then(r=>{
+      if(!r.ok){
+        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效，請重新輸入');}
+        return null;
+      }
+      return r.json();
+    })
     .then(fi=>{
-      if(!fi.content) return;
-      var raw=atob(fi.content.split('\n').join(''));var json=JSON.parse(decodeURIComponent(escape(raw)));
+      if(!fi||!fi.content) return;
+      var raw=atob(fi.content.split('\n').join(''));
+      var json=JSON.parse(decodeURIComponent(escape(raw)));
       if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
       if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
       if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
+      // 儲存 SHA 供推送使用
+      if(fi.sha) localStorage.setItem('gh_json_sha', fi.sha);
       if(typeof renderTrips==='function') renderTrips();
       if(typeof updateStats==='function') updateStats();
       if(typeof renderWeekly==='function') renderWeekly();
       if(typeof renderMonthly==='function') renderMonthly();
     }).catch(e=>console.warn('載入失敗:',e));
-})();
+}
+window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
 var _pushing=false;
 async function pushToGitHub(){
