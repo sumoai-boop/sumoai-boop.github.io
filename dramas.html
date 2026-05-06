@@ -1388,8 +1388,10 @@ render();
   function closeModal(){
     modal.classList.remove('open');
     window._editTarget = null;
-    document.querySelector('.ar-title').textContent = '新增觀影記錄';
-    document.getElementById('arSubmitBtn').textContent = '✦ 新增到列表';
+    var arTitle = document.querySelector('.ar-title');
+    if(arTitle) arTitle.textContent = '新增觀影記錄';
+    var submitBtn = document.getElementById('arSubmitBtn');
+    if(submitBtn) submitBtn.textContent = '✦ 新增到列表';
     document.body.style.overflow = '';
   }
   document.getElementById('addRecordFab').addEventListener('click', openModal);
