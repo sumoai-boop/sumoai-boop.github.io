@@ -1447,8 +1447,15 @@ render();
     var fileInfo = await getResp.json();
     var sha = fileInfo.sha;
 
-    // 2. 直接把整個 DATA 陣列推上去
-    var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA, null, 2))));
+    // 2. 直接把整個 DATA 陣列推上去（用 TextEncoder 避免大資料卡住）
+    var jsonStr = JSON.stringify(DATA);
+    var bytes = new TextEncoder().encode(jsonStr);
+    var binary = '';
+    var chunkSize = 8192;
+    for(var i=0;i<bytes.length;i+=chunkSize){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i,i+chunkSize));
+    }
+    var encoded = btoa(binary);
     var pushResp = await fetch(apiBase, {
       method: 'PUT',
       headers: headers,
