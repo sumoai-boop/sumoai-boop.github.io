@@ -214,7 +214,7 @@ body{
         <div class="form-group"><label>備註</label><input class="form-input" type="text" id="f-note" placeholder="備註說明"></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
-        <button class="btn-add" onclick="addTrip()">新增行程</button>
+        <button class="btn-add" id="tripAddBtn" onclick="addTrip()">新增行程</button>
         <button class="btn-add" onclick="importCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📂 匯入 CSV</button>
         <button class="btn-add" onclick="exportCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📤 匯出 CSV</button>
         <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">
@@ -482,8 +482,8 @@ function addTrip(){
     var idx=trips.findIndex(t=>t.id===window._editTripId);
     if(idx!==-1) trips.splice(idx,1,{d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:window._editTripId});
     window._editTripId=null;
-    document.querySelector('.form-section-title').textContent='+ 新增行程明細';
-    document.querySelector('.btn-add[onclick="addTrip()"]').textContent='新增行程';
+    document.getElementById('tripFormTitle').textContent='+ 新增行程明細';
+    document.getElementById('tripAddBtn').textContent='新增行程';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();
     ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('f-pax').value='1';
@@ -514,8 +514,8 @@ function editTrip(id){
   document.getElementById('f-note').value      = t.note||'';
   // 設定編輯模式
   window._editTripId = id;
-  document.querySelector('.form-section-title').textContent = '✎ 編輯行程明細';
-  document.querySelector('.btn-add[onclick="addTrip()"]').textContent = '✔ 儲存變更';
+  document.getElementById('tripFormTitle').textContent = '✎ 編輯行程明細';
+  document.getElementById('tripAddBtn').textContent = '✔ 儲存變更';
   // 滾到表單
   document.querySelector('.form-section-title').scrollIntoView({behavior:'smooth'});
 }
