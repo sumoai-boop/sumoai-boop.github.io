@@ -477,11 +477,47 @@ function addTrip(){
   var note=document.getElementById('f-note').value.trim();
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
+  if(window._editTripId){
+    // 編輯模式：更新現有記錄
+    var idx=trips.findIndex(t=>t.id===window._editTripId);
+    if(idx!==-1) trips.splice(idx,1,{d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:window._editTripId});
+    window._editTripId=null;
+    document.querySelector('.form-section-title').textContent='+ 新增行程明細';
+    document.querySelector('.btn-add[onclick="addTrip()"]').textContent='新增行程';
+    saveAndPush('uberTrips',trips);renderTrips();updateStats();
+    ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('f-pax').value='1';
+    return;
+  }
   trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:Date.now()});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
+}
+
+function editTrip(id){
+  var trips = getData('uberTrips');
+  var t = trips.find(x=>x.id===id);
+  if(!t) return;
+  // 填入現有資料
+  document.getElementById('f-date').value      = t.d||'';
+  document.getElementById('f-from-dist').value = t.fd||'';
+  document.getElementById('f-from-road').value = t.fr||'';
+  document.getElementById('f-to-dist').value   = t.td||'';
+  document.getElementById('f-to-road').value   = t.tr||'';
+  document.getElementById('f-km').value        = t.km||'';
+  document.getElementById('f-fare').value      = t.fare||'';
+  document.getElementById('f-service').value   = t.service||'';
+  document.getElementById('f-detail').value    = t.detail||'';
+  document.getElementById('f-pax').value       = t.pax||1;
+  document.getElementById('f-note').value      = t.note||'';
+  // 設定編輯模式
+  window._editTripId = id;
+  document.querySelector('.form-section-title').textContent = '✎ 編輯行程明細';
+  document.querySelector('.btn-add[onclick="addTrip()"]').textContent = '✔ 儲存變更';
+  // 滾到表單
+  document.querySelector('.form-section-title').scrollIntoView({behavior:'smooth'});
 }
 
 function deleteTrip(id){
@@ -545,7 +581,7 @@ function renderTrips(){
       <td style="color:#00E860;font-size:16px;font-weight:700">NT$${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
       <td style="color:rgba(240,220,160,0.6)">${t.note||'—'}</td>
-      <td><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
+      <td style="white-space:nowrap"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:13px;padding:2px 6px;border-radius:4px;margin-right:4px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
 
