@@ -1585,7 +1585,7 @@ render();
   // ── 刪除記錄 ──
 
   // ── 編輯記錄 ──
-  function openEditModal(m){
+  window.openEditModal = function openEditModal(m){
     // 填入現有資料
     document.getElementById('ar_date').value    = m.date || '';
     document.getElementById('ar_type').value    = m.type || '電影';
