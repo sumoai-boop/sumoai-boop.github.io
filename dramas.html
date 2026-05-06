@@ -1432,7 +1432,7 @@ render();
       'Content-Type': 'application/json'
     };
 
-    // 1. 取得 SHA
+    // 1. 取得最新 SHA 和資料
     showToast('⏳ 正在連線 GitHub...', false);
     var getResp = await fetch(apiBase + '?ref=' + GH_BRANCH, { headers: headers });
     if(!getResp.ok){
@@ -1447,13 +1447,47 @@ render();
     var fileInfo = await getResp.json();
     var sha = fileInfo.sha;
 
-    // 2. 直接把整個 DATA 陣列推上去（用 TextEncoder 避免大資料卡住）
-    var jsonStr = JSON.stringify(DATA);
+    // 2. 從 GitHub 讀取最新資料，加入新記錄後推回去
+    var latestData = DATA; // 預設用本地 DATA
+    if(fileInfo.content && fileInfo.content.trim() !== ''){
+      try{
+        var raw = decodeURIComponent(escape(atob(fileInfo.content.split('\n').join(''))));
+        latestData = JSON.parse(raw);
+        // 把新記錄加到最前面（如果不是編輯模式）
+        if(newRecord && !latestData.find(function(m){ return m.date===newRecord.date && m.title===newRecord.title; })){
+          latestData.unshift(newRecord);
+        } else if(newRecord) {
+          // 編輯模式：找到並替換
+          var ei = latestData.findIndex(function(m){ return m.date===newRecord.date && m.title===newRecord.title; });
+          if(ei !== -1) latestData.splice(ei, 1, newRecord);
+        }
+        // 同步到本地 DATA
+        DATA.length = 0;
+        latestData.forEach(function(d){ DATA.push(d); });
+        try{ localStorage.setItem('_dramasData', JSON.stringify(latestData)); }catch{}
+      }catch(e){ latestData = DATA; }
+    } else if(fileInfo.download_url){
+      showToast('⏳ 下載最新資料...', false);
+      try{
+        var dlResp = await fetch(fileInfo.download_url + '?t=' + Date.now());
+        var dlData = await dlResp.json();
+        if(newRecord && !dlData.find(function(m){ return m.date===newRecord.date && m.title===newRecord.title; })){
+          dlData.unshift(newRecord);
+        }
+        latestData = dlData;
+        DATA.length = 0;
+        latestData.forEach(function(d){ DATA.push(d); });
+        try{ localStorage.setItem('_dramasData', JSON.stringify(latestData)); }catch{}
+      }catch(e){ latestData = DATA; }
+    }
+
+    // 3. 編碼並推送
+    showToast('⏳ 推送中...', false);
+    var jsonStr = JSON.stringify(latestData);
     var bytes = new TextEncoder().encode(jsonStr);
     var binary = '';
-    var chunkSize = 8192;
-    for(var i=0;i<bytes.length;i+=chunkSize){
-      binary += String.fromCharCode.apply(null, bytes.subarray(i,i+chunkSize));
+    for(var i=0;i<bytes.length;i+=8192){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i,i+8192));
     }
     var encoded = btoa(binary);
     var pushResp = await fetch(apiBase, {
