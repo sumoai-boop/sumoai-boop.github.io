@@ -1416,98 +1416,60 @@ render();
   }
 
   // ── GitHub API：取得檔案 SHA 並推送更新 ──
+  var _dramaPushing = false;
   async function pushToGitHub(newRecord){
-    var token = localStorage.getItem(GH_TOKEN_KEY);
-    if(!token){
-      token = prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地，不會傳送給任何第三方。');
-      if(!token) return false;
-      localStorage.setItem(GH_TOKEN_KEY, token.trim());
-      token = token.trim();
-    }
-
-    var apiBase = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
-    var headers = {
-      'Authorization': 'token ' + token,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    };
-
-    // 1. 取得最新 SHA 和資料
-    showToast('⏳ 正在連線 GitHub...', false);
-    var getResp = await fetch(apiBase + '?ref=' + GH_BRANCH, { headers: headers });
-    if(!getResp.ok){
-      if(getResp.status === 401){
-        localStorage.removeItem(GH_TOKEN_KEY);
-        showToast('❌ Token 無效，請重新設定', true);
-      } else {
-        showToast('❌ GitHub 連線失敗（' + getResp.status + '）', true);
+    if(_dramaPushing){ showToast('⏳ 推送中，請稍候...', false); return false; }
+    _dramaPushing = true;
+    try{
+      var token = localStorage.getItem(GH_TOKEN_KEY);
+      if(!token){
+        token = prompt('請輸入 GitHub Personal Access Token：');
+        if(!token) return false;
+        localStorage.setItem(GH_TOKEN_KEY, token.trim());
+        token = token.trim();
       }
-      return false;
-    }
-    var fileInfo = await getResp.json();
-    var sha = fileInfo.sha;
+      var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
+      var hdrs = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
 
-    // 2. 從 GitHub 讀取最新資料，加入新記錄後推回去
-    var latestData = DATA; // 預設用本地 DATA
-    if(fileInfo.content && fileInfo.content.trim() !== ''){
-      try{
-        var raw = decodeURIComponent(escape(atob(fileInfo.content.split('\n').join(''))));
-        latestData = JSON.parse(raw);
-        // 把新記錄加到最前面（如果不是編輯模式）
-        if(newRecord && !latestData.find(function(m){ return m.date===newRecord.date && m.title===newRecord.title; })){
-          latestData.unshift(newRecord);
-        } else if(newRecord) {
-          // 編輯模式：找到並替換
-          var ei = latestData.findIndex(function(m){ return m.date===newRecord.date && m.title===newRecord.title; });
-          if(ei !== -1) latestData.splice(ei, 1, newRecord);
+      // 用快取 SHA 避免衝突
+      var sha = localStorage.getItem('gh_dramas_sha');
+      if(!sha){
+        showToast('⏳ 連線 GitHub...', false);
+        var r = await fetch(api+'?ref='+GH_BRANCH, {headers:hdrs});
+        if(!r.ok){
+          if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
+          else showToast('❌ 連線失敗('+r.status+')',true);
+          return false;
         }
-        // 同步到本地 DATA
-        DATA.length = 0;
-        latestData.forEach(function(d){ DATA.push(d); });
-        try{ localStorage.setItem('_dramasData', JSON.stringify(latestData)); }catch{}
-      }catch(e){ latestData = DATA; }
-    } else if(fileInfo.download_url){
-      showToast('⏳ 下載最新資料...', false);
-      try{
-        var dlResp = await fetch(fileInfo.download_url + '?t=' + Date.now());
-        var dlData = await dlResp.json();
-        if(newRecord && !dlData.find(function(m){ return m.date===newRecord.date && m.title===newRecord.title; })){
-          dlData.unshift(newRecord);
-        }
-        latestData = dlData;
-        DATA.length = 0;
-        latestData.forEach(function(d){ DATA.push(d); });
-        try{ localStorage.setItem('_dramasData', JSON.stringify(latestData)); }catch{}
-      }catch(e){ latestData = DATA; }
-    }
+        var fi = await r.json();
+        sha = fi.sha;
+      }
 
-    // 3. 編碼並推送
-    showToast('⏳ 推送中...', false);
-    var jsonStr = JSON.stringify(latestData);
-    var bytes = new TextEncoder().encode(jsonStr);
-    var binary = '';
-    for(var i=0;i<bytes.length;i+=8192){
-      binary += String.fromCharCode.apply(null, bytes.subarray(i,i+8192));
-    }
-    var encoded = btoa(binary);
-    var pushResp = await fetch(apiBase, {
-      method: 'PUT',
-      headers: headers,
-      body: JSON.stringify({
-        message: '新增觀影記錄：' + newRecord.title + ' (' + newRecord.date + ')',
-        content: encoded,
-        sha: sha,
-        branch: GH_BRANCH
-      })
-    });
+      // 直接把 DATA 推上去
+      var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA))));
+      showToast('⏳ 推送中...', false);
+      var pr = await fetch(api, {method:'PUT', headers:hdrs, body:JSON.stringify({
+        message: newRecord ? '新增：'+newRecord.title : '更新觀影記錄',
+        content: encoded, sha: sha, branch: GH_BRANCH
+      })});
 
-    if(!pushResp.ok){
-      var err = await pushResp.json();
-      showToast('❌ 推送失敗：' + (err.message || pushResp.status), true);
-      return false;
-    }
-    return true;
+      if(!pr.ok){
+        var e2 = await pr.json();
+        localStorage.removeItem('gh_dramas_sha');
+        showToast('❌ 推送失敗：'+(e2.message||pr.status), true);
+        return false;
+      }
+      // 從回應取新 SHA
+      var prData = await pr.json();
+      if(prData.content && prData.content.sha) localStorage.setItem('gh_dramas_sha', prData.content.sha);
+      else localStorage.removeItem('gh_dramas_sha');
+      // 存到 localStorage
+      try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch{}
+      showToast('✦ 已儲存至 GitHub', false);
+      return true;
+    }finally{ _dramaPushing = false; }
   }
+
 
   // ── 新增記錄 ──
   document.getElementById('arSubmitBtn').addEventListener('click', async function(){
