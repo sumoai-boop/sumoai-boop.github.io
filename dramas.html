@@ -546,9 +546,11 @@ async function fetchPosterForCard(m, imgEl){
 }
 
 // ── 篩選 ──
-let fLang='',fVenue='',fYear='',fDist='',fType='',sort='date-desc',q='';
+let fLang='',fVenue='',fYear='',fDist='',fType='',sort='date-desc',q='',currentPage=1;
+const PAGE_SIZE=25;
 const sc=s=>s>=8?'score-high':s>=6?'score-mid':'score-low';
 const st=s=>s===0?'—':s.toFixed(1);
+function resetPage(){ currentPage=1; render(); }
 
 function render(){
   let data=DATA.filter(m=>{
@@ -561,10 +563,13 @@ function render(){
     return true;
   });
   data.sort((a,b)=>sort==='date-desc'?b.date.localeCompare(a.date):sort==='score-desc'?b.score-a.score:sort==='personal-desc'?b.personal-a.personal:b.year-a.year);
+  const totalPages = Math.ceil(data.length/PAGE_SIZE)||1;
+  if(currentPage>totalPages) currentPage=1;
+  const pageData = data.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
   const tbody=document.getElementById('movieBody');
   tbody.innerHTML='';
   document.getElementById('noResult').style.display=data.length===0?'block':'none';
-  data.forEach(m=>{
+  pageData.forEach(m=>{
     const ic=m.venue.includes('🎬');
     const tr=document.createElement('tr');
     tr.innerHTML=`
@@ -590,7 +595,17 @@ function render(){
     tr.querySelector('.del-btn').addEventListener('click', ()=>deleteRecord(m));
     tbody.appendChild(tr);
   });
-  document.getElementById('resultCount').textContent=`顯示 ${data.length} / ${DATA.length} 部`;
+  document.getElementById('resultCount').textContent=`顯示 ${(currentPage-1)*PAGE_SIZE+1}-${Math.min(currentPage*PAGE_SIZE,data.length)} / ${data.length} 部`;
+  // 分頁控制
+  var pg = document.getElementById('pageControl');
+  if(!pg){ pg=document.createElement('div'); pg.id='pageControl'; pg.style.cssText='text-align:center;padding:16px 0;display:flex;gap:8px;align-items:center;justify-content:center;'; document.getElementById('movieBody').parentNode.parentNode.appendChild(pg); }
+  pg.innerHTML='';
+  if(totalPages>1){
+    var btnStyle='background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:6px;color:#fff;padding:6px 12px;cursor:pointer;font-size:12px;';
+    if(currentPage>1){ var b=document.createElement('button');b.textContent='‹ 上一頁';b.style.cssText=btnStyle;b.onclick=function(){currentPage--;render();};pg.appendChild(b); }
+    var info=document.createElement('span');info.style.cssText='color:rgba(255,255,255,0.7);font-size:12px;padding:0 8px;';info.textContent=currentPage+' / '+totalPages;pg.appendChild(info);
+    if(currentPage<totalPages){ var b2=document.createElement('button');b2.textContent='下一頁 ›';b2.style.cssText=btnStyle;b2.onclick=function(){currentPage++;render();};pg.appendChild(b2); }
+  }
   // 顯示篩選標籤
   const afEl = document.getElementById('activeFilters');
   afEl.innerHTML='';
@@ -1200,7 +1215,7 @@ render();
 <div id="addModal">
   <div id="addModalInner">
     <button id="addModalClose">✕</button>
-    <h2>新增觀影記錄</h2>
+    <h2 id="modalTitle">新增觀影記錄</h2>
     <div id="addRecordForm">
 
       <div class="ar-field">
@@ -1399,7 +1414,7 @@ render();
   function closeModal(){
     modal.classList.remove('open');
     window._editTarget = null;
-    var arTitle = document.querySelector('.ar-title');
+    var arTitle = document.getElementById('modalTitle');
     if(arTitle) arTitle.textContent = '新增觀影記錄';
     var submitBtn = document.getElementById('arSubmitBtn');
     if(submitBtn) submitBtn.textContent = '✦ 新增到列表';
@@ -1526,7 +1541,7 @@ render();
       if(idx !== -1) DATA.splice(idx, 1, r);
       else DATA.unshift(r);
       window._editTarget = null;
-      document.querySelector('.ar-title').textContent = '新增觀影記錄';
+      var mt=document.getElementById('modalTitle'); if(mt) mt.textContent='新增觀影記錄';
       document.getElementById('arSubmitBtn').textContent = '✦ 新增到列表';
     } else {
       DATA.unshift(r);
@@ -1586,7 +1601,7 @@ render();
 
     // 標記為編輯模式，記錄原始資料
     window._editTarget = m;
-    document.querySelector('.ar-title').textContent = '✎ 編輯觀影記錄';
+    var mt2=document.getElementById('modalTitle'); if(mt2) mt2.textContent='✎ 編輯觀影記錄';
     document.getElementById('arSubmitBtn').textContent = '✔ 儲存變更';
 
     // 開啟 modal
