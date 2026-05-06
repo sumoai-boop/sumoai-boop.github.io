@@ -1513,8 +1513,7 @@ render();
     }
     render();
     if(typeof buildTop5 === 'function') buildTop5();
-    if(typeof renderCal === 'function') renderCal();
-
+    // renderCal 移到推送後執行
     // 更新年份篩選器
     (function(){
       var ySel = document.getElementById('yearSelect');
@@ -1540,6 +1539,7 @@ render();
     var ok = await pushToGitHub(r);
     if(ok){
       showToast('✦ 已永久儲存「' + title + '」到網頁！\n約 1 分鐘後所有裝置生效', false);
+      setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 500);
     }
   });
 
