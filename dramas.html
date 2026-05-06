@@ -1229,7 +1229,8 @@ render();
 
       <div class="ar-field">
         <label class="ar-label">製作國家<span>*</span></label>
-        <select class="ar-select" id="ar_lang">
+        <input class="ar-input" id="ar_lang" type="text" list="ar_lang_list" placeholder="選擇或輸入國家代碼">
+        <datalist id="ar_lang_list">
           <option value="US">🇺🇸 美國</option>
           <option value="KR">🇰🇷 韓國</option>
           <option value="JP">🇯🇵 日本</option>
@@ -1251,7 +1252,17 @@ render();
           <option value="CH">🇨🇭 瑞士</option>
           <option value="PL">🇵🇱 波蘭</option>
           <option value="SE">🇸🇪 瑞典</option>
-        </select>
+          <option value="BE">🇧🇪 比利時</option>
+          <option value="DK">🇩🇰 丹麥</option>
+          <option value="NO">🇳🇴 挪威</option>
+          <option value="MX">🇲🇽 墨西哥</option>
+          <option value="BR">🇧🇷 巴西</option>
+          <option value="TH">🇹🇭 泰國</option>
+          <option value="PH">🇵🇭 菲律賓</option>
+          <option value="RU">🇷🇺 俄羅斯</option>
+          <option value="IL">🇮🇱 以色列</option>
+          <option value="AR">🇦🇷 阿根廷</option>
+        </datalist>
       </div>
       <div class="ar-field">
         <label class="ar-label">上映年份<span>*</span></label>
