@@ -91,9 +91,9 @@
   .pm-scores{display:flex;width:100%;border:1px solid rgba(180,140,60,0.12);border-radius:10px;overflow:hidden;margin-bottom:14px;}
   .pm-score-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;border-right:1px solid rgba(180,140,60,0.12);}
   .pm-score-item:last-child{border-right:none;}
-  .pm-score-lbl{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(220,190,130,0.6);}
-  .pm-score-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#FFD060;}
-  .pm-overview{font-size:12px;color:rgba(220,200,160,0.85);line-height:1.9;width:100%;border-top:1px solid rgba(232,98,42,0.2);padding-top:14px;}
+  .pm-score-lbl{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,220,160,0.9);}
+  .pm-score-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#FFE55C;text-shadow:0 0 8px rgba(255,220,60,0.4);}
+  .pm-overview{font-size:13px;color:rgba(255,245,210,0.95);line-height:1.9;width:100%;border-top:1px solid rgba(232,98,42,0.2);padding-top:14px;}
 
   @media(max-width:700px){
     .topnav{padding:12px 20px;}
@@ -395,7 +395,6 @@ body::before { background: transparent !important; }
       <div class="pm-tags" id="pmTags"></div>
       <div class="pm-scores">
         <div class="pm-score-item"><div class="pm-score-lbl">個人</div><div class="pm-score-val" id="pmPersonal">—</div></div>
-        <div class="pm-score-item"><div class="pm-score-lbl">總分</div><div class="pm-score-val" id="pmScore">—</div></div>
         <div class="pm-score-item"><div class="pm-score-lbl">IMDB</div><div class="pm-score-val" id="pmIMDB">—</div></div>
         <div class="pm-score-item"><div class="pm-score-lbl">豆瓣</div><div class="pm-score-val" id="pmDouban">—</div></div>
       </div>
