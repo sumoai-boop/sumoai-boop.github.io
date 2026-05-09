@@ -365,8 +365,9 @@ body::before { background: transparent !important; }
     </select>
     <select class="filter-select" id="sortSelect">
       <option value="date-desc">最新觀看</option>
-      <option value="score-desc">總分最高</option>
       <option value="personal-desc">個人評分最高</option>
+      <option value="imdb-desc">IMDB最高</option>
+      <option value="douban-desc">豆瓣最高</option>
       <option value="year-desc">年份最新</option>
     </select>
   </div>
@@ -568,7 +569,7 @@ function render(){
     if(q&&!m.title.includes(q)&&!m.orig.toLowerCase().includes(q.toLowerCase()))return false;
     return true;
   });
-  data.sort((a,b)=>sort==='date-desc'?b.date.localeCompare(a.date):sort==='score-desc'?b.score-a.score:sort==='personal-desc'?b.personal-a.personal:b.year-a.year);
+  data.sort((a,b)=>sort==='date-desc'?b.date.localeCompare(a.date):sort==='score-desc'?b.score-a.score:sort==='personal-desc'?b.personal-a.personal:sort==='imdb-desc'?b.imdb-a.imdb:sort==='douban-desc'?b.douban-a.douban:b.year-a.year);
   const totalPages = Math.ceil(data.length/PAGE_SIZE)||1;
   if(currentPage>totalPages) currentPage=1;
   const pageData = data.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
