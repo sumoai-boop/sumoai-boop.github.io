@@ -224,7 +224,7 @@ body{
 
     <!-- 搜尋 + 篩選列 -->
     <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-      <input class="form-input" id="tripSearch" oninput="renderTrips()" placeholder="🔍 搜尋地點..." style="flex:1;min-width:180px;padding:8px 12px;">
+      <input class="form-input" id="tripSearch" oninput="renderTrips()" placeholder="🔍 搜尋地點、備註..." style="flex:1;min-width:180px;padding:8px 12px;">
       <input class="form-input" type="date" id="tripFilterDate" onchange="renderTrips()" style="width:150px;padding:8px 12px;">
       <button onclick="clearTripFilter()" style="padding:8px 14px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(240,220,160,0.7);cursor:pointer;font-size:11px;font-family:'Space Mono',monospace;">清除篩選</button>
     </div>
@@ -544,7 +544,7 @@ function renderTrips(){
   var fd=document.getElementById('tripFilterDate').value;
 
   // 篩選
-  if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr].join(' ').toLowerCase().includes(q));
+  if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr,t.note||''].join(' ').toLowerCase().includes(q));
   if(fd) trips=trips.filter(t=>t.d===fd);
 
   // 排序
