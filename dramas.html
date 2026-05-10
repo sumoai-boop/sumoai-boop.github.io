@@ -556,9 +556,10 @@ async function fetchPosterForCard(m, imgEl){
 // ── 篩選 ──
 let fLang='',fVenue='',fYear='',fDist='',fType='',sort='date-desc',q='',currentPage=1;
 const PAGE_SIZE=25;
-const st=s=>s===0?'—':s===10?'★ 10':s.toFixed(1);
+window.st = function(s){ return s===0?'—':s===10?'★ 10':s.toFixed(1); };
 function resetPage(){ currentPage=1; render(); }
 
+window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low'; };
 function render(){
   let data=DATA.filter(m=>{
     if(fLang&&m.lang!==fLang)return false;
@@ -878,8 +879,7 @@ render();
   }
   let dateMap = buildDateMap();
   const DOWS = ['一','二','三','四','五','六','日'];
-  const sc = s => s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low';
-
+  
   async function fetchPoster(movie){
     const title = movie.title;
     if(posterCache[title]!==undefined) return posterCache[title];
