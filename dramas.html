@@ -62,6 +62,7 @@
   .orig-cell{color:#C8D8FF;font-size:13px;margin-top:2px;}
   .score-badge{display:inline-block;font-size:18px;font-weight:700;}
   .score-high{color:#FF8C00;}
+  .score-perfect{color:#FFD700;font-size:16px;text-shadow:0 0 8px rgba(255,215,0,0.8);letter-spacing:1px;}
   .score-mid{color:#00B8A0;}
   .score-low{color:#FF2222;text-shadow:0 0 6px rgba(255,0,0,0.6)30;}
   .venue-cinema{color:#111111;font-size:10px;font-weight:500;}
@@ -556,7 +557,7 @@ async function fetchPosterForCard(m, imgEl){
 let fLang='',fVenue='',fYear='',fDist='',fType='',sort='date-desc',q='',currentPage=1;
 const PAGE_SIZE=25;
 const sc=s=>s>=8?'score-high':s>=6?'score-mid':'score-low';
-const st=s=>s===0?'—':s.toFixed(1);
+const st=s=>s===0?'—':s===10?'★ 10':s.toFixed(1);
 function resetPage(){ currentPage=1; render(); }
 
 function render(){
@@ -878,7 +879,7 @@ render();
   }
   let dateMap = buildDateMap();
   const DOWS = ['一','二','三','四','五','六','日'];
-  const sc = s => s>=8?'score-high':s>=6?'score-mid':'score-low';
+  const sc = s => s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low';
 
   async function fetchPoster(movie){
     const title = movie.title;
