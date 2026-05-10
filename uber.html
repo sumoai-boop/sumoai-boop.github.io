@@ -462,7 +462,8 @@ async function saveAndPush(key,data){saveData(key,data);await pushToGitHub();}
 // 千分點格式化
 function fmt(n){return Number(n).toLocaleString('zh-TW');}
 // 行程
-var tripSortKey='d', tripSortAsc=false;
+var tripSortKey='d', tripSortAsc=false, tripPage=1;
+var TRIP_PAGE_SIZE=25;
 
 function addTrip(){
   var d=document.getElementById('f-date').value;
@@ -535,7 +536,7 @@ function sortTrips(key){
   renderTrips();
 }
 
-function clearTripFilter(){
+function clearTripFilter(){ tripPage=1;
   document.getElementById('tripSearch').value='';
   document.getElementById('tripFilterDate').value='';
   renderTrips();
@@ -557,9 +558,23 @@ function renderTrips(){
     return tripSortAsc?va-vb:vb-va;
   });
 
+  var totalTripPages = Math.ceil(trips.length/TRIP_PAGE_SIZE)||1;
+  if(tripPage>totalTripPages) tripPage=1;
+  var pagedTrips = trips.slice((tripPage-1)*TRIP_PAGE_SIZE, tripPage*TRIP_PAGE_SIZE);
+
   var tbody=document.getElementById('tripBody');
   var tfoot=document.getElementById('tripFoot');
   document.getElementById('tripCount').textContent=`共 ${trips.length} 筆`;
+  // 分頁控制
+  var pgEl = document.getElementById('tripPageControl');
+  if(!pgEl){ pgEl=document.createElement('div'); pgEl.id='tripPageControl'; pgEl.style.cssText='display:flex;gap:8px;align-items:center;justify-content:center;padding:12px 0;'; document.getElementById('tripCount').parentNode.insertBefore(pgEl, document.getElementById('tripCount').nextSibling); }
+  pgEl.innerHTML='';
+  if(totalTripPages>1){
+    var bs='background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;';
+    if(tripPage>1){var b=document.createElement('button');b.textContent='‹ 上一頁';b.style.cssText=bs;b.onclick=function(){tripPage--;renderTrips();};pgEl.appendChild(b);}
+    var info=document.createElement('span');info.style.cssText='color:rgba(255,255,255,0.6);font-size:12px;padding:0 8px;';info.textContent=tripPage+' / '+totalTripPages;pgEl.appendChild(info);
+    if(tripPage<totalTripPages){var b2=document.createElement('button');b2.textContent='下一頁 ›';b2.style.cssText=bs;b2.onclick=function(){tripPage++;renderTrips();};pgEl.appendChild(b2);}
+  }
 
   if(!trips.length){
     tbody.innerHTML='<tr><td colspan="13"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>';
@@ -568,7 +583,7 @@ function renderTrips(){
   }
 
   var totalKm=0,totalFare=0,totalService=0,totalDetail=0,totalPax=0;
-  tbody.innerHTML=trips.map((t,i)=>{
+  tbody.innerHTML=pagedTrips.map((t,i)=>{
     totalKm+=(t.km||0);totalFare+=(t.fare||0);
     totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
     return `<tr>
