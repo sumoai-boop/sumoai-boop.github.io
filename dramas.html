@@ -556,7 +556,6 @@ async function fetchPosterForCard(m, imgEl){
 // ── 篩選 ──
 let fLang='',fVenue='',fYear='',fDist='',fType='',sort='date-desc',q='',currentPage=1;
 const PAGE_SIZE=25;
-const sc=s=>s>=8?'score-high':s>=6?'score-mid':'score-low';
 const st=s=>s===0?'—':s===10?'★ 10':s.toFixed(1);
 function resetPage(){ currentPage=1; render(); }
 
