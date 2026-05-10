@@ -211,6 +211,7 @@ body{
         <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
+        <div class="form-group"><label>小費</label><input class="form-input" type="number" id="f-tip" placeholder="0" min="0"></div>
         <div class="form-group"><label>備註</label><input class="form-input" type="text" id="f-note" placeholder="備註說明"></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
@@ -474,22 +475,23 @@ function addTrip(){
   var service=parseFloat(document.getElementById('f-service').value)||0;
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
+  var tip=parseFloat(document.getElementById('f-tip').value)||0;
   var note=document.getElementById('f-note').value.trim();
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
   if(window._editTripId){
     // 編輯模式：更新現有記錄
     var idx=trips.findIndex(t=>t.id===window._editTripId);
-    if(idx!==-1) trips.splice(idx,1,{d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:window._editTripId});
+    if(idx!==-1) trips.splice(idx,1,{d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,tip,note,id:window._editTripId});
     window._editTripId=null;
     document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
     document.getElementById('tripAddBtn').textContent='新增行程';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();
-    ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
+    ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-tip','f-note'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('f-pax').value='1';
     return;
   }
-  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:Date.now()});
+  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,tip,note,id:Date.now()});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
@@ -511,6 +513,7 @@ function editTrip(id){
   document.getElementById('f-service').value   = t.service||'';
   document.getElementById('f-detail').value    = t.detail||'';
   document.getElementById('f-pax').value       = t.pax||1;
+  document.getElementById('f-tip').value       = t.tip||'';
   document.getElementById('f-note').value      = t.note||'';
   // 設定編輯模式
   window._editTripId = id;
@@ -580,6 +583,7 @@ function renderTrips(){
       <td style="color:rgba(240,220,160,0.9);font-size:16px;font-weight:600">NT$${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-size:16px;font-weight:700">NT$${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
+      <td style="color:rgba(240,220,160,0.6)">${t.tip>0?'NT$'+t.tip:''+''}</td>
       <td style="color:rgba(240,220,160,0.6)">${t.note||'—'}</td>
       <td style="white-space:nowrap"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:13px;padding:2px 6px;border-radius:4px;margin-right:4px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
