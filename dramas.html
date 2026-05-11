@@ -645,7 +645,7 @@ function render(){
   });
   const months=Object.keys(monthMap);
   const avgPerMonth=months.length>0?(DATA.length/months.length):0;
-  const cin=DATA.filter(m=>m.venue.includes('🎬')).length;
+  const cin=DATA.filter(m=>m.venue && !m.venue.includes('家庭劇院')).length;
   function countUp(el, target, suffix, decimals=0, duration=900){
     const start=0, step=16;
     let cur=start, steps=Math.ceil(duration/step);
