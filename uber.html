@@ -562,11 +562,15 @@ function renderTrips(){
   if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr,t.note||''].join(' ').toLowerCase().includes(q));
   if(fd) trips=trips.filter(t=>t.d===fd);
 
-  // 排序
+  // 排序：主鍵 + 同值時以 id 升冪為次要鍵（保證同日期按新增順序）
   trips.sort((a,b)=>{
     var va=a[tripSortKey]||0, vb=b[tripSortKey]||0;
-    if(typeof va==='string') return tripSortAsc?va.localeCompare(vb):vb.localeCompare(va);
-    return tripSortAsc?va-vb:vb-va;
+    var cmp;
+    if(typeof va==='string') cmp=tripSortAsc?va.localeCompare(vb):vb.localeCompare(va);
+    else cmp=tripSortAsc?va-vb:vb-va;
+    if(cmp!==0) return cmp;
+    // 同值時：若日期降冪（最新在上），id 也降冪；否則升冪
+    return tripSortAsc ? a.id-b.id : b.id-a.id;
   });
 
   var totalTripPages = Math.ceil(trips.length/TRIP_PAGE_SIZE)||1;
