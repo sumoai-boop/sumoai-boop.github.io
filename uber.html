@@ -593,12 +593,17 @@ function renderTrips(){
     return;
   }
 
+  // 依 id 升冪排序，給每筆資料一個永久流水號（最早新增 = 1）
+  var allTrips=getData('uberTrips').slice().sort((a,b)=>a.id-b.id);
+  var serialMap={};
+  allTrips.forEach((t,i)=>{serialMap[t.id]=i+1;});
+
   var totalKm=0,totalFare=0,totalService=0,totalDetail=0,totalPax=0;
-  tbody.innerHTML=pagedTrips.map((t,i)=>{
+  tbody.innerHTML=pagedTrips.map((t)=>{
     totalKm+=(t.km||0);totalFare+=(t.fare||0);
     totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
     return `<tr>
-      <td style="color:rgba(240,220,160,0.5);font-size:11px">${trips.length-i}</td>
+      <td style="color:rgba(240,220,160,0.5);font-size:11px">${serialMap[t.id]||''}</td>
       <td>${t.d||''}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
