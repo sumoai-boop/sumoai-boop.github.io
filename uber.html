@@ -304,6 +304,14 @@ body{
       </div>
       <button class="btn-add" onclick="addMonthly()">新增支出</button>
     </div>
+    <!-- 支出圓餅圖 -->
+    <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:8px;">總支出</div>
+        <canvas id="monthlyPieChart" width="200" height="200"></canvas>
+      </div>
+      <div id="pieLegend" style="flex:1;min-width:140px;"></div>
+    </div>
     <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
       <input type="text" id="monthly-search" placeholder="🔍 搜尋備註或地點..." oninput="renderMonthly()" style="flex:1;min-width:180px;background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:99px;padding:8px 16px;color:#E8EAF0;font-size:13px;outline:none;font-family:monospace;">
       <select id="monthly-type-filter" onchange="renderMonthly()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(0,200,83,0.5);border-radius:99px;padding:8px 14px;color:#FFFFFF;font-size:13px;font-weight:600;outline:none;font-family:monospace;">
@@ -317,7 +325,6 @@ body{
         <option value="其他">其他</option>
       </select>
     </div>
-    <canvas id="monthlyPieChart" width="260" height="260" style="display:block;margin:0 auto 20px;"></canvas>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
   </div>
 </div>
@@ -729,7 +736,7 @@ function renderMonthly(){
   if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
   var total=monthly.reduce((s,m)=>s+m.amount,0);
 
-  // ── 圓餅圖 ──
+  // ── 圓餅圖（用全部未篩選資料）──
   (function(){
     var allData = getData('uberMonthly');
     var typeMap = {};
@@ -737,56 +744,66 @@ function renderMonthly(){
       var t = m.type||'其他';
       typeMap[t] = (typeMap[t]||0) + (m.amount||0);
     });
-    var types = Object.keys(typeMap);
-    var totals = types.map(function(t){ return typeMap[t]; });
-    var grandTotal = totals.reduce(function(a,b){ return a+b; }, 0);
-    if(!grandTotal) return;
+    var types = Object.keys(typeMap).sort(function(a,b){ return typeMap[b]-typeMap[a]; });
+    var grandTotal = types.reduce(function(s,t){ return s+typeMap[t]; }, 0);
+    if(!grandTotal){ document.getElementById('expenseChartWrap').style.display='none'; return; }
+    document.getElementById('expenseChartWrap').style.display='flex';
 
-    var colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F'];
+    var COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#F7DC6F','#DDA0DD','#98D8C8','#FFB347','#87CEEB'];
     var canvas = document.getElementById('monthlyPieChart');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,260,260);
+    ctx.clearRect(0,0,200,200);
 
-    var cx=110, cy=130, r=90;
+    var cx=100, cy=100, r=80;
     var startAngle = -Math.PI/2;
     types.forEach(function(t, i){
-      var slice = (totals[i]/grandTotal) * Math.PI * 2;
+      var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, r, startAngle, startAngle+slice);
       ctx.closePath();
-      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillStyle = COLORS[i % COLORS.length];
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(30,33,48,0.8)';
+      ctx.lineWidth = 2;
       ctx.stroke();
 
-      // 標籤
-      var midAngle = startAngle + slice/2;
-      var lx = cx + (r+20) * Math.cos(midAngle);
-      var ly = cy + (r+20) * Math.sin(midAngle);
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 11px monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      var pct = Math.round(totals[i]/grandTotal*100);
-      if(pct >= 5) ctx.fillText(t+' '+pct+'%', lx, ly);
-
+      // 扇形中心標百分比
+      var pct = typeMap[t]/grandTotal*100;
+      if(pct >= 8){
+        var midAngle = startAngle + slice/2;
+        var lx = cx + r*0.65 * Math.cos(midAngle);
+        var ly = cy + r*0.65 * Math.sin(midAngle);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(pct.toFixed(1)+'%', lx, ly);
+      }
       startAngle += slice;
     });
 
     // 圖例
-    var legX = 210, legY = 40;
-    ctx.font = '10px monospace';
-    ctx.textAlign = 'left';
-    types.forEach(function(t, i){
-      ctx.fillStyle = colors[i % colors.length];
-      ctx.fillRect(legX, legY + i*18, 10, 10);
-      ctx.fillStyle = '#ccc';
-      ctx.fillText(t, legX+14, legY + i*18 + 9);
-    });
+    var leg = document.getElementById('pieLegend');
+    leg.innerHTML = types.map(function(t,i){
+      var pct = (typeMap[t]/grandTotal*100).toFixed(1);
+      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;">'
+        +'<div style="width:12px;height:12px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
+        +'<span style="font-size:13px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
+        +'</div>'
+        +'<div style="text-align:right;">'
+        +'<div style="font-size:13px;color:#E8EAF0;font-weight:600;">'+typeMap[t].toLocaleString()+' $</div>'
+        +'</div></div>';
+    }).join('')
+    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;">'
+    + '<span style="font-size:12px;color:rgba(255,255,255,0.5);">總額</span>'
+    + '<span style="font-size:13px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
+    + '</div>';
   })();
+
+
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
     +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
