@@ -1161,6 +1161,16 @@
   ],
   "uberWeekly": [
     {
+      "date": "2026-05-13",
+      "income": 3444,
+      "tripCount": 7,
+      "hours": 3,
+      "mins": 24,
+      "points": 11,
+      "note": "新駕駛獎勵-1500元",
+      "id": 1778682013147
+    },
+    {
       "date": "2026-05-12",
       "income": 409,
       "tripCount": 2,
