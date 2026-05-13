@@ -317,6 +317,7 @@ body{
         <option value="其他">其他</option>
       </select>
     </div>
+    <canvas id="monthlyPieChart" width="260" height="260" style="display:block;margin:0 auto 20px;"></canvas>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
   </div>
 </div>
@@ -727,6 +728,65 @@ function renderMonthly(){
   var el=document.getElementById('monthlyList');
   if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
   var total=monthly.reduce((s,m)=>s+m.amount,0);
+
+  // ── 圓餅圖 ──
+  (function(){
+    var allData = getData('uberMonthly');
+    var typeMap = {};
+    allData.forEach(function(m){
+      var t = m.type||'其他';
+      typeMap[t] = (typeMap[t]||0) + (m.amount||0);
+    });
+    var types = Object.keys(typeMap);
+    var totals = types.map(function(t){ return typeMap[t]; });
+    var grandTotal = totals.reduce(function(a,b){ return a+b; }, 0);
+    if(!grandTotal) return;
+
+    var colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F'];
+    var canvas = document.getElementById('monthlyPieChart');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,260,260);
+
+    var cx=110, cy=130, r=90;
+    var startAngle = -Math.PI/2;
+    types.forEach(function(t, i){
+      var slice = (totals[i]/grandTotal) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, startAngle, startAngle+slice);
+      ctx.closePath();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // 標籤
+      var midAngle = startAngle + slice/2;
+      var lx = cx + (r+20) * Math.cos(midAngle);
+      var ly = cy + (r+20) * Math.sin(midAngle);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      var pct = Math.round(totals[i]/grandTotal*100);
+      if(pct >= 5) ctx.fillText(t+' '+pct+'%', lx, ly);
+
+      startAngle += slice;
+    });
+
+    // 圖例
+    var legX = 210, legY = 40;
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'left';
+    types.forEach(function(t, i){
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillRect(legX, legY + i*18, 10, 10);
+      ctx.fillStyle = '#ccc';
+      ctx.fillText(t, legX+14, legY + i*18 + 9);
+    });
+  })();
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
     +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
