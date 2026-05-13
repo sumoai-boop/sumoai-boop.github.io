@@ -1372,13 +1372,14 @@ render();
   var GH_DATA_PATH = 'dramas-data.json';
   var GH_BRANCH = 'main';
 
-  // ── 從 dramas-data.json 讀取最新資料 ──
+  // ── 從 dramas-data.json 讀取最新資料（公開倉庫，不需 Token）──
   (function(){
     var token = localStorage.getItem(GH_TOKEN_KEY);
-    if(!token) return;
     var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
+    var headers = {'Accept': 'application/vnd.github.v3+json'};
+    if(token) headers['Authorization'] = 'token ' + token;
     fetch(api + '?ref=' + GH_BRANCH + '&t=' + Date.now(), {
-      headers: {'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json'}
+      headers: headers
     }).then(function(r){ return r.json(); }).then(function(fi){
       if(!fi || !fi.sha) return;
       var raw;
