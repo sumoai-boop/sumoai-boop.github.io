@@ -35,6 +35,13 @@ jobs:
           const now = new Date();
           // 台灣時間 = UTC+8
           const twNow = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+          console.log('現在台灣時間：' + twNow.toISOString().slice(0,16).replace('T',' '));
+          console.log('提醒筆數：' + reminders.length);
+          reminders.forEach(r => {
+            const reminderDT = new Date(r.date + 'T' + r.time + ':00+08:00');
+            const diffMin = (twNow - reminderDT) / 60000;
+            console.log('提醒：' + r.title + ' | 時間：' + r.date + ' ' + r.time + ' | diff分鐘：' + diffMin.toFixed(1) + ' | done：' + r.done);
+          });
 
           let updated = false;
 
