@@ -201,7 +201,52 @@ body{font-family:'Space Mono',monospace;background:#f0ead8;color:#2c2416;}
   </div>
 </div>
 
-<!-- 提醒 Modal -->
+<style>
+.dock-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;}
+.dock-wrap.hidden{transform:translateX(-50%) translateY(calc(100% + 20px));opacity:0;}
+.dock-trigger{position:fixed;bottom:0;left:0;right:0;height:6px;z-index:199;}
+.dock{display:flex;align-items:flex-end;gap:10px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.25);border-radius:22px;padding:10px 16px;box-shadow:0 8px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);}
+.dock-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;position:relative;cursor:pointer;}
+.dock-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+.dock-item:hover .dock-icon{transform:translateY(-14px) scale(1.28);}
+.dock-label{font-size:9px;letter-spacing:0.06em;color:rgba(255,255,255,0.85);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 7px;border-radius:4px;position:absolute;bottom:-22px;}
+.dock-item:hover .dock-label{opacity:1;}
+.dock-sep{width:1px;height:48px;background:rgba(255,255,255,0.22);margin:0 4px;align-self:center;}
+.ic-about{background:linear-gradient(135deg,#667eea,#764ba2);}
+.ic-photos{background:linear-gradient(135deg,#f093fb,#f5576c);}
+.ic-dramas{background:linear-gradient(135deg,#1a1a2e,#e8622a);}
+.ic-food{background:linear-gradient(135deg,#f7971e,#ffd200);}
+.ic-travel{background:linear-gradient(135deg,#0f2027,#2c5364);}
+.ic-threads{background:linear-gradient(135deg,#111,#333);}
+.ic-uber{background:linear-gradient(135deg,#000,#1a1a1a);border:2px solid rgba(255,255,255,0.3);}
+.ic-reminder{background:linear-gradient(135deg,#00b09b,#96c93d);}
+</style>
+
+<!-- Dock -->
+<div class="dock-wrap hidden" id="dockWrap">
+  <div class="dock">
+    <a href="about.html" class="dock-item"><div class="dock-icon ic-about">👤</div><span class="dock-label">關於</span></a>
+    <a href="photos.html" class="dock-item"><div class="dock-icon ic-photos">📷</div><span class="dock-label">照片</span></a>
+    <a href="dramas.html" class="dock-item"><div class="dock-icon ic-dramas">🎬</div><span class="dock-label">追劇</span></a>
+    <a href="food.html" class="dock-item"><div class="dock-icon ic-food">🍜</div><span class="dock-label">食記</span></a>
+    <div class="dock-sep"></div>
+    <a href="travel.html" class="dock-item"><div class="dock-icon ic-travel">✈️</div><span class="dock-label">旅遊足跡</span></a>
+    <a href="threads.html" class="dock-item"><div class="dock-icon ic-threads">🧵</div><span class="dock-label">Threads</span></a>
+    <a href="uber.html" class="dock-item"><div class="dock-icon ic-uber">🚗</div><span class="dock-label">Uber</span></a>
+    <a href="reminder.html" class="dock-item"><div class="dock-icon ic-reminder">🔔</div><span class="dock-label">提醒事項</span></a>
+  </div>
+</div>
+<div class="dock-trigger" id="dockTrigger"></div>
+
+<script>
+(function(){
+  var dock=document.getElementById('dockWrap');
+  var trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger)return;
+  trigger.addEventListener('mouseenter',function(){dock.classList.remove('hidden');});
+  dock.addEventListener('mouseleave',function(){dock.classList.add('hidden');});
+})();
+</script>
 <div class="modal-overlay" id="reminderModal" onclick="handleOverlay(event,'reminderModal')">
   <div class="modal">
     <div class="modal-header modal-header-reminder">
@@ -436,7 +481,7 @@ function calcDays(dateStr, mode){
   return mode==='until'?-diff:diff;
 }
 
-function saveDayRecord(){
+async function saveDayRecord(){
   var title=document.getElementById('d-title').value.trim();
   var date=document.getElementById('d-date').value;
   var emoji=document.getElementById('d-emoji').value.trim()||'📅';
@@ -454,13 +499,14 @@ function saveDayRecord(){
   saveData('dayRecords',records);
   closeModal('dayModal');
   renderDayRecords();
-  showToast('✦ 已儲存');
+  await saveAndPushDay(records);
 }
 
-function deleteDayRecord(id){
+async function deleteDayRecord(id){
   if(!confirm('確定刪除？'))return;
-  saveData('dayRecords',getData('dayRecords').filter(x=>x.id!==id));
-  renderDayRecords();showToast('已刪除');
+  var records=getData('dayRecords').filter(x=>x.id!==id);
+  renderDayRecords();
+  await saveAndPushDay(records);
 }
 
 function renderDayRecords(){
@@ -509,7 +555,7 @@ function renderDayRecords(){
 
 // ══════════════ GitHub 同步 ══════════════
 const GH_OWNER='sumoai-boop',GH_REPO='sumoai-boop.github.io',GH_BRANCH='main';
-const GH_DATA_PATH='reminders.json',GH_TOKEN_KEY='gh_token_reminder';
+const GH_TOKEN_KEY='gh_token_reminder';
 
 function getToken(){
   var tk=localStorage.getItem(GH_TOKEN_KEY);
@@ -517,21 +563,49 @@ function getToken(){
   return tk.trim();
 }
 
+async function ghGet(path,token){
+  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+path;
+  var r=await fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+  if(!r.ok)return null;
+  return r.json();
+}
+
+async function ghPut(path,shaKey,data,msg,token){
+  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+path;
+  var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+  var sha=localStorage.getItem(shaKey);
+  if(!sha){var fi=await ghGet(path,token);if(!fi)return false;sha=fi.sha;};
+  var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+  var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:msg,content:encoded,sha:sha,branch:GH_BRANCH})});
+  if(!pr.ok){localStorage.removeItem(shaKey);return false;}
+  var pd=await pr.json();
+  var ns=pd.content&&pd.content.sha;
+  if(ns)localStorage.setItem(shaKey,ns);else localStorage.removeItem(shaKey);
+  return true;
+}
+
 function loadFromGitHub(){
   var token=localStorage.getItem(GH_TOKEN_KEY);
   if(!token){token=prompt('請輸入 GitHub Personal Access Token：\n（僅儲存在本機瀏覽器）');if(!token){renderReminders();renderDayRecords();return;}localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();}
-  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-  fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
-    .then(r=>{if(!r.ok){if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效');}renderReminders();renderDayRecords();return null;}return r.json();})
-    .then(fi=>{
-      if(!fi||!fi.content){renderReminders();renderDayRecords();return;}
-      var raw=atob(fi.content.split('\n').join(''));
-      var arr=JSON.parse(decodeURIComponent(escape(raw)));
-      localStorage.setItem('reminders',JSON.stringify(arr));
-      if(fi.sha)localStorage.setItem('gh_reminder_sha',fi.sha);
-      renderReminders();renderDayRecords();
-      showToast('✦ 已從 GitHub 載入');
-    }).catch(e=>{console.warn(e);renderReminders();renderDayRecords();});
+
+  // 載入提醒事項
+  ghGet('reminders.json',token).then(fi=>{
+    if(!fi||!fi.content){renderReminders();return;}
+    var arr=JSON.parse(decodeURIComponent(escape(atob(fi.content.split('\n').join('')))));
+    localStorage.setItem('reminders',JSON.stringify(arr));
+    if(fi.sha)localStorage.setItem('gh_reminder_sha',fi.sha);
+    renderReminders();
+  }).catch(e=>{console.warn(e);renderReminders();});
+
+  // 載入天數記錄
+  ghGet('day-records.json',token).then(fi=>{
+    if(!fi||!fi.content){renderDayRecords();return;}
+    var arr=JSON.parse(decodeURIComponent(escape(atob(fi.content.split('\n').join('')))));
+    localStorage.setItem('dayRecords',JSON.stringify(arr));
+    if(fi.sha)localStorage.setItem('gh_day_sha',fi.sha);
+    renderDayRecords();
+    showToast('✦ 已從 GitHub 載入');
+  }).catch(e=>{console.warn(e);renderDayRecords();});
 }
 
 var _pushing=false;
@@ -539,20 +613,25 @@ async function pushToGitHub(){
   if(_pushing)return;_pushing=true;
   try{
     var token=getToken();if(!token)return;
-    var reminders=getData('reminders');
-    var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 儲存中...');
-    var sha=localStorage.getItem('gh_reminder_sha');
-    if(!sha){var r2=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});if(!r2.ok){showToast('❌ 連線失敗',true);return;}var fi=await r2.json();sha=fi.sha;}
-    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(reminders,null,2))));
-    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新提醒事項',content:encoded,sha:sha,branch:GH_BRANCH})});
-    if(!pr.ok){localStorage.removeItem('gh_reminder_sha');showToast('❌ 推送失敗',true);}
-    else{var pd=await pr.json();var ns=pd.content&&pd.content.sha;if(ns)localStorage.setItem('gh_reminder_sha',ns);else localStorage.removeItem('gh_reminder_sha');showToast('✦ 已儲存至 GitHub');}
+    var ok=await ghPut('reminders.json','gh_reminder_sha',getData('reminders'),'更新提醒事項',token);
+    if(!ok){showToast('❌ 推送失敗',true);}else{showToast('✦ 已儲存至 GitHub');}
   }finally{_pushing=false;}
 }
 
+var _pushingDay=false;
+async function pushDayToGitHub(){
+  if(_pushingDay)return;_pushingDay=true;
+  try{
+    var token=getToken();if(!token)return;
+    showToast('⏳ 儲存中...');
+    var ok=await ghPut('day-records.json','gh_day_sha',getData('dayRecords'),'更新天數記錄',token);
+    if(!ok){showToast('❌ 推送失敗',true);}else{showToast('✦ 已儲存至 GitHub');}
+  }finally{_pushingDay=false;}
+}
+
 async function saveAndPush(data){saveData('reminders',data);await pushToGitHub();}
+async function saveAndPushDay(data){saveData('dayRecords',data);await pushDayToGitHub();}
 
 window.addEventListener('DOMContentLoaded',loadFromGitHub);
 renderReminders();
