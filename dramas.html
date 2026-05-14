@@ -799,8 +799,22 @@ async function openPoster(m){
     }
     const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
     const year=m.year||0;
+    const cleanTitle2=(m.title||'').replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
+    const cleanOrig2=(m.orig||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
 
-    // 直接指定 TMDB ID
+    // TV ID 直接指定
+    if(TMDB_TV_OVERRIDE[m.title]){
+      const r0=await fetch(`https://api.themoviedb.org/3/tv/${TMDB_TV_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
+      const d0=await r0.json();
+      if(d0.poster_path){
+        pmImg.onload=()=>{pmPlaceholder.style.display='none';pmImg.style.display='block';};
+        pmImg.src=`https://image.tmdb.org/t/p/w500${d0.poster_path}`;
+        if(d0.genres) document.getElementById('pmTags').innerHTML=d0.genres.slice(0,5).map(g=>`<span class="pm-tag">${g.name}</span>`).join('');
+        document.getElementById('pmOverview').textContent=d0.overview||'暫無簡介';
+        return;
+      }
+    }
+    // Movie ID 直接指定
     if(TMDB_ID_OVERRIDE[m.title]){
       const r0=await fetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
       const d0=await r0.json();
@@ -814,26 +828,26 @@ async function openPoster(m){
     }
     let movie=null;
     // 1. 英文原名（拉丁）
-    if(m.orig&&m.orig!=='nan'&&isLatin(m.orig)){
-      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+    if(cleanOrig2&&cleanOrig2!=='nan'&&isLatin(cleanOrig2)){
+      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
       let json=await res.json();
       movie=pickBest(json.results,year);
     }
     // 2. 中文片名
     if(!movie||!movie.poster_path){
-      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
       let json=await res.json();
       movie=pickBest(json.results,year)||movie;
     }
     // 3. 非拉丁原名（韓文/日文）
-    if((!movie||!movie.poster_path)&&m.orig&&m.orig!=='nan'&&!isLatin(m.orig)){
-      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+    if((!movie||!movie.poster_path)&&cleanOrig2&&cleanOrig2!=='nan'&&!isLatin(cleanOrig2)){
+      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
       let json=await res.json();
       movie=pickBest(json.results,year)||movie;
     }
     // 4. TV 備援
     if(!movie||!movie.poster_path){
-      let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
       let json=await res.json();
       if(json.results&&json.results[0]) movie=json.results[0];
     }
