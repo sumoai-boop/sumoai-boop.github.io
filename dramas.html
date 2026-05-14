@@ -528,6 +528,9 @@ async function fetchPosterForCard(m, imgEl){
     }
 
     let poster = null;
+    // 搜尋前去掉季數後綴（S2, S3, 第二季 etc.）
+    const cleanTitle = (m.title||'').replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
+    const cleanOrig  = (m.orig ||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').trim();
 
     // 直接指定 TMDB ID
     if(TMDB_ID_OVERRIDE[m.title]){
@@ -536,26 +539,26 @@ async function fetchPosterForCard(m, imgEl){
       if(d.poster_path) poster=d.poster_path;
     }
 
-    if(!poster && m.orig && m.orig!=='nan' && isLatin(m.orig)){
-      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+    if(!poster && cleanOrig && cleanOrig!=='nan' && isLatin(cleanOrig)){
+      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig)}&language=zh-TW`);
       const d=await r.json();
       const hit=pickBest(d.results, year);
       if(hit&&hit.poster_path) poster=hit.poster_path;
     }
     if(!poster){
-      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle)}&language=zh-TW`);
       const d=await r.json();
       const hit=pickBest(d.results, year);
       if(hit&&hit.poster_path) poster=hit.poster_path;
     }
-    if(!poster && m.orig && m.orig!=='nan' && !isLatin(m.orig)){
-      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(m.orig)}&language=zh-TW`);
+    if(!poster && cleanOrig && cleanOrig!=='nan' && !isLatin(cleanOrig)){
+      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig)}&language=zh-TW`);
       const d=await r.json();
       const hit=pickBest(d.results, year);
       if(hit&&hit.poster_path) poster=hit.poster_path;
     }
     if(!poster){
-      const r=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(m.title)}&language=zh-TW`);
+      const r=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle)}&language=zh-TW`);
       const d=await r.json();
       if(d.results&&d.results[0]&&d.results[0].poster_path) poster=d.results[0].poster_path;
     }
