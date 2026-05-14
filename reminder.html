@@ -247,6 +247,24 @@ body{font-family:'Space Mono',monospace;background:#f0ead8;color:#2c2416;}
   dock.addEventListener('mouseleave',function(){dock.classList.add('hidden');});
 })();
 </script>
+<!-- Token 輸入 Modal -->
+<div class="modal-overlay" id="tokenOverlay">
+  <div class="modal">
+    <div class="modal-header modal-header-day">
+      <div class="modal-title">輸入 GitHub Token</div>
+    </div>
+    <div class="modal-body">
+      <div class="f-group">
+        <label class="f-label">GitHub Personal Access Token</label>
+        <input class="f-input" type="password" id="tokenInput" placeholder="ghp_xxxxxxxx..." onkeydown="if(event.key==='Enter')submitToken()">
+      </div>
+      <div style="font-size:10px;color:#8a7a60;margin-top:-8px;line-height:1.6;">Token 只儲存在本機瀏覽器，不會上傳。</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-save" onclick="submitToken()">確認</button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="reminderModal" onclick="handleOverlay(event,'reminderModal')">
   <div class="modal">
     <div class="modal-header modal-header-reminder">
@@ -557,10 +575,26 @@ function renderDayRecords(){
 const GH_OWNER='sumoai-boop',GH_REPO='sumoai-boop.github.io',GH_BRANCH='main';
 const GH_TOKEN_KEY='gh_token_reminder';
 
-function getToken(){
+// Token 輸入 UI（取代 prompt）
+function showTokenUI(callback){
+  var overlay=document.getElementById('tokenOverlay');
+  overlay.classList.add('open');
+  document.getElementById('tokenInput').value='';
+  document.getElementById('tokenInput').focus();
+  window._tokenCallback=callback;
+}
+function submitToken(){
+  var val=document.getElementById('tokenInput').value.trim();
+  if(!val)return;
+  localStorage.setItem(GH_TOKEN_KEY,val);
+  document.getElementById('tokenOverlay').classList.remove('open');
+  if(window._tokenCallback)window._tokenCallback(val);
+}
+function getToken(callback){
   var tk=localStorage.getItem(GH_TOKEN_KEY);
-  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
-  return tk.trim();
+  if(tk){if(callback)callback(tk);return tk;}
+  showTokenUI(callback);
+  return null;
 }
 
 async function ghGet(path,token){
@@ -574,7 +608,7 @@ async function ghPut(path,shaKey,data,msg,token){
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+path;
   var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
   var sha=localStorage.getItem(shaKey);
-  if(!sha){var fi=await ghGet(path,token);if(!fi)return false;sha=fi.sha;};
+  if(!sha){var fi=await ghGet(path,token);if(!fi)return false;sha=fi.sha;}
   var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
   var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:msg,content:encoded,sha:sha,branch:GH_BRANCH})});
   if(!pr.ok){localStorage.removeItem(shaKey);return false;}
@@ -584,11 +618,7 @@ async function ghPut(path,shaKey,data,msg,token){
   return true;
 }
 
-function loadFromGitHub(){
-  var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token){token=prompt('請輸入 GitHub Personal Access Token：\n（僅儲存在本機瀏覽器）');if(!token){renderReminders();renderDayRecords();return;}localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();}
-
-  // 載入提醒事項
+function doLoad(token){
   ghGet('reminders.json',token).then(fi=>{
     if(!fi||!fi.content){renderReminders();return;}
     var arr=JSON.parse(decodeURIComponent(escape(atob(fi.content.split('\n').join('')))));
@@ -597,7 +627,6 @@ function loadFromGitHub(){
     renderReminders();
   }).catch(e=>{console.warn(e);renderReminders();});
 
-  // 載入天數記錄
   ghGet('day-records.json',token).then(fi=>{
     if(!fi||!fi.content){renderDayRecords();return;}
     var arr=JSON.parse(decodeURIComponent(escape(atob(fi.content.split('\n').join('')))));
@@ -608,11 +637,18 @@ function loadFromGitHub(){
   }).catch(e=>{console.warn(e);renderDayRecords();});
 }
 
+function loadFromGitHub(){
+  var token=localStorage.getItem(GH_TOKEN_KEY);
+  if(!token){showTokenUI(doLoad);renderReminders();renderDayRecords();return;}
+  doLoad(token);
+}
+
 var _pushing=false;
 async function pushToGitHub(){
   if(_pushing)return;_pushing=true;
   try{
-    var token=getToken();if(!token)return;
+    var token=localStorage.getItem(GH_TOKEN_KEY);
+    if(!token){showToast('❌ 尚未設定 Token',true);return;}
     showToast('⏳ 儲存中...');
     var ok=await ghPut('reminders.json','gh_reminder_sha',getData('reminders'),'更新提醒事項',token);
     if(!ok){showToast('❌ 推送失敗',true);}else{showToast('✦ 已儲存至 GitHub');}
@@ -623,7 +659,8 @@ var _pushingDay=false;
 async function pushDayToGitHub(){
   if(_pushingDay)return;_pushingDay=true;
   try{
-    var token=getToken();if(!token)return;
+    var token=localStorage.getItem(GH_TOKEN_KEY);
+    if(!token){showToast('❌ 尚未設定 Token',true);return;}
     showToast('⏳ 儲存中...');
     var ok=await ghPut('day-records.json','gh_day_sha',getData('dayRecords'),'更新天數記錄',token);
     if(!ok){showToast('❌ 推送失敗',true);}else{showToast('✦ 已儲存至 GitHub');}
