@@ -33,12 +33,13 @@ jobs:
           }
 
           const now = new Date();
-          // 台灣時間 = UTC+8
+          // 直接用 UTC+8 字串比對（reminders.json 存的是台灣本地時間）
           const twNow = new Date(now.getTime() + 8 * 60 * 60 * 1000);
           console.log('現在台灣時間：' + twNow.toISOString().slice(0,16).replace('T',' '));
           console.log('提醒筆數：' + reminders.length);
           reminders.forEach(r => {
-            const reminderDT = new Date(r.date + 'T' + r.time + ':00+08:00');
+            // 直接把提醒時間當 UTC 來建立 Date（因為存入時已是台灣時間字串）
+            const reminderDT = new Date(r.date + 'T' + r.time + ':00Z');
             const diffMin = (twNow - reminderDT) / 60000;
             console.log('提醒：' + r.title + ' | 時間：' + r.date + ' ' + r.time + ' | diff分鐘：' + diffMin.toFixed(1) + ' | done：' + r.done);
           });
@@ -47,7 +48,7 @@ jobs:
 
           reminders.forEach(r => {
             if (r.done) return;
-            const reminderDT = new Date(r.date + 'T' + r.time + ':00+08:00');
+            const reminderDT = new Date(r.date + 'T' + r.time + ':00Z');
             const diffMin = (twNow - reminderDT) / 60000;
             // 時間到（已過0~5分鐘內）才觸發
             if (diffMin < 0 || diffMin >= 5) return;
