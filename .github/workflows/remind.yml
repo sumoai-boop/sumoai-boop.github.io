@@ -46,28 +46,11 @@ jobs:
 
           let updated = false;
 
-          reminders.forEach(r => {
-            if (r.done) return;
-            const reminderDT = new Date(r.date + 'T' + r.time + ':00Z');
-            const diffMin = (twNow - reminderDT) / 60000;
-            // 時間到（已過0~5分鐘內）才觸發
-            if (diffMin < 0 || diffMin >= 5) return;
-
-            // 時間到，發送 LINE 訊息
-            const msg = [
-              '🔔 提醒通知',
-              '',
-              '📌 ' + r.title,
-              '📅 ' + r.date + ' ' + r.time,
-              r.note ? '📝 ' + r.note : '',
-              r.repeat && r.repeat !== 'none' ? '🔁 重複：' + {daily:'每天',weekly:'每週',monthly:'每月',yearly:'每年'}[r.repeat] : ''
-            ].filter(Boolean).join('\n');
-
+          function sendLine(msg) {
             const body = JSON.stringify({
               to: process.env.LINE_USER_ID,
               messages: [{ type: 'text', text: msg }]
             });
-
             const options = {
               hostname: 'api.line.me',
               path: '/v2/bot/message/push',
@@ -77,27 +60,63 @@ jobs:
                 'Authorization': 'Bearer ' + process.env.LINE_TOKEN
               }
             };
-
             const req = https.request(options, res => {
-              console.log('LINE API 回應：' + res.statusCode + ' / ' + r.title);
+              console.log('LINE API 回應：' + res.statusCode);
             });
             req.on('error', e => console.error('發送失敗：', e));
             req.write(body);
             req.end();
+          }
 
-            // 處理重複
-            if (!r.repeat || r.repeat === 'none') {
-              r.done = true;
-            } else {
-              const d = new Date(r.date + 'T' + r.time);
-              if (r.repeat === 'daily')   d.setDate(d.getDate() + 1);
-              if (r.repeat === 'weekly')  d.setDate(d.getDate() + 7);
-              if (r.repeat === 'monthly') d.setMonth(d.getMonth() + 1);
-              if (r.repeat === 'yearly')  d.setFullYear(d.getFullYear() + 1);
-              r.date = d.toISOString().slice(0, 10);
-              r.time = d.toISOString().slice(11, 16);
+          reminders.forEach(r => {
+            if (r.done) return;
+            const reminderDT = new Date(r.date + 'T' + r.time + ':00Z');
+            const diffMin = (twNow - reminderDT) / 60000;
+
+            // ── 提前10分鐘通知（-15 ~ -10 分鐘區間，避免重複）──
+            if (diffMin >= -15 && diffMin < -10 && !r.notified10) {
+              const msg = [
+                '⏰ 提前提醒（10分鐘後）',
+                '',
+                '📌 ' + r.title,
+                '📅 ' + r.date + ' ' + r.time,
+                r.note ? '📝 ' + r.note : '',
+                r.repeat && r.repeat !== 'none' ? '🔁 重複：' + {daily:'每天',weekly:'每週',monthly:'每月',yearly:'每年'}[r.repeat] : ''
+              ].filter(Boolean).join('\n');
+              sendLine(msg);
+              r.notified10 = true;
+              updated = true;
+              console.log('發送10分鐘前提醒：' + r.title);
             }
-            updated = true;
+
+            // ── 時間到通知（0 ~ 5 分鐘區間）──
+            if (diffMin >= 0 && diffMin < 5) {
+              const msg = [
+                '🔔 提醒通知',
+                '',
+                '📌 ' + r.title,
+                '📅 ' + r.date + ' ' + r.time,
+                r.note ? '📝 ' + r.note : '',
+                r.repeat && r.repeat !== 'none' ? '🔁 重複：' + {daily:'每天',weekly:'每週',monthly:'每月',yearly:'每年'}[r.repeat] : ''
+              ].filter(Boolean).join('\n');
+              sendLine(msg);
+              console.log('發送到期提醒：' + r.title);
+
+              // 處理重複
+              if (!r.repeat || r.repeat === 'none') {
+                r.done = true;
+              } else {
+                const d = new Date(r.date + 'T' + r.time);
+                if (r.repeat === 'daily')   d.setDate(d.getDate() + 1);
+                if (r.repeat === 'weekly')  d.setDate(d.getDate() + 7);
+                if (r.repeat === 'monthly') d.setMonth(d.getMonth() + 1);
+                if (r.repeat === 'yearly')  d.setFullYear(d.getFullYear() + 1);
+                r.date = d.toISOString().slice(0, 10);
+                r.time = d.toISOString().slice(11, 16);
+                r.notified10 = false;
+              }
+              updated = true;
+            }
           });
 
           if (updated) {
