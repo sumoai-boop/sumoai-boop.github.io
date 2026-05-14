@@ -26,7 +26,7 @@ body{font-family:'Space Mono',monospace;background:#f0ead8;color:#2c2416;}
 /* ───── 共用筆記本樣式 ───── */
 .nb{background:#fdf8f0;border-radius:4px;box-shadow:3px 5px 20px rgba(0,0,0,0.1);overflow:hidden;}
 .nb-header{padding:22px 32px 18px;position:relative;overflow:hidden;}
-.nb-header::before{content:'';position:absolute;left:52px;top:0;bottom:0;width:2px;background:rgba(255,100,100,0.3);}
+.nb-header::before{display:none;}
 .nb-header-left{background:#2c2416;}
 .nb-header-right{background:#3a2a1a;}
 .nb-htitle{font-family:'Noto Serif TC',serif;font-size:20px;font-weight:300;color:#f5f0e8;padding-left:20px;letter-spacing:0.04em;}
@@ -466,7 +466,7 @@ function deleteDayRecord(id){
 }
 
 function renderDayRecords(){
-  var records=getData('dayRecords');
+  var records=getData('dayRecords').slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
   var el=document.getElementById('dayList');
   if(!records.length){el.innerHTML='<div class="nb-empty"><span class="nb-empty-icon">📅</span><div class="nb-empty-text">尚無天數記錄</div></div>';return;}
   el.innerHTML=records.map(d=>{
