@@ -441,6 +441,9 @@ const TMDB_ID_OVERRIDE={
   '誰偷了垃圾桶？': 1118224,
   '完美陌生人': 381341,
 };
+const TMDB_TV_OVERRIDE={
+  '新聞急先鋒': 15621,
+};
 
 const DIST_LOGO={
   'Netflix':     '<span style="display:inline-block;font-size:11px;font-weight:700;color:#fff;background:#E50914;padding:2px 7px;border-radius:4px;letter-spacing:0.3px;white-space:nowrap">Netflix</span>',
@@ -547,6 +550,20 @@ async function fetchPosterForCard(m, imgEl){
     }
 
     let poster=null;
+
+    // TV ID 直接指定
+    if(TMDB_TV_OVERRIDE[m.title]){
+      const r=await fetch(`https://api.themoviedb.org/3/tv/${TMDB_TV_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
+      const d=await r.json();
+      if(d.poster_path){imgEl.src=`https://image.tmdb.org/t/p/w300${d.poster_path}`;return;}
+    }
+    // Movie ID 直接指定
+    if(TMDB_ID_OVERRIDE[m.title]){
+      const r=await fetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
+      const d=await r.json();
+      if(d.poster_path){imgEl.src=`https://image.tmdb.org/t/p/w300${d.poster_path}`;return;}
+    }
+
     const queries=[cleanOrig, cleanTitle].filter(q=>q&&q!=='nan');
     const types=['movie','tv'];
 
