@@ -479,8 +479,8 @@ function toDistLogo(d){
 }
 
 function buildTop5(){
-  const MOVIE_TYPES=['movie'];
-  const SERIES_TYPES=['tv','anime','doc','variety'];
+  const MOVIE_TYPES=['電影'];
+  const SERIES_TYPES=['影集'];
 
   const topMovies=[...DATA].filter(m=>MOVIE_TYPES.includes(m.type)).sort((a,b)=>b.personal-a.personal).slice(0,5);
   const topSeries=[...DATA].filter(m=>SERIES_TYPES.includes(m.type)).sort((a,b)=>b.personal-a.personal).slice(0,5);
