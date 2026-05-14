@@ -672,9 +672,17 @@ async function saveAndPush(data){saveData('reminders',data);await pushToGitHub()
 async function saveAndPushDay(data){saveData('dayRecords',data);await pushDayToGitHub();}
 
 window.addEventListener('DOMContentLoaded',function(){
-  loadFromGitHub();
   renderReminders();
   renderDayRecords();
+  var token=localStorage.getItem(GH_TOKEN_KEY);
+  if(!token){
+    // 強制顯示 token 視窗
+    document.getElementById('tokenOverlay').classList.add('open');
+    window._tokenCallback=doLoad;
+    setTimeout(function(){document.getElementById('tokenInput').focus();},300);
+  } else {
+    doLoad(token);
+  }
 });
 </script>
 </body>
