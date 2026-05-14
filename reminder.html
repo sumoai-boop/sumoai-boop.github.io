@@ -4,89 +4,120 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>提醒事項 — Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Noto+Serif+TC:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100vh;}
-body{font-family:'Space Mono',monospace;background:#1E2130;color:#E8EAF0;}
+body{font-family:'Space Mono',monospace;background:#f5f0e8;color:#2c2416;}
 
-.global-menubar{position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:rgba(255,255,255,0.92);font-family:'Space Mono',monospace;}
+/* Menubar */
+.menubar{position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:rgba(255,255,255,0.92);}
 .gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
 .gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
-.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;color:rgba(255,255,255,0.95);}
+.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;}
 .mb-menu:hover{background:rgba(255,255,255,0.2);}
 
-.page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:44px 32px 120px;}
-.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,6vw,64px);font-weight:300;color:#fff;line-height:1;margin-bottom:6px;}
-.page-title em{font-style:italic;color:#00C853;}
-.page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,220,160,0.75);margin-bottom:28px;display:block;}
+/* 筆記本主體 */
+.notebook-wrap{max-width:780px;margin:0 auto;padding:48px 20px 100px;}
 
-.form-section{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:16px;padding:24px;margin-bottom:24px;}
-.form-title{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#00E860;margin-bottom:16px;}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
-.form-group{display:flex;flex-direction:column;gap:5px;}
-.form-group label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,220,160,0.85);}
-.form-input{background:rgba(255,255,255,0.06);border:1px solid rgba(0,200,83,0.2);border-radius:8px;padding:9px 12px;color:#E8EAF0;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;}
-.form-input:focus{border-color:#00C853;}
-.form-input::placeholder{color:rgba(200,180,120,0.25);}
-.form-select{background:rgba(255,255,255,0.06);border:1px solid rgba(0,200,83,0.2);border-radius:8px;padding:9px 12px;color:#E8EAF0;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(0,200,83,0.7)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
-.form-select:focus{border-color:#00C853;}
-.form-select option{background:#111;color:#E8EAF0;}
-.btn-add{margin-top:16px;padding:10px 24px;background:#00C853;color:#000;border:none;border-radius:99px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.btn-add:hover{background:#00E860;}
+/* 筆記本封面標題區 */
+.nb-header{background:#2c2416;padding:32px 48px 28px;border-radius:4px 4px 0 0;position:relative;overflow:hidden;}
+.nb-header::before{content:'';position:absolute;left:68px;top:0;bottom:0;width:2px;background:rgba(255,100,100,0.35);}
+.nb-title{font-family:'Noto Serif TC',serif;font-size:28px;font-weight:300;color:#f5f0e8;letter-spacing:0.05em;padding-left:28px;}
+.nb-subtitle{font-size:10px;letter-spacing:0.2em;color:rgba(240,220,160,0.55);padding-left:28px;margin-top:6px;text-transform:uppercase;}
+.nb-date-badge{position:absolute;top:20px;right:24px;font-size:11px;color:rgba(240,220,160,0.45);text-align:right;line-height:1.8;font-family:'Space Mono',monospace;}
 
-/* 篩選列 */
-.filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
-.filter-btn{padding:5px 14px;border-radius:99px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;border:1px solid rgba(0,200,83,0.3);color:rgba(200,180,120,0.6);background:transparent;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.2s;}
-.filter-btn:hover{border-color:rgba(0,200,83,0.6);color:#00C853;}
-.filter-btn.active{background:#00C853;color:#000;border-color:#00C853;font-weight:700;}
+/* 筆記本內頁 */
+.nb-body{background:#fdf8f0;border-left:6px solid #2c2416;border-right:1px solid #d4c9b0;border-bottom:1px solid #d4c9b0;box-shadow:4px 6px 24px rgba(0,0,0,0.12);}
 
-/* 提醒卡片清單 */
-.reminder-list{display:flex;flex-direction:column;gap:10px;}
-.reminder-card{background:rgba(255,255,255,0.07);border:1px solid rgba(0,200,83,0.25);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:all 0.2s;position:relative;}
-.reminder-card:hover{background:rgba(255,255,255,0.1);border-color:rgba(0,200,83,0.45);}
-.reminder-card.done{opacity:0.4;}
-.reminder-card.done .r-title{text-decoration:line-through;}
-.reminder-card.overdue{border-color:rgba(255,100,100,0.5);background:rgba(255,60,60,0.05);}
-.reminder-card.soon{border-color:rgba(255,200,50,0.5);background:rgba(255,200,50,0.04);}
+/* Tab 列 */
+.nb-tabs{display:flex;border-bottom:2px solid #d4c9b0;background:#ede7d5;padding:0 48px;overflow-x:auto;}
+.nb-tab{padding:10px 16px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8a7a60;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Space Mono',monospace;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.nb-tab:hover{color:#2c2416;}
+.nb-tab.active{color:#2c2416;border-bottom:2px solid #2c2416;font-weight:700;}
 
-.r-check{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,200,83,0.5);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.2s;}
-.r-check:hover{border-color:#00C853;background:rgba(0,200,83,0.15);}
-.r-check.checked{background:#00C853;border-color:#00C853;}
-.r-check.checked::after{content:'✓';font-size:12px;color:#000;font-weight:700;}
+/* 清單 */
+.nb-list{padding:4px 0;}
 
-.r-body{flex:1;min-width:0;}
-.r-title{font-size:15px;font-weight:700;color:#E8EAF0;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.r-note{font-size:11px;color:rgba(240,220,160,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* 單筆 */
+.nb-item{display:flex;align-items:flex-start;gap:14px;padding:14px 48px;border-bottom:1px solid #ede7d5;position:relative;transition:background 0.15s;}
+.nb-item:last-child{border-bottom:none;}
+.nb-item:hover{background:rgba(255,255,240,0.7);}
+.nb-item.done{opacity:0.4;}
+.nb-item.done .nb-item-title{text-decoration:line-through;}
+.nb-item.overdue{background:rgba(255,215,215,0.3);}
+.nb-item.soon{background:rgba(255,250,210,0.4);}
 
-.r-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
-.r-time{font-size:12px;color:#60AAFF;white-space:nowrap;}
-.r-repeat{font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(0,200,83,0.12);color:#00C853;border:1px solid rgba(0,200,83,0.25);white-space:nowrap;}
-.r-overdue-badge{font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(255,100,100,0.15);color:#ff6b6b;border:1px solid rgba(255,100,100,0.3);}
-.r-soon-badge{font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(255,200,50,0.12);color:#FFD700;border:1px solid rgba(255,200,50,0.3);}
+.nb-check{width:18px;height:18px;border:2px solid #a09070;border-radius:3px;flex-shrink:0;margin-top:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.nb-check:hover{border-color:#2c2416;background:rgba(44,36,22,0.06);}
+.nb-check.checked{background:#2c2416;border-color:#2c2416;}
+.nb-check.checked::after{content:'✓';font-size:11px;color:#f5f0e8;font-weight:700;line-height:1;}
 
-.r-actions{display:flex;gap:4px;flex-shrink:0;}
-.r-btn{cursor:pointer;font-size:13px;padding:3px 7px;border-radius:4px;transition:color 0.15s;}
+.nb-item-body{flex:1;min-width:0;}
+.nb-item-title{font-family:'Noto Serif TC',serif;font-size:15px;color:#2c2416;margin-bottom:3px;line-height:1.4;}
+.nb-item-note{font-size:11px;color:#8a7a60;margin-bottom:5px;}
+.nb-item-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.nb-item-time{font-size:11px;color:#5a6a8a;font-family:'Space Mono',monospace;}
+.nb-badge{font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:0.04em;text-transform:uppercase;}
+.nb-badge.repeat{background:#e8f0e8;color:#3a703a;border:1px solid #b8d0b8;}
+.nb-badge.overdue{background:#fde8e8;color:#a03030;border:1px solid #f0b8b8;}
+.nb-badge.soon{background:#fff8e0;color:#806800;border:1px solid #e0d080;}
 
-.empty-state{text-align:center;padding:48px 20px;color:rgba(240,220,160,0.55);font-size:12px;letter-spacing:0.1em;}
-.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.3;display:block;}
+.nb-item-actions{display:flex;gap:4px;flex-shrink:0;margin-top:2px;}
+.nb-act{cursor:pointer;font-size:13px;color:#c0b090;transition:color 0.15s;padding:2px 5px;border-radius:3px;}
+.nb-act:hover{color:#2c2416;background:rgba(44,36,22,0.08);}
 
-/* toast */
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,200,83,0.92);color:#000;padding:10px 24px;border-radius:99px;font-size:12px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:0.08em;opacity:0;transition:all 0.3s;z-index:99999;pointer-events:none;}
+/* 空狀態 */
+.nb-empty{text-align:center;padding:64px 20px;color:#b8a880;}
+.nb-empty-icon{font-size:48px;margin-bottom:16px;opacity:0.25;display:block;}
+.nb-empty-text{font-family:'Noto Serif TC',serif;font-size:14px;letter-spacing:0.08em;}
+
+/* FAB */
+.fab{position:fixed;bottom:40px;right:40px;width:54px;height:54px;background:#2c2416;color:#f5f0e8;border:none;border-radius:50%;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:1000;}
+.fab:hover{background:#4a3828;transform:scale(1.08);box-shadow:0 6px 28px rgba(0,0,0,0.3);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:#fdf8f0;border-radius:4px;width:92%;max-width:480px;box-shadow:0 24px 64px rgba(0,0,0,0.35);transform:translateY(18px) scale(0.97);transition:transform 0.22s;overflow:hidden;}
+.modal-overlay.open .modal{transform:translateY(0) scale(1);}
+.modal-header{background:#2c2416;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Noto Serif TC',serif;font-size:16px;color:#f5f0e8;font-weight:300;letter-spacing:0.05em;}
+.modal-close{color:rgba(245,240,232,0.45);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:3px;transition:all 0.15s;border:none;background:transparent;line-height:1;}
+.modal-close:hover{color:#f5f0e8;background:rgba(255,255,255,0.12);}
+.modal-body{padding:22px 24px 8px;}
+.f-group{margin-bottom:16px;}
+.f-label{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#8a7a60;margin-bottom:6px;display:block;}
+.f-input{width:100%;background:#fff;border:1px solid #d4c9b0;border-radius:3px;padding:9px 12px;font-family:'Noto Serif TC',serif;font-size:14px;color:#2c2416;outline:none;transition:border-color 0.15s;}
+.f-input:focus{border-color:#2c2416;box-shadow:0 0 0 2px rgba(44,36,22,0.06);}
+.f-input::placeholder{color:#c8b890;}
+.f-select{width:100%;background:#fff;border:1px solid #d4c9b0;border-radius:3px;padding:9px 12px;font-family:'Space Mono',monospace;font-size:12px;color:#2c2416;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a7a60'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.f-select:focus{border-color:#2c2416;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-footer{padding:8px 24px 22px;display:flex;gap:10px;justify-content:flex-end;}
+.btn-save{padding:9px 26px;background:#2c2416;color:#f5f0e8;border:none;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;}
+.btn-save:hover{background:#4a3828;}
+.btn-cancel2{padding:9px 18px;background:transparent;color:#8a7a60;border:1px solid #d4c9b0;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;}
+.btn-cancel2:hover{border-color:#8a7a60;color:#2c2416;}
+
+/* Toast */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:#2c2416;color:#f5f0e8;padding:10px 24px;border-radius:3px;font-size:12px;font-family:'Space Mono',monospace;letter-spacing:0.08em;opacity:0;transition:all 0.3s;z-index:99999;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.err{background:rgba(255,80,80,0.92);color:#fff;}
+.toast.err{background:#a03030;}
 
-@media(max-width:768px){
-  .page-content{padding:44px 16px 100px;}
-  .form-grid{grid-template-columns:1fr 1fr;}
-  .reminder-card{flex-wrap:wrap;}
+@media(max-width:600px){
+  .nb-item{padding:12px 20px;}
+  .nb-tabs{padding:0 20px;}
+  .nb-header{padding:24px 20px 20px;}
+  .nb-title{padding-left:16px;font-size:22px;}
+  .nb-subtitle{padding-left:16px;}
+  .fab{bottom:24px;right:24px;width:48px;height:48px;font-size:22px;}
 }
 </style>
 </head>
 <body>
 
-<!-- Menubar -->
-<div class="global-menubar">
+<div class="menubar">
   <div class="gm-left">
     <span style="font-size:16px">🗿</span>
     <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
@@ -100,29 +131,51 @@ body{font-family:'Space Mono',monospace;background:#1E2130;color:#E8EAF0;}
   </div>
 </div>
 
-<div class="page-content">
-  <h1 class="page-title">提醒 <em>事項</em></h1>
-  <span class="page-label">— 07 / REMINDER · 定時 LINE 通知</span>
+<div class="notebook-wrap">
+  <div class="nb-header">
+    <div class="nb-title">提醒事項</div>
+    <div class="nb-subtitle">Reminder · 定時 LINE 通知</div>
+    <div class="nb-date-badge" id="headerDate"></div>
+  </div>
+  <div class="nb-body">
+    <div class="nb-tabs">
+      <button class="nb-tab active" onclick="setFilter('all',this)">全部</button>
+      <button class="nb-tab" onclick="setFilter('pending',this)">待辦</button>
+      <button class="nb-tab" onclick="setFilter('soon',this)">即將到來</button>
+      <button class="nb-tab" onclick="setFilter('done',this)">已完成</button>
+      <button class="nb-tab" onclick="setFilter('overdue',this)">已過期</button>
+      <button class="nb-tab" onclick="setFilter('repeat',this)">重複</button>
+    </div>
+    <div class="nb-list" id="reminderList"></div>
+  </div>
+</div>
 
-  <!-- 新增表單 -->
-  <div class="form-section">
-    <div class="form-title" id="formTitle">＋ 新增提醒</div>
-    <div class="form-grid">
-      <div class="form-group" style="grid-column:span 2">
-        <label>標題</label>
-        <input class="form-input" type="text" id="r-title" placeholder="提醒標題">
+<button class="fab" onclick="openModal(null)" title="新增提醒">＋</button>
+
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">新增提醒</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="f-group">
+        <label class="f-label">標題</label>
+        <input class="f-input" type="text" id="r-title" placeholder="提醒標題">
       </div>
-      <div class="form-group">
-        <label>日期</label>
-        <input class="form-input" type="date" id="r-date">
+      <div class="f-row">
+        <div class="f-group">
+          <label class="f-label">日期</label>
+          <input class="f-input" type="date" id="r-date">
+        </div>
+        <div class="f-group">
+          <label class="f-label">時間</label>
+          <input class="f-input" type="time" id="r-time">
+        </div>
       </div>
-      <div class="form-group">
-        <label>時間</label>
-        <input class="form-input" type="time" id="r-time">
-      </div>
-      <div class="form-group">
-        <label>重複</label>
-        <select class="form-select" id="r-repeat">
+      <div class="f-group">
+        <label class="f-label">重複</label>
+        <select class="f-select" id="r-repeat">
           <option value="none">不重複</option>
           <option value="daily">每天</option>
           <option value="weekly">每週</option>
@@ -130,41 +183,28 @@ body{font-family:'Space Mono',monospace;background:#1E2130;color:#E8EAF0;}
           <option value="yearly">每年</option>
         </select>
       </div>
-      <div class="form-group" style="grid-column:span 2">
-        <label>備註</label>
-        <input class="form-input" type="text" id="r-note" placeholder="備註說明（選填）">
+      <div class="f-group">
+        <label class="f-label">備註</label>
+        <input class="f-input" type="text" id="r-note" placeholder="備註說明（選填）">
       </div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
-      <button class="btn-add" id="addBtn" onclick="addReminder()">新增提醒</button>
-      <button class="btn-add" onclick="cancelEdit()" id="cancelBtn" style="display:none;background:rgba(255,255,255,0.1);color:#E8EAF0;border:1px solid rgba(255,255,255,0.2);">取消編輯</button>
+    <div class="modal-footer">
+      <button class="btn-cancel2" onclick="closeModal()">取消</button>
+      <button class="btn-save" id="saveBtn" onclick="saveReminder()">新增</button>
     </div>
-  </div>
-
-  <!-- 篩選 -->
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter('all',this)">全部</button>
-    <button class="filter-btn" onclick="setFilter('pending',this)">待辦</button>
-    <button class="filter-btn" onclick="setFilter('done',this)">已完成</button>
-    <button class="filter-btn" onclick="setFilter('overdue',this)">已過期</button>
-    <button class="filter-btn" onclick="setFilter('repeat',this)">重複中</button>
-  </div>
-
-  <!-- 清單 -->
-  <div class="reminder-list" id="reminderList">
-    <div class="empty-state"><span class="empty-icon">🔔</span>尚無提醒事項</div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// 時鐘
 (function tick(){
   var n=new Date();
   var h=String(n.getHours()).padStart(2,'0');
   var m=String(n.getMinutes()).padStart(2,'0');
   document.getElementById('gmbTime').textContent=h+':'+m;
+  var days=['日','一','二','三','四','五','六'];
+  document.getElementById('headerDate').innerHTML='週'+days[n.getDay()]+'<br>'+(n.getMonth()+1)+'/'+n.getDate()+' '+h+':'+m;
   setTimeout(tick,10000);
 })();
 
@@ -173,47 +213,48 @@ function showToast(msg,err){
   t.textContent=msg;t.className='toast'+(err?' err':'');
   requestAnimationFrame(()=>{t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);});
 }
-
 function getData(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch{return[];}}
 function saveData(k,v){localStorage.setItem(k,JSON.stringify(v));}
 
-var currentFilter='all';
-var editId=null;
+var currentFilter='all', editId=null;
 
 function setFilter(f,btn){
   currentFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nb-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderReminders();
 }
 
 const REPEAT_LABEL={none:'不重複',daily:'每天',weekly:'每週',monthly:'每月',yearly:'每年'};
 
-function addReminder(){
-  var title=document.getElementById('r-title').value.trim();
-  var date=document.getElementById('r-date').value;
-  var time=document.getElementById('r-time').value;
-  var repeat=document.getElementById('r-repeat').value;
-  var note=document.getElementById('r-note').value.trim();
-  if(!title){alert('請填寫標題');return;}
-  if(!date||!time){alert('請填寫日期和時間');return;}
-
-  var reminders=getData('reminders');
-  if(editId){
-    var idx=reminders.findIndex(r=>r.id===editId);
-    if(idx!==-1) reminders[idx]={...reminders[idx],title,date,time,repeat,note};
-    editId=null;
-    document.getElementById('formTitle').textContent='＋ 新增提醒';
-    document.getElementById('addBtn').textContent='新增提醒';
-    document.getElementById('cancelBtn').style.display='none';
-    showToast('✦ 已更新提醒');
+function openModal(id){
+  editId=id||null;
+  if(id){
+    var r=getData('reminders').find(x=>x.id===id);
+    if(!r)return;
+    document.getElementById('modalTitle').textContent='編輯提醒';
+    document.getElementById('saveBtn').textContent='儲存';
+    document.getElementById('r-title').value=r.title||'';
+    document.getElementById('r-date').value=r.date||'';
+    document.getElementById('r-time').value=r.time||'';
+    document.getElementById('r-repeat').value=r.repeat||'none';
+    document.getElementById('r-note').value=r.note||'';
   } else {
-    reminders.unshift({id:Date.now(),title,date,time,repeat,note,done:false,createdAt:new Date().toISOString()});
-    showToast('✦ 已新增提醒');
+    document.getElementById('modalTitle').textContent='新增提醒';
+    document.getElementById('saveBtn').textContent='新增';
+    clearForm();
   }
-  saveData('reminders',reminders);
-  clearForm();
-  renderReminders();
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('r-title').focus(),230);
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  editId=null;
+}
+
+function handleOverlayClick(e){
+  if(e.target===document.getElementById('modalOverlay'))closeModal();
 }
 
 function clearForm(){
@@ -224,166 +265,7 @@ function clearForm(){
   document.getElementById('r-date').value=new Date().toISOString().slice(0,10);
 }
 
-function cancelEdit(){
-  editId=null;
-  document.getElementById('formTitle').textContent='＋ 新增提醒';
-  document.getElementById('addBtn').textContent='新增提醒';
-  document.getElementById('cancelBtn').style.display='none';
-  clearForm();
-}
-
-function editReminder(id){
-  var r=getData('reminders').find(x=>x.id===id);
-  if(!r)return;
-  editId=id;
-  document.getElementById('r-title').value=r.title||'';
-  document.getElementById('r-date').value=r.date||'';
-  document.getElementById('r-time').value=r.time||'';
-  document.getElementById('r-repeat').value=r.repeat||'none';
-  document.getElementById('r-note').value=r.note||'';
-  document.getElementById('formTitle').textContent='✎ 編輯提醒';
-  document.getElementById('addBtn').textContent='✔ 儲存變更';
-  document.getElementById('cancelBtn').style.display='';
-  document.getElementById('formTitle').scrollIntoView({behavior:'smooth'});
-}
-
-function toggleDone(id){
-  var reminders=getData('reminders');
-  var r=reminders.find(x=>x.id===id);
-  if(!r)return;
-  r.done=!r.done;
-  saveData('reminders',reminders);
-  renderReminders();
-}
-
-function deleteReminder(id){
-  if(!confirm('確定刪除這筆提醒？'))return;
-  saveData('reminders',getData('reminders').filter(r=>r.id!==id));
-  renderReminders();
-  showToast('已刪除');
-}
-
-function getStatus(r){
-  if(r.done) return 'done';
-  var now=new Date();
-  var dt=new Date(r.date+'T'+r.time);
-  var diff=(dt-now)/60000; // 分鐘
-  if(diff<0) return 'overdue';
-  if(diff<=60) return 'soon';
-  return 'pending';
-}
-
-function renderReminders(){
-  var reminders=getData('reminders').sort((a,b)=>{
-    var da=new Date(a.date+'T'+a.time);
-    var db=new Date(b.date+'T'+b.time);
-    return da-db;
-  });
-
-  var filtered=reminders.filter(r=>{
-    var s=getStatus(r);
-    if(currentFilter==='all') return true;
-    if(currentFilter==='pending') return s==='pending'||s==='soon';
-    if(currentFilter==='done') return s==='done';
-    if(currentFilter==='overdue') return s==='overdue';
-    if(currentFilter==='repeat') return r.repeat&&r.repeat!=='none';
-    return true;
-  });
-
-  var el=document.getElementById('reminderList');
-  if(!filtered.length){
-    el.innerHTML='<div class="empty-state"><span class="empty-icon">🔔</span>沒有符合的提醒</div>';
-    return;
-  }
-
-  el.innerHTML=filtered.map(r=>{
-    var s=getStatus(r);
-    var cardClass='reminder-card'+(s==='done'?' done':s==='overdue'?' overdue':s==='soon'?' soon':'');
-    var checkClass='r-check'+(r.done?' checked':'');
-    var dt=new Date(r.date+'T'+r.time);
-    var dateStr=r.date.slice(5).replace('-','/')+' '+r.time;
-    var badge='';
-    if(s==='overdue') badge='<span class="r-overdue-badge">已過期</span>';
-    else if(s==='soon') badge='<span class="r-soon-badge">即將到來</span>';
-    var repeatBadge=r.repeat&&r.repeat!=='none'?`<span class="r-repeat">${REPEAT_LABEL[r.repeat]}</span>`:'';
-    return `<div class="${cardClass}">
-      <div class="${checkClass}" onclick="toggleDone(${r.id})"></div>
-      <div class="r-body">
-        <div class="r-title">${r.title}</div>
-        ${r.note?`<div class="r-note">${r.note}</div>`:''}
-      </div>
-      <div class="r-meta">
-        <div class="r-time">📅 ${dateStr}</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">
-          ${repeatBadge}${badge}
-        </div>
-      </div>
-      <div class="r-actions">
-        <span class="r-btn" onclick="editReminder(${r.id})" style="color:rgba(100,160,255,0.7);" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span>
-        <span class="r-btn" onclick="deleteReminder(${r.id})" style="color:rgba(255,100,100,0.5);" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── GitHub 同步 ──
-const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main';
-const GH_DATA_PATH='reminders.json', GH_TOKEN_KEY='gh_token_reminder';
-
-function getToken(){
-  var tk=localStorage.getItem(GH_TOKEN_KEY);
-  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
-  return tk.trim();
-}
-
-function loadFromGitHub(){
-  var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token){token=prompt('請輸入 GitHub Personal Access Token：\n（僅儲存在本機瀏覽器）');if(!token)return;localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();}
-  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-  fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
-    .then(r=>{if(!r.ok){if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效');}return null;}return r.json();})
-    .then(fi=>{
-      if(!fi||!fi.content)return;
-      var raw=atob(fi.content.split('\n').join(''));
-      var arr=JSON.parse(decodeURIComponent(escape(raw)));
-      localStorage.setItem('reminders',JSON.stringify(arr));
-      if(fi.sha)localStorage.setItem('gh_reminder_sha',fi.sha);
-      renderReminders();
-      showToast('✦ 已從 GitHub 載入');
-    }).catch(e=>console.warn('載入失敗:',e));
-}
-
-var _pushing=false;
-async function pushToGitHub(){
-  if(_pushing){showToast('⏳ 推送中...',false);return;}
-  _pushing=true;
-  try{
-    var token=getToken();if(!token)return;
-    var reminders=getData('reminders');
-    var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    showToast('⏳ 推送中...',false);
-    var sha=localStorage.getItem('gh_reminder_sha');
-    if(!sha){
-      var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-      if(!r.ok){showToast('❌ 連線失敗',true);return;}
-      var fi=await r.json();sha=fi.sha;
-    }
-    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(reminders,null,2))));
-    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新提醒事項',content:encoded,sha:sha,branch:GH_BRANCH})});
-    if(!pr.ok){localStorage.removeItem('gh_reminder_sha');showToast('❌ 推送失敗',true);}
-    else{var pd=await pr.json();var ns=pd.content&&pd.content.sha;if(ns)localStorage.setItem('gh_reminder_sha',ns);else localStorage.removeItem('gh_reminder_sha');showToast('✦ 已儲存至 GitHub');}
-  }finally{_pushing=false;}
-}
-
-async function saveAndPush(data){
-  saveData('reminders',data);
-  await pushToGitHub();
-}
-
-// 覆寫 addReminder/deleteReminder/toggleDone 以使用 saveAndPush
-const _origAdd=addReminder;
-window.addReminder=async function(){
+async function saveReminder(){
   var title=document.getElementById('r-title').value.trim();
   var date=document.getElementById('r-date').value;
   var time=document.getElementById('r-time').value;
@@ -395,27 +277,23 @@ window.addReminder=async function(){
   if(editId){
     var idx=reminders.findIndex(r=>r.id===editId);
     if(idx!==-1)reminders[idx]={...reminders[idx],title,date,time,repeat,note};
-    editId=null;
-    document.getElementById('formTitle').textContent='＋ 新增提醒';
-    document.getElementById('addBtn').textContent='新增提醒';
-    document.getElementById('cancelBtn').style.display='none';
   } else {
     reminders.unshift({id:Date.now(),title,date,time,repeat,note,done:false,createdAt:new Date().toISOString()});
   }
-  clearForm();
+  closeModal();
   renderReminders();
   await saveAndPush(reminders);
-};
+}
 
-window.deleteReminder=async function(id){
+async function deleteReminder(id){
   if(!confirm('確定刪除這筆提醒？'))return;
   var reminders=getData('reminders').filter(r=>r.id!==id);
   renderReminders();
   showToast('已刪除');
   await saveAndPush(reminders);
-};
+}
 
-window.toggleDone=async function(id){
+async function toggleDone(id){
   var reminders=getData('reminders');
   var r=reminders.find(x=>x.id===id);
   if(!r)return;
@@ -423,12 +301,110 @@ window.toggleDone=async function(id){
   saveData('reminders',reminders);
   renderReminders();
   await pushToGitHub();
-};
+}
 
+function getStatus(r){
+  if(r.done)return 'done';
+  var diff=(new Date(r.date+'T'+r.time)-new Date())/60000;
+  if(diff<0)return 'overdue';
+  if(diff<=60)return 'soon';
+  return 'pending';
+}
+
+function renderReminders(){
+  var reminders=getData('reminders').sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
+  var filtered=reminders.filter(r=>{
+    var s=getStatus(r);
+    if(currentFilter==='all')return true;
+    if(currentFilter==='pending')return s==='pending';
+    if(currentFilter==='soon')return s==='soon';
+    if(currentFilter==='done')return s==='done';
+    if(currentFilter==='overdue')return s==='overdue';
+    if(currentFilter==='repeat')return r.repeat&&r.repeat!=='none';
+    return true;
+  });
+  var el=document.getElementById('reminderList');
+  if(!filtered.length){
+    el.innerHTML='<div class="nb-empty"><span class="nb-empty-icon">📋</span><div class="nb-empty-text">沒有符合的提醒</div></div>';
+    return;
+  }
+  el.innerHTML=filtered.map(r=>{
+    var s=getStatus(r);
+    var cls='nb-item'+(s==='done'?' done':s==='overdue'?' overdue':s==='soon'?' soon':'');
+    var chk='nb-check'+(r.done?' checked':'');
+    var dateStr=r.date.slice(5).replace('-','/')+' '+r.time;
+    var badges='';
+    if(r.repeat&&r.repeat!=='none')badges+=`<span class="nb-badge repeat">${REPEAT_LABEL[r.repeat]}</span>`;
+    if(s==='overdue')badges+=`<span class="nb-badge overdue">已過期</span>`;
+    else if(s==='soon')badges+=`<span class="nb-badge soon">即將到來</span>`;
+    return `<div class="${cls}">
+      <div class="${chk}" onclick="toggleDone(${r.id})"></div>
+      <div class="nb-item-body">
+        <div class="nb-item-title">${r.title}</div>
+        ${r.note?`<div class="nb-item-note">${r.note}</div>`:''}
+        <div class="nb-item-meta">
+          <span class="nb-item-time">📅 ${dateStr}</span>
+          ${badges}
+        </div>
+      </div>
+      <div class="nb-item-actions">
+        <span class="nb-act" onclick="openModal(${r.id})" title="編輯">✎</span>
+        <span class="nb-act" onclick="deleteReminder(${r.id})" title="刪除" style="color:#c8a0a0" onmouseover="this.style.color='#a03030'" onmouseout="this.style.color='#c8a0a0'">✕</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// GitHub 同步
+const GH_OWNER='sumoai-boop',GH_REPO='sumoai-boop.github.io',GH_BRANCH='main';
+const GH_DATA_PATH='reminders.json',GH_TOKEN_KEY='gh_token_reminder';
+
+function getToken(){
+  var tk=localStorage.getItem(GH_TOKEN_KEY);
+  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
+  return tk.trim();
+}
+
+function loadFromGitHub(){
+  var token=localStorage.getItem(GH_TOKEN_KEY);
+  if(!token){token=prompt('請輸入 GitHub Personal Access Token：\n（僅儲存在本機瀏覽器）');if(!token){renderReminders();return;}localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();}
+  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
+  fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
+    .then(r=>{if(!r.ok){if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效');}renderReminders();return null;}return r.json();})
+    .then(fi=>{
+      if(!fi||!fi.content){renderReminders();return;}
+      var raw=atob(fi.content.split('\n').join(''));
+      var arr=JSON.parse(decodeURIComponent(escape(raw)));
+      localStorage.setItem('reminders',JSON.stringify(arr));
+      if(fi.sha)localStorage.setItem('gh_reminder_sha',fi.sha);
+      renderReminders();
+      showToast('✦ 已從 GitHub 載入');
+    }).catch(e=>{console.warn(e);renderReminders();});
+}
+
+var _pushing=false;
+async function pushToGitHub(){
+  if(_pushing)return;
+  _pushing=true;
+  try{
+    var token=getToken();if(!token)return;
+    var reminders=getData('reminders');
+    var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
+    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+    showToast('⏳ 儲存中...');
+    var sha=localStorage.getItem('gh_reminder_sha');
+    if(!sha){var r2=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});if(!r2.ok){showToast('❌ 連線失敗',true);return;}var fi=await r2.json();sha=fi.sha;}
+    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(reminders,null,2))));
+    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新提醒事項',content:encoded,sha:sha,branch:GH_BRANCH})});
+    if(!pr.ok){localStorage.removeItem('gh_reminder_sha');showToast('❌ 推送失敗',true);}
+    else{var pd=await pr.json();var ns=pd.content&&pd.content.sha;if(ns)localStorage.setItem('gh_reminder_sha',ns);else localStorage.removeItem('gh_reminder_sha');showToast('✦ 已儲存至 GitHub');}
+  }finally{_pushing=false;}
+}
+
+async function saveAndPush(data){saveData('reminders',data);await pushToGitHub();}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 window.addEventListener('DOMContentLoaded',loadFromGitHub);
-
-// 初始化
-document.getElementById('r-date').value=new Date().toISOString().slice(0,10);
 renderReminders();
 </script>
 </body>
