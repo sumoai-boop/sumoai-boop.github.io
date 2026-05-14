@@ -78,7 +78,7 @@ body{font-family:'Space Mono',monospace;background:#f0ead8;color:#2c2416;}
 .dc-divider{width:1px;height:48px;background:#d4c9b0;flex-shrink:0;}
 
 .dc-body{flex:1;min-width:0;}
-.dc-title{font-family:'Noto Serif TC',serif;font-size:14px;color:#2c2416;margin-bottom:3px;}
+.dc-title{font-family:'Noto Serif TC',serif;font-size:18px;color:#2c2416;margin-bottom:3px;}
 .dc-since{font-size:10px;color:#8a7a60;}
 .dc-next{font-size:10px;color:#5a6a8a;margin-top:2px;}
 
@@ -495,7 +495,7 @@ function renderDayRecords(){
       <div class="dc-divider"></div>
       <div class="dc-body">
         <div class="dc-title">${d.emoji} ${d.title}</div>
-        <div class="dc-since">${label} · ${sinceStr}</div>
+        <div class="dc-since">${sinceStr}</div>
         ${d.note?`<div class="dc-since" style="color:#8a9a70">${d.note}</div>`:''}
         ${nextHint?`<div class="dc-next">🎯 ${nextHint}</div>`:''}
       </div>
