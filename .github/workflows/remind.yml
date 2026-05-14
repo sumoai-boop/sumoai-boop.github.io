@@ -35,14 +35,15 @@ jobs:
           const now = new Date();
           // 台灣時間 = UTC+8
           const twNow = new Date(now.getTime() + 8 * 60 * 60 * 1000);
-          const twStr = twNow.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
 
           let updated = false;
 
           reminders.forEach(r => {
             if (r.done) return;
-            const reminderDT = r.date + 'T' + r.time;
-            if (reminderDT !== twStr) return;
+            const reminderDT = new Date(r.date + 'T' + r.time + ':00+08:00');
+            const diffMin = (twNow - reminderDT) / 60000;
+            // 時間到（已過0~5分鐘內）才觸發
+            if (diffMin < 0 || diffMin >= 5) return;
 
             // 時間到，發送 LINE 訊息
             const msg = [
