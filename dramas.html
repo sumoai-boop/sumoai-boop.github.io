@@ -507,60 +507,57 @@ async function fetchPosterForCard(m, imgEl){
     const LANG_MAP2={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
       'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
       'IT':'it','IN':'hi','ID':'id','TR':'tr','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
-    const origLang2 = LANG_MAP2[m.lang]||null;
-    const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
+    const origLang = LANG_MAP2[m.lang]||null;
     const year = m.year||0;
 
-    function pickBest(results, year){
-      if(!results||!results.length) return null;
-      let pool = results;
-      if(origLang2){
-        const langMatch = results.filter(r=>r.original_language===origLang2);
-        if(langMatch.length) pool = langMatch;
-      }
-      if(year&&year>0){
-        const exact=pool.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
-        if(exact) return exact;
-        const near=pool.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
-        if(near) return near;
-      }
-      return pool[0];
-    }
-
-    let poster = null;
-    // 搜尋前去掉季數後綴（S2, S3, 第二季 etc.）
+    // 去掉季數後綴
     const cleanTitle = (m.title||'').replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
-    const cleanOrig  = (m.orig ||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').trim();
+    const cleanOrig  = (m.orig ||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
 
     // 直接指定 TMDB ID
     if(TMDB_ID_OVERRIDE[m.title]){
       const r=await fetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
       const d=await r.json();
-      if(d.poster_path) poster=d.poster_path;
+      if(d.poster_path){imgEl.src=`https://image.tmdb.org/t/p/w300${d.poster_path}`;return;}
     }
 
-    if(!poster && cleanOrig && cleanOrig!=='nan' && isLatin(cleanOrig)){
-      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig)}&language=zh-TW`);
-      const d=await r.json();
-      const hit=pickBest(d.results, year);
-      if(hit&&hit.poster_path) poster=hit.poster_path;
+    // 用年份+語言篩選最佳結果
+    function pickBest(results){
+      if(!results||!results.length) return null;
+      let pool=results;
+      // 先用國家語言篩
+      if(origLang){
+        const langMatch=results.filter(r=>r.original_language===origLang);
+        if(langMatch.length) pool=langMatch;
+      }
+      // 再用年份篩
+      if(year>0){
+        const exact=pool.find(r=>(r.release_date||r.first_air_date||'').startsWith(String(year)));
+        if(exact) return exact;
+        const near=pool.find(r=>Math.abs(parseInt((r.release_date||r.first_air_date||'0').slice(0,4))-year)<=1);
+        if(near) return near;
+      }
+      return pool[0];
     }
-    if(!poster){
-      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle)}&language=zh-TW`);
+
+    async function search(query, mediaType){
+      const r=await fetch(`https://api.themoviedb.org/3/search/${mediaType}?api_key=${TMDB}&query=${encodeURIComponent(query)}&language=zh-TW`);
       const d=await r.json();
-      const hit=pickBest(d.results, year);
-      if(hit&&hit.poster_path) poster=hit.poster_path;
+      return pickBest(d.results);
     }
-    if(!poster && cleanOrig && cleanOrig!=='nan' && !isLatin(cleanOrig)){
-      const r=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig)}&language=zh-TW`);
-      const d=await r.json();
-      const hit=pickBest(d.results, year);
-      if(hit&&hit.poster_path) poster=hit.poster_path;
-    }
-    if(!poster){
-      const r=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle)}&language=zh-TW`);
-      const d=await r.json();
-      if(d.results&&d.results[0]&&d.results[0].poster_path) poster=d.results[0].poster_path;
+
+    let poster=null;
+    const queries=[cleanOrig, cleanTitle].filter(q=>q&&q!=='nan');
+    const types=['movie','tv'];
+
+    // 依序：原文名movie → 原文名tv → 中文名movie → 中文名tv
+    for(const q of queries){
+      for(const t of types){
+        if(poster) break;
+        const hit=await search(q,t);
+        if(hit&&hit.poster_path) poster=hit.poster_path;
+      }
+      if(poster) break;
     }
 
     if(poster) imgEl.src=`https://image.tmdb.org/t/p/w300${poster}`;
