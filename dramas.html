@@ -320,8 +320,10 @@ body::before { background: transparent !important; }
     <div class="stat-card"><div class="stat-label">每月平均觀看</div><div class="stat-val" id="sBest" style="color:#1A6A3A;">—</div></div>
     <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema" style="color:#5A1A7A;">—</div></div>
   </div>
-  <span class="top5-label">— 個人最愛 TOP 5</span>
-  <div class="top5-grid" id="top5Grid"></div>
+  <span class="top5-label">— 個人最愛 TOP 5｜電影</span>
+  <div class="top5-grid" id="top5MovieGrid"></div>
+  <span class="top5-label" style="margin-top:8px;">— 個人最愛 TOP 5｜影集</span>
+  <div class="top5-grid" id="top5SeriesGrid"></div>
   <div class="section-divider"></div>
 
   <!-- 電影行事曆 -->
@@ -477,18 +479,27 @@ function toDistLogo(d){
 }
 
 function buildTop5(){
-  const top5=[...DATA].sort((a,b)=>b.personal-a.personal).slice(0,5);
-  const grid=document.getElementById('top5Grid');
-  grid.innerHTML='';
-  top5.forEach((m,i)=>{
-    const card=document.createElement('div');
-    card.className='poster-card';
-    card.innerHTML=`<img src="" alt="${m.title}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"><div class="poster-overlay"></div><div class="poster-info"><div class="poster-rank" style="color:#FFD700;font-weight:700;font-size:11px;letter-spacing:0.1em;">${RANKS[i]}</div><div class="poster-title" style="color:#fff;font-size:14px;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.8);">${m.title}</div><div><span class="poster-score-num" style="color:#FFD700;font-size:18px;font-weight:700;">${m.personal.toFixed(1)}</span><span class="poster-score-label" style="color:rgba(255,255,255,0.8);font-size:10px;margin-left:4px;">個人評分</span></div></div>`;
-    card.onclick=()=>openPoster(m);
-    grid.appendChild(card);
-    // 動態抓 TMDB 海報
-    fetchPosterForCard(m, card.querySelector('img'));
-  });
+  const MOVIE_TYPES=['movie'];
+  const SERIES_TYPES=['tv','anime','doc','variety'];
+
+  const topMovies=[...DATA].filter(m=>MOVIE_TYPES.includes(m.type)).sort((a,b)=>b.personal-a.personal).slice(0,5);
+  const topSeries=[...DATA].filter(m=>SERIES_TYPES.includes(m.type)).sort((a,b)=>b.personal-a.personal).slice(0,5);
+
+  function renderGrid(list, gridId){
+    const grid=document.getElementById(gridId);
+    grid.innerHTML='';
+    list.forEach((m,i)=>{
+      const card=document.createElement('div');
+      card.className='poster-card';
+      card.innerHTML=`<img src="" alt="${m.title}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"><div class="poster-overlay"></div><div class="poster-info"><div class="poster-rank" style="color:#FFD700;font-weight:700;font-size:11px;letter-spacing:0.1em;">${RANKS[i]}</div><div class="poster-title" style="color:#fff;font-size:14px;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.8);">${m.title}</div><div><span class="poster-score-num" style="color:#FFD700;font-size:18px;font-weight:700;">${m.personal.toFixed(1)}</span><span class="poster-score-label" style="color:rgba(255,255,255,0.8);font-size:10px;margin-left:4px;">個人評分</span></div></div>`;
+      card.onclick=()=>openPoster(m);
+      grid.appendChild(card);
+      fetchPosterForCard(m, card.querySelector('img'));
+    });
+  }
+
+  renderGrid(topMovies,'top5MovieGrid');
+  renderGrid(topSeries,'top5SeriesGrid');
 }
 
 async function fetchPosterForCard(m, imgEl){
@@ -1372,14 +1383,13 @@ render();
   var GH_DATA_PATH = 'dramas-data.json';
   var GH_BRANCH = 'main';
 
-  // ── 從 dramas-data.json 讀取最新資料（公開倉庫，不需 Token）──
+  // ── 從 dramas-data.json 讀取最新資料 ──
   (function(){
     var token = localStorage.getItem(GH_TOKEN_KEY);
+    if(!token) return;
     var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
-    var headers = {'Accept': 'application/vnd.github.v3+json'};
-    if(token) headers['Authorization'] = 'token ' + token;
     fetch(api + '?ref=' + GH_BRANCH + '&t=' + Date.now(), {
-      headers: headers
+      headers: {'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json'}
     }).then(function(r){ return r.json(); }).then(function(fi){
       if(!fi || !fi.sha) return;
       var raw;
