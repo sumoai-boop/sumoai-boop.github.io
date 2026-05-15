@@ -817,13 +817,15 @@ function renderWeekly(){
 function renderWeeklyChart(weekly){
   var chartEl = document.getElementById('weeklyChart');
   if(!chartEl) return;
-  // 第一週：4/27(一) ~ 5/3(日)，用本地時間避免時區問題
-  // 用 new Date(y,m-1,d) 建構本地時間，dateToStr 也用本地欄位
+  weekly = getData('uberWeekly');
+
   function dateToStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-  var ws = new Date(2025, 3, 27); // 4/27 本地時間
-  var yearEnd = new Date(new Date().getFullYear(), 11, 31);
+
+  // 固定週期：4/27(一) 第一週 ~ 12/28(日) 最後一週
+  var ws = new Date(2025, 3, 27);   // 4/27
+  var lastWeekEnd = new Date(2025, 11, 28); // 12/28
   var weeks = [];
-  while(ws <= yearEnd){
+  while(ws <= lastWeekEnd){
     var we = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate()+6);
     var wLabel = (ws.getMonth()+1)+'/'+(ws.getDate());
     var wsStr = dateToStr(ws);
@@ -835,42 +837,48 @@ function renderWeeklyChart(weekly){
     weeks.push({label:wLabel, income:wIncome, start:wsStr, end:weStr});
     ws = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate()+7);
   }
+
   var wMax = Math.max.apply(null, weeks.map(function(w){return w.income;}).concat([1]));
-  var t2=new Date(); var todayStr2=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
+  var t2=new Date();
+  var todayStr2=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
   var todayWeekIdx = 0;
   weeks.forEach(function(w,i){ if(todayStr2 >= w.start && todayStr2 <= w.end) todayWeekIdx=i; });
-  var barPx = 32;
-  var chartH = 120;
+
+  var barPx = 36;
+  var chartH = 140;
+
   var barsHtml = weeks.map(function(w,i){
-    var h = Math.max(Math.round((w.income / wMax) * chartH), w.income > 0 ? 20 : 2);
+    var h = Math.max(Math.round((w.income / wMax) * chartH), w.income > 0 ? 28 : 2);
     var isThisWeek = (todayStr2 >= w.start && todayStr2 <= w.end);
     var isFuture = w.start > todayStr2;
-    // 當週黃色，未來淡綠，過去正常綠
-    var barColor = isFuture ? 'rgba(0,200,83,0.18)' : isThisWeek ? '#FFD700' : '#00C853';
-    var labelColor = isThisWeek ? '#FFD700' : isFuture ? 'rgba(240,220,160,0.3)' : 'rgba(240,220,160,0.55)';
-    var glowStyle = isThisWeek ? 'box-shadow:0 0 10px rgba(255,215,0,0.5);' : '';
-    // 數字直式顯示在柱狀內（開頭在上，從上往下）
+    var barColor = isFuture ? 'rgba(0,200,83,0.15)' : isThisWeek ? '#FFD700' : '#00C853';
+    var labelColor = isThisWeek ? '#FFD700' : isFuture ? 'rgba(240,220,160,0.25)' : 'rgba(240,220,160,0.55)';
+    var glowStyle = isThisWeek ? 'box-shadow:0 0 12px rgba(255,215,0,0.55);' : '';
+    var numColor = isThisWeek ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.65)';
+    // 數字從上往下直排在柱狀內，字型放大
     var innerNum = w.income > 0
-      ? '<div style="position:absolute;top:3px;left:0;right:0;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;height:'+(h-6)+'px;">'
-        + '<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:9px;color:'+(isThisWeek?'rgba(0,0,0,0.75)':'rgba(0,0,0,0.6)')+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;max-height:'+(h-6)+'px;overflow:hidden;">'+fmt(w.income)+'</span>'
+      ? '<div style="position:absolute;top:4px;left:0;right:0;display:flex;justify-content:center;overflow:hidden;height:'+(h-8)+'px;">'
+        + '<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:12px;color:'+numColor+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;overflow:hidden;max-height:'+(h-8)+'px;">'+fmt(w.income)+'</span>'
         + '</div>'
       : '';
     return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;vertical-align:bottom;width:'+barPx+'px;margin-right:5px;" title="'+w.start+' ~ '+w.end+(w.income?' NT$'+fmt(w.income):'')+'">'
       + '<div style="position:relative;width:'+barPx+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        + '<div style="position:relative;width:100%;height:'+(h)+'px;background:'+barColor+';border-radius:3px 3px 0 0;'+glowStyle+'">'
+        + '<div style="position:relative;width:100%;height:'+h+'px;background:'+barColor+';border-radius:3px 3px 0 0;'+glowStyle+'">'
           + innerNum
         + '</div>'
       + '</div>'
       + '<div style="font-size:9px;color:'+labelColor+';white-space:nowrap;font-family:monospace;'+(isThisWeek?'font-weight:700;':'')+'">'+w.label+'</div>'
     + '</div>';
   }).join('');
+
   chartEl.innerHTML =
-    '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">每週收入 — '+new Date().getFullYear()+'</div>'
+    '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">每週收入 — 2025</div>'
     + '<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;">'
       + '<div style="display:inline-flex;align-items:flex-end;padding:4px 20px 0;white-space:nowrap;">'
         + barsHtml
       + '</div>'
     + '</div>';
+
   setTimeout(function(){
     var sc = document.getElementById('weekChartScroll');
     if(!sc) return;
