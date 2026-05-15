@@ -757,7 +757,7 @@ function renderWeekly(){
     +(prevMonth
       ? '<button onclick="weeklyCurrentMonth=\''+prevMonth+'\';renderWeekly();" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:8px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;">‹ '+prevMonth+'</button>'
       : '<span style="width:80px"></span>')
-    +'<span style="font-family:\'Playfair Display\',serif;font-size:22px;font-weight:700;color:#fff;padding:0 12px;">'+year+' 年 '+month+' 月</span>'
+    +'<span style="font-family:monospace;font-size:22px;font-weight:700;color:#fff;padding:0 12px;">'+year+' 年 '+month+' 月</span>'
     +(nextMonth
       ? '<button onclick="weeklyCurrentMonth=\''+nextMonth+'\';renderWeekly();" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:8px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;">'+nextMonth+' ›</button>'
       : '<span style="width:80px"></span>')
@@ -824,45 +824,38 @@ function renderDowAvg(){
 
   var DOW_NAMES = ['週日','週一','週二','週三','週四','週五','週六'];
   var DOW_ORDER = [1,2,3,4,5,6,0]; // 週一~週日
-  // 累加各星期的收入與次數（只計有收入的日）
+  // 累加各星期的收入與次數（含 income=0 的日子）
   var sumMap = {0:0,1:0,2:0,3:0,4:0,5:0,6:0};
   var cntMap = {0:0,1:0,2:0,3:0,4:0,5:0,6:0};
   weekly.forEach(function(w){
-    if(!w.date || !w.income) return;
-    var dow = new Date(w.date).getDay();
-    sumMap[dow] += w.income;
+    if(!w.date) return;
+    var parts = w.date.split('-');
+    var dow = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2])).getDay();
+    sumMap[dow] += (w.income||0);
     cntMap[dow]++;
   });
-  var avgs = DOW_ORDER.map(function(d){
-    return { name: DOW_NAMES[d], avg: cntMap[d]>0 ? Math.round(sumMap[d]/cntMap[d]) : 0, cnt: cntMap[d], dow: d };
-  });
-  var maxAvg = Math.max.apply(null, avgs.map(function(a){return a.avg;}).concat([1]));
 
-  var rows = avgs.map(function(a){
-    var barW = Math.round(a.avg / maxAvg * 100);
-    var isWeekend = (a.dow===0||a.dow===6);
-    var barColor = isWeekend ? '#60AAFF' : '#00C853';
+  var cols = DOW_ORDER.map(function(d){
+    var avg = cntMap[d]>0 ? Math.round(sumMap[d]/cntMap[d]) : 0;
+    var isWeekend = (d===0||d===6);
     var nameColor = isWeekend ? '#60AAFF' : 'rgba(240,220,160,0.85)';
-    return '<div style="display:flex;align-items:center;gap:0;margin-bottom:10px;">'
-      + '<div style="min-width:46px;font-size:13px;color:'+nameColor+';flex-shrink:0;">'+a.name+'</div>'
-      + '<div style="flex:1;height:12px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;margin-right:12px;">'
-        + '<div style="height:100%;width:'+barW+'%;background:'+barColor+';border-radius:6px;transition:width 0.6s ease;"></div>'
+    var valColor  = isWeekend ? '#60AAFF' : '#00C853';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;">'
+      + '<div style="font-size:13px;color:'+nameColor+';font-weight:600;">'+DOW_NAMES[d]+'</div>'
+      + '<div style="font-size:15px;color:'+valColor+';font-weight:700;font-family:'Playfair Display',serif;">'
+        + (cntMap[d]>0 ? 'NT$'+fmt(avg) : '<span style="color:rgba(255,255,255,0.2);font-size:13px;">—</span>')
       + '</div>'
-      + '<div style="min-width:90px;font-size:13px;color:'+barColor+';font-weight:600;text-align:right;flex-shrink:0;">'
-        + (a.avg>0 ? 'NT$'+fmt(a.avg) : '<span style="color:rgba(255,255,255,0.2);">—</span>')
-      + '</div>'
-      + '<div style="min-width:52px;font-size:11px;color:rgba(255,255,255,0.3);text-align:right;flex-shrink:0;padding-left:8px;">'
-        + (a.cnt>0 ? a.cnt+'次' : '')
-      + '</div>'
+      + '<div style="font-size:10px;color:rgba(255,255,255,0.3);">'+cntMap[d]+'次</div>'
     + '</div>';
-  }).join('');
+  }).join('<div style="width:1px;background:rgba(255,255,255,0.07);align-self:stretch;"></div>');
 
   el.innerHTML =
-    '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px 24px;">'
-      + '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:16px;">各星期平均收入</div>'
-      + rows
+    '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:18px 24px;">'
+      + '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">各星期平均收入</div>'
+      + '<div style="display:flex;align-items:flex-start;gap:0;">'+cols+'</div>'
     + '</div>';
 }
+
 
 // 每週柱狀圖（獨立函式，永遠渲染）
 function renderWeeklyChart(weekly){
