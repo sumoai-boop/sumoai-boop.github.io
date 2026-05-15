@@ -846,7 +846,7 @@ function renderWeeklyChart(weekly){
   var todayStr2=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
   var todayWeekIdx=0;
   weeks.forEach(function(w,i){if(todayStr2>=w.start&&todayStr2<=w.end)todayWeekIdx=i;});
-  var barPx=36,chartH=140;
+  var barPx=44,chartH=220;
   var barsHtml=weeks.map(function(w,i){
     var h=Math.max(Math.round((w.income/wMax)*chartH),w.income>0?28:2);
     var isThisWeek=(todayStr2>=w.start&&todayStr2<=w.end);
