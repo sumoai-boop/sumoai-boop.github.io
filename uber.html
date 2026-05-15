@@ -302,7 +302,7 @@ body{
   <!-- 每日支出 -->
   <div class="tab-panel" id="tab-monthly">
     <!-- 左右並排：圓餅圖 + 新增表單 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px;">
+    <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-bottom:20px;">
       <!-- 左：圓餅圖 -->
       <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;">
         <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:12px;">總支出</div>
@@ -848,7 +848,7 @@ function renderWeeklyChart(weekly){
   weeks.forEach(function(w,i){if(todayStr2>=w.start&&todayStr2<=w.end)todayWeekIdx=i;});
   var barPx=44,chartH=220;
   var barsHtml=weeks.map(function(w,i){
-    var h=Math.max(Math.round((w.income/wMax)*chartH),w.income>0?28:2);
+    var h=Math.max(Math.round((w.income/wMax)*chartH),w.income>0?40:3);
     var isThisWeek=(todayStr2>=w.start&&todayStr2<=w.end);
     var isFuture=w.start>todayStr2;
     var barColor=isFuture?'rgba(0,200,83,0.15)':isThisWeek?'#FFD700':'#00C853';
@@ -873,8 +873,8 @@ function renderWeeklyChart(weekly){
   }).join('');
   chartEl.innerHTML=
     '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">每週收入 — '+dataYear+'</div>'
-    +'<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;flex:1;display:flex;align-items:flex-end;">'
-      +'<div style="display:inline-flex;align-items:flex-end;padding:4px 20px 0;white-space:nowrap;">'
+    +'<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;flex:1;">'
+      +'<div style="display:inline-flex;align-items:flex-end;padding:8px 20px 0;white-space:nowrap;">'
         +barsHtml
       +'</div>'
     +'</div>';
