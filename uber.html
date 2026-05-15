@@ -848,10 +848,10 @@ function renderWeeklyChart(weekly){
     var barColor = isFuture ? 'rgba(0,200,83,0.18)' : isThisWeek ? '#FFD700' : '#00C853';
     var labelColor = isThisWeek ? '#FFD700' : isFuture ? 'rgba(240,220,160,0.3)' : 'rgba(240,220,160,0.55)';
     var glowStyle = isThisWeek ? 'box-shadow:0 0 10px rgba(255,215,0,0.5);' : '';
-    // 數字直式顯示在柱狀內
+    // 數字直式顯示在柱狀內（開頭在上，從上往下）
     var innerNum = w.income > 0
-      ? '<div style="position:absolute;bottom:3px;left:0;right:0;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;height:'+(h-4)+'px;">'
-        + '<span style="writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-size:9px;color:'+(isThisWeek?'rgba(0,0,0,0.75)':'rgba(0,0,0,0.6)')+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;max-height:'+(h-6)+'px;overflow:hidden;">'+fmt(w.income)+'</span>'
+      ? '<div style="position:absolute;top:3px;left:0;right:0;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;height:'+(h-6)+'px;">'
+        + '<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:9px;color:'+(isThisWeek?'rgba(0,0,0,0.75)':'rgba(0,0,0,0.6)')+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;max-height:'+(h-6)+'px;overflow:hidden;">'+fmt(w.income)+'</span>'
         + '</div>'
       : '';
     return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;vertical-align:bottom;width:'+barPx+'px;margin-right:5px;" title="'+w.start+' ~ '+w.end+(w.income?' NT$'+fmt(w.income):'')+'">'
