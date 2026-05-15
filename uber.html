@@ -275,8 +275,12 @@ body{
   </div>
 
 <div class="tab-panel" id="tab-weekly">
-    <div id="weeklyChart" style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:14px 18px 10px;margin-bottom:18px;"></div>
-    <div class="form-section">
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:18px;">
+      <div style="flex:1;min-width:0;">
+        <div id="weeklyChart" style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:14px 18px 10px;margin-bottom:18px;"></div>
+      </div>
+      <div style="width:420px;flex-shrink:0;">
+        <div class="form-section">
       <div class="form-title">＋ 新增每日收入</div>
       <div class="form-grid">
         <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fw-date"></div>
@@ -288,6 +292,8 @@ body{
         <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fw-note" placeholder="備註說明"></div>
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
+    </div>
+      </div>
     </div>
     <div id="weeklyDowAvg" style="margin-bottom:18px;"></div>
     <div id="weeklyListBody"></div>
