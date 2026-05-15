@@ -753,8 +753,8 @@ function renderWeeklyChart(){
     var incomeStr=income>0?'NT$'+(income>=1000?(income/1000).toFixed(1)+'k':income):'';
     bars+='<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:28px;flex:1;cursor:default;" title="W'+(i+1)+' '+weekLabel(i)+' NT$'+income.toLocaleString()+'">'
       +'<div style="width:100%;display:flex;align-items:flex-end;height:100px;">'
-      +'<div style="width:100%;background:'+barColor+';border-radius:3px 3px 0 0;height:'+(pct||2)+'%;min-height:'+(income>0?3:2)+'px;transition:height 0.4s;display:flex;align-items:center;justify-content:center;overflow:hidden;">'
-      +(income>0?'<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:9px;color:'+(isCurrent?'#000':'rgba(0,0,0,0.75)')+';font-weight:700;letter-spacing:0.05em;white-space:nowrap;">'+income+'</span>':'')
+      +'<div style="width:100%;background:'+barColor+';border-radius:3px 3px 0 0;height:'+(pct||2)+'%;min-height:'+(income>0?3:2)+'px;transition:height 0.4s;display:flex;align-items:stretch;justify-content:center;overflow:hidden;padding:2px 0;">'
+      +(income>0?'<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:11px;color:'+(isCurrent?'#000':'rgba(0,0,0,0.8)')+';font-weight:700;letter-spacing:0.05em;white-space:nowrap;flex:1;display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;">'+income+'</span>':'')
       +'</div>'
       +'</div>'
       +'<div style="font-size:8px;color:'+labelColor+';white-space:nowrap;">'+weekLabel(i)+'</div>'
