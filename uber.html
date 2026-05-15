@@ -288,7 +288,8 @@ body{
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
-    <div id="weeklyList"><div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div></div>
+    <div id="weeklyChart" style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:14px 18px 10px;margin-bottom:18px;"></div>
+    <div id="weeklyListBody"></div>
   </div>
 
   <!-- 每日支出 -->
@@ -703,7 +704,10 @@ function deleteWeekly(id){
 }
 function renderWeekly(){
   var weekly=getData('uberWeekly');
-  var el=document.getElementById('weeklyList');
+  var el=document.getElementById('weeklyListBody');
+
+  // 每週柱狀圖（永遠顯示）
+  renderWeeklyChart(weekly);
 
   // 收集所有有資料的月份
   var monthSet={};
@@ -802,10 +806,67 @@ function renderWeekly(){
     }
   }
 
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px 24px;">'
+
+  document.getElementById('weeklyListBody').innerHTML =
+    '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px 24px;">'
     +navHtml
     +rows
     +'</div>';
+}
+// 每週柱狀圖（獨立函式，永遠渲染）
+function renderWeeklyChart(weekly){
+  var chartEl = document.getElementById('weeklyChart');
+  if(!chartEl) return;
+  var WEEK_START = new Date('2025-04-27');
+  var yearEnd = new Date(new Date().getFullYear(), 11, 31);
+  var weeks = [];
+  var ws = new Date(WEEK_START);
+  while(ws <= yearEnd){
+    var we = new Date(ws); we.setDate(we.getDate()+6);
+    var wLabel = (ws.getMonth()+1)+'/'+(ws.getDate());
+    var wsStr = ws.toISOString().slice(0,10);
+    var weStr = we.toISOString().slice(0,10);
+    var wIncome = 0;
+    weekly.forEach(function(w){
+      if(w.date && w.date >= wsStr && w.date <= weStr) wIncome += (w.income||0);
+    });
+    weeks.push({label:wLabel, income:wIncome, start:wsStr, end:weStr});
+    ws.setDate(ws.getDate()+7);
+  }
+  var wMax = Math.max.apply(null, weeks.map(function(w){return w.income;}).concat([1]));
+  var todayStr2 = new Date().toISOString().slice(0,10);
+  var todayWeekIdx = 0;
+  weeks.forEach(function(w,i){ if(todayStr2 >= w.start && todayStr2 <= w.end) todayWeekIdx=i; });
+  var barPx = 28;
+  var chartH = 80;
+  var barsHtml = weeks.map(function(w,i){
+    var h = Math.round((w.income / wMax) * chartH);
+    var isThisWeek = (todayStr2 >= w.start && todayStr2 <= w.end);
+    var isFuture = w.start > todayStr2;
+    var barColor = isFuture ? 'rgba(0,200,83,0.18)' : isThisWeek ? '#00E860' : '#00C853';
+    var labelColor = isThisWeek ? '#fff' : 'rgba(240,220,160,0.5)';
+    var topLabel = w.income > 0 ? '<div style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:8px;color:#00C853;white-space:nowrap;">'+fmt(w.income)+'</div>' : '';
+    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:3px;vertical-align:bottom;width:'+barPx+'px;margin-right:4px;" title="'+w.start+' ~ '+w.end+(w.income?' NT$'+fmt(w.income):'')+'">'+
+      '<div style="position:relative;width:'+barPx+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'+
+        topLabel+
+        '<div style="width:100%;height:'+(h||2)+'px;background:'+barColor+';border-radius:3px 3px 0 0;'+(isThisWeek?'box-shadow:0 0 8px rgba(0,232,96,0.45);':'')+'"></div>'+
+      '</div>'+
+      '<div style="font-size:9px;color:'+labelColor+';white-space:nowrap;font-family:monospace;'+(isThisWeek?'font-weight:700;':'')+'">'+w.label+'</div>'+
+    '</div>';
+  }).join('');
+  chartEl.innerHTML =
+    '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:16px;">每週收入 — '+new Date().getFullYear()+'</div>'+
+    '<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:2px;">'+
+      '<div style="display:inline-flex;align-items:flex-end;padding:18px 20px 0;white-space:nowrap;">'+
+        barsHtml+
+      '</div>'+
+    '</div>';
+  setTimeout(function(){
+    var sc = document.getElementById('weekChartScroll');
+    if(!sc) return;
+    var targetX = todayWeekIdx * (barPx + 4) + 20 - sc.clientWidth/2 + barPx/2;
+    sc.scrollLeft = Math.max(0, targetX);
+  }, 50);
 }
 // 每日支出
 function addMonthly(){
