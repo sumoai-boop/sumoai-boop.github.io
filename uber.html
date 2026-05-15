@@ -306,8 +306,8 @@ body{
       <!-- 左：圓餅圖 -->
       <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;">
         <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:12px;">總支出</div>
-        <div style="display:flex;align-items:center;gap:16px;">
-          <canvas id="monthlyPieChart" width="180" height="180" style="flex-shrink:0;"></canvas>
+        <div style="display:flex;align-items:center;gap:32px;">
+          <canvas id="monthlyPieChart" width="240" height="240" style="flex-shrink:0;"></canvas>
           <div id="pieLegend" style="flex:1;"></div>
         </div>
       </div>
@@ -939,7 +939,7 @@ function renderMonthly(){
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0,0,200,200);
 
-    var cx=100, cy=100, r=80;
+    var cx=120, cy=120, r=105;
     var startAngle = -Math.PI/2;
     types.forEach(function(t, i){
       var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
