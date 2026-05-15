@@ -289,8 +289,8 @@ body{
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
+    <div id="weeklyDowAvg" style="margin-bottom:18px;"></div>
     <div id="weeklyListBody"></div>
-    <div id="weeklyDowAvg" style="margin-top:18px;"></div>
   </div>
 
   <!-- 每日支出 -->
@@ -823,39 +823,37 @@ function renderDowAvg(){
   if(!weekly.length){ el.innerHTML=''; return; }
 
   var DOW_NAMES = ['週日','週一','週二','週三','週四','週五','週六'];
-  var DOW_ORDER = [1,2,3,4,5,6,0]; // 週一~週日
-  // 累加各星期的收入與次數（含 income=0 的日子）
-  var sumMap = {0:0,1:0,2:0,3:0,4:0,5:0,6:0};
-  var cntMap = {0:0,1:0,2:0,3:0,4:0,5:0,6:0};
+  var DOW_ORDER = [1,2,3,4,5,6,0];
+  var sumMap={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
+  var cntMap={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
   weekly.forEach(function(w){
     if(!w.date) return;
-    var parts = w.date.split('-');
-    var dow = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2])).getDay();
-    sumMap[dow] += (w.income||0);
+    var p=w.date.split('-');
+    var dow=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2])).getDay();
+    sumMap[dow]+=(w.income||0);
     cntMap[dow]++;
   });
 
-  var cols = DOW_ORDER.map(function(d){
-    var avg = cntMap[d]>0 ? Math.round(sumMap[d]/cntMap[d]) : 0;
-    var isWeekend = (d===0||d===6);
-    var nameColor = isWeekend ? '#60AAFF' : 'rgba(240,220,160,0.85)';
-    var valColor  = isWeekend ? '#60AAFF' : '#00C853';
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;">'
-      + '<div style="font-size:13px;color:'+nameColor+';font-weight:600;">'+DOW_NAMES[d]+'</div>'
-      + '<div style="font-size:15px;color:'+valColor+';font-weight:700;font-family:'Playfair Display',serif;">'
-        + (cntMap[d]>0 ? 'NT$'+fmt(avg) : '<span style="color:rgba(255,255,255,0.2);font-size:13px;">—</span>')
-      + '</div>'
-      + '<div style="font-size:10px;color:rgba(255,255,255,0.3);">'+cntMap[d]+'次</div>'
-    + '</div>';
-  }).join('<div style="width:1px;background:rgba(255,255,255,0.07);align-self:stretch;"></div>');
+  var nameRow = DOW_ORDER.map(function(d){
+    var isWeekend=(d===0||d===6);
+    return '<div style="text-align:center;font-size:13px;color:'+(isWeekend?'#60AAFF':'rgba(240,220,160,0.8)')+';font-weight:600;">'+DOW_NAMES[d]+'</div>';
+  }).join('');
 
-  el.innerHTML =
-    '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:18px 24px;">'
-      + '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">各星期平均收入</div>'
-      + '<div style="display:flex;align-items:flex-start;gap:0;">'+cols+'</div>'
-    + '</div>';
+  var valRow = DOW_ORDER.map(function(d){
+    var isWeekend=(d===0||d===6);
+    var avg=cntMap[d]>0?Math.round(sumMap[d]/cntMap[d]):0;
+    var color=isWeekend?'#60AAFF':'#00C853';
+    return '<div style="text-align:center;font-size:15px;color:'+color+';font-weight:700;margin-top:6px;">'
+      +(cntMap[d]>0?fmt(avg):'<span style="color:rgba(255,255,255,0.2);font-size:12px;">—</span>')
+      +'</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:16px 24px;">'
+      +'<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.55);margin-bottom:12px;">各星期平均收入</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">'+nameRow+valRow+'</div>'
+    +'</div>';
 }
-
 
 // 每週柱狀圖（獨立函式，永遠渲染）
 function renderWeeklyChart(weekly){
@@ -865,84 +863,72 @@ function renderWeeklyChart(weekly){
 
   function dateToStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
-  // 自動抓資料年份：取所有記錄中最多筆的年份，若無資料則用當前年
-  var yearCount = {};
+  var yearCount={};
   weekly.forEach(function(w){ if(w.date){ var y=w.date.slice(0,4); yearCount[y]=(yearCount[y]||0)+1; } });
-  var dataYear = new Date().getFullYear();
-  var maxCount = 0;
+  var dataYear=new Date().getFullYear(), maxCount=0;
   Object.keys(yearCount).forEach(function(y){ if(yearCount[y]>maxCount){ maxCount=yearCount[y]; dataYear=parseInt(y); } });
 
-  // 固定週期：當年 4/27(一) 第一週 ~ 12/28(日) 最後一週
-  var ws = new Date(dataYear, 3, 27);
-  var lastWeekEnd = new Date(dataYear, 11, 28);
-  var weeks = [];
-  while(ws <= lastWeekEnd){
-    var we = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate()+6);
-    var wLabel = (ws.getMonth()+1)+'/'+(ws.getDate());
-    var wsStr = dateToStr(ws);
-    var weStr = dateToStr(we);
-    var wIncome = 0;
-    weekly.forEach(function(w){
-      if(w.date && w.date >= wsStr && w.date <= weStr) wIncome += (w.income||0);
-    });
-    weeks.push({label:wLabel, income:wIncome, start:wsStr, end:weStr});
-    ws = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate()+7);
+  var ws=new Date(dataYear,3,27);
+  var lastWeekEnd=new Date(dataYear,11,28);
+  var weeks=[];
+  while(ws<=lastWeekEnd){
+    var we=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+6);
+    var wLabel=(ws.getMonth()+1)+'/'+(ws.getDate());
+    var wsStr=dateToStr(ws), weStr=dateToStr(we);
+    var wIncome=0;
+    weekly.forEach(function(w){ if(w.date&&w.date>=wsStr&&w.date<=weStr) wIncome+=(w.income||0); });
+    weeks.push({label:wLabel,income:wIncome,start:wsStr,end:weStr});
+    ws=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+7);
   }
 
-  var wMax = Math.max.apply(null, weeks.map(function(w){return w.income;}).concat([1]));
+  var wMax=Math.max.apply(null,weeks.map(function(w){return w.income;}).concat([1]));
   var t2=new Date();
   var todayStr2=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
-  var todayWeekIdx = 0;
-  weeks.forEach(function(w,i){ if(todayStr2 >= w.start && todayStr2 <= w.end) todayWeekIdx=i; });
+  var todayWeekIdx=0;
+  weeks.forEach(function(w,i){ if(todayStr2>=w.start&&todayStr2<=w.end) todayWeekIdx=i; });
 
-  var barPx = 36;
-  var chartH = 140;
-
-  var barsHtml = weeks.map(function(w,i){
-    var h = Math.max(Math.round((w.income / wMax) * chartH), w.income > 0 ? 28 : 2);
-    var isThisWeek = (todayStr2 >= w.start && todayStr2 <= w.end);
-    var isFuture = w.start > todayStr2;
-    var barColor = isFuture ? 'rgba(0,200,83,0.15)' : isThisWeek ? '#FFD700' : '#00C853';
-    var labelColor = isThisWeek ? '#FFD700' : isFuture ? 'rgba(240,220,160,0.25)' : 'rgba(240,220,160,0.55)';
-    var glowStyle = isThisWeek ? 'box-shadow:0 0 12px rgba(255,215,0,0.55);' : '';
-    var numColor = isThisWeek ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.65)';
-    // 字型大小依柱高動態計算，填滿整個柱狀
-    var numStr = fmt(w.income);   // e.g. "8,997"
-    var numLen = numStr.length;   // 字元數（含逗號）
-    // vertical-lr 時每個字佔 font-size 高度，總高 = numLen * fontSize
-    // 目標：numLen * fontSize ≈ h-8，但最小14px最大28px
-    var dynSize = Math.min(28, Math.max(14, Math.floor((h-8)/numLen)));
-    var innerNum = w.income > 0
-      ? '<div style="position:absolute;top:4px;left:0;right:0;display:flex;justify-content:center;overflow:hidden;height:'+(h-8)+'px;">'
-        + '<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:'+dynSize+'px;color:'+numColor+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;overflow:hidden;max-height:'+(h-8)+'px;">'+numStr+'</span>'
-        + '</div>'
-      : '';
+  var barPx=36, chartH=140;
+  var barsHtml=weeks.map(function(w,i){
+    var h=Math.max(Math.round((w.income/wMax)*chartH),w.income>0?28:2);
+    var isThisWeek=(todayStr2>=w.start&&todayStr2<=w.end);
+    var isFuture=w.start>todayStr2;
+    var barColor=isFuture?'rgba(0,200,83,0.15)':isThisWeek?'#FFD700':'#00C853';
+    var labelColor=isThisWeek?'#FFD700':isFuture?'rgba(240,220,160,0.25)':'rgba(240,220,160,0.55)';
+    var glowStyle=isThisWeek?'box-shadow:0 0 12px rgba(255,215,0,0.55);':'';
+    var numColor=isThisWeek?'rgba(0,0,0,0.8)':'rgba(0,0,0,0.65)';
+    var numStr=fmt(w.income), numLen=numStr.length;
+    var dynSize=Math.min(28,Math.max(14,Math.floor((h-8)/numLen)));
+    var innerNum=w.income>0
+      ?'<div style="position:absolute;top:4px;left:0;right:0;display:flex;justify-content:center;overflow:hidden;height:'+(h-8)+'px;">'
+        +'<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:'+dynSize+'px;color:'+numColor+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;overflow:hidden;max-height:'+(h-8)+'px;">'+numStr+'</span>'
+        +'</div>'
+      :'';
     return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;vertical-align:bottom;width:'+barPx+'px;margin-right:5px;" title="'+w.start+' ~ '+w.end+(w.income?' NT$'+fmt(w.income):'')+'">'
-      + '<div style="position:relative;width:'+barPx+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        + '<div style="position:relative;width:100%;height:'+h+'px;background:'+barColor+';border-radius:3px 3px 0 0;'+glowStyle+'">'
-          + innerNum
-        + '</div>'
-      + '</div>'
-      + '<div style="font-size:9px;color:'+labelColor+';white-space:nowrap;font-family:monospace;'+(isThisWeek?'font-weight:700;':'')+'">'+w.label+'</div>'
-    + '</div>';
+      +'<div style="position:relative;width:'+barPx+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
+        +'<div style="position:relative;width:100%;height:'+h+'px;background:'+barColor+';border-radius:3px 3px 0 0;'+glowStyle+'">'
+          +innerNum
+        +'</div>'
+      +'</div>'
+      +'<div style="font-size:9px;color:'+labelColor+';white-space:nowrap;font-family:monospace;'+(isThisWeek?'font-weight:700;':'')+'">'+w.label+'</div>'
+    +'</div>';
   }).join('');
 
-  chartEl.innerHTML =
+  chartEl.innerHTML=
     '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">每週收入 — '+dataYear+'</div>'
-    + '<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;">'
-      + '<div style="display:inline-flex;align-items:flex-end;padding:4px 20px 0;white-space:nowrap;">'
-        + barsHtml
-      + '</div>'
-    + '</div>';
+    +'<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;">'
+      +'<div style="display:inline-flex;align-items:flex-end;padding:4px 20px 0;white-space:nowrap;">'
+        +barsHtml
+      +'</div>'
+    +'</div>';
 
   setTimeout(function(){
-    var sc = document.getElementById('weekChartScroll');
+    var sc=document.getElementById('weekChartScroll');
     if(!sc) return;
-    var targetX = todayWeekIdx * (barPx + 5) + 20 - sc.clientWidth/2 + barPx/2;
-    sc.scrollLeft = Math.max(0, targetX);
-  }, 50);
+    var targetX=todayWeekIdx*(barPx+5)+20-sc.clientWidth/2+barPx/2;
+    sc.scrollLeft=Math.max(0,targetX);
+  },50);
 }
-// 每日支出
+
 function addMonthly(){
   var date=document.getElementById('fm-date').value;
   var type=document.getElementById('fm-type').value;
@@ -1060,7 +1046,6 @@ function renderMonthly(){
     +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
-// 統計
 function updateStats(){
   var now=new Date(),thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   // 本月收入 & 時數：從「每日收入」表
