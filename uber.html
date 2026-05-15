@@ -678,6 +678,8 @@ function handleCSV(e){
 updateStats();
 
 // 每日收入
+var weeklyCurrentMonth = null; // 目前顯示的月份 'YYYY-MM'
+
 function addWeekly(){
   var date=document.getElementById('fw-date').value;
   var income=parseFloat(document.getElementById('fw-income').value)||0;
@@ -689,6 +691,8 @@ function addWeekly(){
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
   w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
+  // 新增後切換到該日期所在月份
+  weeklyCurrentMonth = date.slice(0,7);
   saveAndPush('uberWeekly',w);renderWeekly();updateStats();
   ['fw-income','fw-trips','fw-hours','fw-mins','fw-points','fw-note'].forEach(id=>document.getElementById(id).value='');
 }
@@ -698,23 +702,110 @@ function deleteWeekly(id){
   renderWeekly();updateStats();
 }
 function renderWeekly(){
-  var weekly=getData('uberWeekly').sort((a,b)=>b.date.localeCompare(a.date)),el=document.getElementById('weeklyList');
-  if(!weekly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div>';return;}
-  var max=Math.max(...weekly.map(w=>w.income),1);
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:24px;">'+
-    weekly.map(w=>{
+  var weekly=getData('uberWeekly');
+  var el=document.getElementById('weeklyList');
+
+  // 收集所有有資料的月份
+  var monthSet={};
+  weekly.forEach(function(w){
+    if(w.date) monthSet[w.date.slice(0,7)]=true;
+  });
+  // 若沒有任何資料，顯示空狀態
+  if(!Object.keys(monthSet).length){
+    el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div>';
+    return;
+  }
+
+  // 排序月份（最新在前）
+  var months=Object.keys(monthSet).sort().reverse();
+
+  // 若尚未設定顯示月份，預設為最新月份
+  if(!weeklyCurrentMonth || !monthSet[weeklyCurrentMonth]){
+    weeklyCurrentMonth=months[0];
+  }
+
+  var ym=weeklyCurrentMonth;
+  var ymParts=ym.split('-');
+  var year=parseInt(ymParts[0]);
+  var month=parseInt(ymParts[1]);
+  var daysInMonth=new Date(year,month,0).getDate();
+  var today=new Date().toISOString().slice(0,10);
+  var isCurrentMonth=(ym===today.slice(0,7));
+
+  // 建立當月資料 map
+  var wMap={};
+  weekly.forEach(function(w){
+    if(w.date && w.date.slice(0,7)===ym) wMap[w.date]=w;
+  });
+
+  // 月收入總計（只計有資料的日）
+  var monthTotal=Object.values(wMap).reduce(function(s,w){return s+(w.income||0);},0);
+  var max=Math.max.apply(null, Object.values(wMap).map(function(w){return w.income||0;}).concat([1]));
+
+  // 月份分頁導覽 HTML
+  var curIdx=months.indexOf(ym);
+  var prevMonth=curIdx<months.length-1?months[curIdx+1]:null;
+  var nextMonth=curIdx>0?months[curIdx-1]:null;
+
+  var navHtml='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">'
+    +'<div style="display:flex;align-items:center;gap:6px;">'
+    +(prevMonth
+      ? '<button onclick="weeklyCurrentMonth=\''+prevMonth+'\';renderWeekly();" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:8px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;">‹ '+prevMonth+'</button>'
+      : '<span style="width:80px"></span>')
+    +'<span style="font-family:\'Playfair Display\',serif;font-size:22px;font-weight:700;color:#fff;padding:0 12px;">'+year+' 年 '+month+' 月</span>'
+    +(nextMonth
+      ? '<button onclick="weeklyCurrentMonth=\''+nextMonth+'\';renderWeekly();" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:8px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;">'+nextMonth+' ›</button>'
+      : '<span style="width:80px"></span>')
+    +'</div>'
+    +'<div style="font-size:13px;color:rgba(240,220,160,0.8);">本月收入 <span style="color:#00C853;font-weight:700;font-size:15px;">NT$'+fmt(monthTotal)+'</span></div>'
+    +'</div>';
+
+  // 建立每一天的列（由1號到月底，若是未來且非今日則略灰顯示）
+  var rows='';
+  for(var d=1;d<=daysInMonth;d++){
+    var dd=String(d).padStart(2,'0');
+    var dateStr=ym+'-'+dd;
+    var w=wMap[dateStr];
+    var isFuture=(!w && dateStr>today);
+    var isToday=(dateStr===today);
+
+    // 星期
+    var dow=['日','一','二','三','四','五','六'][new Date(dateStr).getDay()];
+    var dowColor=(dow==='日')?'rgba(255,100,100,0.7)':(dow==='六')?'rgba(100,160,255,0.7)':'rgba(240,220,160,0.55)';
+
+    if(w){
       var hStr=(w.hours||0)+'小時'+(w.mins||0)+'分鐘';
-      return `<div class="week-bar" style="align-items:center;gap:0;">
-        <div style="min-width:60px;font-size:13px;color:#f5edd8;flex-shrink:0;">${w.date.slice(5)}</div>
-        <div class="week-track" style="flex:1;"><div class="week-fill" style="width:${w.income/max*100}%"></div></div>
-        <div style="min-width:90px;font-size:13px;color:#00C853;font-weight:600;text-align:right;flex-shrink:0;">NT$${fmt(w.income)}</div>
+      var barW=Math.round(w.income/max*100);
+      rows+=`<div class="week-bar" style="align-items:center;gap:0;margin-bottom:8px;${isToday?'background:rgba(0,200,83,0.06);border-radius:8px;padding:2px 6px;':''}">
+        <div style="min-width:62px;font-size:13px;color:#f5edd8;flex-shrink:0;">${dateStr.slice(5)} <span style="font-size:11px;color:${dowColor};">週${dow}</span></div>
+        <div class="week-track" style="flex:1;"><div class="week-fill" style="width:${barW}%"></div></div>
+        <div style="min-width:95px;font-size:13px;color:#00C853;font-weight:600;text-align:right;flex-shrink:0;">NT$${fmt(w.income)}</div>
         <div style="min-width:50px;font-size:13px;color:#f0dca8;text-align:right;flex-shrink:0;">${w.tripCount||0}趟</div>
-        <div style="min-width:110px;font-size:13px;color:#60AAFF;text-align:right;flex-shrink:0;">${hStr}</div>
+        <div style="min-width:115px;font-size:13px;color:#60AAFF;text-align:right;flex-shrink:0;">${hStr}</div>
         <div style="min-width:55px;font-size:13px;color:#FFD700;text-align:right;flex-shrink:0;">${w.points||0}分</div>
         <div style="min-width:160px;font-size:12px;color:rgba(200,200,200,0.7);text-align:left;padding-left:12px;flex-shrink:0;">${w.note||''}</div>
-        <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:8px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
+        <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:6px;flex-shrink:0;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
       </div>`;
-    }).join('')+'</div>';
+    } else {
+      // 無資料的天（未來略微淡化）
+      var opacity=isFuture?0.22:0.42;
+      rows+=`<div class="week-bar" style="align-items:center;gap:0;margin-bottom:8px;opacity:${opacity};${isToday?'background:rgba(255,255,255,0.04);border-radius:8px;padding:2px 6px;':''}">
+        <div style="min-width:62px;font-size:13px;color:#f5edd8;flex-shrink:0;">${dateStr.slice(5)} <span style="font-size:11px;color:${dowColor};">週${dow}</span></div>
+        <div class="week-track" style="flex:1;"><div style="height:100%;width:0%;"></div></div>
+        <div style="min-width:95px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
+        <div style="min-width:50px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
+        <div style="min-width:115px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
+        <div style="min-width:55px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
+        <div style="min-width:160px;flex-shrink:0;"></div>
+        <span style="width:28px;flex-shrink:0;"></span>
+      </div>`;
+    }
+  }
+
+  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px 24px;">'
+    +navHtml
+    +rows
+    +'</div>';
 }
 // 每日支出
 function addMonthly(){
