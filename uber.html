@@ -275,6 +275,14 @@ body{
   </div>
 
 <div class="tab-panel" id="tab-weekly">
+
+    <!-- 週收入柱狀圖 -->
+    <div class="form-section" style="margin-bottom:16px;">
+      <div class="form-title">📊 每週收入統計</div>
+      <div id="weeklyChart" style="display:flex;align-items:flex-end;gap:6px;height:160px;padding:8px 0 0;overflow-x:auto;"></div>
+      <div id="weeklyChartLegend" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;"></div>
+    </div>
+
     <div class="form-section">
       <div class="form-title">＋ 新增每日收入</div>
       <div class="form-grid">
@@ -697,7 +705,65 @@ function deleteWeekly(id){
   saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
   renderWeekly();updateStats();
 }
+function renderWeeklyChart(){
+  var el=document.getElementById('weeklyChart');
+  var legend=document.getElementById('weeklyChartLegend');
+  if(!el)return;
+
+  var weekly=getData('uberWeekly');
+  if(!weekly.length){el.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:20px">尚無資料</div>';return;}
+
+  // 第一週起始：4/27（週日），之後每7天一組
+  var BASE=new Date('2026-04-27T00:00:00');
+
+  function getWeekIndex(dateStr){
+    var d=new Date(dateStr+'T00:00:00');
+    var diff=Math.floor((d-BASE)/86400000);
+    return diff<0?-1:Math.floor(diff/7);
+  }
+
+  // 聚合每週
+  var weekMap={};
+  weekly.forEach(function(w){
+    var idx=getWeekIndex(w.date);
+    if(idx<0)return;
+    if(!weekMap[idx])weekMap[idx]={income:0,start:'',end:''};
+    weekMap[idx].income+=w.income||0;
+  });
+
+  // 計算每週標籤
+  var indices=Object.keys(weekMap).map(Number).sort(function(a,b){return a-b;});
+  indices.forEach(function(idx){
+    var s=new Date(BASE.getTime()+idx*7*86400000);
+    var e=new Date(s.getTime()+6*86400000);
+    function fmt(d){return (d.getMonth()+1)+'/'+(d.getDate());}
+    weekMap[idx].start=fmt(s);
+    weekMap[idx].end=fmt(e);
+    weekMap[idx].label='W'+(idx+1);
+  });
+
+  var max=Math.max.apply(null,indices.map(function(i){return weekMap[i].income;}),1);
+
+  // 畫柱狀圖
+  el.innerHTML=indices.map(function(idx){
+    var w=weekMap[idx];
+    var pct=Math.max((w.income/max)*100,2);
+    var income=w.income.toLocaleString();
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:64px;flex:1;">'
+      +'<div style="font-size:10px;color:#00C853;font-weight:700;white-space:nowrap">NT$'+income+'</div>'
+      +'<div style="width:100%;background:linear-gradient(180deg,#00E860,#00C853);border-radius:4px 4px 0 0;height:'+pct+'%;min-height:4px;transition:height 0.4s;cursor:default;" title="'+w.start+'~'+w.end+' NT$'+income+'"></div>'
+      +'<div style="font-size:10px;color:rgba(255,255,255,0.5);">'+w.label+'</div>'
+      +'</div>';
+  }).join('');
+
+  // 圖例
+  legend.innerHTML=indices.map(function(idx){
+    var w=weekMap[idx];
+    return '<span style="font-size:10px;color:rgba(255,255,255,0.45);white-space:nowrap;">'+w.label+': '+w.start+'~'+w.end+'</span>';
+  }).join('<span style="color:rgba(255,255,255,0.2);margin:0 4px">·</span>');
+}
 function renderWeekly(){
+  renderWeeklyChart();
   var weekly=getData('uberWeekly').sort((a,b)=>b.date.localeCompare(a.date)),el=document.getElementById('weeklyList');
   if(!weekly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div>';return;}
   var max=Math.max(...weekly.map(w=>w.income),1);
