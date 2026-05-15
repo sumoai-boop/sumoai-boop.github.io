@@ -834,26 +834,23 @@ function renderDowAvg(){
     cntMap[dow]++;
   });
 
-  var nameRow = DOW_ORDER.map(function(d){
-    var isWeekend=(d===0||d===6);
-    return '<div style="text-align:center;font-size:13px;color:'+(isWeekend?'#60AAFF':'rgba(240,220,160,0.8)')+';font-weight:600;">'+DOW_NAMES[d]+'</div>';
-  }).join('');
-
-  var valRow = DOW_ORDER.map(function(d){
+  var cols = DOW_ORDER.map(function(d){
     var isWeekend=(d===0||d===6);
     var avg=cntMap[d]>0?Math.round(sumMap[d]/cntMap[d]):0;
-    var color=isWeekend?'#60AAFF':'#00C853';
-    return '<div style="text-align:center;font-size:15px;color:'+color+';font-weight:700;margin-top:6px;">'
-      +(cntMap[d]>0?fmt(avg):'<span style="color:rgba(255,255,255,0.2);font-size:12px;">—</span>')
-      +'</div>';
+    var nameColor=isWeekend?'#60AAFF':'rgba(240,220,160,0.8)';
+    var valColor=isWeekend?'#60AAFF':'#00C853';
+    return '<div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;">'
+      +'<div style="font-size:16px;color:'+nameColor+';font-weight:700;letter-spacing:0.05em;">'+DOW_NAMES[d]+'</div>'
+      +'<div style="font-size:26px;color:'+valColor+';font-weight:700;font-family:monospace;">'
+        +(cntMap[d]>0?fmt(avg):'<span style="color:rgba(255,255,255,0.15);font-size:20px;">—</span>')
+      +'</div>'
+    +'</div>';
   }).join('');
 
   el.innerHTML=
-    '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:16px 24px;">'
-      +'<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.55);margin-bottom:12px;">各星期平均收入</div>'
-      +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">'+nameRow+valRow+'</div>'
-    +'</div>';
+    '<div style="display:flex;gap:8px;">'+cols+'</div>';
 }
+
 
 // 每週柱狀圖（獨立函式，永遠渲染）
 function renderWeeklyChart(weekly){
