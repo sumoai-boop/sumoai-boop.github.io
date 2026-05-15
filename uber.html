@@ -817,25 +817,26 @@ function renderWeekly(){
 function renderWeeklyChart(weekly){
   var chartEl = document.getElementById('weeklyChart');
   if(!chartEl) return;
-  // 第一週：4/27(一) ~ 5/3(日)
-  var WEEK_START = new Date('2025-04-27');
+  // 第一週：4/27(一) ~ 5/3(日)，用本地時間避免時區問題
+  // 用 new Date(y,m-1,d) 建構本地時間，dateToStr 也用本地欄位
+  function dateToStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  var ws = new Date(2025, 3, 27); // 4/27 本地時間
   var yearEnd = new Date(new Date().getFullYear(), 11, 31);
   var weeks = [];
-  var ws = new Date(WEEK_START);
   while(ws <= yearEnd){
-    var we = new Date(ws); we.setDate(we.getDate()+6);
+    var we = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate()+6);
     var wLabel = (ws.getMonth()+1)+'/'+(ws.getDate());
-    var wsStr = ws.toISOString().slice(0,10);
-    var weStr = we.toISOString().slice(0,10);
+    var wsStr = dateToStr(ws);
+    var weStr = dateToStr(we);
     var wIncome = 0;
     weekly.forEach(function(w){
       if(w.date && w.date >= wsStr && w.date <= weStr) wIncome += (w.income||0);
     });
     weeks.push({label:wLabel, income:wIncome, start:wsStr, end:weStr});
-    ws.setDate(ws.getDate()+7);
+    ws = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate()+7);
   }
   var wMax = Math.max.apply(null, weeks.map(function(w){return w.income;}).concat([1]));
-  var todayStr2 = new Date().toISOString().slice(0,10);
+  var t2=new Date(); var todayStr2=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
   var todayWeekIdx = 0;
   weeks.forEach(function(w,i){ if(todayStr2 >= w.start && todayStr2 <= w.end) todayWeekIdx=i; });
   var barPx = 32;
