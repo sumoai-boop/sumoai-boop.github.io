@@ -279,7 +279,7 @@ body{
     <!-- 週收入柱狀圖 -->
     <div class="form-section" style="margin-bottom:16px;">
       <div class="form-title">📊 每週收入統計</div>
-      <div id="weeklyChart" style="display:flex;align-items:flex-end;gap:2px;height:130px;padding:4px 0 0;overflow-x:auto;border-bottom:1px solid rgba(0,200,83,0.2);padding-bottom:4px;"></div>
+      <div id="weeklyChart" style="display:flex;align-items:flex-end;gap:3px;height:180px;padding:4px 0 0;overflow-x:auto;border-bottom:1px solid rgba(0,200,83,0.2);padding-bottom:4px;"></div>
       <div id="weeklyChartLegend" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;"></div>
     </div>
 
@@ -751,10 +751,10 @@ function renderWeeklyChart(){
     var textColor=isCurrent?'#FFD700':isPast?'#00C853':'transparent';
     var labelColor=isCurrent?'rgba(255,215,0,0.8)':isPast?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.2)';
     var incomeStr=income>0?'NT$'+(income>=1000?(income/1000).toFixed(1)+'k':income):'';
-    bars+='<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:28px;flex:1;cursor:default;" title="W'+(i+1)+' '+weekLabel(i)+' NT$'+income.toLocaleString()+'">'
-      +'<div style="width:100%;display:flex;align-items:flex-end;height:100px;">'
+    bars+='<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:36px;flex:1;cursor:default;" title="W'+(i+1)+' '+weekLabel(i)+' NT$'+income.toLocaleString()+'">'
+      +'<div style="width:100%;display:flex;align-items:flex-end;height:150px;">'
       +'<div style="width:100%;background:'+barColor+';border-radius:3px 3px 0 0;height:'+(pct||2)+'%;min-height:'+(income>0?3:2)+'px;transition:height 0.4s;display:flex;align-items:stretch;justify-content:center;overflow:hidden;padding:2px 0;">'
-      +(income>0?'<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:11px;color:'+(isCurrent?'#000':'rgba(0,0,0,0.8)')+';font-weight:700;letter-spacing:0.05em;white-space:nowrap;flex:1;display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;">'+income+'</span>':'')
+      +(income>0?'<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:14px;color:'+(isCurrent?'#000':'rgba(0,0,0,0.85)')+';font-weight:800;letter-spacing:0.08em;white-space:nowrap;flex:1;display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;line-height:1;">'+income+'</span>':'')
       +'</div>'
       +'</div>'
       +'<div style="font-size:8px;color:'+labelColor+';white-space:nowrap;">'+weekLabel(i)+'</div>'
