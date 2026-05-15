@@ -275,9 +275,9 @@ body{
   </div>
 
 <div class="tab-panel" id="tab-weekly">
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:18px;">
-      <div style="flex:1;min-width:0;">
-        <div id="weeklyChart" style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:14px 18px 10px;margin-bottom:18px;"></div>
+    <div style="display:flex;gap:20px;align-items:stretch;margin-bottom:18px;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+        <div id="weeklyChart" style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:14px 18px 10px;flex:1;display:flex;flex-direction:column;margin-bottom:18px;"></div>
       </div>
       <div style="width:420px;flex-shrink:0;">
         <div class="form-section">
@@ -873,7 +873,7 @@ function renderWeeklyChart(weekly){
   }).join('');
   chartEl.innerHTML=
     '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">每週收入 — '+dataYear+'</div>'
-    +'<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;">'
+    +'<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;flex:1;display:flex;align-items:flex-end;">'
       +'<div style="display:inline-flex;align-items:flex-end;padding:4px 20px 0;white-space:nowrap;">'
         +barsHtml
       +'</div>'
