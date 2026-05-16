@@ -224,10 +224,11 @@
   /* ── 共用 Dock ── */
   .global-dock-wrap{
     position:fixed;bottom:0;left:50%;
-    transform:translateX(-50%) translateY(-12px);
+    transform:translateX(-50%) translateY(calc(100% - 2px));
     z-index:9998;
     transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1), opacity 0.3s;
-    opacity:1;
+    opacity:0;
+    padding-bottom:0;
   }
   .global-dock-wrap.visible{
     transform:translateX(-50%) translateY(-12px);
@@ -318,7 +319,8 @@
   .ar-success{color:#7dd87d;font-size:12px;text-align:center;display:none;}
   .ar-success.show{display:block;}
 
-</style>
+
+  .ic-uber{background:linear-gradient(160deg,#1a1a1a 0%,#000 100%);}</style>
 </head>
 <body>
 <div class="bg-circle c1"></div>
@@ -798,7 +800,5 @@ render();
   trigger.addEventListener('mouseenter',showDock);
   dock.addEventListener('mouseenter',function(){clearTimeout(hideTimer);dock.classList.add('visible');});
   dock.addEventListener('mouseleave',hideDock);
-})();
-
-</script></body>
+})();</script></body>
 </html>
