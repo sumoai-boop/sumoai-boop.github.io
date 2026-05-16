@@ -356,7 +356,7 @@ body{
         <div class="form-title">＋ 新增每日支出</div>
         <div class="form-grid">
           <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
-          <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="交通罰鍰">交通罰鍰</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option></select></div>
+          <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="交通罰鍰">交通罰鍰</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option><option value="車貸">車貸</option></select></div>
           <div class="form-group"><label style="font-size:12px">金額 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
           <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="備註說明"></div>
         </div>
@@ -365,9 +365,9 @@ body{
     </div>
     <!-- 搜尋+列表 -->
     <div>
-      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
       <input type="text" id="monthly-search" placeholder="🔍 搜尋備註或地點..." oninput="renderMonthly()" style="flex:1;min-width:180px;background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:99px;padding:8px 16px;color:#E8EAF0;font-size:13px;outline:none;font-family:monospace;">
-      <select id="monthly-type-filter" onchange="renderMonthly()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(0,200,83,0.5);border-radius:99px;padding:8px 14px;color:#FFFFFF;font-size:13px;font-weight:600;outline:none;font-family:monospace;">
+      <select id="monthly-type-filter" onchange="renderMonthly()" style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,200,83,0.5);border-radius:99px;padding:8px 14px;color:#FFFFFF;font-size:13px;font-weight:600;outline:none;font-family:monospace;">
         <option value="">全部類型</option>
         <option value="油錢">油錢</option>
         <option value="保養/維修">保養/維修</option>
@@ -375,8 +375,14 @@ body{
         <option value="停車費">停車費</option>
         <option value="汽車百貨">汽車百貨</option>
         <option value="保險/費用">保險/費用</option>
+        <option value="車貸">車貸</option>
         <option value="其他">其他</option>
       </select>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button onclick="monthlyPageMonth--;renderMonthly();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">‹</button>
+        <span id="monthlyPageLabel" style="font-size:13px;color:#f0dca8;min-width:60px;text-align:center;font-family:monospace;"></span>
+        <button onclick="monthlyPageMonth++;renderMonthly();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">›</button>
+      </div>
     </div>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
     </div>
@@ -837,15 +843,25 @@ function deleteMonthly(id){
   saveAndPush('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
 }
-const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff'};
+const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff','車貸':'#fd79a8'};
+var monthlyPageMonth = 0;
+
 function renderMonthly(){
-  var allMonthly=getData('uberMonthly').sort((a,b)=>b.date.localeCompare(a.date));
+  var now = new Date();
+  var targetDate = new Date(now.getFullYear(), now.getMonth() + monthlyPageMonth, 1);
+  var yr = targetDate.getFullYear(), mo = targetDate.getMonth();
+  var targetYM = yr+'-'+String(mo+1).padStart(2,'0');
+  var lbl = document.getElementById('monthlyPageLabel');
+  if(lbl) lbl.textContent = yr+'/'+(mo+1)+'月';
+
+  var allMonthly=getData('uberMonthly').sort((a,b)=>a.date.localeCompare(b.date));
   var q=(document.getElementById('monthly-search')?document.getElementById('monthly-search').value:'').toLowerCase();
   var tf=(document.getElementById('monthly-type-filter')?document.getElementById('monthly-type-filter').value:'');
   var monthly=allMonthly.filter(function(m){
+    var matchYM = m.date && m.date.startsWith(targetYM);
     var matchQ=!q||(m.note&&m.note.toLowerCase().includes(q))||(m.type&&m.type.toLowerCase().includes(q));
     var matchT=!tf||(m.type===tf);
-    return matchQ&&matchT;
+    return matchYM&&matchQ&&matchT;
   });
   var el=document.getElementById('monthlyList');
   if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
