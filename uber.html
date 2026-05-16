@@ -1007,21 +1007,20 @@ function renderWeekIncomeChart(){
     var barGrad = isCurrent ? 'linear-gradient(to top,#FFD700,#FFF176)' : 'linear-gradient(to top,#00C853,#69F0AE)';
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.7)';
     var numColor = isCurrent ? '#7A5800' : '#004D20';
-    var innerContent = values[i]>0 && barH>=28
+    var fs = Math.min(Math.floor((BAR_W-10)*0.6), Math.floor(barH*0.25), 24);
+    var innerContent = values[i]>0 && barH>=32
       ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;">'
-          + '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-size:'+Math.min(barH-10, BAR_W-10, 18)+'px;font-weight:800;color:'+numColor+';white-space:nowrap;line-height:1;">'
+          + '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-size:'+fs+'px;font-weight:800;color:'+numColor+';white-space:nowrap;line-height:1;">'
             + values[i].toLocaleString()
           + '</div>'
         + '</div>'
       : '';
-    var aboveLabel = '<div style="font-size:9px;">&nbsp;</div>';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;min-width:'+BAR_W+'px;flex-shrink:0;">'
-      + aboveLabel
       + '<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:2px 2px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+innerContent+'</div>'
+        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:3px 3px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+innerContent+'</div>'
       + '</div>'
-      + '<div style="width:'+BAR_W+'px;height:50px;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;overflow:visible;">'
-        + '<div style="font-size:10px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-45deg);transform-origin:top center;line-height:1;">'+label+'</div>'
+      + '<div style="width:'+BAR_W+'px;padding:6px 1px 0;text-align:center;">'
+        + '<div style="font-size:10px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';line-height:1.3;">'+label+'</div>'
       + '</div>'
     + '</div>';
   }).join('');
@@ -1054,15 +1053,20 @@ function renderMonthIncomeChart(){
     var barGrad = isCurrent ? 'linear-gradient(to top,#FFD700,#FFF176)' : 'linear-gradient(to top,#00C853,#69F0AE)';
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.8)';
     var label = (i+1)+'月';
-    var aboveLabel = values[i]>0
-      ? '<div style="font-size:10px;font-weight:700;color:'+(isCurrent?'#FFD700':'#00C853')+';white-space:nowrap;text-align:center;margin-bottom:4px;">'+values[i].toLocaleString()+'</div>'
-      : '<div style="font-size:10px;">&nbsp;</div>';
+    var numColor = isCurrent ? '#7A5800' : '#004D20';
+    var mfs = Math.min(Math.floor((barWidth-10)*0.55), Math.floor(barH*0.22), 22);
+    var innerContent = values[i]>0 && barH>=36
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;">'
+          + '<div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+numColor+';white-space:nowrap;line-height:1;">'
+            + values[i].toLocaleString()
+          + '</div>'
+        + '</div>'
+      : '';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+barWidth+'px;">'
-      + aboveLabel
       + '<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
-        + '<div style="width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'"></div>'
+        + '<div style="position:relative;width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+innerContent+'</div>'
       + '</div>'
-      + '<div style="font-size:13px;color:'+lblColor+';white-space:nowrap;font-weight:'+(isCurrent?'700':'400')+';">'+label+'</div>'
+      + '<div style="font-size:13px;color:'+lblColor+';white-space:nowrap;font-weight:'+(isCurrent?'700':'400')+';padding-top:6px;">'+label+'</div>'
     + '</div>';
   }).join('');
   el.innerHTML = '<div style="display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div>';
