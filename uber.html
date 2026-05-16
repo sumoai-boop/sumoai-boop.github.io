@@ -571,8 +571,7 @@ function addTrip(){
     document.getElementById('f-pax').value='1';
     return;
   }
-  var maxSeq = trips.reduce(function(m,t){ return t.seq>m?t.seq:m; }, 0);
-  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,tip,note,id:Date.now(),seq:maxSeq+1});
+  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,tip,note,id:Date.now()});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
@@ -642,6 +641,11 @@ function renderTrips(){
   if(tripPage>totalTripPages) tripPage=1;
   var pagedTrips = trips.slice((tripPage-1)*TRIP_PAGE_SIZE, tripPage*TRIP_PAGE_SIZE);
 
+  // 序號：依 id 升序（新增順序）給每筆固定號碼
+  var allTripsSorted = getData('uberTrips').slice().sort(function(a,b){return a.id-b.id;});
+  var seqMap = {};
+  allTripsSorted.forEach(function(t,i){ seqMap[t.id] = i+1; });
+
   var tbody=document.getElementById('tripBody');
   var tfoot=document.getElementById('tripFoot');
   document.getElementById('tripCount').textContent=`共 ${trips.length} 筆`;
@@ -667,9 +671,8 @@ function renderTrips(){
     totalKm+=(t.km||0);totalFare+=(t.fare||0);
     totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
     var globalIdx = (tripPage-1)*TRIP_PAGE_SIZE + i;
-    var rowNum = t.seq != null ? t.seq : (trips.length - globalIdx);
     return `<tr>
-      <td style="color:rgba(240,220,160,0.5);font-size:11px">${rowNum}</td>
+      <td style="color:rgba(240,220,160,0.5);font-size:11px">${seqMap[t.id]||''}</td>
       <td>${t.d||''}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
@@ -1084,22 +1087,6 @@ function updateDistricts(type){
 }
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-// 補齊舊資料的 seq（依 id 升序，即新增時間順序）
-(function migrateSeq(){
-  var trips = getData('uberTrips');
-  var needSave = false;
-  // 找出已有 seq 的最大值
-  var maxSeq = trips.reduce(function(m,t){ return (t.seq||0)>m?(t.seq||0):m; }, 0);
-  // 依 id 升序排列沒有 seq 的筆
-  var noSeq = trips.filter(function(t){ return t.seq == null; }).sort(function(a,b){ return a.id-b.id; });
-  noSeq.forEach(function(t){
-    maxSeq++;
-    t.seq = maxSeq;
-    needSave = true;
-  });
-  if(needSave) saveAndPush('uberTrips', trips);
-})();
-
 renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();
 </script>
 </body>
