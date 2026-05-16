@@ -257,14 +257,14 @@
     margin:0 4px;align-self:center;
   }
 
-  .ic-about  {background:linear-gradient(135deg,#667eea,#764ba2);}
-  .ic-photos {background:linear-gradient(135deg,#f093fb,#f5576c);}
-  .ic-dramas {background:linear-gradient(135deg,#1a1a2e,#e8622a);}
-  .ic-food   {background:linear-gradient(135deg,#f7971e,#ffd200);}
-  .ic-travel {background:linear-gradient(135deg,#0f2027,#2c5364);}
-  .ic-threads{background:linear-gradient(135deg,#111,#333);}
-  .ic-uber{background:linear-gradient(135deg,#000,#1a1a1a);border:2px solid rgba(255,255,255,0.3);}
-  .ic-reminder{background:linear-gradient(135deg,#00b09b,#96c93d);}
+    .ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
+  .ic-photos {background:linear-gradient(145deg,#FF6B9D,#C8365A);}
+  .ic-dramas {background:linear-gradient(145deg,#2D1B69,#7C3AED);}
+  .ic-food   {background:linear-gradient(145deg,#0EA5E9,#0369A1);}
+  .ic-travel {background:linear-gradient(145deg,#FF6B35,#D93A00);}
+  .ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
+  .ic-uber   {background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+  .ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
 
   @media(max-width:600px){
     .dock-icon{width:46px;height:46px;font-size:22px;border-radius:12px;}
@@ -423,42 +423,41 @@
   </div>
 </div>
 
-<!-- Dock Trigger -->
 <!-- Dock -->
 <div class="dock-wrap" id="mainDock">
   <div class="dock">
     <a href="about.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-about">👤</div>
+      <div class="dock-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
       <span class="dock-label">關於</span>
     </a>
     <a href="photos.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-photos">📷</div>
+      <div class="dock-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div>
       <span class="dock-label">照片</span>
     </a>
     <a href="dramas.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-dramas">🎬</div>
+      <div class="dock-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div>
       <span class="dock-label">追劇</span>
     </a>
     <a href="food.html" class="dock-item active" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-food">🍜</div>
+      <div class="dock-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div>
       <span class="dock-label">食記</span>
     </a>
     <div class="dock-sep"></div>
     <a href="travel.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-travel">✈️</div>
+      <div class="dock-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
       <span class="dock-label">旅遊足跡</span>
     </a>
     <a href="threads.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-threads">🧵</div>
+      <div class="dock-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div>
       <span class="dock-label">Threads</span>
     </a>
     <a href="uber.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-uber">🚗</div>
+      <div class="dock-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div>
       <span class="dock-label">Uber</span>
     </a>
     <a href="reminder.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-reminder">🔔</div>
-      <span class="dock-label">提醒事項</span>
+      <div class="dock-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+      <span class="dock-label">提醒</span>
     </a>
   </div>
 </div>
@@ -485,14 +484,12 @@ function getToken(){
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
-/* 頁面載入：從 GitHub 拉最新資料 */
 function loadFromGitHub(){
   var token=localStorage.getItem(GH_TOKEN_KEY);
   if(!token){
-    token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
+    token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）\n此 Token 僅儲存在你的瀏覽器本地。');
     if(!token){DATA=load();render();return;}
-    localStorage.setItem(GH_TOKEN_KEY,token.trim());
-    token=token.trim();
+    localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();
   }
   showToast('⏳ 載入食記資料...',false);
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
@@ -511,18 +508,16 @@ function loadFromGitHub(){
       var raw=atob(fi.content.split('\n').join(''));
       var arr=JSON.parse(decodeURIComponent(escape(raw)));
       if(Array.isArray(arr)){
-        DATA=arr;
-        localStorage.setItem(STORE,JSON.stringify(DATA));
+        DATA=arr;localStorage.setItem(STORE,JSON.stringify(DATA));
         if(fi.sha) localStorage.setItem('gh_food_sha',fi.sha);
-        showToast('✦ 食記已同步',false);
-        render();
+        showToast('✦ 食記已同步',false);render();
       }
     }).catch(e=>{console.warn('載入失敗:',e);DATA=load();render();});
 }
 
 function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){return [];} }
 function save(d){
-  localStorage.setItem(STORE, JSON.stringify(d));
+  localStorage.setItem(STORE,JSON.stringify(d));
   pushToGitHub(d);
 }
 
@@ -536,34 +531,22 @@ async function pushToGitHub(data){
     var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 儲存至雲端...',false);
     var sha=localStorage.getItem('gh_food_sha');
-    if(!sha){
-      var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-      if(r.ok){var fi=await r.json();sha=fi.sha;if(sha)localStorage.setItem('gh_food_sha',sha);}
-    }
+    if(!sha){var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});if(r.ok){var fi=await r.json();sha=fi.sha;if(sha)localStorage.setItem('gh_food_sha',sha);}}
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
-    var body={message:'更新食記',content:encoded,branch:GH_BRANCH};
-    if(sha) body.sha=sha;
+    var body={message:'更新食記',content:encoded,branch:GH_BRANCH};if(sha)body.sha=sha;
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
-    if(!pr.ok){
-      var e2=await pr.json();
-      localStorage.removeItem('gh_food_sha');
-      showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
-    } else {
-      var prData=await pr.json();
-      var newSha=prData.content&&prData.content.sha;
-      if(newSha) localStorage.setItem('gh_food_sha',newSha);
-      else localStorage.removeItem('gh_food_sha');
-      showToast('✦ 已儲存至 GitHub',false);
-    }
+    if(!pr.ok){var e2=await pr.json();localStorage.removeItem('gh_food_sha');showToast('❌ 推送失敗：'+(e2.message||pr.status),true);}
+    else{var prData=await pr.json();var ns=prData.content&&prData.content.sha;if(ns)localStorage.setItem('gh_food_sha',ns);else localStorage.removeItem('gh_food_sha');showToast('✦ 已儲存至 GitHub',false);}
   }finally{_pushing=false;}
 }
 
 let DATA = [];
-window.addEventListener('DOMContentLoaded', loadFromGitHub);
-let currentId = null;  // 正在查看/編輯的項目 id
+let currentId = null;
 let editMode = false;
 let starVal = 0;
 let q = '', sortKey = 'new';
+
+window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
 /* ───── 星等 ───── */
 function renderStarPick(v){
@@ -578,7 +561,22 @@ document.querySelectorAll('#starsPick .star-btn').forEach(btn=>{
   });
 });
 
-/* ───── 圖片上傳 ───── */
+/* ───── 圖片壓縮 ───── */
+function compressImage(dataUrl, maxW, maxH, quality){
+  return new Promise(resolve=>{
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+      if(h > maxH){ w = Math.round(w * maxH / h); h = maxH; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
+}
 const uploadArea = document.getElementById('uploadArea');
 const imgInput   = document.getElementById('imgInput');
 const previewImg = document.getElementById('previewImg');
@@ -646,12 +644,17 @@ document.getElementById('formMask').addEventListener('click', e=>{
   if(e.target===document.getElementById('formMask')) closeForm();
 });
 
-document.getElementById('formSave').addEventListener('click', ()=>{
+document.getElementById('formSave').addEventListener('click', async ()=>{
   const name = document.getElementById('fName').value.trim();
   if(!name){ alert('請輸入餐廳名稱'); return; }
   const price = parseInt(document.getElementById('fPrice').value)||0;
   const addr  = document.getElementById('fAddr').value.trim();
-  const img   = previewImg.style.display!=='none' ? previewImg.src : '';
+
+  // 壓縮圖片再存
+  let img = '';
+  if(previewImg.style.display!=='none' && previewImg.src){
+    img = await compressImage(previewImg.src, 800, 800, 0.75);
+  }
 
   if(editMode && currentId){
     const idx = DATA.findIndex(r=>r.id===currentId);
@@ -708,7 +711,7 @@ document.getElementById('dEdit').addEventListener('click', ()=>{
 document.getElementById('dDel').addEventListener('click', ()=>{
   if(!confirm('確定要刪除這筆食記？')) return;
   DATA = DATA.filter(r=>r.id!==currentId);
-  save(DATA);  // save() 會同時推送 GitHub
+  save(DATA);
   closeDetail();
   render();
 });
