@@ -958,34 +958,31 @@ function renderWeekIncomeChart(){
 
   var bars = weeks.map(function(k, i){
     var isCurrent = (k === thisWeekKey);
-    var barH = Math.max(values[i]>0?3:0, Math.round(values[i]/maxVal*chartH));
+    var barH = Math.max(values[i]>0?4:0, Math.round(values[i]/maxVal*chartH));
     var d = new Date(k);
     var label = (d.getMonth()+1)+'/'+(d.getDate());
     var barGrad = isCurrent ? 'linear-gradient(to top,#FFD700,#FFF176)' : 'linear-gradient(to top,#00C853,#69F0AE)';
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.7)';
-    var topLabel = !isCurrent && values[i]>0
-      ? '<div style="font-size:9px;color:#00C853;font-weight:600;white-space:nowrap;">'+(values[i]>=1000?Math.round(values[i]/1000)+'k':values[i])+'</div>'
-      : '<div style="font-size:9px;">&nbsp;</div>';
-    // 當週：數字垂直填滿柱子，字體動態撐大
-    var innerContent = isCurrent && values[i]>0
-      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;">'
-          + '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-size:'+Math.min(barH-6,18)+'px;font-weight:900;color:#7A5800;white-space:nowrap;letter-spacing:-1px;line-height:1;">'
-            + 'NT$'+values[i].toLocaleString()
+    var numColor = isCurrent ? '#7A5800' : '#005A20';
+    // 所有有資料的柱子都在裡面顯示數字（垂直排列）
+    var innerContent = values[i]>0 && barH>=14
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:1px;">'
+          + '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-size:'+Math.min(barH-4,BAR_W-6,14)+'px;font-weight:700;color:'+numColor+';white-space:nowrap;letter-spacing:-0.5px;line-height:1;">'
+            + values[i].toLocaleString()
           + '</div>'
         + '</div>'
       : '';
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:'+BAR_W+'px;flex-shrink:0;">'
-      + topLabel
-      + '<div style="width:'+BAR_W+'px;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
-        + '<div style="position:relative;width:'+(BAR_W-4)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:3px 3px 0 0;" title="'+label+' NT$'+values[i].toLocaleString()+'">'
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;min-width:'+BAR_W+'px;flex-shrink:0;">'
+      + '<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
+        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:2px 2px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'
           + innerContent
         + '</div>'
       + '</div>'
-      + '<div style="font-size:9px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-40deg);transform-origin:top center;margin-top:6px;height:28px;">'+label+'</div>'
+      + '<div style="font-size:8px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-45deg);transform-origin:top left;margin-top:4px;height:26px;width:26px;">'+label+'</div>'
     + '</div>';
   }).join('');
 
-  el.innerHTML = '<div style="display:flex;align-items:flex-end;gap:2px;padding:8px 4px 32px;overflow-x:auto;min-height:'+(chartH+80)+'px;">'+bars+'</div>';
+  el.innerHTML = '<div style="width:100%;overflow-x:auto;"><div style="display:flex;align-items:flex-end;gap:1px;padding:4px 0 30px;min-width:max-content;">'+bars+'</div></div>';
 }
 
 // ── 每月收入柱狀圖（顯示指定年1-12月，當月黃色）──
@@ -1016,25 +1013,23 @@ function renderMonthIncomeChart(){
 
   var bars = months.map(function(ym, i){
     var isCurrent = (ym === thisYM);
-    var barH = Math.max(values[i]>0?3:0, Math.round(values[i]/maxVal*chartH));
+    var barH = Math.max(values[i]>0?4:0, Math.round(values[i]/maxVal*chartH));
     var barGrad = isCurrent ? 'linear-gradient(to top,#FFD700,#FFF176)' : 'linear-gradient(to top,#00C853,#69F0AE)';
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.8)';
+    var numColor = isCurrent ? '#7A5800' : '#005A20';
     var label = (i+1)+'月';
-    var topLabel = !isCurrent && values[i]>0
-      ? '<div style="font-size:10px;color:#00C853;font-weight:600;white-space:nowrap;">NT$'+Math.round(values[i]/1000)+'k</div>'
-      : '<div style="font-size:10px;">&nbsp;</div>';
-    // 當月：數字填滿柱子內部
-    var innerContent = isCurrent && values[i]>0
-      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px 2px;">'
-          + '<div style="font-size:'+Math.min(Math.floor((barWidth-8)*0.9), Math.floor(barH*0.45), 28)+'px;font-weight:900;color:#7A5800;white-space:nowrap;line-height:1.1;text-align:center;">'
-            + 'NT$<br>'+values[i].toLocaleString()
+    // 所有有資料的柱子都在裡面顯示數字
+    var fs = Math.min(Math.floor(barH*0.28), Math.floor((barWidth-8)*0.8), 20);
+    var innerContent = values[i]>0 && barH>=20
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;">'
+          + '<div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:700;color:'+numColor+';white-space:nowrap;letter-spacing:-0.5px;line-height:1;">'
+            + values[i].toLocaleString()
           + '</div>'
         + '</div>'
       : '';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:'+barWidth+'px;">'
-      + topLabel
       + '<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
-        + '<div style="position:relative;width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' NT$'+values[i].toLocaleString()+'">'
+        + '<div style="position:relative;width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'
           + innerContent
         + '</div>'
       + '</div>'
@@ -1042,7 +1037,7 @@ function renderMonthIncomeChart(){
     + '</div>';
   }).join('');
 
-  el.innerHTML = '<div style="display:flex;align-items:flex-end;gap:4px;padding:8px 0;overflow-x:auto;">'+bars+'</div>';
+  el.innerHTML = '<div style="display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div>';
 }
 
 // 統計
