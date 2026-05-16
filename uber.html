@@ -761,14 +761,26 @@ function renderWeekdayAvg(){
     if(w.income){ sums[dow]+=w.income; counts[dow]++; }
     if(w.tripCount){ paxSums[dow]+=(w.tripCount||0); paxCounts[dow]++; }
   });
+  // 從行程記錄計算每星期幾的平均人數
+  var tripPaxSums=[0,0,0,0,0,0,0],tripPaxCounts=[0,0,0,0,0,0,0];
+  getData('uberTrips').forEach(function(t){
+    if(!t.d) return;
+    var dow=new Date(t.d).getDay();
+    tripPaxSums[dow]+=(t.pax||1);
+    tripPaxCounts[dow]++;
+  });
   var cells=ORDER.map(function(dow,i){
     var avg=counts[dow]>0?Math.round(sums[dow]/counts[dow]):null;
-    var avgPax=paxCounts[dow]>0?(paxSums[dow]/paxCounts[dow]).toFixed(1):null;
+    var avgPax=tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):null;
     var isWE=(dow===0||dow===6);
     return '<div style="flex:1;min-width:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:14px 6px;text-align:center;">'
       +'<div style="font-size:14px;font-weight:600;color:'+(isWE?'#FF9999':'rgba(240,220,160,0.8)')+';margin-bottom:10px;">週'+DAY_NAMES[i]+'</div>'
       +'<div style="font-size:20px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.15)')+';">'+(avg?avg.toLocaleString():'—')+'</div>'
-      +'<div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:6px;">'+(avgPax?avgPax+'趟':'—')+'</div>'
+      +'<div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:6px;">'
+        +(paxCounts[dow]>0?(paxSums[dow]/paxCounts[dow]).toFixed(1):'—')+'趟'
+        +' / '
+        +(tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'人'
+      +'</div>'
     +'</div>';
   }).join('');
   el.innerHTML='<div style="font-size:10px;letter-spacing:0.1em;color:rgba(0,200,83,0.6);text-transform:uppercase;margin-bottom:8px;">星期平均收入</div><div style="display:flex;gap:6px;">'+cells+'</div>';
