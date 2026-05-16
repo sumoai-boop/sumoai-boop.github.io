@@ -137,8 +137,6 @@ body{
 }
 #s-income em,#s-total-income em{color:#4A9EFF!important;}
 #s-fuel em,#s-total-exp em{color:#FF4444!important;}
-#s-net em,#s-total-net em{color:#FFD700!important;}
-#s-fuel em{color:#FF4444!important;}
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
   .del-btn:hover{color:#ff6b6b;}
@@ -183,15 +181,18 @@ body{
   <!-- 總覽 -->
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">總時數</div><div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均公里數</div><div class="stat-val" id="s-avg-km"><em class="num">0</em> <em class="unit">km</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月行程數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月淨利</div><div class="stat-val" id="s-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
+      <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">總淨利</div><div class="stat-val" id="s-total-net"><span class="stat-unit">NT$</span><em>0</em></div></div>
     </div>
     <div class="chart-grid">
       <div class="chart-card">
@@ -1005,37 +1006,57 @@ function renderMonthIncomeChart(){
 // 統計
 function updateStats(){
   var now=new Date(),thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  // 本月收入 & 時數：從「每日收入」表
-  var weekly=getData('uberWeekly').filter(function(w){return w.date&&w.date.startsWith(thisMonth);});
+
+  // 本月每日收入
+  var allWeekly=getData('uberWeekly');
+  var weekly=allWeekly.filter(function(w){return w.date&&w.date.startsWith(thisMonth);});
   var income=weekly.reduce(function(s,w){return s+w.income;},0);
   var totalMins=weekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
   var hours=totalMins/60;
   var tripCount=weekly.reduce(function(s,w){return s+(w.tripCount||0);},0);
-  // 若每日收入沒有行程數，fallback 到行程記錄表
-  if(!tripCount) tripCount=getData('uberTrips').length;
-  // 本月支出：從「每日支出」表
-  var monthly=getData('uberMonthly').filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
-  var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
-  // 淨收入 = 收入 - 支出
-  var net=income-exp;
-  // 平均時薪 = 收入 / 時數
-  var hourly=hours>0?(income/hours).toFixed(0):0;
-  // 總收入、總支出、總淨利（所有時間）
-  var allWeekly=getData('uberWeekly');
+  if(!tripCount) tripCount=getData('uberTrips').filter(function(t){return t.d&&t.d.startsWith(thisMonth);}).length;
+
+  // 本月支出
   var allMonthly=getData('uberMonthly');
+  var monthly=allMonthly.filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
+  var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
+
+  // 平均時薪
+  var hourly=hours>0?(income/hours).toFixed(0):0;
+
+  // 總時數
+  var totalAllMins=allWeekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
+  var totalHours=totalAllMins/60;
+
+  // 總行程數（行程記錄表）
+  var allTrips=getData('uberTrips');
+  var totalTrips=allTrips.length;
+
+  // 總收入、總支出
   var totalIncome=allWeekly.reduce(function(s,w){return s+w.income;},0);
   var totalExp=allMonthly.reduce(function(s,m){return s+m.amount;},0);
-  var totalNet=totalIncome-totalExp;
 
-  document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
-  document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
+  // 平均公里數（所有行程）
+  var avgKm=totalTrips>0?(allTrips.reduce(function(s,t){return s+(t.km||0);},0)/totalTrips).toFixed(2):0;
+
+  // 平均費用明細（所有行程）
+  var avgDetail=totalTrips>0?Math.round(allTrips.reduce(function(s,t){return s+(t.detail||0);},0)/totalTrips):0;
+
+  // 平均載客數（所有行程）
+  var avgPax=totalTrips>0?(allTrips.reduce(function(s,t){return s+(t.pax||1);},0)/totalTrips).toFixed(1):0;
+
   document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
+  document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
+  document.getElementById('s-total-hours').innerHTML='<em class="num">'+totalHours.toFixed(1)+'</em> <em class="unit">hr</em>';
+  document.getElementById('s-avg-km').innerHTML='<em class="num">'+avgKm+'</em> <em class="unit">km</em>';
+  document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
+  document.getElementById('s-total-trips').innerHTML='<em class="num">'+fmt(totalTrips)+'</em> <em class="unit">趟</em>';
+  document.getElementById('s-avg-detail').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgDetail)+'</em>';
   document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
-  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
-  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(net)+'</em>';
   document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalIncome)+'</em>';
+  document.getElementById('s-avg-pax').innerHTML='<em class="num">'+avgPax+'</em> <em class="unit">人</em>';
+  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
   document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
-  document.getElementById('s-total-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalNet)+'</em>';
 }
 // 縣市分區資料
 const DISTRICTS = {
