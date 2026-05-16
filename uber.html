@@ -999,24 +999,29 @@ function renderWeekIncomeChart(){
   var thisWeekKey = thisWeekStart.toISOString().slice(0,10);
   var values = weeks.map(function(k){ return weekMap[k] || 0; });
   var maxVal = Math.max.apply(null, values.concat([1]));
-  var chartH = 130; var BAR_W = 22;
+  var chartH = 130; var BAR_W = 32;
   var bars = weeks.map(function(k, i){
     var isCurrent = (k === thisWeekKey);
     var barH = Math.max(values[i]>0?4:0, Math.round(values[i]/maxVal*chartH));
     var d = new Date(k); var label = (d.getMonth()+1)+'/'+(d.getDate());
     var barGrad = isCurrent ? 'linear-gradient(to top,#FFD700,#FFF176)' : 'linear-gradient(to top,#00C853,#69F0AE)';
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.7)';
-    var innerContent = '';
-    var aboveLabel = values[i]>0
-      ? '<div style="font-size:9px;font-weight:700;color:'+(isCurrent?'#FFD700':'#00C853')+';white-space:nowrap;text-align:center;margin-bottom:2px;line-height:1.2;">'+values[i].toLocaleString()+'</div>'
-      : '<div style="font-size:9px;">&nbsp;</div>';
+    var numColor = isCurrent ? '#7A5800' : '#004D20';
+    var innerContent = values[i]>0 && barH>=20
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;">'
+          + '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-size:'+Math.min(barH-6, BAR_W-6, 12)+'px;font-weight:700;color:'+numColor+';white-space:nowrap;line-height:1;letter-spacing:0px;">'
+            + values[i].toLocaleString()
+          + '</div>'
+        + '</div>'
+      : '';
+    var aboveLabel = '<div style="font-size:9px;">&nbsp;</div>';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;min-width:'+BAR_W+'px;flex-shrink:0;">'
       + aboveLabel
       + '<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:2px 2px 0 0;" title="'+label+' '+values[i].toLocaleString()+'"></div>'
+        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:2px 2px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+innerContent+'</div>'
       + '</div>'
-      + '<div style="width:'+(BAR_W+4)+'px;height:34px;display:flex;align-items:flex-start;justify-content:flex-start;padding-top:4px;overflow:visible;">'
-        + '<div style="font-size:8px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-45deg);transform-origin:left top;line-height:1;margin-left:2px;">'+label+'</div>'
+      + '<div style="width:'+BAR_W+'px;height:38px;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;overflow:visible;">'
+        + '<div style="font-size:9px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-45deg);transform-origin:top center;line-height:1;display:block;">'+label+'</div>'
       + '</div>'
     + '</div>';
   }).join('');
