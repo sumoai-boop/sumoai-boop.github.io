@@ -139,7 +139,9 @@ body{
 #s-fuel em,#s-total-exp em{color:#FF4444!important;}
 #s-net em,#s-total-net em{color:#FFD700!important;}
 #s-fuel em{color:#FF4444!important;}
-</style>
+
+  .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
+  .del-btn:hover{color:#ff6b6b;}</style>
 </head>
 <body>
 
@@ -309,6 +311,19 @@ body{
         <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fw-note" placeholder="備註說明"></div>
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
+    </div>
+
+    <!-- 星期幾平均收入 -->
+    <div id="weekdayAvgWrap" style="margin:18px 0 0;"></div>
+
+    <!-- 月份切換 + 列表 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;flex-wrap:wrap;gap:8px;">
+      <div style="font-size:11px;letter-spacing:0.1em;color:rgba(0,200,83,0.7);text-transform:uppercase;">每日記錄</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button onclick="weeklyPageMonth--;renderWeekly();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">‹</button>
+        <span id="weeklyPageLabel" style="font-size:13px;color:#f0dca8;min-width:60px;text-align:center;font-family:monospace;"></span>
+        <button onclick="weeklyPageMonth++;renderWeekly();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">›</button>
+      </div>
     </div>
     <div id="weeklyList"><div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div></div>
   </div>
@@ -731,7 +746,7 @@ function addWeekly(){
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
   w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
-  saveAndPush('uberWeekly',w);renderWeekly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();
+  saveAndPush('uberWeekly',w);renderWeekly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderWeekIncomeChart();renderMonthIncomeChart();
   ['fw-income','fw-trips','fw-hours','fw-mins','fw-points','fw-note'].forEach(id=>document.getElementById(id).value='');
 }
 function deleteWeekly(id){
@@ -739,36 +754,91 @@ function deleteWeekly(id){
   saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
   renderWeekly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();
 }
+// 月份頁碼（0=當月，-1=上月...）
+var weeklyPageMonth = 0;
+
+function renderWeekdayAvg(){
+  var el = document.getElementById('weekdayAvgWrap');
+  if(!el) return;
+  var all = getData('uberWeekly');
+  if(!all.length){ el.innerHTML=''; return; }
+  var DAY_NAMES = ['日','一','二','三','四','五','六'];
+  var sums = [0,0,0,0,0,0,0], counts = [0,0,0,0,0,0,0];
+  all.forEach(function(w){
+    if(!w.date||!w.income) return;
+    var d = new Date(w.date);
+    var dow = d.getDay();
+    sums[dow] += w.income;
+    counts[dow]++;
+  });
+  var cells = DAY_NAMES.map(function(n, i){
+    var avg = counts[i]>0 ? Math.round(sums[i]/counts[i]) : null;
+    var isWeekend = (i===0||i===6);
+    return '<div style="flex:1;min-width:40px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:10px 4px;text-align:center;">'
+      + '<div style="font-size:11px;color:'+(isWeekend?'#FF9999':'rgba(240,220,160,0.7)')+';margin-bottom:6px;">週'+n+'</div>'
+      + '<div style="font-size:12px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.2)')+';">'
+        + (avg ? avg.toLocaleString() : '—')
+      + '</div>'
+      + (counts[i]>0?'<div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:3px;">'+counts[i]+'天</div>':'')
+    + '</div>';
+  }).join('');
+  el.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:rgba(0,200,83,0.6);text-transform:uppercase;margin-bottom:8px;">星期平均收入</div>'
+    + '<div style="display:flex;gap:5px;">'+cells+'</div>';
+}
+
 function renderWeekly(){
-  var weekly=getData('uberWeekly').sort((a,b)=>b.date.localeCompare(a.date)),el=document.getElementById('weeklyList');
-  if(!weekly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div>';return;}
-  var max=Math.max.apply(null,weekly.map(function(w){return w.income;}).concat([1]));
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
+  var el = document.getElementById('weeklyList');
+  var lbl = document.getElementById('weeklyPageLabel');
+  if(!el) return;
+
+  renderWeekdayAvg();
+
+  var now = new Date();
+  var targetDate = new Date(now.getFullYear(), now.getMonth() + weeklyPageMonth, 1);
+  var yr = targetDate.getFullYear();
+  var mo = targetDate.getMonth();
+  var targetYM = yr+'-'+String(mo+1).padStart(2,'0');
+  if(lbl) lbl.textContent = yr+'/'+(mo+1)+'月';
+
+  var daysInMonth = new Date(yr, mo+1, 0).getDate();
+  var allDates = [];
+  for(var d=1; d<=daysInMonth; d++) allDates.push(targetYM+'-'+String(d).padStart(2,'0'));
+
+  var allWeekly = getData('uberWeekly');
+  var recordMap = {};
+  allWeekly.forEach(function(w){ if(w.date) recordMap[w.date] = w; });
+
+  var max = 1;
+  allDates.forEach(function(dt){ if(recordMap[dt] && recordMap[dt].income > max) max = recordMap[dt].income; });
+
+  var DAY_NAMES = ['日','一','二','三','四','五','六'];
+
+  el.innerHTML = '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
     +'<colgroup>'
-    +'<col style="width:58px">'   /* 日期 */
-    +'<col>'                       /* 進度條 */
-    +'<col style="width:88px">'   /* 收入 */
-    +'<col style="width:44px">'   /* 趟數 */
-    +'<col style="width:100px">'  /* 時數 */
-    +'<col style="width:46px">'   /* 點數 */
-    +'<col style="width:90px">'   /* 備註 */
-    +'<col style="width:28px">'   /* 刪除 */
-    +'</colgroup>'
-    +'<tbody>'
-    +weekly.map(function(w){
-      var hStr=(w.hours||0)+'h'+(w.mins||0)+'m';
-      var pct=w.income/max*100;
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">'
-        +'<td style="padding:10px 8px 10px 16px;font-size:13px;color:#f5edd8;white-space:nowrap;">'+w.date.slice(5)+'</td>'
-        +'<td style="padding:10px 8px;"><div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
-        +'<td style="padding:10px 6px;font-size:13px;color:#00C853;font-weight:600;text-align:right;white-space:nowrap;">NT$'+fmt(w.income)+'</td>'
-        +'<td style="padding:10px 4px;font-size:13px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(w.tripCount||0)+'趟</td>'
-        +'<td style="padding:10px 4px;font-size:12px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
-        +'<td style="padding:10px 4px;font-size:13px;color:#FFD700;text-align:right;white-space:nowrap;">'+(w.points||0)+'分</td>'
-        +'<td style="padding:10px 4px;font-size:11px;color:rgba(200,200,200,0.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(w.note||'')+'">'+(w.note||'')+'</td>'
-        +'<td style="padding:10px 12px 10px 4px;text-align:center;"><span onclick="deleteWeekly('+w.id+')" style="cursor:pointer;color:rgba(255,100,100,0.45);font-size:13px;padding:2px 4px;border-radius:3px;" onmouseover="this.style.color=\'#ff6b6b\'" onmouseout="this.style.color=\'rgba(255,100,100,0.45)\'">✕</span></td>'
-        +'</tr>';
+    +'<col style="width:58px"><col style="width:28px"><col><col style="width:88px"><col style="width:44px"><col style="width:100px"><col style="width:46px"><col style="width:90px"><col style="width:28px">'
+    +'</colgroup><tbody>'
+    + allDates.slice().reverse().map(function(dt){
+      var w = recordMap[dt];
+      var dateObj = new Date(dt+'T00:00:00');
+      var dow = dateObj.getDay();
+      var isWeekend = (dow===0||dow===6);
+      var dateColor = isWeekend ? '#FF9999' : '#f5edd8';
+      var hasData = !!w;
+      var income = hasData ? (w.income||0) : 0;
+      var pct = income>0 ? income/max*100 : 0;
+      var hStr = hasData ? (w.hours||0)+'h'+(w.mins||0)+'m' : '';
+      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(hasData?'':'opacity:0.4;')+'">'
+        +'<td style="padding:9px 6px 9px 14px;font-size:12px;color:'+dateColor+';white-space:nowrap;">'+dt.slice(5)+'</td>'
+        +'<td style="padding:9px 2px;font-size:11px;color:'+dateColor+';text-align:center;">週'+DAY_NAMES[dow]+'</td>'
+        +'<td style="padding:9px 8px;"><div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
+        +'<td style="padding:9px 6px;font-size:13px;color:'+(income>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:600;text-align:right;white-space:nowrap;">'+(income>0?'NT$'+fmt(income):'—')+'</td>'
+        +'<td style="padding:9px 4px;font-size:12px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(hasData&&w.tripCount?w.tripCount+'趟':'')+'</td>'
+        +'<td style="padding:9px 4px;font-size:11px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
+        +'<td style="padding:9px 4px;font-size:12px;color:#FFD700;text-align:right;white-space:nowrap;">'+(hasData&&w.points?w.points+'分':'')+'</td>'
+        +'<td style="padding:9px 4px;font-size:11px;color:rgba(200,200,200,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(hasData&&w.note?w.note:'')+'">'+(hasData&&w.note?w.note:'')+'</td>'
+        +'<td style="padding:9px 10px 9px 2px;text-align:center;">'+(hasData?'<span class="del-btn" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
+      +'</tr>';
     }).join('')
     +'</tbody></table></div>';
 }
@@ -890,108 +960,73 @@ function renderMonthly(){
     +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
-// ── 每週收入柱狀圖 ──
 var weekChartYear = new Date().getFullYear();
 var monthChartYear = new Date().getFullYear();
 
-// ── 每週收入柱狀圖（顯示指定年全年52/53週，當週黃色）──
 function renderWeekIncomeChart(){
   var el = document.getElementById('weekIncomeChart');
   var lbl = document.getElementById('weekChartYearLabel');
   if(!el) return;
   if(lbl) lbl.textContent = weekChartYear;
-
-  // 以 4/28/2025 為第0週起點（週一），每7天一週
   var EPOCH = new Date('2025-04-28');
   var allDaily = getData('uberWeekly');
-
-  // 把所有收入按週起始日分組
   var weekMap = {};
   allDaily.forEach(function(w){
     if(!w.date) return;
     var d = new Date(w.date);
     var diff = Math.floor((d - EPOCH) / 86400000);
     var weekIdx = Math.floor(diff / 7);
-    var ws = new Date(EPOCH);
-    ws.setDate(ws.getDate() + weekIdx * 7);
+    var ws = new Date(EPOCH); ws.setDate(ws.getDate() + weekIdx * 7);
     var key = ws.toISOString().slice(0,10);
     if(!weekMap[key]) weekMap[key] = 0;
     weekMap[key] += w.income || 0;
   });
-
-  // 產生指定年全年所有週（週起始落在該年內）
-  // 找出該年第一個週起始（EPOCH往後，第一個落在 weekChartYear 內的週）
   var yearStart = new Date(weekChartYear + '-01-01');
   var yearEnd   = new Date(weekChartYear + '-12-31');
-
-  // 從 EPOCH 算出第一個落在 yearStart 當天或之後的週
   var diffToYear = Math.floor((yearStart - EPOCH) / 86400000);
   var firstWeekIdx = diffToYear < 0 ? 0 : Math.ceil(diffToYear / 7);
-
-  var weeks = [];
-  var wi = firstWeekIdx;
+  var weeks = []; var wi = firstWeekIdx;
   while(true){
-    var ws = new Date(EPOCH);
-    ws.setDate(ws.getDate() + wi * 7);
+    var ws = new Date(EPOCH); ws.setDate(ws.getDate() + wi * 7);
     if(ws > yearEnd) break;
-    weeks.push(ws.toISOString().slice(0,10));
-    wi++;
+    weeks.push(ws.toISOString().slice(0,10)); wi++;
   }
-
-  if(!weeks.length){
-    el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>無資料</div>';
-    return;
-  }
-
+  if(!weeks.length){ el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>無資料</div>'; return; }
   var now = new Date();
-  // 當週起始
   var diffNow = Math.floor((now - EPOCH) / 86400000);
   var thisWeekIdx = Math.floor(diffNow / 7);
-  var thisWeekStart = new Date(EPOCH);
-  thisWeekStart.setDate(thisWeekStart.getDate() + thisWeekIdx * 7);
+  var thisWeekStart = new Date(EPOCH); thisWeekStart.setDate(thisWeekStart.getDate() + thisWeekIdx * 7);
   var thisWeekKey = thisWeekStart.toISOString().slice(0,10);
-
   var values = weeks.map(function(k){ return weekMap[k] || 0; });
   var maxVal = Math.max.apply(null, values.concat([1]));
-  var chartH = 130;
-  var BAR_W = 22;
-
+  var chartH = 130; var BAR_W = 22;
   var bars = weeks.map(function(k, i){
     var isCurrent = (k === thisWeekKey);
     var barH = Math.max(values[i]>0?4:0, Math.round(values[i]/maxVal*chartH));
-    var d = new Date(k);
-    var label = (d.getMonth()+1)+'/'+(d.getDate());
+    var d = new Date(k); var label = (d.getMonth()+1)+'/'+(d.getDate());
     var barGrad = isCurrent ? 'linear-gradient(to top,#FFD700,#FFF176)' : 'linear-gradient(to top,#00C853,#69F0AE)';
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.7)';
     var numColor = isCurrent ? '#7A5800' : '#005A20';
-    // 所有有資料的柱子都在裡面顯示數字（垂直排列）
     var innerContent = values[i]>0 && barH>=14
-      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:1px;">'
-          + '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-size:'+Math.min(barH-4,BAR_W-6,14)+'px;font-weight:700;color:'+numColor+';white-space:nowrap;letter-spacing:-0.5px;line-height:1;">'
-            + values[i].toLocaleString()
-          + '</div>'
-        + '</div>'
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:1px;"><div style="writing-mode:vertical-rl;font-size:'+Math.min(barH-4,BAR_W-6,14)+'px;font-weight:700;color:'+numColor+';white-space:nowrap;letter-spacing:-0.5px;line-height:1;">'+values[i].toLocaleString()+'</div></div>'
       : '';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;min-width:'+BAR_W+'px;flex-shrink:0;">'
       + '<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:2px 2px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'
-          + innerContent
-        + '</div>'
+        + '<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:2px 2px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+innerContent+'</div>'
       + '</div>'
-      + '<div style="font-size:8px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-45deg);transform-origin:top left;margin-top:4px;height:26px;width:26px;">'+label+'</div>'
+      + '<div style="width:'+(BAR_W+4)+'px;height:30px;display:flex;align-items:flex-start;justify-content:flex-start;padding-top:3px;overflow:hidden;">'
+        + '<div style="font-size:8px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';white-space:nowrap;transform:rotate(-45deg);transform-origin:left top;line-height:1;">'+label+'</div>'
+      + '</div>'
     + '</div>';
   }).join('');
-
-  el.innerHTML = '<div style="width:100%;overflow-x:auto;overflow-y:hidden;"><div style="display:flex;align-items:flex-end;gap:1px;padding:4px 0 30px;width:max-content;">'+bars+'</div></div>';
+  el.innerHTML = '<div style="width:100%;overflow-x:auto;overflow-y:hidden;"><div style="display:flex;align-items:flex-end;gap:1px;padding:4px 0 0;width:max-content;">'+bars+'</div></div>';
 }
 
-// ── 每月收入柱狀圖（顯示指定年1-12月，當月黃色）──
 function renderMonthIncomeChart(){
   var el = document.getElementById('monthIncomeChart');
   var lbl = document.getElementById('monthChartYearLabel');
   if(!el) return;
   if(lbl) lbl.textContent = monthChartYear;
-
   var allDaily = getData('uberWeekly');
   var monthMap = {};
   allDaily.forEach(function(w){
@@ -1000,17 +1035,13 @@ function renderMonthIncomeChart(){
     if(!monthMap[ym]) monthMap[ym] = 0;
     monthMap[ym] += w.income || 0;
   });
-
   var now = new Date();
   var thisYM = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   var months = [];
   for(var m=1;m<=12;m++) months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
-
   var values = months.map(function(ym){ return monthMap[ym]||0; });
   var maxVal = Math.max.apply(null, values.concat([1]));
-  var chartH = 130;
-  var barWidth = 32;
-
+  var chartH = 130; var barWidth = 32;
   var bars = months.map(function(ym, i){
     var isCurrent = (ym === thisYM);
     var barH = Math.max(values[i]>0?4:0, Math.round(values[i]/maxVal*chartH));
@@ -1018,25 +1049,17 @@ function renderMonthIncomeChart(){
     var lblColor = isCurrent ? '#FFD700' : 'rgba(240,220,160,0.8)';
     var numColor = isCurrent ? '#7A5800' : '#005A20';
     var label = (i+1)+'月';
-    // 所有有資料的柱子都在裡面顯示數字
     var fs = Math.min(Math.floor(barH*0.28), Math.floor((barWidth-8)*0.8), 20);
     var innerContent = values[i]>0 && barH>=20
-      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;">'
-          + '<div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:700;color:'+numColor+';white-space:nowrap;letter-spacing:-0.5px;line-height:1;">'
-            + values[i].toLocaleString()
-          + '</div>'
-        + '</div>'
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;"><div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:700;color:'+numColor+';white-space:nowrap;letter-spacing:-0.5px;line-height:1;">'+values[i].toLocaleString()+'</div></div>'
       : '';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:'+barWidth+'px;">'
       + '<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
-        + '<div style="position:relative;width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'
-          + innerContent
-        + '</div>'
+        + '<div style="position:relative;width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+innerContent+'</div>'
       + '</div>'
       + '<div style="font-size:11px;color:'+lblColor+';white-space:nowrap;font-weight:'+(isCurrent?'700':'400')+';">'+label+'</div>'
     + '</div>';
   }).join('');
-
   el.innerHTML = '<div style="display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div>';
 }
 
