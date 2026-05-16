@@ -762,28 +762,28 @@ function renderWeekdayAvg(){
   if(!el) return;
   var all = getData('uberWeekly');
   if(!all.length){ el.innerHTML=''; return; }
-  var DAY_NAMES = ['日','一','二','三','四','五','六'];
+  // 週一到週日順序（0=日排最後）
+  var ORDER = [1,2,3,4,5,6,0];
+  var DAY_NAMES = ['一','二','三','四','五','六','日'];
   var sums = [0,0,0,0,0,0,0], counts = [0,0,0,0,0,0,0];
   all.forEach(function(w){
     if(!w.date||!w.income) return;
-    var d = new Date(w.date);
-    var dow = d.getDay();
+    var dow = new Date(w.date).getDay();
     sums[dow] += w.income;
     counts[dow]++;
   });
-  var cells = DAY_NAMES.map(function(n, i){
-    var avg = counts[i]>0 ? Math.round(sums[i]/counts[i]) : null;
-    var isWeekend = (i===0||i===6);
-    return '<div style="flex:1;min-width:40px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:10px 4px;text-align:center;">'
-      + '<div style="font-size:11px;color:'+(isWeekend?'#FF9999':'rgba(240,220,160,0.7)')+';margin-bottom:6px;">週'+n+'</div>'
-      + '<div style="font-size:12px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.2)')+';">'
+  var cells = ORDER.map(function(dow, i){
+    var avg = counts[dow]>0 ? Math.round(sums[dow]/counts[dow]) : null;
+    var isWeekend = (dow===0||dow===6);
+    return '<div style="flex:1;min-width:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:14px 6px;text-align:center;">'
+      + '<div style="font-size:14px;font-weight:600;color:'+(isWeekend?'#FF9999':'rgba(240,220,160,0.8)')+';margin-bottom:10px;">週'+DAY_NAMES[i]+'</div>'
+      + '<div style="font-size:20px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.15)')+';">'
         + (avg ? avg.toLocaleString() : '—')
       + '</div>'
-      + (counts[i]>0?'<div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:3px;">'+counts[i]+'天</div>':'')
     + '</div>';
   }).join('');
   el.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:rgba(0,200,83,0.6);text-transform:uppercase;margin-bottom:8px;">星期平均收入</div>'
-    + '<div style="display:flex;gap:5px;">'+cells+'</div>';
+    + '<div style="display:flex;gap:6px;">'+cells+'</div>';
 }
 
 function renderWeekly(){
