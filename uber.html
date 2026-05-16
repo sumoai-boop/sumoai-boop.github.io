@@ -641,10 +641,10 @@ function renderTrips(){
   if(tripPage>totalTripPages) tripPage=1;
   var pagedTrips = trips.slice((tripPage-1)*TRIP_PAGE_SIZE, tripPage*TRIP_PAGE_SIZE);
 
-  // 序號：依 id 升序（新增順序）給每筆固定號碼
-  var allTripsSorted = getData('uberTrips').slice().sort(function(a,b){return a.id-b.id;});
+  // 序號：依陣列原始位置（新增順序）給每筆固定號碼
+  var allTripsRaw = getData('uberTrips');
   var seqMap = {};
-  allTripsSorted.forEach(function(t,i){ seqMap[t.id] = i+1; });
+  allTripsRaw.forEach(function(t,i){ seqMap[t.id] = i+1; });
 
   var tbody=document.getElementById('tripBody');
   var tfoot=document.getElementById('tripFoot');
