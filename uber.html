@@ -776,7 +776,7 @@ function renderWeekdayAvg(){
     return '<div style="flex:1;min-width:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:14px 6px;text-align:center;">'
       +'<div style="font-size:14px;font-weight:600;color:'+(isWE?'#FF9999':'rgba(240,220,160,0.8)')+';margin-bottom:10px;">週'+DAY_NAMES[i]+'</div>'
       +'<div style="font-size:20px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.15)')+';">'+(avg?avg.toLocaleString():'—')+'</div>'
-      +'<div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:6px;">'
+      +'<div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:6px;">'
         +(paxCounts[dow]>0?(paxSums[dow]/paxCounts[dow]).toFixed(1):'—')+'趟'
         +' / '
         +(tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'人'
