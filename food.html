@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{background:#1a1008;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;position:relative;}
+  body{background:#1a1008;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;
     background-image:
       radial-gradient(ellipse at 20% 30%, rgba(180,120,40,0.12) 0%, transparent 50%),
@@ -23,16 +23,8 @@
   .c1{width:500px;height:500px;background:radial-gradient(circle, rgba(200,150,50,0.07), transparent 70%);top:-100px;right:-80px;}
   .c2{width:350px;height:350px;background:radial-gradient(circle, rgba(150,80,20,0.06), transparent 70%);bottom:-80px;left:-60px;}
 
-  /* ── 頂部導覽 ── */
-  .topnav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(232,98,42,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.1);}
-  .logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:#2C1A0E;text-decoration:none;letter-spacing:0.04em;}
-  .logo em{font-style:italic;color:#3D2010;}
-  nav{display:flex;flex-wrap:wrap;gap:6px;}
-  nav a{padding:6px 14px;border:1px solid rgba(160,50,0,0.5);border-radius:99px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#ffffff;text-decoration:none;background:rgba(180,55,0,0.75);transition:background 0.2s;}
-  nav a:hover,nav a.active{background:rgba(120,30,0,0.95);border-color:rgba(100,20,0,0.8);color:#ffffff;}
-
   /* ── 主內容 ── */
-  .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:100px 32px 100px;}
+  .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:56px 32px 100px;}
 
   .page-header{margin-bottom:28px;}
   .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,64px);font-weight:300;color:#F5E6C0;line-height:1;margin-bottom:4px;}
@@ -287,9 +279,7 @@
   }
 
   @media(max-width:700px){
-    .topnav{padding:12px 20px;}
-    .page-content{padding:96px 12px 80px;}
-    nav a{padding:6px 10px;font-size:9px;}
+    .page-content{padding:44px 12px 80px;}
     .photo-grid{grid-template-columns:repeat(3,1fr);gap:2px;}
   }
   @media(max-width:480px){
@@ -323,17 +313,6 @@
   </div>
 </div>
 
-<!-- Topnav -->
-<header class="topnav">
-  <a class="logo" href="about.html">Sumoai's <em>Reel</em></a>
-  <nav>
-    <a href="about.html">關於</a>
-    <a href="photos.html">照片</a>
-    <a href="dramas.html">追劇</a>
-    <a href="food.html" class="active">食記</a>
-    <a href="travel.html">旅遊</a>
-  </nav>
-</header>
 
 <!-- Main -->
 <main class="page-content">
