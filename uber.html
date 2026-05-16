@@ -571,7 +571,8 @@ function addTrip(){
     document.getElementById('f-pax').value='1';
     return;
   }
-  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,tip,note,id:Date.now()});
+  var maxSeq = trips.reduce(function(m,t){ return t.seq>m?t.seq:m; }, 0);
+  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,tip,note,id:Date.now(),seq:maxSeq+1});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
@@ -666,8 +667,9 @@ function renderTrips(){
     totalKm+=(t.km||0);totalFare+=(t.fare||0);
     totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
     var globalIdx = (tripPage-1)*TRIP_PAGE_SIZE + i;
+    var rowNum = t.seq != null ? t.seq : (trips.length - globalIdx);
     return `<tr>
-      <td style="color:rgba(240,220,160,0.5);font-size:11px">${trips.length-globalIdx}</td>
+      <td style="color:rgba(240,220,160,0.5);font-size:11px">${rowNum}</td>
       <td>${t.d||''}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
