@@ -432,6 +432,12 @@ body{
   trigger.addEventListener('mouseenter',showDock);
   dock.addEventListener('mouseenter',function(){clearTimeout(hideTimer);dock.classList.add('visible');});
   dock.addEventListener('mouseleave',hideDock);
+  // 手機觸控支援
+  trigger.addEventListener('touchstart',function(e){e.preventDefault();showDock();},{passive:false});
+  dock.addEventListener('touchstart',function(){clearTimeout(hideTimer);dock.classList.add('visible');});
+  document.addEventListener('touchstart',function(e){
+    if(!dock.contains(e.target)&&!trigger.contains(e.target)){hideDock();}
+  });
 })();
 // Tab
 function switchTab(id,btn){
