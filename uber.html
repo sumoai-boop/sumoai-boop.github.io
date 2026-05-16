@@ -30,62 +30,105 @@ body{
 .mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;color:rgba(255,255,255,0.95);}
 .mb-menu:hover{background:rgba(255,255,255,0.2);}
 
-/* Dock */
-.global-dock-wrap{
-  position:fixed;bottom:0;left:50%;
-  transform:translateX(-50%) translateY(calc(100% - 2px));
-  z-index:9998;
-  transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1), opacity 0.3s;
-  opacity:0;
-}
-.global-dock-wrap.visible{
-  transform:translateX(-50%) translateY(-12px);
-  opacity:1;
-}
-.global-dock{
-  display:flex;align-items:flex-end;gap:8px;
-  background:rgba(255,255,255,0.16);
-  backdrop-filter:blur(28px) saturate(180%);
-  -webkit-backdrop-filter:blur(28px) saturate(180%);
-  border:1px solid rgba(255,255,255,0.25);
-  border-radius:20px 20px 0 0;
-  padding:10px 14px 14px;
-  box-shadow:0 -4px 30px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.18);
-}
-.gd-item{
-  display:flex;flex-direction:column;align-items:center;
-  gap:3px;text-decoration:none;position:relative;cursor:pointer;
-}
-.gd-icon{
-  width:65px;height:65px;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:38px;
-  position:relative;
-  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow:0 3px 12px rgba(0,0,0,0.28);
-}
-.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
-.gd-label{
-  font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);
-  text-transform:uppercase;opacity:0;transition:opacity 0.15s;
-  white-space:nowrap;background:rgba(0,0,0,0.6);
-  padding:2px 6px;border-radius:4px;
-  position:absolute;bottom:-20px;
-  font-family:'Space Mono',monospace;
-}
-.gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
-.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about  {background:linear-gradient(160deg,#8E9FE8 0%,#6B7FD4 40%,#5060C0 100%);}
-.ic-photos {background:linear-gradient(160deg,#FF6B8B 0%,#E8344F 50%,#C01830 100%);}
-.ic-dramas {background:linear-gradient(160deg,#C8601A 0%,#A03A08 50%,#782000 100%);}
-.ic-food   {background:linear-gradient(160deg,#FFB800 0%,#FF9500 45%,#E07000 100%);}
-.ic-travel {background:linear-gradient(160deg,#4A80C4 0%,#2A5898 50%,#153070 100%);}
-.ic-threads{background:linear-gradient(160deg,#444 0%,#222 50%,#111 100%);}
-.ic-uber   {background:linear-gradient(160deg,#1a1a1a 0%,#000 100%);}
-.dock-trigger-zone{
-  position:fixed;bottom:0;left:0;right:0;height:8px;z-index:999;
-}
+/* ── 共用 Dock ── */
+  .global-dock-wrap{
+    position:fixed;bottom:0;left:50%;
+    transform:translateX(-50%) translateY(calc(100% - 2px));
+    z-index:9998;
+    transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1), opacity 0.3s;
+    opacity:0;
+    padding-bottom:0;
+  }
+  .global-dock-wrap.visible{
+    transform:translateX(-50%) translateY(-12px);
+    opacity:1;
+  }
+  .global-dock{
+    display:flex;align-items:flex-end;gap:8px;
+    background:rgba(255,255,255,0.16);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:20px 20px 0 0;
+    padding:10px 14px 14px;
+    box-shadow:0 -4px 30px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .gd-item{
+    display:flex;flex-direction:column;align-items:center;
+    gap:3px;text-decoration:none;position:relative;cursor:pointer;
+  }
+  .gd-icon{
+    width:65px;height:65px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:38px;
+    position:relative;
+    transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:0 3px 12px rgba(0,0,0,0.28);
+  }
+  .gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
+  .gd-label{
+    font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);
+    text-transform:uppercase;opacity:0;transition:opacity 0.15s;
+    white-space:nowrap;background:rgba(0,0,0,0.6);
+    padding:2px 6px;border-radius:4px;
+    position:absolute;bottom:-20px;
+    font-family:'Space Mono',monospace;
+  }
+  .gd-item:hover .gd-label{opacity:1;}
+  .gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
+  .gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
+  .ic-about  {background:linear-gradient(160deg,#8E9FE8 0%,#6B7FD4 40%,#5060C0 100%);}
+  .ic-photos {background:linear-gradient(160deg,#FF6B8B 0%,#E8344F 50%,#C01830 100%);}
+  .ic-dramas {background:linear-gradient(160deg,#C8601A 0%,#A03A08 50%,#782000 100%);}
+  .ic-food   {background:linear-gradient(160deg,#FFB800 0%,#FF9500 45%,#E07000 100%);}
+  .ic-travel {background:linear-gradient(160deg,#4A80C4 0%,#2A5898 50%,#153070 100%);}
+  .ic-threads{background:linear-gradient(160deg,#444 0%,#222 50%,#111 100%);}
+  .ic-uber   {background:linear-gradient(160deg,#1a1a1a 0%,#000 100%);}
+  /* 底部觸發區 */
+  .dock-trigger-zone{
+    position:fixed;bottom:0;left:0;right:0;height:8px;z-index:999;
+  }
+
+  /* ── 新增觀影記錄 ── */
+  #addRecordFab{position:fixed;bottom:32px;right:32px;z-index:10001;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#e8622a 0%,#ffb432 100%);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:300;line-height:1;box-shadow:0 4px 24px rgba(232,98,42,0.45),0 1px 6px rgba(0,0,0,0.4);transition:transform 0.2s cubic-bezier(.34,1.56,.64,1),box-shadow 0.2s;color:#fff;font-family:'Space Mono',monospace;}
+  #addRecordFab:hover{transform:scale(1.12) rotate(15deg);box-shadow:0 6px 32px rgba(232,98,42,0.6),0 2px 8px rgba(0,0,0,0.5);}
+  #addRecordFab:active{transform:scale(0.95);}
+  #addModal{display:none;position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.78);backdrop-filter:blur(7px);align-items:center;justify-content:center;}
+  #addModal.open{display:flex;}
+  #addModalInner{background:#F5EDE0;border:1px solid rgba(180,100,30,0.35);border-radius:16px;padding:28px 28px 24px;width:580px;max-width:94vw;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.75);position:relative;animation:arSlideUp 0.25s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes arSlideUp{from{transform:translateY(28px) scale(0.97);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+  #addModalInner h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#2C1A0E;letter-spacing:0.08em;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  #addModalInner h2::before{content:'';display:inline-block;width:3px;height:18px;background:linear-gradient(to bottom,#e8622a,#ffb432);border-radius:2px;flex-shrink:0;}
+  #addModalClose{position:absolute;top:14px;right:14px;background:none;border:none;color:rgba(245,230,200,0.35);font-size:18px;cursor:pointer;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background 0.15s,color 0.15s;}
+  #addModalClose:hover{background:rgba(255,255,255,0.08);color:#2C1A0E;}
+  #addRecordForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  #addRecordForm .ar-full{grid-column:1/-1;}
+  .ar-field{display:flex;flex-direction:column;gap:5px;}
+  
+  .ar-input::placeholder{color:rgba(80,40,5,0.5);}
+  .ar-label{font-size:10.5px;font-weight:600;letter-spacing:0.1em;color:rgba(140,70,10,0.9);text-transform:uppercase;}
+  .ar-label span{color:rgba(232,98,42,0.85);margin-left:1px;}
+  .ar-input,.ar-select{background:rgba(255,255,255,0.85);border:1px solid rgba(180,100,30,0.4);border-radius:8px;color:#1A0A00;font-size:13.5px;padding:8px 11px;outline:none;width:100%;transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;font-family:'Space Mono',monospace;-webkit-appearance:none;}
+  .ar-input:focus,.ar-select:focus{border-color:rgba(232,98,42,0.55);background:rgba(232,98,42,0.07);box-shadow:0 0 0 2.5px rgba(232,98,42,0.14);}
+  .ar-input::placeholder{color:rgba(245,230,200,0.22);}
+  .ar-select option{background:#FFF8F0;color:#1A0A00;}
+  .ar-score-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;grid-column:1/-1;}
+  .ar-divider{grid-column:1/-1;height:1px;background:rgba(255,180,50,0.1);margin:2px 0;}
+  .ar-actions{grid-column:1/-1;display:flex;gap:10px;margin-top:4px;justify-content:flex-end;}
+  .ar-btn-cancel{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(245,230,200,0.55);font-size:13px;padding:9px 20px;cursor:pointer;font-family:'Space Mono',monospace;transition:background 0.15s;}
+  .ar-btn-cancel:hover{background:rgba(255,255,255,0.1);}
+  .ar-btn-submit{background:linear-gradient(135deg,#e8622a 0%,#ffb432 100%);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;padding:9px 22px;cursor:pointer;font-family:'Space Mono',monospace;transition:opacity 0.15s,transform 0.1s;letter-spacing:0.04em;}
+  .ar-btn-submit:hover{opacity:0.87;transform:translateY(-1px);}
+  .ar-btn-submit:active{transform:translateY(0);}
+  #arExportWrap{grid-column:1/-1;background:rgba(255,180,50,0.04);border:1px solid rgba(255,180,50,0.14);border-radius:10px;padding:14px;display:none;flex-direction:column;gap:8px;}
+  #arExportWrap.show{display:flex;}
+  #arExportLabel{font-size:10px;font-weight:600;letter-spacing:0.1em;color:rgba(255,180,50,0.55);text-transform:uppercase;}
+  #arJsonOutput{background:rgba(0,0,0,0.4);border:1px solid rgba(255,180,50,0.15);border-radius:7px;color:#8ecf8e;font-size:11.5px;font-family:'Courier New',monospace;padding:10px 12px;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:140px;overflow-y:auto;}
+  .ar-copy-btn{align-self:flex-end;background:rgba(232,98,42,0.14);border:1px solid rgba(232,98,42,0.35);border-radius:6px;color:#E8622A;font-size:12px;padding:5px 14px;cursor:pointer;font-family:'Space Mono',monospace;transition:background 0.15s;}
+  .ar-copy-btn:hover{background:rgba(232,98,42,0.28);}
+  .ar-success{color:#7dd87d;font-size:12px;text-align:center;display:none;}
+  .ar-success.show{display:block;}
+
 
 /* 主內容 */
 .page-content{
@@ -409,14 +452,20 @@ body{
 <script>
 // 時鐘
 (function(){
-  function t(){
-    var el=document.getElementById('gmbTime');if(!el)return;
-    var now=new Date(),d=['日','一','二','三','四','五','六'][now.getDay()];
-    var h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0');
-    el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
-  }t();setInterval(t,10000);
+  function updateTime(){
+    var el=document.getElementById('gmbTime');
+    if(!el) return;
+    var now=new Date();
+    var d=['日','一','二','三','四','五','六'][now.getDay()];
+    var h=String(now.getHours()).padStart(2,'0');
+    var m=String(now.getMinutes()).padStart(2,'0');
+    el.textContent='週'+d+' '+now.getMonth()+'/'+(now.getDate())+' '+h+':'+m;
+  }
+  updateTime();
+  setInterval(updateTime,10000);
 })();
-// Dock
+
+// Dock 自動隱藏
 (function(){
   var dock=document.getElementById('globalDock');
   var trigger=document.getElementById('dockTrigger');
@@ -432,701 +481,7 @@ body{
   trigger.addEventListener('mouseenter',showDock);
   dock.addEventListener('mouseenter',function(){clearTimeout(hideTimer);dock.classList.add('visible');});
   dock.addEventListener('mouseleave',hideDock);
-  // 手機觸控支援
-  trigger.addEventListener('touchstart',function(e){e.preventDefault();showDock();},{passive:false});
-  dock.addEventListener('touchstart',function(){clearTimeout(hideTimer);dock.classList.add('visible');});
-  document.addEventListener('touchstart',function(e){
-    if(!dock.contains(e.target)&&!trigger.contains(e.target)){hideDock();}
-  });
 })();
-// Tab
-function switchTab(id,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-}
-// 資料
-// ── GitHub 設定 ──
-const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_uber';
-const GH_DATA_PATH='uber-data.json'; // 獨立 JSON 檔，不改 HTML
-
-function getData(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return[];}}
-function saveData(key,data){localStorage.setItem(key,JSON.stringify(data));}
-
-function showToast(msg,isErr){
-  var t=document.getElementById('ghToast');
-  if(!t){t=document.createElement('div');t.id='ghToast';t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:99px;font-size:13px;z-index:9999;font-family:monospace;pointer-events:none;';document.body.appendChild(t);}
-  t.textContent=msg;t.style.background=isErr?'rgba(180,30,30,0.95)':'rgba(30,80,50,0.95)';t.style.color='#fff';t.style.opacity='1';
-  clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
-}
-function getToken(){
-  var tk=localStorage.getItem(GH_TOKEN_KEY);
-  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
-  return tk.trim();
-}
-window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
-
-// 頁面載入時從 GitHub 讀取最新資料
-function loadFromGitHub(){
-  var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token){
-    token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
-    if(!token) return;
-    localStorage.setItem(GH_TOKEN_KEY, token.trim());
-    token=token.trim();
-  }
-  var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-  fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(), {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
-    .then(r=>{
-      if(!r.ok){
-        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效，請重新輸入');}
-        return null;
-      }
-      return r.json();
-    })
-    .then(fi=>{
-      if(!fi||!fi.content) return;
-      var raw=atob(fi.content.split('\n').join(''));
-      var json=JSON.parse(decodeURIComponent(escape(raw)));
-      if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
-      if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
-      if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
-      // 儲存 SHA 供推送使用
-      if(fi.sha) localStorage.setItem('gh_json_sha', fi.sha);
-      if(typeof renderTrips==='function') renderTrips();
-      if(typeof updateStats==='function') updateStats();
-      if(typeof renderWeekly==='function') renderWeekly();
-      if(typeof renderMonthly==='function') renderMonthly();
-    }).catch(e=>console.warn('載入失敗:',e));
-}
-window.addEventListener('DOMContentLoaded', loadFromGitHub);
-
-var _pushing=false;
-async function pushToGitHub(){
-  if(_pushing){showToast('⏳ 推送中，請稍候...',false);return;}
-  _pushing=true;
-  try{
-    var token=getToken();if(!token)return;
-    var trips=getData('uberTrips'),weekly=getData('uberWeekly'),monthly=getData('uberMonthly');
-    var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    showToast('⏳ 連線 GitHub...',false);
-    // 用快取的 SHA，避免連續推送衝突
-    var sha=localStorage.getItem('gh_json_sha');
-    if(!sha){
-      var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-      if(!r.ok){
-        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
-        else showToast('❌ 連線失敗('+r.status+')',true);
-        return;
-      }
-      var fi=await r.json();
-      sha=fi.sha;
-    }
-    var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly};
-    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
-    showToast('⏳ 推送中...',false);
-    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
-    if(!pr.ok){
-      var e2=await pr.json();
-      localStorage.removeItem('gh_json_sha'); // 清除快取，下次重抓
-      showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
-    } else {
-      // 推送成功：從回應直接取新 SHA，不需要再發請求
-      var prData=await pr.json();
-      var newSha=prData.content && prData.content.sha;
-      if(newSha) localStorage.setItem('gh_json_sha', newSha);
-      else localStorage.removeItem('gh_json_sha');
-      showToast('✦ 已儲存至 GitHub',false);
-    }
-  }finally{_pushing=false;}
-}
-async function saveAndPush(key,data){saveData(key,data);await pushToGitHub();}
-// 千分點格式化
-function fmt(n){return Number(n).toLocaleString('zh-TW');}
-// 行程
-var tripSortKey='d', tripSortAsc=false, tripPage=1;
-var TRIP_PAGE_SIZE=25;
-
-function addTrip(){
-  var d=document.getElementById('f-date').value;
-  var fd=document.getElementById('f-from-dist').value.trim();
-  var fr=document.getElementById('f-from-road').value.trim();
-  var td2=document.getElementById('f-to-dist').value.trim();
-  var tr2=document.getElementById('f-to-road').value.trim();
-  var km=parseFloat(document.getElementById('f-km').value)||0;
-  var fare=parseFloat(document.getElementById('f-fare').value)||0;
-  var service=parseFloat(document.getElementById('f-service').value)||0;
-  var detail=parseFloat(document.getElementById('f-detail').value)||0;
-  var pax=parseInt(document.getElementById('f-pax').value)||1;
-  var note=document.getElementById('f-note').value.trim();
-  if(!d){alert('請填寫日期');return;}
-  var trips=getData('uberTrips');
-  if(window._editTripId){
-    // 編輯模式：更新現有記錄
-    var idx=trips.findIndex(t=>t.id===window._editTripId);
-    if(idx!==-1) trips.splice(idx,1,{d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:window._editTripId});
-    window._editTripId=null;
-    document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
-    document.getElementById('tripAddBtn').textContent='新增行程';
-    saveAndPush('uberTrips',trips);renderTrips();updateStats();
-    ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('f-pax').value='1';
-    return;
-  }
-  trips.push({d,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:Date.now()});
-  saveAndPush('uberTrips',trips);
-  renderTrips();updateStats();
-  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-pax').value='1';
-}
-
-function editTrip(id){
-  var trips = getData('uberTrips');
-  var t = trips.find(x=>x.id===id);
-  if(!t) return;
-  // 填入現有資料
-  document.getElementById('f-date').value      = t.d||'';
-  document.getElementById('f-from-dist').value = t.fd||'';
-  document.getElementById('f-from-road').value = t.fr||'';
-  document.getElementById('f-to-dist').value   = t.td||'';
-  document.getElementById('f-to-road').value   = t.tr||'';
-  document.getElementById('f-km').value        = t.km||'';
-  document.getElementById('f-fare').value      = t.fare||'';
-  document.getElementById('f-service').value   = t.service||'';
-  document.getElementById('f-detail').value    = t.detail||'';
-  document.getElementById('f-pax').value       = t.pax||1;
-  document.getElementById('f-note').value      = t.note||'';
-  // 設定編輯模式
-  window._editTripId = id;
-  document.getElementById('tripFormTitle').textContent = '✎ 編輯行程明細';
-  document.getElementById('tripAddBtn').textContent = '✔ 儲存變更';
-  // 滾到表單
-  document.getElementById('tripFormTitle').scrollIntoView({behavior:'smooth'});
-}
-
-function deleteTrip(id){
-  if(!confirm('確定刪除這筆行程？'))return;
-  saveAndPush('uberTrips',getData('uberTrips').filter(t=>t.id!==id));
-  renderTrips();updateStats();
-}
-
-function sortTrips(key){
-  if(tripSortKey===key) tripSortAsc=!tripSortAsc;
-  else{tripSortKey=key;tripSortAsc=true;}
-  renderTrips();
-}
-
-function clearTripFilter(){ tripPage=1;
-  document.getElementById('tripSearch').value='';
-  document.getElementById('tripFilterDate').value='';
-  renderTrips();
-}
-
-function renderTrips(){
-  var trips=getData('uberTrips');
-  var q=(document.getElementById('tripSearch').value||'').toLowerCase();
-  var fd=document.getElementById('tripFilterDate').value;
-
-  // 篩選
-  if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr,t.note||''].join(' ').toLowerCase().includes(q));
-  if(fd) trips=trips.filter(t=>t.d===fd);
-
-  // 排序：主鍵 + 同值時以 id 升冪為次要鍵（保證同日期按新增順序）
-  trips.sort((a,b)=>{
-    var va=a[tripSortKey]||0, vb=b[tripSortKey]||0;
-    var cmp;
-    if(typeof va==='string') cmp=tripSortAsc?va.localeCompare(vb):vb.localeCompare(va);
-    else cmp=tripSortAsc?va-vb:vb-va;
-    if(cmp!==0) return cmp;
-    // 同值時：若日期降冪（最新在上），id 也降冪；否則升冪
-    return tripSortAsc ? a.id-b.id : b.id-a.id;
-  });
-
-  var totalTripPages = Math.ceil(trips.length/TRIP_PAGE_SIZE)||1;
-  if(tripPage>totalTripPages) tripPage=1;
-  var pagedTrips = trips.slice((tripPage-1)*TRIP_PAGE_SIZE, tripPage*TRIP_PAGE_SIZE);
-
-  var tbody=document.getElementById('tripBody');
-  var tfoot=document.getElementById('tripFoot');
-  document.getElementById('tripCount').textContent=`共 ${trips.length} 筆`;
-  // 分頁控制
-  var pgEl = document.getElementById('tripPageControl');
-  if(!pgEl){ pgEl=document.createElement('div'); pgEl.id='tripPageControl'; pgEl.style.cssText='display:flex;gap:8px;align-items:center;justify-content:center;padding:12px 0;'; document.getElementById('tripCount').parentNode.insertBefore(pgEl, document.getElementById('tripCount').nextSibling); }
-  pgEl.innerHTML='';
-  if(totalTripPages>1){
-    var bs='background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;';
-    if(tripPage>1){var b=document.createElement('button');b.textContent='‹ 上一頁';b.style.cssText=bs;b.onclick=function(){tripPage--;renderTrips();};pgEl.appendChild(b);}
-    var info=document.createElement('span');info.style.cssText='color:rgba(255,255,255,0.6);font-size:12px;padding:0 8px;';info.textContent=tripPage+' / '+totalTripPages;pgEl.appendChild(info);
-    if(tripPage<totalTripPages){var b2=document.createElement('button');b2.textContent='下一頁 ›';b2.style.cssText=bs;b2.onclick=function(){tripPage++;renderTrips();};pgEl.appendChild(b2);}
-  }
-
-  if(!trips.length){
-    tbody.innerHTML='<tr><td colspan="13"><div class="empty-state"><span class="empty-icon">🚗</span>尚無行程記錄</div></td></tr>';
-    tfoot.style.display='none';
-    return;
-  }
-
-  // 依 id 升冪排序，給每筆資料一個永久流水號（最早新增 = 1）
-  var allTrips=getData('uberTrips').slice().sort((a,b)=>a.id-b.id);
-  var serialMap={};
-  allTrips.forEach((t,i)=>{serialMap[t.id]=i+1;});
-
-  var totalKm=0,totalFare=0,totalService=0,totalDetail=0,totalPax=0;
-  tbody.innerHTML=pagedTrips.map((t)=>{
-    totalKm+=(t.km||0);totalFare+=(t.fare||0);
-    totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
-    return `<tr>
-      <td style="color:rgba(240,220,160,0.5);font-size:11px">${serialMap[t.id]||''}</td>
-      <td>${t.d||''}</td>
-      <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
-      <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
-      <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.td||''}</td>
-      <td style="color:#fff;font-size:15px;font-weight:600">${t.tr||''}</td>
-      <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1);font-size:16px;font-weight:600">${(t.km||0).toFixed(2)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:16px;font-weight:600">NT$${fmt(t.fare||0)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:16px;font-weight:600">NT$${fmt(t.service||0)}</td>
-      <td style="color:#00E860;font-size:16px;font-weight:700">NT$${fmt(t.detail||0)}</td>
-      <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
-      <td style="text-align:center;color:rgba(240,220,160,0.6)">${t.note||'—'}</td>
-      <td style="white-space:nowrap"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:13px;padding:2px 6px;border-radius:4px;margin-right:4px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
-    </tr>`;
-  }).join('');
-
-  // 合計列
-  tfoot.style.display='';
-  document.getElementById('foot-km').textContent=totalKm.toFixed(2)+' km';
-  document.getElementById('foot-fare').textContent='NT$'+fmt(totalFare);
-  document.getElementById('foot-service').textContent='NT$'+fmt(totalService);
-  document.getElementById('foot-detail').textContent='NT$'+fmt(totalDetail);
-  document.getElementById('foot-pax').textContent=totalPax+' 人次';
-}
-
-function exportCSV(){
-  var trips=getData('uberTrips');
-  if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,服務費,費用明細,人數,備註';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
-  var csv=header+'\n'+rows.join('\n');
-  var a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-  a.download='uber_trips_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-}
-
-function importCSV(){document.getElementById('csvInput').click();}
-
-function handleCSV(e){
-  var file=e.target.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    var lines=ev.target.result.split('\n').filter(l=>l.trim());
-    if(lines.length<2){alert('CSV 格式不正確');return;}
-    var trips=getData('uberTrips');
-    var added=0;
-    for(var i=1;i<lines.length;i++){
-      var cols=lines[i].split(',');
-      if(cols.length<13)continue;
-      trips.push({
-        d:cols[1].trim(),fc:cols[2].trim(),fd:cols[3].trim(),fr:cols[4].trim(),
-        tc:cols[5].trim(),td:cols[6].trim(),tr:cols[7].trim(),
-        km:parseFloat(cols[8])||0,fare:parseFloat(cols[9])||0,
-        service:parseFloat(cols[10])||0,detail:parseFloat(cols[11])||0,
-        pax:parseInt(cols[12])||1,id:Date.now()+i
-      });
-      added++;
-    }
-    saveAndPush('uberTrips',trips);renderTrips();updateStats();
-    alert('已匯入 '+added+' 筆行程');
-  };
-  reader.readAsText(file,'UTF-8');
-  e.target.value='';
-}
-
-updateStats();
-
-// 每日收入
-var weeklyCurrentMonth = null;
-
-function addWeekly(){
-  var date=document.getElementById('fw-date').value;
-  var income=parseFloat(document.getElementById('fw-income').value)||0;
-  var tripCount=parseInt(document.getElementById('fw-trips').value)||0;
-  var hours=parseInt(document.getElementById('fw-hours').value)||0;
-  var mins=parseInt(document.getElementById('fw-mins').value)||0;
-  var points=parseInt(document.getElementById('fw-points').value)||0;
-  var note=document.getElementById('fw-note').value.trim();
-  if(!date){alert('請選擇日期');return;}
-  var w=getData('uberWeekly');
-  w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
-  weeklyCurrentMonth=date.slice(0,7);
-  saveAndPush('uberWeekly',w);renderWeekly();updateStats();
-  ['fw-income','fw-trips','fw-hours','fw-mins','fw-points','fw-note'].forEach(id=>document.getElementById(id).value='');
-}
-function deleteWeekly(id){
-  if(!confirm('確定刪除這筆記錄？'))return;
-  saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
-  renderWeekly();updateStats();
-}
-function renderWeekly(){
-  var weekly=getData('uberWeekly');
-  var el=document.getElementById('weeklyListBody');
-
-  renderWeeklyChart(weekly);
-  renderDowAvg();
-
-  var monthSet={};
-  weekly.forEach(function(w){ if(w.date) monthSet[w.date.slice(0,7)]=true; });
-  if(!Object.keys(monthSet).length){
-    if(el) el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div>';
-    return;
-  }
-  var months=Object.keys(monthSet).sort().reverse();
-  if(!weeklyCurrentMonth||!monthSet[weeklyCurrentMonth]) weeklyCurrentMonth=months[0];
-
-  var ym=weeklyCurrentMonth;
-  var ymParts=ym.split('-');
-  var year=parseInt(ymParts[0]),month=parseInt(ymParts[1]);
-  var daysInMonth=new Date(year,month,0).getDate();
-  var today=new Date().toISOString().slice(0,10);
-
-  var wMap={};
-  weekly.forEach(function(w){ if(w.date&&w.date.slice(0,7)===ym) wMap[w.date]=w; });
-  var monthTotal=Object.values(wMap).reduce(function(s,w){return s+(w.income||0);},0);
-  var max=Math.max.apply(null,Object.values(wMap).map(function(w){return w.income||0;}).concat([1]));
-
-  var curIdx=months.indexOf(ym);
-  var prevMonth=curIdx<months.length-1?months[curIdx+1]:null;
-  var nextMonth=curIdx>0?months[curIdx-1]:null;
-
-  var navHtml='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">'
-    +'<div style="display:flex;align-items:center;gap:6px;">'
-    +(prevMonth?'<button onclick="weeklyCurrentMonth=\''+prevMonth+'\';renderWeekly();" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:8px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;">‹ '+prevMonth+'</button>':'<span style="width:80px"></span>')
-    +'<span style="font-family:serif;font-size:22px;font-weight:700;color:#fff;padding:0 12px;">'+year+' 年 '+month+' 月</span>'
-    +(nextMonth?'<button onclick="weeklyCurrentMonth=\''+nextMonth+'\';renderWeekly();" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:8px;color:#00C853;padding:5px 12px;cursor:pointer;font-size:12px;font-family:monospace;">'+nextMonth+' ›</button>':'<span style="width:80px"></span>')
-    +'</div>'
-    +'<div style="font-size:13px;color:rgba(240,220,160,0.8);">本月收入 <span style="color:#00C853;font-weight:700;font-size:15px;">NT$'+fmt(monthTotal)+'</span></div>'
-    +'</div>';
-
-  var rows='';
-  for(var d=1;d<=daysInMonth;d++){
-    var dd=String(d).padStart(2,'0');
-    var dateStr=ym+'-'+dd;
-    var w=wMap[dateStr];
-    var isFuture=(!w&&dateStr>today);
-    var isToday=(dateStr===today);
-    var dow=['日','一','二','三','四','五','六'][new Date(dateStr).getDay()];
-    var dowColor=(dow==='日')?'rgba(255,100,100,0.7)':(dow==='六')?'rgba(100,160,255,0.7)':'rgba(240,220,160,0.55)';
-    if(w){
-      var hStr=(w.hours||0)+'小時'+(w.mins||0)+'分鐘';
-      var barW=Math.round(w.income/max*100);
-      rows+=`<div class="week-bar" style="align-items:center;gap:0;margin-bottom:8px;${isToday?'background:rgba(0,200,83,0.06);border-radius:8px;padding:2px 6px;':''}">
-        <div style="min-width:62px;font-size:13px;color:#f5edd8;flex-shrink:0;">${dateStr.slice(5)} <span style="font-size:11px;color:${dowColor};">週${dow}</span></div>
-        <div class="week-track" style="flex:1;"><div class="week-fill" style="width:${barW}%"></div></div>
-        <div style="min-width:95px;font-size:13px;color:#00C853;font-weight:600;text-align:right;flex-shrink:0;">NT$${fmt(w.income)}</div>
-        <div style="min-width:50px;font-size:13px;color:#f0dca8;text-align:right;flex-shrink:0;">${w.tripCount||0}趟</div>
-        <div style="min-width:115px;font-size:13px;color:#60AAFF;text-align:right;flex-shrink:0;">${hStr}</div>
-        <div style="min-width:55px;font-size:13px;color:#FFD700;text-align:right;flex-shrink:0;">${w.points||0}分</div>
-        <div style="min-width:160px;font-size:12px;color:rgba(200,200,200,0.7);text-align:left;padding-left:12px;flex-shrink:0;">${w.note||''}</div>
-        <span onclick="deleteWeekly(${w.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;margin-left:6px;flex-shrink:0;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span>
-      </div>`;
-    } else {
-      var opacity=isFuture?0.22:0.42;
-      rows+=`<div class="week-bar" style="align-items:center;gap:0;margin-bottom:8px;opacity:${opacity};${isToday?'background:rgba(255,255,255,0.04);border-radius:8px;padding:2px 6px;':''}">
-        <div style="min-width:62px;font-size:13px;color:#f5edd8;flex-shrink:0;">${dateStr.slice(5)} <span style="font-size:11px;color:${dowColor};">週${dow}</span></div>
-        <div class="week-track" style="flex:1;"><div style="height:100%;width:0%;"></div></div>
-        <div style="min-width:95px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
-        <div style="min-width:50px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
-        <div style="min-width:115px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
-        <div style="min-width:55px;font-size:13px;color:rgba(255,255,255,0.2);text-align:right;flex-shrink:0;">—</div>
-        <div style="min-width:160px;flex-shrink:0;"></div>
-        <span style="width:28px;flex-shrink:0;"></span>
-      </div>`;
-    }
-  }
-
-  if(el) el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px 24px;">'+navHtml+rows+'</div>';
-}
-
-// 星期平均收入
-function renderDowAvg(){
-  var el=document.getElementById('weeklyDowAvg');
-  if(!el) return;
-  var weekly=getData('uberWeekly');
-  if(!weekly.length){el.innerHTML='';return;}
-  var DOW_NAMES=['週日','週一','週二','週三','週四','週五','週六'];
-  var DOW_ORDER=[1,2,3,4,5,6,0];
-  var sumMap={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
-  var cntMap={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
-  weekly.forEach(function(w){
-    if(!w.date) return;
-    var p=w.date.split('-');
-    var dow=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2])).getDay();
-    sumMap[dow]+=(w.income||0);
-    cntMap[dow]++;
-  });
-  var avgs=DOW_ORDER.map(function(d){return{d:d,avg:cntMap[d]>0?Math.round(sumMap[d]/cntMap[d]):0};});
-  var sorted=avgs.slice().sort(function(a,b){return b.avg-a.avg;});
-  var top2=[sorted[0].d,sorted[1].d];
-  var cols=avgs.map(function(item){
-    var d=item.d,avg=item.avg;
-    var isTop2=top2.indexOf(d)!==-1&&avg>0;
-    var valColor=isTop2?'#FFD700':'#00C853';
-    return '<div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;">'
-      +'<div style="font-size:16px;color:rgba(240,220,160,0.8);font-weight:700;">'+DOW_NAMES[d]+'</div>'
-      +'<div style="font-size:26px;color:'+valColor+';font-weight:700;font-family:monospace;">'
-        +(cntMap[d]>0?fmt(avg):'<span style="color:rgba(255,255,255,0.15);font-size:20px;">—</span>')
-      +'</div>'
-    +'</div>';
-  }).join('');
-  el.innerHTML='<div style="display:flex;gap:8px;">'+cols+'</div>';
-}
-
-// 每週柱狀圖
-function renderWeeklyChart(weekly){
-  var chartEl=document.getElementById('weeklyChart');
-  if(!chartEl) return;
-  weekly=getData('uberWeekly');
-  function dateToStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-  var yearCount={};
-  weekly.forEach(function(w){if(w.date){var y=w.date.slice(0,4);yearCount[y]=(yearCount[y]||0)+1;}});
-  var dataYear=new Date().getFullYear(),maxCount=0;
-  Object.keys(yearCount).forEach(function(y){if(yearCount[y]>maxCount){maxCount=yearCount[y];dataYear=parseInt(y);}});
-  var ws=new Date(dataYear,3,27),lastWeekEnd=new Date(dataYear,11,28),weeks=[];
-  while(ws<=lastWeekEnd){
-    var we=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+6);
-    var wLabel=(ws.getMonth()+1)+'/'+(ws.getDate());
-    var wsStr=dateToStr(ws),weStr=dateToStr(we),wIncome=0;
-    weekly.forEach(function(w){if(w.date&&w.date>=wsStr&&w.date<=weStr)wIncome+=(w.income||0);});
-    weeks.push({label:wLabel,income:wIncome,start:wsStr,end:weStr});
-    ws=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+7);
-  }
-  var wMax=Math.max.apply(null,weeks.map(function(w){return w.income;}).concat([1]));
-  var t2=new Date();
-  var todayStr2=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
-  var todayWeekIdx=0;
-  weeks.forEach(function(w,i){if(todayStr2>=w.start&&todayStr2<=w.end)todayWeekIdx=i;});
-  var barPx=44,chartH=220;
-  var barsHtml=weeks.map(function(w,i){
-    var h=Math.max(Math.round((w.income/wMax)*chartH),w.income>0?40:3);
-    var isThisWeek=(todayStr2>=w.start&&todayStr2<=w.end);
-    var isFuture=w.start>todayStr2;
-    var barColor=isFuture?'rgba(0,200,83,0.15)':isThisWeek?'#FFD700':'#00C853';
-    var labelColor=isThisWeek?'#FFD700':isFuture?'rgba(240,220,160,0.25)':'rgba(240,220,160,0.55)';
-    var glowStyle=isThisWeek?'box-shadow:0 0 12px rgba(255,215,0,0.55);':'';
-    var numColor=isThisWeek?'rgba(0,0,0,0.8)':'rgba(0,0,0,0.65)';
-    var numStr=fmt(w.income),numLen=numStr.length;
-    var dynSize=Math.min(28,Math.max(14,Math.floor((h-8)/numLen)));
-    var innerNum=w.income>0
-      ?'<div style="position:absolute;top:4px;left:0;right:0;display:flex;justify-content:center;overflow:hidden;height:'+(h-8)+'px;">'
-        +'<span style="writing-mode:vertical-lr;text-orientation:mixed;font-size:'+dynSize+'px;color:'+numColor+';font-family:monospace;font-weight:700;line-height:1;white-space:nowrap;overflow:hidden;max-height:'+(h-8)+'px;">'+numStr+'</span>'
-        +'</div>'
-      :'';
-    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;vertical-align:bottom;width:'+barPx+'px;margin-right:5px;" title="'+w.start+' ~ '+w.end+(w.income?' NT$'+fmt(w.income):'')+'">'
-      +'<div style="position:relative;width:'+barPx+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        +'<div style="position:relative;width:100%;height:'+h+'px;background:'+barColor+';border-radius:3px 3px 0 0;'+glowStyle+'">'
-          +innerNum
-        +'</div>'
-      +'</div>'
-      +'<div style="font-size:9px;color:'+labelColor+';white-space:nowrap;font-family:monospace;'+(isThisWeek?'font-weight:700;':'')+'">'+w.label+'</div>'
-    +'</div>';
-  }).join('');
-  chartEl.innerHTML=
-    '<div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.65);margin-bottom:14px;">每週收入 — '+dataYear+'</div>'
-    +'<div id="weekChartScroll" style="overflow-x:auto;padding-bottom:4px;flex:1;">'
-      +'<div style="display:inline-flex;align-items:flex-end;padding:8px 20px 0;white-space:nowrap;">'
-        +barsHtml
-      +'</div>'
-    +'</div>';
-  setTimeout(function(){
-    var sc=document.getElementById('weekChartScroll');
-    if(!sc) return;
-    var targetX=todayWeekIdx*(barPx+5)+20-sc.clientWidth/2+barPx/2;
-    sc.scrollLeft=Math.max(0,targetX);
-  },50);
-}
-
-
-// 每日支出
-function addMonthly(){
-  var date=document.getElementById('fm-date').value;
-  var type=document.getElementById('fm-type').value;
-  var amount=parseFloat(document.getElementById('fm-amount').value)||0;
-  var note=document.getElementById('fm-note').value.trim();
-  if(!date){alert('請選擇日期');return;}
-  if(!type){alert('請選擇支出類型');return;}
-  var m=getData('uberMonthly');
-  m.unshift({date,type,amount,note,id:Date.now()});
-  saveAndPush('uberMonthly',m);renderMonthly();updateStats();
-  ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fm-type').value='';
-}
-function deleteMonthly(id){
-  if(!confirm('確定刪除這筆支出？'))return;
-  saveAndPush('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
-  renderMonthly();updateStats();
-}
-const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','交通罰鍰':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff'};
-function renderMonthly(){
-  var allMonthly=getData('uberMonthly').sort((a,b)=>b.date.localeCompare(a.date));
-  var q=(document.getElementById('monthly-search')?document.getElementById('monthly-search').value:'').toLowerCase();
-  var tf=(document.getElementById('monthly-type-filter')?document.getElementById('monthly-type-filter').value:'');
-  var monthly=allMonthly.filter(function(m){
-    var matchQ=!q||(m.note&&m.note.toLowerCase().includes(q))||(m.type&&m.type.toLowerCase().includes(q));
-    var matchT=!tf||(m.type===tf);
-    return matchQ&&matchT;
-  });
-  var el=document.getElementById('monthlyList');
-  if(!monthly.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div>';return;}
-  var total=monthly.reduce((s,m)=>s+m.amount,0);
-
-  // ── 圓餅圖（用全部未篩選資料）──
-  (function(){
-    var allData = getData('uberMonthly');
-    var typeMap = {};
-    allData.forEach(function(m){
-      var t = m.type||'其他';
-      typeMap[t] = (typeMap[t]||0) + (m.amount||0);
-    });
-    var types = Object.keys(typeMap).sort(function(a,b){ return typeMap[b]-typeMap[a]; });
-    var grandTotal = types.reduce(function(s,t){ return s+typeMap[t]; }, 0);
-    if(!grandTotal){ document.getElementById('expenseChartWrap').style.display='none'; return; }
-    document.getElementById('expenseChartWrap').style.display='flex';
-
-    var COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#F7DC6F','#DDA0DD','#98D8C8','#FFB347','#87CEEB'];
-    var canvas = document.getElementById('monthlyPieChart');
-    if(!canvas) return;
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,200,200);
-
-    var cx=120, cy=120, r=105;
-    var startAngle = -Math.PI/2;
-    types.forEach(function(t, i){
-      var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, r, startAngle, startAngle+slice);
-      ctx.closePath();
-      ctx.fillStyle = COLORS[i % COLORS.length];
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(30,33,48,0.8)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // 扇形中心標百分比
-      var pct = typeMap[t]/grandTotal*100;
-      if(pct >= 8){
-        var midAngle = startAngle + slice/2;
-        var lx = cx + r*0.65 * Math.cos(midAngle);
-        var ly = cy + r*0.65 * Math.sin(midAngle);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 12px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(pct.toFixed(1)+'%', lx, ly);
-      }
-      startAngle += slice;
-    });
-
-    // 圖例
-    var leg = document.getElementById('pieLegend');
-    leg.innerHTML = types.map(function(t,i){
-      var pct = (typeMap[t]/grandTotal*100).toFixed(1);
-      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">'
-        +'<div style="display:flex;align-items:center;gap:8px;">'
-        +'<div style="width:12px;height:12px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
-        +'<span style="font-size:13px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
-        +'</div>'
-        +'<div style="text-align:right;">'
-        +'<div style="font-size:13px;color:#E8EAF0;font-weight:600;">'+typeMap[t].toLocaleString()+' $</div>'
-        +'</div></div>';
-    }).join('')
-    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;">'
-    + '<span style="font-size:12px;color:rgba(255,255,255,0.5);">總額</span>'
-    + '<span style="font-size:13px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
-    + '</div>';
-  })();
-
-
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
-    +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
-    +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
-    +'</tr></thead><tbody>'
-    +monthly.map(m=>{
-      var col=TYPE_COLOR[m.type]||'#f0dca8';
-      return `<tr>
-        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#E8EAF0;font-size:17px;">${m.date}</td>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:4px 14px;border-radius:99px;font-size:15px;letter-spacing:0.05em;">${m.type}</span></td>
-        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:18px;font-weight:600;">NT$${fmt(m.amount)}</td>
-        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'—'}</td>
-        <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;"><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
-      </tr>`;
-    }).join('')
-    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
-    +'</table></div>';
-}
-// 統計
-function updateStats(){
-  var now=new Date(),thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  // 本月收入 & 時數：從「每日收入」表
-  var weekly=getData('uberWeekly').filter(function(w){return w.date&&w.date.startsWith(thisMonth);});
-  var income=weekly.reduce(function(s,w){return s+w.income;},0);
-  var totalMins=weekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
-  var hours=totalMins/60;
-  var tripCount=weekly.reduce(function(s,w){return s+(w.tripCount||0);},0);
-  // 若每日收入沒有行程數，fallback 到行程記錄表
-  if(!tripCount) tripCount=getData('uberTrips').length;
-  // 本月支出：從「每日支出」表
-  var monthly=getData('uberMonthly').filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
-  var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
-  // 淨收入 = 收入 - 支出
-  var net=income-exp;
-  // 平均時薪 = 收入 / 時數
-  var hourly=hours>0?(income/hours).toFixed(0):0;
-  // 總收入、總支出、總淨利（所有時間）
-  var allWeekly=getData('uberWeekly');
-  var allMonthly=getData('uberMonthly');
-  var totalIncome=allWeekly.reduce(function(s,w){return s+w.income;},0);
-  var totalExp=allMonthly.reduce(function(s,m){return s+m.amount;},0);
-  var totalNet=totalIncome-totalExp;
-
-  document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
-  document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
-  document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
-  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
-  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
-  document.getElementById('s-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(net)+'</em>';
-  document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalIncome)+'</em>';
-  document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
-  document.getElementById('s-total-net').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalNet)+'</em>';
-}
-// 縣市分區資料
-const DISTRICTS = {
-  '新北市': ['板橋區','三重區','中和區','永和區','新莊區','新店區','樹林區','鶯歌區','三峽區','淡水區','汐止區','瑞芳區','土城區','蘆洲區','五股區','泰山區','林口區','深坑區','石碇區','坪林區','三芝區','石門區','八里區','平溪區','雙溪區','貢寮區','金山區','萬里區','烏來區'],
-  '台北市': ['中正區','大同區','中山區','松山區','大安區','萬華區','信義區','士林區','北投區','內湖區','南港區','文山區'],
-  '桃園市': ['桃園區','中壢區','大溪區','楊梅區','蘆竹區','大園區','龜山區','八德區','龍潭區','平鎮區','新屋區','觀音區','復興區'],
-  '宜蘭縣': ['宜蘭市','羅東鎮','蘇澳鎮','頭城鎮','礁溪鄉','壯圍鄉','員山鄉','冬山鄉','五結鄉','三星鄉','大同鄉','南澳鄉']
-};
-function updateDistricts(type){
-  var cityId = type==='from' ? 'f-from-city' : 'f-to-city';
-  var distId = type==='from' ? 'f-from-dist' : 'f-to-dist';
-  var city = document.getElementById(cityId).value;
-  var distSel = document.getElementById(distId);
-  distSel.innerHTML = '<option value="">請選擇區域</option>';
-  if(city && DISTRICTS[city]){
-    DISTRICTS[city].forEach(function(d){
-      var opt = document.createElement('option');
-      opt.value = d; opt.textContent = d;
-      distSel.appendChild(opt);
-    });
-  } else {
-    distSel.innerHTML = '<option value="">請先選縣市</option>';
-  }
-}
-// 初始化
-document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-renderTrips();renderWeekly();renderMonthly();updateStats();
 </script>
 </body>
 </html>
