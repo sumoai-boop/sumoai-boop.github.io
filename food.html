@@ -768,6 +768,22 @@ render();
   setInterval(updateTime,10000);
 })();
 
+</script>
+// 時鐘
+(function(){
+  function updateTime(){
+    var el=document.getElementById('gmbTime');
+    if(!el) return;
+    var now=new Date();
+    var d=['日','一','二','三','四','五','六'][now.getDay()];
+    var h=String(now.getHours()).padStart(2,'0');
+    var m=String(now.getMinutes()).padStart(2,'0');
+    el.textContent='週'+d+' '+now.getMonth()+'/'+(now.getDate())+' '+h+':'+m;
+  }
+  updateTime();
+  setInterval(updateTime,10000);
+})();
+
 // Dock 自動隱藏
 (function(){
   var dock=document.getElementById('globalDock');
