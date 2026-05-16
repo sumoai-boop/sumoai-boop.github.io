@@ -1084,6 +1084,22 @@ function updateDistricts(type){
 }
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+// 補齊舊資料的 seq（依 id 升序，即新增時間順序）
+(function migrateSeq(){
+  var trips = getData('uberTrips');
+  var needSave = false;
+  // 找出已有 seq 的最大值
+  var maxSeq = trips.reduce(function(m,t){ return (t.seq||0)>m?(t.seq||0):m; }, 0);
+  // 依 id 升序排列沒有 seq 的筆
+  var noSeq = trips.filter(function(t){ return t.seq == null; }).sort(function(a,b){ return a.id-b.id; });
+  noSeq.forEach(function(t){
+    maxSeq++;
+    t.seq = maxSeq;
+    needSave = true;
+  });
+  if(needSave) saveAndPush('uberTrips', trips);
+})();
+
 renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();
 </script>
 </body>
