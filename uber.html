@@ -313,11 +313,7 @@ body{
       </div>
       <button class="btn-add" onclick="addWeekly()">新增記錄</button>
     </div>
-
-    <!-- 星期幾平均收入 -->
     <div id="weekdayAvgWrap" style="margin:18px 0 0;"></div>
-
-    <!-- 月份切換 + 列表 -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;flex-wrap:wrap;gap:8px;">
       <div style="font-size:11px;letter-spacing:0.1em;color:rgba(0,200,83,0.7);text-transform:uppercase;">每日記錄</div>
       <div style="display:flex;align-items:center;gap:6px;">
@@ -377,40 +373,15 @@ body{
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
-    <a href="about.html" class="gd-item">
-      <div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-      <span class="gd-label">關於</span>
-    </a>
-    <a href="photos.html" class="gd-item">
-      <div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div>
-      <span class="gd-label">照片</span>
-    </a>
-    <a href="dramas.html" class="gd-item">
-      <div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div>
-      <span class="gd-label">追劇</span>
-    </a>
-    <a href="food.html" class="gd-item">
-      <div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div>
-      <span class="gd-label">食記</span>
-    </a>
+    <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
+    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
+    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
     <div class="gd-sep"></div>
-    <a href="travel.html" class="gd-item">
-      <div class="gd-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
-      <span class="gd-label">旅遊足跡</span>
-    </a>
-    <a href="threads.html" class="gd-item">
-      <div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div>
-      <span class="gd-label">Threads</span>
-    </a>
-    <a href="uber.html" class="gd-item">
-      <div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div>
-      <span class="gd-label">Uber</span>
-      <div class="gd-dot"></div>
-    </a>
-    <a href="reminder.html" class="gd-item">
-      <div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-      <span class="gd-label">提醒</span>
-    </a>
+    <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><span class="gd-label">旅遊足跡</span></a>
+    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div><span class="gd-label">Threads</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
+    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
   </div>
 </div>
 
@@ -641,10 +612,11 @@ function renderTrips(){
   if(tripPage>totalTripPages) tripPage=1;
   var pagedTrips = trips.slice((tripPage-1)*TRIP_PAGE_SIZE, tripPage*TRIP_PAGE_SIZE);
 
-  // 序號：依陣列原始位置（新增順序）給每筆固定號碼
-  var allTripsRaw = getData('uberTrips');
+  // 序號：依 id（新增時間戳）升序，id 越小 = 越早新增 = 序號越小
   var seqMap = {};
-  allTripsRaw.forEach(function(t,i){ seqMap[t.id] = i+1; });
+  getData('uberTrips').slice().sort(function(a,b){return (a.id||0)-(b.id||0);}).forEach(function(t,i){
+    seqMap[t.id] = i+1;
+  });
 
   var tbody=document.getElementById('tripBody');
   var tfoot=document.getElementById('tripFoot');
@@ -670,7 +642,6 @@ function renderTrips(){
   tbody.innerHTML=pagedTrips.map((t,i)=>{
     totalKm+=(t.km||0);totalFare+=(t.fare||0);
     totalService+=(t.service||0);totalDetail+=(t.detail||0);totalPax+=(t.pax||1);
-    var globalIdx = (tripPage-1)*TRIP_PAGE_SIZE + i;
     return `<tr>
       <td style="color:rgba(240,220,160,0.5);font-size:11px">${seqMap[t.id]||''}</td>
       <td>${t.d||''}</td>
@@ -761,80 +732,54 @@ function deleteWeekly(id){
   saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
   renderWeekly();updateStats();
 }
-// 月份頁碼
 var weeklyPageMonth = 0;
 
 function renderWeekdayAvg(){
-  var el = document.getElementById('weekdayAvgWrap');
-  if(!el) return;
-  var all = getData('uberWeekly');
-  if(!all.length){ el.innerHTML=''; return; }
-  var ORDER = [1,2,3,4,5,6,0];
-  var DAY_NAMES = ['一','二','三','四','五','六','日'];
-  var sums = [0,0,0,0,0,0,0], counts = [0,0,0,0,0,0,0];
-  all.forEach(function(w){
-    if(!w.date||!w.income) return;
-    var dow = new Date(w.date).getDay();
-    sums[dow] += w.income; counts[dow]++;
-  });
-  var cells = ORDER.map(function(dow, i){
-    var avg = counts[dow]>0 ? Math.round(sums[dow]/counts[dow]) : null;
-    var isWeekend = (dow===0||dow===6);
+  var el=document.getElementById('weekdayAvgWrap'); if(!el) return;
+  var all=getData('uberWeekly'); if(!all.length){el.innerHTML='';return;}
+  var ORDER=[1,2,3,4,5,6,0],DAY_NAMES=['一','二','三','四','五','六','日'];
+  var sums=[0,0,0,0,0,0,0],counts=[0,0,0,0,0,0,0];
+  all.forEach(function(w){ if(!w.date||!w.income)return; var dow=new Date(w.date).getDay(); sums[dow]+=w.income;counts[dow]++; });
+  var cells=ORDER.map(function(dow,i){
+    var avg=counts[dow]>0?Math.round(sums[dow]/counts[dow]):null,isWE=(dow===0||dow===6);
     return '<div style="flex:1;min-width:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:14px 6px;text-align:center;">'
-      + '<div style="font-size:14px;font-weight:600;color:'+(isWeekend?'#FF9999':'rgba(240,220,160,0.8)')+';margin-bottom:10px;">週'+DAY_NAMES[i]+'</div>'
-      + '<div style="font-size:20px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.15)')+';">'+(avg?avg.toLocaleString():'—')+'</div>'
-    + '</div>';
+      +'<div style="font-size:14px;font-weight:600;color:'+(isWE?'#FF9999':'rgba(240,220,160,0.8)')+';margin-bottom:10px;">週'+DAY_NAMES[i]+'</div>'
+      +'<div style="font-size:20px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.15)')+';">'+(avg?avg.toLocaleString():'—')+'</div>'
+    +'</div>';
   }).join('');
-  el.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:rgba(0,200,83,0.6);text-transform:uppercase;margin-bottom:8px;">星期平均收入</div>'
-    + '<div style="display:flex;gap:6px;">'+cells+'</div>';
+  el.innerHTML='<div style="font-size:10px;letter-spacing:0.1em;color:rgba(0,200,83,0.6);text-transform:uppercase;margin-bottom:8px;">星期平均收入</div><div style="display:flex;gap:6px;">'+cells+'</div>';
 }
 
 function renderWeekly(){
-  var el = document.getElementById('weeklyList');
-  var lbl = document.getElementById('weeklyPageLabel');
-  if(!el) return;
+  var el=document.getElementById('weeklyList'),lbl=document.getElementById('weeklyPageLabel'); if(!el) return;
   renderWeekdayAvg();
-  var now = new Date();
-  var targetDate = new Date(now.getFullYear(), now.getMonth() + weeklyPageMonth, 1);
-  var yr = targetDate.getFullYear(), mo = targetDate.getMonth();
-  var targetYM = yr+'-'+String(mo+1).padStart(2,'0');
-  if(lbl) lbl.textContent = yr+'/'+(mo+1)+'月';
-  var daysInMonth = new Date(yr, mo+1, 0).getDate();
-  var allDates = [];
-  for(var d=1; d<=daysInMonth; d++) allDates.push(targetYM+'-'+String(d).padStart(2,'0'));
-  var allWeekly = getData('uberWeekly');
-  var recordMap = {};
-  allWeekly.forEach(function(w){ if(w.date) recordMap[w.date] = w; });
-  var max = 1;
-  allDates.forEach(function(dt){ if(recordMap[dt] && recordMap[dt].income > max) max = recordMap[dt].income; });
-  var DAY_NAMES = ['日','一','二','三','四','五','六'];
-  el.innerHTML = '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
+  var now=new Date(),td=new Date(now.getFullYear(),now.getMonth()+weeklyPageMonth,1);
+  var yr=td.getFullYear(),mo=td.getMonth(),targetYM=yr+'-'+String(mo+1).padStart(2,'0');
+  if(lbl) lbl.textContent=yr+'/'+(mo+1)+'月';
+  var dim=new Date(yr,mo+1,0).getDate(),allDates=[];
+  for(var d=1;d<=dim;d++) allDates.push(targetYM+'-'+String(d).padStart(2,'0'));
+  var rmap={};getData('uberWeekly').forEach(function(w){if(w.date)rmap[w.date]=w;});
+  var max=1;allDates.forEach(function(dt){if(rmap[dt]&&rmap[dt].income>max)max=rmap[dt].income;});
+  var DN=['日','一','二','三','四','五','六'];
+  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
     +'<colgroup><col style="width:58px"><col style="width:28px"><col><col style="width:88px"><col style="width:44px"><col style="width:100px"><col style="width:46px"><col style="width:90px"><col style="width:28px"></colgroup>'
-    +'<tbody>'
-    + allDates.slice().reverse().map(function(dt){
-      var w = recordMap[dt];
-      var dateObj = new Date(dt+'T00:00:00');
-      var dow = dateObj.getDay();
-      var isWeekend = (dow===0||dow===6);
-      var dateColor = isWeekend ? '#FF9999' : '#f5edd8';
-      var hasData = !!w;
-      var income = hasData ? (w.income||0) : 0;
-      var pct = income>0 ? income/max*100 : 0;
-      var hStr = hasData ? (w.hours||0)+'h'+(w.mins||0)+'m' : '';
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(hasData?'':'opacity:0.4;')+'">'
-        +'<td style="padding:9px 6px 9px 14px;font-size:12px;color:'+dateColor+';white-space:nowrap;">'+dt.slice(5)+'</td>'
-        +'<td style="padding:9px 2px;font-size:11px;color:'+dateColor+';text-align:center;">週'+DAY_NAMES[dow]+'</td>'
+    +'<tbody>'+allDates.slice().reverse().map(function(dt){
+      var w=rmap[dt],dobj=new Date(dt+'T00:00:00'),dow=dobj.getDay(),isWE=(dow===0||dow===6);
+      var dc=isWE?'#FF9999':'#f5edd8',has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
+      var hStr=has?(w.hours||0)+'h'+(w.mins||0)+'m':'';
+      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(has?'':'opacity:0.4;')+'">'
+        +'<td style="padding:9px 6px 9px 14px;font-size:12px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
+        +'<td style="padding:9px 2px;font-size:11px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
         +'<td style="padding:9px 8px;"><div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
-        +'<td style="padding:9px 6px;font-size:13px;color:'+(income>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:600;text-align:right;white-space:nowrap;">'+(income>0?'NT$'+fmt(income):'—')+'</td>'
-        +'<td style="padding:9px 4px;font-size:12px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(hasData&&w.tripCount?w.tripCount+'趟':'')+'</td>'
+        +'<td style="padding:9px 6px;font-size:13px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:600;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
+        +'<td style="padding:9px 4px;font-size:12px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
         +'<td style="padding:9px 4px;font-size:11px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
-        +'<td style="padding:9px 4px;font-size:12px;color:#FFD700;text-align:right;white-space:nowrap;">'+(hasData&&w.points?w.points+'分':'')+'</td>'
-        +'<td style="padding:9px 4px;font-size:11px;color:rgba(200,200,200,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(hasData&&w.note?w.note:'')+'">'+(hasData&&w.note?w.note:'')+'</td>'
-        +'<td style="padding:9px 10px 9px 2px;text-align:center;">'+(hasData?'<span class="del-btn" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
+        +'<td style="padding:9px 4px;font-size:12px;color:#FFD700;text-align:right;white-space:nowrap;">'+(has&&w.points?w.points+'分':'')+'</td>'
+        +'<td style="padding:9px 4px;font-size:11px;color:rgba(200,200,200,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
+        +'<td style="padding:9px 10px 9px 2px;text-align:center;">'+(has?'<span class="del-btn" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
       +'</tr>';
-    }).join('')
-    +'</tbody></table></div>';
+    }).join('')+'</tbody></table></div>';
 }
 
 // 每日支出
@@ -955,78 +900,56 @@ function renderMonthly(){
     +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
-var weekChartYear = new Date().getFullYear();
-var monthChartYear = new Date().getFullYear();
-
+var weekChartYear=new Date().getFullYear(),monthChartYear=new Date().getFullYear();
 function renderWeekIncomeChart(){
   var el=document.getElementById('weekIncomeChart'),lbl=document.getElementById('weekChartYearLabel');
-  if(!el) return; if(lbl) lbl.textContent=weekChartYear;
-  var EPOCH=new Date('2025-04-28'),allDaily=getData('uberWeekly'),weekMap={};
-  allDaily.forEach(function(w){
-    if(!w.date) return;
-    var diff=Math.floor((new Date(w.date)-EPOCH)/86400000),wi=Math.floor(diff/7);
-    var ws=new Date(EPOCH); ws.setDate(ws.getDate()+wi*7);
-    var key=ws.toISOString().slice(0,10);
-    if(!weekMap[key]) weekMap[key]=0; weekMap[key]+=w.income||0;
-  });
-  var yS=new Date(weekChartYear+'-01-01'),yE=new Date(weekChartYear+'-12-31');
-  var dtY=Math.floor((yS-EPOCH)/86400000),fwi=dtY<0?0:Math.ceil(dtY/7);
-  var weeks=[],wi=fwi;
+  if(!el)return;if(lbl)lbl.textContent=weekChartYear;
+  var EPOCH=new Date('2025-04-28'),allD=getData('uberWeekly'),wmap={};
+  allD.forEach(function(w){if(!w.date)return;var diff=Math.floor((new Date(w.date)-EPOCH)/86400000),wi=Math.floor(diff/7),ws=new Date(EPOCH);ws.setDate(ws.getDate()+wi*7);var k=ws.toISOString().slice(0,10);if(!wmap[k])wmap[k]=0;wmap[k]+=w.income||0;});
+  var yS=new Date(weekChartYear+'-01-01'),yE=new Date(weekChartYear+'-12-31'),dtY=Math.floor((yS-EPOCH)/86400000),fwi=dtY<0?0:Math.ceil(dtY/7),weeks=[],wi=fwi;
   while(true){var ws=new Date(EPOCH);ws.setDate(ws.getDate()+wi*7);if(ws>yE)break;weeks.push(ws.toISOString().slice(0,10));wi++;}
   if(!weeks.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>無資料</div>';return;}
-  var now=new Date(),dn=Math.floor((now-EPOCH)/86400000),twi=Math.floor(dn/7);
-  var tws=new Date(EPOCH);tws.setDate(tws.getDate()+twi*7);var twk=tws.toISOString().slice(0,10);
-  var values=weeks.map(function(k){return weekMap[k]||0;});
-  var maxVal=Math.max.apply(null,values.concat([1]));
-  var chartH=200,BAR_W=44;
+  var now=new Date(),dn=Math.floor((now-EPOCH)/86400000),twi=Math.floor(dn/7),tws=new Date(EPOCH);tws.setDate(tws.getDate()+twi*7);var twk=tws.toISOString().slice(0,10);
+  var values=weeks.map(function(k){return wmap[k]||0;}),maxVal=Math.max.apply(null,values.concat([1])),chartH=200,BAR_W=44;
   var bars=weeks.map(function(k,i){
-    var isCurrent=(k===twk),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
+    var iC=(k===twk),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
     var d=new Date(k),label=(d.getMonth()+1)+'/'+(d.getDate());
-    var barGrad=isCurrent?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
-    var lblColor=isCurrent?'#FFD700':'rgba(240,220,160,0.7)';
-    var numColor=isCurrent?'#7A5800':'#004D20';
+    var bg=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
+    var lc=iC?'#FFD700':'rgba(240,220,160,0.7)',nc=iC?'#7A5800':'#004D20';
     var fs=Math.min(Math.floor((BAR_W-10)*0.6),Math.floor(barH*0.25),24);
-    var inner=values[i]>0&&barH>=32
-      ?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:800;color:'+numColor+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
+    var inner=values[i]>0&&barH>=32?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;min-width:'+BAR_W+'px;flex-shrink:0;">'
       +'<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
-        +'<div style="position:relative;width:100%;height:'+barH+'px;background:'+barGrad+';border-radius:3px 3px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
+        +'<div style="position:relative;width:100%;height:'+barH+'px;background:'+bg+';border-radius:3px 3px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
       +'</div>'
-      +'<div style="width:'+BAR_W+'px;padding:6px 1px 0;text-align:center;"><div style="font-size:10px;color:'+lblColor+';font-weight:'+(isCurrent?'700':'400')+';line-height:1.3;">'+label+'</div></div>'
+      +'<div style="width:'+BAR_W+'px;padding:6px 1px 0;text-align:center;"><div style="font-size:10px;color:'+lc+';font-weight:'+(iC?'700':'400')+';line-height:1.3;">'+label+'</div></div>'
     +'</div>';
   }).join('');
-  el.innerHTML='<div style="width:100%;overflow-x:auto;overflow-y:visible;"><div style="display:flex;align-items:flex-end;gap:1px;padding:4px 0 0;width:max-content;padding-bottom:8px;">'+bars+'</div></div>';
+  el.innerHTML='<div style="width:100%;overflow-x:auto;overflow-y:visible;"><div style="display:flex;align-items:flex-end;gap:1px;padding:4px 0 8px;width:max-content;">'+bars+'</div></div>';
 }
-
 function renderMonthIncomeChart(){
   var el=document.getElementById('monthIncomeChart'),lbl=document.getElementById('monthChartYearLabel');
-  if(!el) return; if(lbl) lbl.textContent=monthChartYear;
-  var allDaily=getData('uberWeekly'),monthMap={};
-  allDaily.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!monthMap[ym])monthMap[ym]=0;monthMap[ym]+=w.income||0;});
-  var now=new Date(),thisYM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  var months=[];for(var m=1;m<=12;m++) months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
-  var values=months.map(function(ym){return monthMap[ym]||0;});
-  var maxVal=Math.max.apply(null,values.concat([1]));
-  var chartH=200,barWidth=50;
+  if(!el)return;if(lbl)lbl.textContent=monthChartYear;
+  var allD=getData('uberWeekly'),mmap={};
+  allD.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!mmap[ym])mmap[ym]=0;mmap[ym]+=w.income||0;});
+  var now=new Date(),tYM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var months=[];for(var m=1;m<=12;m++)months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
+  var values=months.map(function(ym){return mmap[ym]||0;}),maxVal=Math.max.apply(null,values.concat([1])),chartH=200,bw=50;
   var bars=months.map(function(ym,i){
-    var isCurrent=(ym===thisYM),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
-    var barGrad=isCurrent?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
-    var lblColor=isCurrent?'#FFD700':'rgba(240,220,160,0.8)';
-    var numColor=isCurrent?'#7A5800':'#004D20';
-    var label=(i+1)+'月';
-    var mfs=Math.min(Math.floor((barWidth-10)*0.55),Math.floor(barH*0.22),22);
-    var inner=values[i]>0&&barH>=36
-      ?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+numColor+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+barWidth+'px;">'
+    var iC=(ym===tYM),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
+    var bg=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
+    var lc=iC?'#FFD700':'rgba(240,220,160,0.8)',nc=iC?'#7A5800':'#004D20',label=(i+1)+'月';
+    var mfs=Math.min(Math.floor((bw-10)*0.55),Math.floor(barH*0.22),22);
+    var inner=values[i]>0&&barH>=36?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+bw+'px;">'
       +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
-        +'<div style="position:relative;width:'+(barWidth-6)+'px;height:'+barH+'px;background:'+barGrad+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
+        +'<div style="position:relative;width:'+(bw-6)+'px;height:'+barH+'px;background:'+bg+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
       +'</div>'
-      +'<div style="font-size:13px;color:'+lblColor+';white-space:nowrap;font-weight:'+(isCurrent?'700':'400')+';padding-top:6px;">'+label+'</div>'
+      +'<div style="font-size:13px;color:'+lc+';white-space:nowrap;font-weight:'+(iC?'700':'400')+';padding-top:6px;">'+label+'</div>'
     +'</div>';
   }).join('');
   el.innerHTML='<div style="display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div>';
 }
-
 // 統計
 function updateStats(){
   var now=new Date(),thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
