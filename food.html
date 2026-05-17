@@ -737,28 +737,51 @@ function applyCrop(){ cropImg.style.transform=`translate(${cropState.x}px,${crop
 function loadCropFile(file){
   const reader=new FileReader();
   reader.onload=ev=>{
+    // 先把 container 顯示出來，讓瀏覽器 layout 後才能正確讀到 offsetWidth
+    cropContainer.style.display='flex';
+    cropImg.style.transform='none';
+    cropImg.src='';
     cropImg.onload=()=>{
-      const s=cropState;
-      s.naturalW=cropImg.naturalWidth; s.naturalH=cropImg.naturalHeight;
-      s.vpW=cropViewport.offsetWidth;  s.vpH=cropViewport.offsetHeight;
-      const scaleW=s.vpW/s.naturalW, scaleH=s.vpH/s.naturalH;
-      s.scale=Math.max(scaleW,scaleH);
-      cropZoom.min=Math.round(s.scale*100);
-      cropZoom.max=Math.round(s.scale*100*3);
-      cropZoom.value=Math.round(s.scale*100);
-      s.x=(s.vpW-s.naturalW*s.scale)/2;
-      s.y=(s.vpH-s.naturalH*s.scale)/2;
-      clampCrop(); applyCrop();
-      cropLabel.textContent=`裁切照片 ${pendingIdx+1} / ${pendingFiles.length}`;
-      cropContainer.style.display='flex';
+      // 用 rAF 確保 layout 已完成
+      requestAnimationFrame(()=>{
+        const s=cropState;
+        s.naturalW=cropImg.naturalWidth; s.naturalH=cropImg.naturalHeight;
+        s.vpW=cropViewport.offsetWidth;  s.vpH=cropViewport.offsetHeight;
+        if(!s.vpW||!s.vpH){
+          // 若還是 0，再等一個 frame
+          requestAnimationFrame(()=>{
+            s.vpW=cropViewport.offsetWidth; s.vpH=cropViewport.offsetHeight;
+            initCropScale(s);
+          });
+        } else {
+          initCropScale(s);
+        }
+      });
     };
     cropImg.src=ev.target.result;
   };
   reader.readAsDataURL(file);
 }
 
+function initCropScale(s){
+  const scaleW=s.vpW/s.naturalW, scaleH=s.vpH/s.naturalH;
+  s.scale=Math.max(scaleW,scaleH);
+  cropZoom.min=Math.round(s.scale*100);
+  cropZoom.max=Math.round(s.scale*300);
+  cropZoom.value=Math.round(s.scale*100);
+  s.x=(s.vpW-s.naturalW*s.scale)/2;
+  s.y=(s.vpH-s.naturalH*s.scale)/2;
+  clampCrop(); applyCrop();
+  cropLabel.textContent=`裁切照片 ${pendingIdx+1} / ${pendingFiles.length}`;
+}
+
 function getCroppedDataUrl(maxW,maxH,quality){
   const s=cropState;
+  // 確保 vpW/vpH 是最新值
+  if(!s.vpW||!s.vpH){
+    s.vpW=cropViewport.offsetWidth;
+    s.vpH=cropViewport.offsetHeight;
+  }
   const canvas=document.createElement('canvas');
   canvas.width=s.vpW; canvas.height=s.vpH;
   canvas.getContext('2d').drawImage(cropImg,s.x,s.y,s.naturalW*s.scale,s.naturalH*s.scale);
