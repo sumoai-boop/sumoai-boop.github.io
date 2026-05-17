@@ -975,27 +975,44 @@ function openDetail(item){
   else noteRow.style.display='none';
   // 照片輪播
   const wrap=document.getElementById('detailImgWrap');
+  wrap.innerHTML='';
   const imgs=item.imgs||(item.img?[item.img]:[]);
   if(imgs.length===0){
     wrap.innerHTML=`<div class="modal-img-placeholder">🍜</div>`;
-  } else if(imgs.length===1){
-    wrap.innerHTML=`<img class="modal-img" src="${imgs[0]}" alt="${item.name}">`;
   } else {
     let slideIdx=0;
-    const render=()=>{
-      wrap.innerHTML=`
-        <img class="modal-img" src="${imgs[slideIdx]}" alt="${item.name}" style="display:block;">
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 10px;pointer-events:none;">
-          <button onclick="this.closest('[id=detailImgWrap]').__prev()" style="pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">‹</button>
-          <button onclick="this.closest('[id=detailImgWrap]').__next()" style="pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">›</button>
-        </div>
-        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;">
-          ${imgs.map((_,i)=>`<div style="width:6px;height:6px;border-radius:50%;background:${i===slideIdx?'#fff':'rgba(255,255,255,0.4)'}"></div>`).join('')}
-        </div>`;
+    const renderSlide=()=>{
+      wrap.innerHTML='';
+      const img=document.createElement('img');
+      img.className='modal-img';
+      img.src=imgs[slideIdx];
+      img.alt=item.name;
+      img.style.display='block';
+      wrap.appendChild(img);
+      if(imgs.length>1){
+        const nav=document.createElement('div');
+        nav.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 10px;pointer-events:none;';
+        const prev=document.createElement('button');
+        prev.textContent='‹';
+        prev.style.cssText='pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;';
+        prev.onclick=()=>{ slideIdx=(slideIdx-1+imgs.length)%imgs.length; renderSlide(); };
+        const next=document.createElement('button');
+        next.textContent='›';
+        next.style.cssText='pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;';
+        next.onclick=()=>{ slideIdx=(slideIdx+1)%imgs.length; renderSlide(); };
+        nav.appendChild(prev); nav.appendChild(next);
+        wrap.appendChild(nav);
+        const dots=document.createElement('div');
+        dots.style.cssText='position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;';
+        imgs.forEach((_,i)=>{
+          const d=document.createElement('div');
+          d.style.cssText=`width:6px;height:6px;border-radius:50%;background:${i===slideIdx?'#fff':'rgba(255,255,255,0.4)'};`;
+          dots.appendChild(d);
+        });
+        wrap.appendChild(dots);
+      }
     };
-    wrap.__prev=()=>{ slideIdx=(slideIdx-1+imgs.length)%imgs.length; render(); };
-    wrap.__next=()=>{ slideIdx=(slideIdx+1)%imgs.length; render(); };
-    render();
+    renderSlide();
   }
   document.getElementById('detailMask').classList.add('open');
 }
@@ -1039,12 +1056,23 @@ function render(){
       const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
 
       if(coverImg){
-        card.innerHTML=`
-          <img src="${coverImg}" alt="${item.name}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
-          ${photoCount}
-          <div class="card-bottom">
-            <div class="card-name">${item.name}</div>
-          </div>`;
+        // 用 DOM API 建立 img，避免 innerHTML 截斷 base64
+        const img = document.createElement('img');
+        img.src = coverImg;
+        img.alt = item.name;
+        img.loading = 'lazy';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
+        card.appendChild(img);
+        if(item.imgs && item.imgs.length > 1){
+          const badge = document.createElement('span');
+          badge.textContent = `⧉ ${item.imgs.length}`;
+          badge.style.cssText = 'position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;';
+          card.appendChild(badge);
+        }
+        const bottom = document.createElement('div');
+        bottom.className = 'card-bottom';
+        bottom.innerHTML = `<div class="card-name">${item.name}</div>`;
+        card.appendChild(bottom);
       } else {
         card.innerHTML=`
           <div class="no-photo-icon">🍜</div>
