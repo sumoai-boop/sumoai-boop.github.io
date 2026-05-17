@@ -453,8 +453,9 @@
 
       <!-- 名稱 -->
       <div class="field-group">
-        <label class="field-label">餐廳名稱 *</label>
-        <input class="field-input" id="fName" placeholder="輸入餐廳名稱">
+        <label class="field-label">餐廳名稱 * <span style="opacity:0.4;font-size:9px;">第一行 / 第二行</span></label>
+        <input class="field-input" id="fName1" placeholder="第一行（例：Lazy Pasta）">
+        <input class="field-input" id="fName2" placeholder="第二行（例：慵懶義式廚房）" style="margin-top:6px;">
       </div>
       <!-- 餐廳類型 -->
       <div class="field-group">
@@ -918,7 +919,8 @@ function resetFormPhotos(imgs){
 function openForm(item=null){
   editMode=!!item; currentId=item?item.id:null;
   document.getElementById('formTitle').textContent=item?'編輯食記':'新增食記';
-  document.getElementById('fName').value=item?item.name:'';
+  document.getElementById('fName1').value=item?(item.name1||item.name||''):'';
+  document.getElementById('fName2').value=item?(item.name2||''):'';
   document.getElementById('fType').value=item?(item.type||''):'';
   document.getElementById('fDate').value=item&&item.date?item.date:new Date().toISOString().slice(0,10);
   document.getElementById('fPrice').value=item&&item.price?item.price:'';
@@ -944,8 +946,10 @@ document.getElementById('formCancel').addEventListener('click',closeForm);
 document.getElementById('formMask').addEventListener('click',e=>{if(e.target===document.getElementById('formMask'))closeForm();});
 
 document.getElementById('formSave').addEventListener('click',async()=>{
-  const name=document.getElementById('fName').value.trim();
-  if(!name){alert('請輸入餐廳名稱');return;}
+  const name1=document.getElementById('fName1').value.trim();
+  const name2=document.getElementById('fName2').value.trim();
+  const name=name1+(name2?' '+name2:''); // 合併用於搜尋/統計
+  if(!name1){alert('請輸入餐廳名稱');return;}
   const price=parseInt(document.getElementById('fPrice').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
   const type=document.getElementById('fType').value.trim();
@@ -971,9 +975,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,type,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,type,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
   }
   if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
@@ -995,8 +999,9 @@ function starsHTMLDecimal(score){
 
 function openDetail(item){
   currentId=item.id;
-  document.getElementById('dName').textContent=item.name;
-  // 類型標籤
+  const line1=item.name1||item.name||'';
+  const line2=item.name2||'';
+  document.getElementById('dName').innerHTML=line1+(line2?'<br><span style="font-size:18px;opacity:0.75;">'+line2+'</span>':'');
   const dNameEl=document.getElementById('dName');
   const existBadge=document.getElementById('dTypeBadge');
   if(existBadge) existBadge.remove();
@@ -1118,17 +1123,17 @@ function render(){
         }
         const bottom = document.createElement('div');
         bottom.className = 'card-bottom';
-        const n = item.name;
-        const nameHtml = n.length > 10 ? n.slice(0,10)+'<br>'+n.slice(10) : n;
-        bottom.innerHTML = `<div class="card-name">${nameHtml}</div>`;
+        const line1 = item.name1 || item.name || '';
+        const line2 = item.name2 || '';
+        bottom.innerHTML = `<div class="card-name">${line1}${line2?'<br>'+line2:''}</div>`;
         card.appendChild(bottom);
       } else {
-        const n = item.name;
-        const nameHtml = n.length > 10 ? n.slice(0,10)+'<br>'+n.slice(10) : n;
+        const line1 = item.name1 || item.name || '';
+        const line2 = item.name2 || '';
         card.innerHTML=`
           <div class="no-photo-icon">🍜</div>
           <div class="card-bottom">
-            <div class="card-name">${nameHtml}</div>
+            <div class="card-name">${line1}${line2?'<br>'+line2:''}</div>
           </div>`;
       }
       card.addEventListener('click',()=>openDetail(item));
