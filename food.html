@@ -945,25 +945,22 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   sv=Math.round(sv*10)/10;
   starVal=sv;
 
-  // 儲存時裁切每張照片
+  // 儲存時裁切每張照片（先快照避免 closeForm 清空）
   saveCropState(currentCropIdx);
+  const snapshotPhotos=[...photosArr];
+  const snapshotStates=[...cropStates];
+  const vpW=cropViewport.offsetWidth||300, vpH=cropViewport.offsetHeight||400;
   const imgs=[];
-  for(let i=0;i<photosArr.length;i++){
-    // 切換到每張照片取得其裁切狀態
-    const savedState=cropStates[i];
+  for(let i=0;i<snapshotPhotos.length;i++){
     const tempImg=new Image();
-    await new Promise(res=>{ tempImg.onload=res; tempImg.src=photosArr[i].dataUrl; });
+    await new Promise(res=>{ tempImg.onload=res; tempImg.src=snapshotPhotos[i].dataUrl; });
     const targetRatio=3/4;
     let srcW=tempImg.naturalWidth, srcH=tempImg.naturalHeight;
     if(srcW/srcH>targetRatio){ srcW=Math.round(srcH*targetRatio); }
     else { srcH=Math.round(srcW/targetRatio); }
     let cx=tempImg.naturalWidth/2, cy=tempImg.naturalHeight/2;
-    if(savedState && cropStates[i]){
-      // 用儲存的裁切中心
-      const vpW=cropViewport.offsetWidth||300, vpH=cropViewport.offsetHeight||400;
-      cx=(vpW/2-savedState.x)/savedState.scale;
-      cy=(vpH/2-savedState.y)/savedState.scale;
-    }
+    const st=snapshotStates[i];
+    if(st){ cx=(vpW/2-st.x)/st.scale; cy=(vpH/2-st.y)/st.scale; }
     const srcX=Math.max(0,Math.min(tempImg.naturalWidth-srcW,cx-srcW/2));
     const srcY=Math.max(0,Math.min(tempImg.naturalHeight-srcH,cy-srcH/2));
     const outW=Math.min(srcW,1600), outH=Math.min(srcH,1600);
@@ -973,6 +970,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
     imgs.push(canvas.toDataURL('image/jpeg',0.92));
   }
   const img=imgs[0]||'';
+
+  // 重新從 localStorage 確認資料沒被清空
+  if(DATA.length===0) DATA=load();
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
