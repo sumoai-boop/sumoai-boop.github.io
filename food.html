@@ -779,13 +779,15 @@ function loadCropForIdx(idx){
         if(cropStates[idx]){
           const sv=cropStates[idx]; s.scale=sv.scale; s.x=sv.x; s.y=sv.y;
         } else {
-          const fitScale=Math.min(s.vpW/s.naturalW, s.vpH/s.naturalH);
+          // 預設：以實際像素1:1顯示，最大不超過 viewport
+          const fitScale=Math.min(1, s.vpW/s.naturalW, s.vpH/s.naturalH);
           s.scale=fitScale;
           s.x=(s.vpW-s.naturalW*s.scale)/2;
           s.y=(s.vpH-s.naturalH*s.scale)/2;
         }
-        cropZoom.min=Math.round(Math.min(s.vpW/s.naturalW,s.vpH/s.naturalH)*100);
-        cropZoom.max=Math.round(Math.min(s.vpW/s.naturalW,s.vpH/s.naturalH)*300);
+        const minScale=Math.min(s.vpW/s.naturalW, s.vpH/s.naturalH);
+        cropZoom.min=Math.round(minScale*50);
+        cropZoom.max=Math.round(minScale*300);
         cropZoom.value=Math.round(s.scale*100);
         clampCrop(); applyCrop();
       };
@@ -960,13 +962,18 @@ document.getElementById('formSave').addEventListener('click',async()=>{
     await new Promise(res=>{ tempImg.onload=res; tempImg.src=snapshotPhotos[i].dataUrl; });
     const targetRatio=3/4;
     let srcW=tempImg.naturalWidth, srcH=tempImg.naturalHeight;
+    // 從原圖裁出 3:4 區域，不放大
     if(srcW/srcH>targetRatio){ srcW=Math.round(srcH*targetRatio); }
     else { srcH=Math.round(srcW/targetRatio); }
     let cx=tempImg.naturalWidth/2, cy=tempImg.naturalHeight/2;
     const st=snapshotStates[i];
-    if(st){ cx=(vpW/2-st.x)/st.scale; cy=(vpH/2-st.y)/st.scale; }
+    if(st){
+      cx=(vpW/2-st.x)/st.scale;
+      cy=(vpH/2-st.y)/st.scale;
+    }
     const srcX=Math.max(0,Math.min(tempImg.naturalWidth-srcW,cx-srcW/2));
     const srcY=Math.max(0,Math.min(tempImg.naturalHeight-srcH,cy-srcH/2));
+    // outW/outH 不超過原圖裁切尺寸（不放大）
     const outW=Math.min(srcW,1600), outH=Math.min(srcH,1600);
     const canvas=document.createElement('canvas');
     canvas.width=outW; canvas.height=outH;
