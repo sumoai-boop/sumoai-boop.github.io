@@ -7,42 +7,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{background:#F5EDE0;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;}
+  body{background:#0e0e0e;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;
     background-image:
-      radial-gradient(ellipse at 20% 20%, rgba(232,98,42,0.06) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(200,130,50,0.06) 0%, transparent 50%);
+      radial-gradient(ellipse at 20% 20%, rgba(232,98,42,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(200,130,50,0.04) 0%, transparent 50%);
     pointer-events:none;z-index:0;}
   body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
   .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
-  .c1{width:500px;height:500px;background:radial-gradient(circle, rgba(200,150,50,0.07), transparent 70%);top:-100px;right:-80px;}
-  .c2{width:350px;height:350px;background:radial-gradient(circle, rgba(150,80,20,0.06), transparent 70%);bottom:-80px;left:-60px;}
+  .c1{width:500px;height:500px;background:radial-gradient(circle, rgba(232,98,42,0.06), transparent 70%);top:-100px;right:-80px;}
+  .c2{width:350px;height:350px;background:radial-gradient(circle, rgba(150,80,20,0.05), transparent 70%);bottom:-80px;left:-60px;}
 
   /* ── 主內容 ── */
   .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:72px 32px 100px;}
 
   .page-header{margin-bottom:28px;}
-  .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,64px);font-weight:300;color:#2C1A0E;line-height:1;margin-bottom:4px;}
-  .page-title em{font-style:italic;color:#7A4500;}
-  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(100,60,10,0.5);display:block;margin-bottom:20px;}
+  .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,64px);font-weight:300;color:#f0e6d6;line-height:1;margin-bottom:4px;}
+  .page-title em{font-style:italic;color:#E8622A;}
+  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,180,0.3);display:block;margin-bottom:20px;}
 
   /* ── 統計列 ── */
   .stats-row{display:flex;gap:24px;margin-bottom:28px;flex-wrap:wrap;}
   .stat-item{display:flex;flex-direction:column;gap:2px;}
-  .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#2C1A0E;line-height:1;}
-  .stat-lbl{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(100,60,10,0.5);}
-  .stat-sep{width:1px;background:rgba(180,100,30,0.2);align-self:stretch;margin:4px 0;}
+  .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#f0e6d6;line-height:1;}
+  .stat-lbl{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,220,180,0.3);}
+  .stat-sep{width:1px;background:rgba(255,180,80,0.15);align-self:stretch;margin:4px 0;}
 
   /* ── 工具列 ── */
   .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
   .search-wrap{flex:1;min-width:180px;position:relative;}
   .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.4;pointer-events:none;}
-  .search-input{width:100%;background:rgba(180,140,60,0.06);border:1px solid rgba(180,140,60,0.2);border-radius:99px;padding:8px 16px 8px 36px;color:#2C1A0E;font-family:'Space Mono',monospace;font-size:11px;outline:none;transition:border-color 0.2s;}
-  .search-input::placeholder{color:rgba(100,60,10,0.3);}
+  .search-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,180,80,0.15);border-radius:99px;padding:8px 16px 8px 36px;color:#f0e6d6;font-family:'Space Mono',monospace;font-size:11px;outline:none;transition:border-color 0.2s;}
+  .search-input::placeholder{color:rgba(255,220,180,0.25);}
   .search-input:focus{border-color:rgba(232,98,42,0.5);}
-  .sort-select{background:rgba(180,140,60,0.06);border:1px solid rgba(180,140,60,0.2);border-radius:99px;padding:8px 14px;color:#2C1A0E;font-family:'Space Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
-  .sort-select option{background:#F5EDE0;}
-  .count-badge{font-size:10px;color:rgba(100,60,10,0.4);letter-spacing:0.08em;white-space:nowrap;align-self:center;}
+  .sort-select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,180,80,0.15);border-radius:99px;padding:8px 14px;color:#f0e6d6;font-family:'Space Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
+  .sort-select option{background:#1a1a1a;color:#f0e6d6;}
+  .count-badge{font-size:10px;color:rgba(255,220,180,0.3);letter-spacing:0.08em;white-space:nowrap;align-self:center;}
 
   /* ── 新增按鈕 ── */
   .add-btn{
@@ -68,12 +68,12 @@
     aspect-ratio:1/1;
     overflow:hidden;
     cursor:pointer;
-    background:rgba(180,140,60,0.06);
-    border:1px solid rgba(180,140,60,0.08);
+    background:#1a1a1a;
+    border:1px solid rgba(255,180,80,0.08);
     border-radius:8px;
     transition:transform 0.2s, box-shadow 0.2s;
   }
-  .photo-card:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(80,40,0,0.18); }
+  .photo-card:hover{ transform:translateY(-2px); box-shadow:0 6px 24px rgba(0,0,0,0.5); }
   .photo-card img{
     width:100%;height:100%;
     object-fit:cover;
@@ -84,14 +84,14 @@
   /* 常駐底部漸層 + 名稱 */
   .photo-card .card-bottom{
     position:absolute;bottom:0;left:0;right:0;
-    background:linear-gradient(to top, rgba(10,5,0,0.82) 0%, rgba(10,5,0,0.3) 60%, transparent 100%);
+    background:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
     padding:28px 10px 9px;
     pointer-events:none;
   }
   .card-name{
-    font-size:15px;font-weight:700;color:#FFF5E6;
+    font-size:20px;font-weight:700;color:#fff;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    text-shadow:0 1px 4px rgba(0,0,0,0.6);
+    text-shadow:0 1px 6px rgba(0,0,0,0.8);
   }
   /* hover 時顯示的額外資訊 */
   .photo-card .overlay{
@@ -110,7 +110,7 @@
 
   /* 無照片佔位 */
   .photo-card.no-photo{
-    background:rgba(180,140,60,0.04);
+    background:#1a1a1a;
     display:flex;align-items:center;justify-content:center;
   }
   .no-photo-icon{font-size:32px;opacity:0.18;}
@@ -122,84 +122,84 @@
     display:flex;flex-direction:column;align-items:center;gap:12px;
   }
   .empty-icon{font-size:48px;opacity:0.2;}
-  .empty-text{font-size:12px;color:rgba(100,60,10,0.3);letter-spacing:0.12em;text-transform:uppercase;}
+  .empty-text{font-size:12px;color:rgba(255,220,180,0.25);letter-spacing:0.12em;text-transform:uppercase;}
 
   /* ── 詳情 Modal ── */
   .modal-mask{
     position:fixed;inset:0;z-index:9000;
-    background:rgba(0,0,0,0.85);
+    background:rgba(0,0,0,0.92);
     display:none;align-items:center;justify-content:center;
     padding:24px;
     backdrop-filter:blur(6px);
   }
   .modal-mask.open{display:flex;}
   .modal{
-    background:#F5EDE0;
-    border:1px solid rgba(232,98,42,0.3);
+    background:#1a1a1a;
+    border:1px solid rgba(255,180,80,0.12);
     border-radius:16px;
     max-width:520px;width:100%;
     overflow:hidden;
-    box-shadow:0 24px 80px rgba(0,0,0,0.7),0 0 0 1px rgba(180,140,60,0.1);
+    box-shadow:0 24px 80px rgba(0,0,0,0.9);
     animation:modalIn 0.28s cubic-bezier(0.34,1.2,0.64,1);
   }
   @keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
-  .modal-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:rgba(180,140,60,0.04);}
-  .modal-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:rgba(180,140,60,0.04);font-size:56px;opacity:0.15;}
+  .modal-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#111;}
+  .modal-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#111;font-size:56px;opacity:0.15;}
   .modal-body{padding:20px 24px 24px;}
-  .modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:#2C1A0E;margin-bottom:4px;}
-  .modal-addr{font-size:10px;color:rgba(100,60,10,0.5);letter-spacing:0.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+  .modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:#f0e6d6;margin-bottom:4px;}
+  .modal-addr{font-size:10px;color:rgba(255,220,180,0.4);letter-spacing:0.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
   .modal-addr svg{opacity:0.4;flex-shrink:0;}
   .modal-row{display:flex;gap:16px;margin-bottom:6px;align-items:center;}
   .modal-price{font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFD200;font-weight:600;}
-  .modal-price-lbl{font-size:9px;color:rgba(100,60,10,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-left:4px;align-self:flex-end;margin-bottom:3px;}
+  .modal-price-lbl{font-size:9px;color:rgba(255,220,180,0.3);letter-spacing:0.1em;text-transform:uppercase;margin-left:4px;align-self:flex-end;margin-bottom:3px;}
   .modal-stars{display:flex;gap:3px;margin-left:auto;}
   .modal-stars span{font-size:18px;}
-  .modal-score-num{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(200,170,100,0.7);margin-left:6px;align-self:center;}
+  .modal-score-num{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(255,200,100,0.6);margin-left:6px;align-self:center;}
   .modal-actions{display:flex;gap:8px;margin-top:16px;}
   .modal-btn{flex:1;padding:10px;border-radius:8px;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.06em;transition:background 0.2s;}
-  .modal-btn-edit{background:rgba(180,140,60,0.12);color:#C9A84C;border:1px solid rgba(180,140,60,0.25);}
-  .modal-btn-edit:hover{background:rgba(180,140,60,0.22);}
+  .modal-btn-edit{background:rgba(255,180,80,0.1);color:#C9A84C;border:1px solid rgba(255,180,80,0.2);}
+  .modal-btn-edit:hover{background:rgba(255,180,80,0.18);}
   .modal-btn-del{background:rgba(200,50,30,0.1);color:#E87060;border:1px solid rgba(200,50,30,0.2);}
   .modal-btn-del:hover{background:rgba(200,50,30,0.2);}
-  .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:1;}
+  .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:1;}
 
   /* ── 新增/編輯 Modal ── */
   .form-modal{
-    background:#F5EDE0;
-    border:1px solid rgba(232,98,42,0.35);
+    background:#1a1a1a;
+    border:1px solid rgba(255,180,80,0.15);
     border-radius:16px;
     max-width:460px;width:100%;
     overflow:hidden;
-    box-shadow:0 24px 80px rgba(0,0,0,0.7);
+    box-shadow:0 24px 80px rgba(0,0,0,0.9);
     animation:modalIn 0.28s cubic-bezier(0.34,1.2,0.64,1);
   }
   .form-header{
     padding:18px 24px;
-    border-bottom:1px solid rgba(180,140,60,0.1);
+    border-bottom:1px solid rgba(255,180,80,0.08);
     display:flex;align-items:center;justify-content:space-between;
   }
-  .form-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:#2C1A0E;font-weight:600;}
+  .form-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:#f0e6d6;font-weight:600;}
   .form-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto;}
 
   /* 圖片上傳 */
   .img-upload-area{
-    width:100%;aspect-ratio:4/3;border:2px dashed rgba(180,140,60,0.25);border-radius:10px;
+    width:100%;aspect-ratio:4/3;border:2px dashed rgba(255,180,80,0.2);border-radius:10px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    cursor:pointer;position:relative;overflow:hidden;background:rgba(180,140,60,0.03);
+    cursor:pointer;position:relative;overflow:hidden;background:rgba(255,255,255,0.03);
     transition:border-color 0.2s;
   }
-  .img-upload-area:hover{border-color:rgba(232,98,42,0.45);}
+  .img-upload-area:hover{border-color:rgba(232,98,42,0.5);}
   .img-upload-area img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-  .img-upload-label{font-size:11px;color:rgba(100,60,10,0.4);letter-spacing:0.08em;text-transform:uppercase;position:relative;z-index:1;}
+  .img-upload-label{font-size:11px;color:rgba(255,220,180,0.35);letter-spacing:0.08em;text-transform:uppercase;position:relative;z-index:1;}
   .img-upload-icon{font-size:28px;opacity:0.3;position:relative;z-index:1;}
   .img-upload-input{display:none;}
   .img-clear{position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:26px;height:26px;color:#fff;cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;}
 
   .field-group{display:flex;flex-direction:column;gap:5px;}
-  .field-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(80,45,5,0.7);}
-  .field-input{background:rgba(180,140,60,0.07);border:1px solid rgba(180,140,60,0.22);border-radius:8px;padding:10px 12px;color:#1a0e04;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;}
-  .field-input:focus{border-color:rgba(232,98,42,0.55);background:rgba(180,140,60,0.10);}
-  .field-input::placeholder{color:rgba(120,75,20,0.38);}
+  .field-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,220,180,0.45);}
+  .field-input{background:rgba(255,255,255,0.06);border:1px solid rgba(255,180,80,0.18);border-radius:8px;padding:10px 12px;color:#f0e6d6;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;}
+  .field-input:focus{border-color:rgba(232,98,42,0.6);background:rgba(255,255,255,0.08);}
+  .field-input::placeholder{color:rgba(255,220,180,0.22);}
 
   /* 星等選擇 */
   .stars-pick{display:flex;gap:6px;}
@@ -208,7 +208,7 @@
   .star-btn:hover{transform:scale(1.2);}
 
   .form-footer{padding:0 24px 20px;display:flex;gap:10px;}
-  .btn-cancel{flex:1;padding:11px;border-radius:8px;background:rgba(180,140,60,0.08);border:1px solid rgba(180,140,60,0.2);color:#C9A84C;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;}
+  .btn-cancel{flex:1;padding:11px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,180,80,0.15);color:#C9A84C;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;}
   .btn-save{flex:2;padding:11px;border-radius:8px;background:linear-gradient(135deg,#E8622A,#c84a15);border:none;color:#fff;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;font-weight:700;letter-spacing:0.06em;transition:opacity 0.2s;}
   .btn-save:hover{opacity:0.88;}
 
@@ -467,39 +467,7 @@
       <div class="field-group">
         <label class="field-label">餐廳類型</label>
         <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
-        <datalist id="typeList">
-          <option value="台式料理">
-          <option value="日式料理">
-          <option value="韓式料理">
-          <option value="中式料理">
-          <option value="義式料理">
-          <option value="美式料理">
-          <option value="泰式料理">
-          <option value="越南料理">
-          <option value="印度料理">
-          <option value="法式料理">
-          <option value="地中海料理">
-          <option value="火鍋">
-          <option value="燒烤">
-          <option value="海鮮">
-          <option value="素食">
-          <option value="早午餐">
-          <option value="早餐">
-          <option value="下午茶">
-          <option value="甜點">
-          <option value="咖啡廳">
-          <option value="手搖飲料">
-          <option value="小吃">
-          <option value="夜市小吃">
-          <option value="拉麵">
-          <option value="壽司">
-          <option value="燒肉">
-          <option value="牛排">
-          <option value="漢堡">
-          <option value="披薩">
-          <option value="自助餐">
-          <option value="吃到飽">
-        </datalist>
+        <datalist id="typeList"></datalist>
       </div>
       <!-- 日期 -->
       <div class="field-group">
@@ -632,9 +600,9 @@ function loadFromGitHub(){
       if(Array.isArray(arr)){
         DATA=arr;localStorage.setItem(STORE,JSON.stringify(DATA));
         if(fi.sha) localStorage.setItem('gh_food_sha',fi.sha);
-        showToast('✦ 食記已同步',false);render();
+        showToast('✦ 食記已同步',false);refreshTypeList();render();
       }
-    }).catch(e=>{console.warn('載入失敗:',e);DATA=load();render();});
+    }).catch(e=>{console.warn('載入失敗:',e);DATA=load();refreshTypeList();render();});
 }
 
 function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){return [];} }
@@ -681,6 +649,30 @@ function compressImage(dataUrl,maxW,maxH,quality){
 
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc';
 window.addEventListener('DOMContentLoaded', loadFromGitHub);
+
+/* ───── 餐廳類型管理 ───── */
+const DEFAULT_TYPES=['台式料理','日式料理','韓式料理','中式料理','義式料理','美式料理','泰式料理','越南料理','印度料理','法式料理','地中海料理','火鍋','燒烤','海鮮','素食','早午餐','早餐','下午茶','甜點','咖啡廳','手搖飲料','小吃','夜市小吃','拉麵','壽司','燒肉','牛排','漢堡','披薩','自助餐','吃到飽'];
+
+function getCustomTypes(){
+  try{ return JSON.parse(localStorage.getItem('sumoai_food_types')||'[]'); }catch(e){return [];}
+}
+function addCustomType(t){
+  if(!t) return;
+  const all=[...new Set([...DEFAULT_TYPES, ...getCustomTypes()])];
+  if(all.includes(t)) return;
+  const custom=[...new Set([...getCustomTypes(), t])];
+  localStorage.setItem('sumoai_food_types', JSON.stringify(custom));
+  refreshTypeList();
+}
+function refreshTypeList(){
+  const dl=document.getElementById('typeList');
+  if(!dl) return;
+  // 從資料中也撈出所有曾用的類型
+  const fromData=[...new Set(DATA.map(r=>r.type).filter(Boolean))];
+  const custom=getCustomTypes();
+  const all=[...new Set([...DEFAULT_TYPES, ...custom, ...fromData])].sort();
+  dl.innerHTML=all.map(v=>`<option value="${v}">`).join('');
+}
 
 /* ───── 星等（點擊設整數，輸入框設小數） ───── */
 function buildStarPick(){
@@ -913,6 +905,7 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   } else {
     DATA.unshift({id:Date.now()+'',name,type,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
   }
+  if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
 });
 
