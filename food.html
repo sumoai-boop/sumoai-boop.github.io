@@ -365,12 +365,19 @@
 <div class="modal-mask" id="detailMask">
   <div class="modal" style="position:relative;" id="detailModal">
     <button class="modal-close" id="detailClose">✕</button>
-    <div id="detailImgWrap"></div>
+    <!-- 照片輪播 -->
+    <div id="detailImgWrap" style="position:relative;background:#111;">
+      <!-- 動態填入 -->
+    </div>
     <div class="modal-body">
       <div class="modal-title" id="dName"></div>
       <div class="modal-addr" id="dAddr">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span id="dAddrText"></span>
+      </div>
+      <div class="modal-addr" id="dMapsRow" style="margin-bottom:4px;display:none;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E8622A" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <a id="dMapsLink" href="#" target="_blank" style="color:#E8622A;font-size:10px;letter-spacing:0.05em;text-decoration:none;border-bottom:1px solid rgba(232,98,42,0.3);">在 Google Maps 開啟 ↗</a>
       </div>
       <div class="modal-addr" id="dDateRow" style="margin-bottom:10px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -381,6 +388,11 @@
         <span class="modal-price-lbl">元</span>
         <div class="modal-stars" id="dStars"></div>
         <span class="modal-score-num" id="dScoreNum"></span>
+      </div>
+      <!-- 備註 -->
+      <div id="dNoteRow" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(180,140,60,0.06);border-radius:8px;border-left:3px solid rgba(232,98,42,0.4);">
+        <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(100,60,10,0.4);margin-bottom:5px;">備註</div>
+        <div id="dNoteText" style="font-size:11px;color:#4a2e10;line-height:1.7;white-space:pre-wrap;"></div>
       </div>
       <div class="modal-actions">
         <button class="modal-btn modal-btn-edit" id="dEdit">✏️ 編輯</button>
@@ -398,14 +410,37 @@
       <button class="modal-close" style="position:static;background:rgba(180,140,60,0.1);color:#C9A84C;" id="formClose">✕</button>
     </div>
     <div class="form-body">
-      <!-- 圖片 -->
-      <div class="img-upload-area" id="uploadArea">
-        <span class="img-upload-icon">📷</span>
-        <span class="img-upload-label">點擊上傳照片</span>
-        <img id="previewImg" src="" alt="" style="display:none;">
-        <button class="img-clear" id="imgClear">✕</button>
-        <input class="img-upload-input" type="file" accept="image/*" id="imgInput">
+
+      <!-- ── 多張照片上傳區 ── -->
+      <div class="field-group">
+        <label class="field-label">照片 <span style="opacity:0.5;font-size:9px;">第一張為封面</span></label>
+        <!-- 縮圖列 -->
+        <div id="photoThumbRow" style="display:flex;gap:6px;flex-wrap:wrap;min-height:0;"></div>
+        <!-- 上傳按鈕 -->
+        <div id="uploadArea" style="margin-top:6px;width:100%;padding:12px;border:2px dashed rgba(180,140,60,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:rgba(180,140,60,0.03);transition:border-color 0.2s;" onclick="document.getElementById('imgInput').click()">
+          <span style="font-size:18px;opacity:0.4;">📷</span>
+          <span style="font-size:10px;color:rgba(100,60,10,0.4);letter-spacing:0.08em;text-transform:uppercase;">新增照片</span>
+        </div>
+        <input class="img-upload-input" type="file" accept="image/*" multiple id="imgInput">
       </div>
+
+      <!-- ── 裁切器（每次上傳一張時顯示） ── -->
+      <div id="cropContainer" style="display:none;flex-direction:column;gap:8px;">
+        <div style="font-size:10px;color:rgba(100,60,10,0.5);letter-spacing:0.06em;" id="cropLabel">裁切照片 1 / 1</div>
+        <div id="cropViewport" style="width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background:#111;cursor:grab;touch-action:none;border:1px solid rgba(180,140,60,0.2);">
+          <img id="cropImg" style="position:absolute;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none;">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:10px;color:rgba(100,60,10,0.4);white-space:nowrap;">縮放</span>
+          <input type="range" id="cropZoom" min="100" max="300" value="100" style="flex:1;accent-color:#E8622A;cursor:pointer;">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button id="cropConfirm" style="flex:2;background:linear-gradient(135deg,#E8622A,#c84a15);border:none;color:#fff;border-radius:8px;padding:9px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700;">✓ 確認此張</button>
+          <button id="cropSkip" style="flex:1;background:rgba(180,140,60,0.08);border:1px solid rgba(180,140,60,0.2);color:#C9A84C;border-radius:8px;padding:9px;font-size:11px;cursor:pointer;font-family:inherit;">略過</button>
+        </div>
+        <div style="font-size:9px;color:rgba(100,60,10,0.3);text-align:center;letter-spacing:0.06em;">拖曳移動 · 滑桿縮放 · 滾輪縮放</div>
+      </div>
+
       <!-- 名稱 -->
       <div class="field-group">
         <label class="field-label">餐廳名稱 *</label>
@@ -426,17 +461,26 @@
         <label class="field-label">地址</label>
         <input class="field-input" id="fAddr" placeholder="例：台北市大安區忠孝東路四段">
       </div>
+      <!-- 備註 -->
+      <div class="field-group">
+        <label class="field-label">備註</label>
+        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的…" style="resize:vertical;min-height:72px;line-height:1.6;"></textarea>
+      </div>
       <!-- 評分 -->
       <div class="field-group">
-        <label class="field-label">評分</label>
-        <div class="stars-pick" id="starsPick">
-          <button class="star-btn" data-v="1">⭐</button>
-          <button class="star-btn" data-v="2">⭐</button>
-          <button class="star-btn" data-v="3">⭐</button>
-          <button class="star-btn" data-v="4">⭐</button>
-          <button class="star-btn" data-v="5">⭐</button>
+        <label class="field-label">評分 <span style="opacity:0.5;font-size:9px;">可輸入小數（例：4.3）</span></label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div id="starsPick" style="display:flex;gap:4px;cursor:pointer;"></div>
+          <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="0.0"
+            style="width:72px;background:rgba(180,140,60,0.06);border:1px solid rgba(180,140,60,0.18);border-radius:8px;padding:8px 10px;color:#2C1A0E;font-family:'Space Mono',monospace;font-size:14px;outline:none;text-align:center;">
         </div>
       </div>
+      <!-- Google Maps 連結 -->
+      <div class="field-group">
+        <label class="field-label">Google Maps 連結</label>
+        <input class="field-input" id="fMaps" placeholder="貼上 Google Maps 網址">
+      </div>
+
     </div>
     <div class="form-footer">
       <button class="btn-cancel" id="formCancel">取消</button>
@@ -583,199 +627,339 @@ function compressImage(dataUrl,maxW,maxH,quality){
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='new';
 window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
-
-/* ───── 星等 ───── */
-function renderStarPick(v){
-  document.querySelectorAll('#starsPick .star-btn').forEach(btn=>{
-    btn.classList.toggle('active', parseInt(btn.dataset.v) <= v);
+/* ───── 星等（點擊設整數，輸入框設小數） ───── */
+function buildStarPick(){
+  const sp = document.getElementById('starsPick');
+  sp.innerHTML='';
+  for(let i=1;i<=5;i++){
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.dataset.v=i;
+    btn.style.cssText='font-size:24px;background:none;border:none;cursor:pointer;opacity:0.2;transition:opacity 0.15s,transform 0.15s;padding:0;';
+    btn.textContent='⭐';
+    btn.addEventListener('mouseenter',()=>highlightStars(i));
+    btn.addEventListener('mouseleave',()=>highlightStars(starVal));
+    btn.addEventListener('click',()=>{
+      starVal=i;
+      document.getElementById('fScoreInput').value=i+'.0';
+      highlightStars(i);
+    });
+    sp.appendChild(btn);
+  }
+}
+function highlightStars(v){
+  document.querySelectorAll('#starsPick button').forEach(b=>{
+    b.style.opacity = parseInt(b.dataset.v)<=v ? '1' : '0.2';
+    b.style.transform = parseInt(b.dataset.v)<=Math.ceil(v) ? 'scale(1.08)' : 'scale(1)';
   });
 }
-document.querySelectorAll('#starsPick .star-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    starVal = parseInt(btn.dataset.v);
-    renderStarPick(starVal);
+// 輸入框同步星等
+document.addEventListener('DOMContentLoaded',()=>{
+  buildStarPick();
+  document.getElementById('fScoreInput').addEventListener('input', e=>{
+    let v=parseFloat(e.target.value)||0;
+    v=Math.min(5,Math.max(0,v));
+    starVal=v;
+    highlightStars(v);
   });
 });
 
-/* ───── 圖片上傳 ───── */
-const uploadArea = document.getElementById('uploadArea');
-const imgInput   = document.getElementById('imgInput');
-const previewImg = document.getElementById('previewImg');
-const imgClear   = document.getElementById('imgClear');
+/* ───── 多張照片 + 裁切器 ───── */
+let photosArr = [];        // [{dataUrl}] 已確認的照片
+let pendingFiles = [];     // 待裁切的 File 陣列
+let pendingIdx = 0;        // 目前裁切到第幾張
 
-uploadArea.addEventListener('click', e=>{
-  if(e.target === imgClear) return;
-  imgInput.click();
-});
-imgInput.addEventListener('change', e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    previewImg.src = ev.target.result;
-    previewImg.style.display = 'block';
-    imgClear.style.display = 'flex';
-    uploadArea.querySelector('.img-upload-icon').style.display='none';
-    uploadArea.querySelector('.img-upload-label').style.display='none';
+const imgInput     = document.getElementById('imgInput');
+const cropContainer= document.getElementById('cropContainer');
+const cropViewport = document.getElementById('cropViewport');
+const cropImg      = document.getElementById('cropImg');
+const cropZoom     = document.getElementById('cropZoom');
+const cropLabel    = document.getElementById('cropLabel');
+const cropConfirm  = document.getElementById('cropConfirm');
+const cropSkip     = document.getElementById('cropSkip');
+
+let cropState = {scale:1,x:0,y:0,dragging:false,lastX:0,lastY:0,naturalW:0,naturalH:0,vpW:0,vpH:0};
+
+function clampCrop(){
+  const s=cropState,iw=s.naturalW*s.scale,ih=s.naturalH*s.scale;
+  s.x=Math.min(0,Math.max(s.vpW-iw,s.x));
+  s.y=Math.min(0,Math.max(s.vpH-ih,s.y));
+}
+function applyCrop(){ cropImg.style.transform=`translate(${cropState.x}px,${cropState.y}px) scale(${cropState.scale})`; }
+
+function loadCropFile(file){
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    cropImg.onload=()=>{
+      const s=cropState;
+      s.naturalW=cropImg.naturalWidth; s.naturalH=cropImg.naturalHeight;
+      s.vpW=cropViewport.offsetWidth;  s.vpH=cropViewport.offsetHeight;
+      const scaleW=s.vpW/s.naturalW, scaleH=s.vpH/s.naturalH;
+      s.scale=Math.max(scaleW,scaleH);
+      cropZoom.min=Math.round(s.scale*100);
+      cropZoom.max=Math.round(s.scale*100*3);
+      cropZoom.value=Math.round(s.scale*100);
+      s.x=(s.vpW-s.naturalW*s.scale)/2;
+      s.y=(s.vpH-s.naturalH*s.scale)/2;
+      clampCrop(); applyCrop();
+      cropLabel.textContent=`裁切照片 ${pendingIdx+1} / ${pendingFiles.length}`;
+      cropContainer.style.display='flex';
+    };
+    cropImg.src=ev.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+function getCroppedDataUrl(maxW,maxH,quality){
+  const s=cropState;
+  const canvas=document.createElement('canvas');
+  canvas.width=s.vpW; canvas.height=s.vpH;
+  canvas.getContext('2d').drawImage(cropImg,s.x,s.y,s.naturalW*s.scale,s.naturalH*s.scale);
+  const ratio=Math.min(1,maxW/s.vpW,maxH/s.vpH);
+  const out=document.createElement('canvas');
+  out.width=Math.round(s.vpW*ratio); out.height=Math.round(s.vpH*ratio);
+  out.getContext('2d').drawImage(canvas,0,0,out.width,out.height);
+  return out.toDataURL('image/jpeg',quality);
+}
+
+function nextPending(){
+  pendingIdx++;
+  if(pendingIdx<pendingFiles.length){
+    loadCropFile(pendingFiles[pendingIdx]);
+  } else {
+    cropContainer.style.display='none';
+    pendingFiles=[]; pendingIdx=0;
+    renderThumbs();
+  }
+}
+
+cropConfirm.addEventListener('click',()=>{
+  photosArr.push({dataUrl: getCroppedDataUrl(900,675,0.8)});
+  nextPending();
 });
-imgClear.addEventListener('click', e=>{
-  e.stopPropagation();
-  previewImg.src=''; previewImg.style.display='none';
-  imgClear.style.display='none';
-  uploadArea.querySelector('.img-upload-icon').style.display='';
-  uploadArea.querySelector('.img-upload-label').style.display='';
+cropSkip.addEventListener('click',()=>{ nextPending(); });
+
+imgInput.addEventListener('change',e=>{
+  const files=[...e.target.files];
+  if(!files.length) return;
   imgInput.value='';
+  pendingFiles=files; pendingIdx=0;
+  loadCropFile(files[0]);
 });
+
+function renderThumbs(){
+  const row=document.getElementById('photoThumbRow');
+  row.innerHTML='';
+  photosArr.forEach((p,i)=>{
+    const wrap=document.createElement('div');
+    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===0?'#E8622A':'rgba(180,140,60,0.25)')+';';
+    const img=document.createElement('img');
+    img.src=p.dataUrl;
+    img.style.cssText='width:100%;height:100%;object-fit:cover;';
+    const del=document.createElement('button');
+    del.textContent='✕';
+    del.style.cssText='position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.65);border:none;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;';
+    del.onclick=()=>{ photosArr.splice(i,1); renderThumbs(); };
+    if(i===0){
+      const badge=document.createElement('div');
+      badge.textContent='封面';
+      badge.style.cssText='position:absolute;bottom:0;left:0;right:0;background:rgba(232,98,42,0.85);color:#fff;font-size:8px;text-align:center;padding:2px 0;letter-spacing:0.05em;';
+      wrap.appendChild(badge);
+    }
+    wrap.appendChild(img); wrap.appendChild(del);
+    row.appendChild(wrap);
+  });
+}
+
+// crop drag mouse
+cropViewport.addEventListener('mousedown',e=>{cropState.dragging=true;cropState.lastX=e.clientX;cropState.lastY=e.clientY;cropViewport.style.cursor='grabbing';e.preventDefault();});
+window.addEventListener('mousemove',e=>{if(!cropState.dragging)return;cropState.x+=e.clientX-cropState.lastX;cropState.y+=e.clientY-cropState.lastY;cropState.lastX=e.clientX;cropState.lastY=e.clientY;clampCrop();applyCrop();});
+window.addEventListener('mouseup',()=>{cropState.dragging=false;cropViewport.style.cursor='grab';});
+// touch
+cropViewport.addEventListener('touchstart',e=>{if(e.touches.length===1){cropState.dragging=true;cropState.lastX=e.touches[0].clientX;cropState.lastY=e.touches[0].clientY;}},{passive:true});
+cropViewport.addEventListener('touchmove',e=>{if(!cropState.dragging||e.touches.length!==1)return;cropState.x+=e.touches[0].clientX-cropState.lastX;cropState.y+=e.touches[0].clientY-cropState.lastY;cropState.lastX=e.touches[0].clientX;cropState.lastY=e.touches[0].clientY;clampCrop();applyCrop();e.preventDefault();},{passive:false});
+cropViewport.addEventListener('touchend',()=>{cropState.dragging=false;});
+// wheel
+cropViewport.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const s=cropState,delta=e.deltaY>0?-0.05:0.05;
+  const minS=parseInt(cropZoom.min)/100,maxS=parseInt(cropZoom.max)/100;
+  const ns=Math.min(maxS,Math.max(minS,s.scale+delta*s.scale));
+  const rect=cropViewport.getBoundingClientRect();
+  const cx=e.clientX-rect.left,cy=e.clientY-rect.top;
+  const ratio=ns/s.scale;
+  s.x=cx-(cx-s.x)*ratio; s.y=cy-(cy-s.y)*ratio; s.scale=ns;
+  cropZoom.value=Math.round(ns*100);clampCrop();applyCrop();
+},{passive:false});
+// zoom slider
+cropZoom.addEventListener('input',()=>{
+  const s=cropState,ns=parseInt(cropZoom.value)/100;
+  const cx=s.vpW/2,cy=s.vpH/2,ratio=ns/s.scale;
+  s.x=cx-(cx-s.x)*ratio; s.y=cy-(cy-s.y)*ratio; s.scale=ns;
+  clampCrop();applyCrop();
+});
+
+function resetFormPhotos(imgs){
+  // imgs: array of dataUrl strings (existing) or empty
+  photosArr = (imgs||[]).map(d=>({dataUrl:d}));
+  pendingFiles=[]; pendingIdx=0;
+  cropContainer.style.display='none';
+  renderThumbs();
+}
 
 /* ───── 表單 Modal ───── */
 function openForm(item=null){
-  editMode = !!item;
-  currentId = item ? item.id : null;
-  document.getElementById('formTitle').textContent = item ? '編輯食記' : '新增食記';
-  document.getElementById('fName').value = item ? item.name : '';
-  document.getElementById('fDate').value = item && item.date ? item.date : new Date().toISOString().slice(0,10);
-  document.getElementById('fPrice').value = item && item.price ? item.price : '';
-  document.getElementById('fAddr').value = item ? item.addr : '';
-  starVal = item ? item.score : 0;
-  renderStarPick(starVal);
-  // 圖片
-  if(item && item.img){
-    previewImg.src = item.img;
-    previewImg.style.display='block';
-    imgClear.style.display='flex';
-    uploadArea.querySelector('.img-upload-icon').style.display='none';
-    uploadArea.querySelector('.img-upload-label').style.display='none';
-  } else {
-    previewImg.src=''; previewImg.style.display='none';
-    imgClear.style.display='none';
-    uploadArea.querySelector('.img-upload-icon').style.display='';
-    uploadArea.querySelector('.img-upload-label').style.display='';
-  }
-  imgInput.value='';
+  editMode=!!item; currentId=item?item.id:null;
+  document.getElementById('formTitle').textContent=item?'編輯食記':'新增食記';
+  document.getElementById('fName').value=item?item.name:'';
+  document.getElementById('fDate').value=item&&item.date?item.date:new Date().toISOString().slice(0,10);
+  document.getElementById('fPrice').value=item&&item.price?item.price:'';
+  document.getElementById('fAddr').value=item?(item.addr||''):'';
+  document.getElementById('fNote').value=item?(item.note||''):'';
+  document.getElementById('fMaps').value=item?(item.maps||''):'';
+  starVal=item?(item.score||0):0;
+  buildStarPick(); highlightStars(starVal);
+  document.getElementById('fScoreInput').value=starVal?starVal.toFixed(1):'';
+  // 照片
+  const existImgs = item ? (item.imgs || (item.img ? [item.img] : [])) : [];
+  resetFormPhotos(existImgs);
   document.getElementById('formMask').classList.add('open');
 }
 function closeForm(){
   document.getElementById('formMask').classList.remove('open');
+  cropContainer.style.display='none';
 }
-document.getElementById('addBtn').addEventListener('click', ()=>openForm());
-document.getElementById('formClose').addEventListener('click', closeForm);
-document.getElementById('formCancel').addEventListener('click', closeForm);
-document.getElementById('formMask').addEventListener('click', e=>{
-  if(e.target===document.getElementById('formMask')) closeForm();
-});
 
-document.getElementById('formSave').addEventListener('click', async ()=>{
-  const name = document.getElementById('fName').value.trim();
-  if(!name){ alert('請輸入餐廳名稱'); return; }
-  const price = parseInt(document.getElementById('fPrice').value)||0;
-  const addr  = document.getElementById('fAddr').value.trim();
-  const date  = document.getElementById('fDate').value;
-  let img='';
-  if(previewImg.style.display!=='none'&&previewImg.src){img=await compressImage(previewImg.src,800,800,0.75);}
+document.getElementById('addBtn').addEventListener('click',()=>openForm());
+document.getElementById('formClose').addEventListener('click',closeForm);
+document.getElementById('formCancel').addEventListener('click',closeForm);
+document.getElementById('formMask').addEventListener('click',e=>{if(e.target===document.getElementById('formMask'))closeForm();});
 
-  if(editMode && currentId){
-    const idx = DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0){
-      DATA[idx] = {...DATA[idx], name, price, addr, date, score:starVal, img, updatedAt:Date.now()};
-    }
+document.getElementById('formSave').addEventListener('click',async()=>{
+  const name=document.getElementById('fName').value.trim();
+  if(!name){alert('請輸入餐廳名稱');return;}
+  const price=parseInt(document.getElementById('fPrice').value)||0;
+  const addr=document.getElementById('fAddr').value.trim();
+  const note=document.getElementById('fNote').value.trim();
+  const maps=document.getElementById('fMaps').value.trim();
+  const date=document.getElementById('fDate').value;
+  let sv=parseFloat(document.getElementById('fScoreInput').value)||0;
+  sv=Math.round(sv*10)/10;
+  starVal=sv;
+
+  const imgs=photosArr.map(p=>p.dataUrl);
+  const img=imgs[0]||'';
+
+  if(editMode&&currentId){
+    const idx=DATA.findIndex(r=>r.id===currentId);
+    if(idx>=0) DATA[idx]={...DATA[idx],name,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'', name, price, addr, date, score:starVal, img, createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
   }
-  save(DATA);
-  closeForm();
-  closeDetail();
-  render();
+  save(DATA); closeForm(); closeDetail(); render();
 });
 
 /* ───── 詳情 Modal ───── */
-function openDetail(item){
-  currentId = item.id;
-  document.getElementById('dName').textContent = item.name;
-  document.getElementById('dAddrText').textContent = item.addr || '未填寫地址';
-  document.getElementById('dDateText').textContent = item.date || '未填寫日期';
-  document.getElementById('dPrice').textContent = item.price ? 'NT$'+item.price.toLocaleString() : '—';
-  // 星星
-  const starsEl = document.getElementById('dStars');
-  starsEl.innerHTML = '';
+function starsHTMLDecimal(score){
+  // render 5 stars with partial fill via clip
+  let h='';
   for(let i=1;i<=5;i++){
-    const s = document.createElement('span');
-    s.textContent='⭐';
-    s.style.opacity = i<=item.score ? '1' : '0.15';
-    starsEl.appendChild(s);
+    const fill=Math.min(1,Math.max(0,score-(i-1)));
+    if(fill>=1) h+=`<span style="font-size:18px;">⭐</span>`;
+    else if(fill>0) h+=`<span style="font-size:18px;opacity:0.5;">⭐</span>`;
+    else h+=`<span style="font-size:18px;opacity:0.15;">⭐</span>`;
   }
-  document.getElementById('dScoreNum').textContent = item.score ? item.score+'.0' : '未評分';
-  // 圖片
-  const wrap = document.getElementById('detailImgWrap');
-  if(item.img){
-    wrap.innerHTML = `<img class="modal-img" src="${item.img}" alt="${item.name}">`;
+  return h;
+}
+
+function openDetail(item){
+  currentId=item.id;
+  document.getElementById('dName').textContent=item.name;
+  document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
+  document.getElementById('dDateText').textContent=item.date||'未填寫日期';
+  document.getElementById('dPrice').textContent=item.price?'NT$'+item.price.toLocaleString():'—';
+  // Google Maps
+  const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
+  if(item.maps){mapsLink.href=item.maps;mapsRow.style.display='flex';}else{mapsRow.style.display='none';}
+  // 星星
+  document.getElementById('dStars').innerHTML=starsHTMLDecimal(item.score||0);
+  document.getElementById('dScoreNum').textContent=item.score?(+item.score).toFixed(1):'未評分';
+  // 備註
+  const noteRow=document.getElementById('dNoteRow');
+  if(item.note){document.getElementById('dNoteText').textContent=item.note;noteRow.style.display='block';}
+  else noteRow.style.display='none';
+  // 照片輪播
+  const wrap=document.getElementById('detailImgWrap');
+  const imgs=item.imgs||(item.img?[item.img]:[]);
+  if(imgs.length===0){
+    wrap.innerHTML=`<div class="modal-img-placeholder">🍜</div>`;
+  } else if(imgs.length===1){
+    wrap.innerHTML=`<img class="modal-img" src="${imgs[0]}" alt="${item.name}">`;
   } else {
-    wrap.innerHTML = `<div class="modal-img-placeholder">🍜</div>`;
+    let slideIdx=0;
+    const render=()=>{
+      wrap.innerHTML=`
+        <img class="modal-img" src="${imgs[slideIdx]}" alt="${item.name}" style="display:block;">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 10px;pointer-events:none;">
+          <button onclick="this.closest('[id=detailImgWrap]').__prev()" style="pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">‹</button>
+          <button onclick="this.closest('[id=detailImgWrap]').__next()" style="pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">›</button>
+        </div>
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;">
+          ${imgs.map((_,i)=>`<div style="width:6px;height:6px;border-radius:50%;background:${i===slideIdx?'#fff':'rgba(255,255,255,0.4)'}"></div>`).join('')}
+        </div>`;
+    };
+    wrap.__prev=()=>{ slideIdx=(slideIdx-1+imgs.length)%imgs.length; render(); };
+    wrap.__next=()=>{ slideIdx=(slideIdx+1)%imgs.length; render(); };
+    render();
   }
   document.getElementById('detailMask').classList.add('open');
 }
-function closeDetail(){
-  document.getElementById('detailMask').classList.remove('open');
-}
-document.getElementById('detailClose').addEventListener('click', closeDetail);
-document.getElementById('detailMask').addEventListener('click', e=>{
-  if(e.target===document.getElementById('detailMask')) closeDetail();
-});
-document.getElementById('dEdit').addEventListener('click', ()=>{
-  const item = DATA.find(r=>r.id===currentId);
-  if(!item) return;
-  closeDetail();
-  setTimeout(()=>openForm(item), 120);
-});
-document.getElementById('dDel').addEventListener('click', ()=>{
-  if(!confirm('確定要刪除這筆食記？')) return;
-  DATA = DATA.filter(r=>r.id!==currentId);
-  save(DATA);
-  closeDetail();
-  render();
-});
+function closeDetail(){ document.getElementById('detailMask').classList.remove('open'); }
+document.getElementById('detailClose').addEventListener('click',closeDetail);
+document.getElementById('detailMask').addEventListener('click',e=>{if(e.target===document.getElementById('detailMask'))closeDetail();});
+document.getElementById('dEdit').addEventListener('click',()=>{const item=DATA.find(r=>r.id===currentId);if(!item)return;closeDetail();setTimeout(()=>openForm(item),120);});
+document.getElementById('dDel').addEventListener('click',()=>{if(!confirm('確定要刪除這筆食記？'))return;DATA=DATA.filter(r=>r.id!==currentId);save(DATA);closeDetail();render();});
 
 /* ───── 渲染照片牆 ───── */
-function starsHTML(score){
+function starsHTMLSmall(score){
   let h='';
-  for(let i=1;i<=5;i++) h+=`<span style="opacity:${i<=score?1:0.2};font-size:11px">⭐</span>`;
+  for(let i=1;i<=5;i++) h+=`<span style="opacity:${i<=Math.round(score)?1:0.2};font-size:11px">⭐</span>`;
   return h;
 }
 
 function render(){
-  let d = DATA.filter(r=>{
-    if(!q) return true;
-    return r.name.includes(q)||(r.addr||'').includes(q);
-  });
+  let d=DATA.filter(r=>{if(!q)return true;return r.name.includes(q)||(r.addr||'').includes(q)||(r.note||'').includes(q);});
   if(sortKey==='score-desc') d.sort((a,b)=>b.score-a.score);
   else if(sortKey==='score-asc') d.sort((a,b)=>a.score-b.score);
   else if(sortKey==='price-desc') d.sort((a,b)=>(b.price||0)-(a.price||0));
   else if(sortKey==='price-asc') d.sort((a,b)=>(a.price||99999)-(b.price||99999));
   else d.sort((a,b)=>b.createdAt-a.createdAt);
 
-  document.getElementById('countBadge').textContent = d.length + ' 家';
-
-  const grid = document.getElementById('photoGrid');
+  document.getElementById('countBadge').textContent=d.length+' 家';
+  const grid=document.getElementById('photoGrid');
   grid.innerHTML='';
 
   if(d.length===0){
-    const empty = document.createElement('div');
+    const empty=document.createElement('div');
     empty.className='empty-state';
     empty.innerHTML=`<div class="empty-icon">🍴</div><div class="empty-text">還沒有食記，點「＋」開始記錄第一家吧！</div>`;
     grid.appendChild(empty);
   } else {
     d.forEach(item=>{
-      const card = document.createElement('div');
-      card.className = 'photo-card' + (item.img ? '' : ' no-photo');
-      if(item.img){
+      const coverImg=item.img||(item.imgs&&item.imgs[0])||'';
+      const card=document.createElement('div');
+      card.className='photo-card'+(coverImg?'':' no-photo');
+      if(coverImg){
+        const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
         card.innerHTML=`
-          <img src="${item.img}" alt="${item.name}" loading="lazy">
+          <img src="${coverImg}" alt="${item.name}" loading="lazy">
+          ${photoCount}
           <div class="overlay">
             <div class="overlay-name">${item.name}</div>
             <div class="overlay-meta">
               <span class="overlay-price">${item.price?'NT$'+item.price.toLocaleString():'—'}</span>
-              <div class="overlay-stars">${starsHTML(item.score)}</div>
+              <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
+              ${item.score?`<span style="font-size:10px;color:rgba(255,210,0,0.8);margin-left:2px;">${(+item.score).toFixed(1)}</span>`:''}
             </div>
           </div>`;
       } else {
@@ -785,25 +969,24 @@ function render(){
             <div class="overlay-name">${item.name}</div>
             <div class="overlay-meta">
               <span class="overlay-price">${item.price?'NT$'+item.price.toLocaleString():'—'}</span>
-              <div class="overlay-stars">${starsHTML(item.score)}</div>
+              <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
             </div>
           </div>`;
       }
-      card.addEventListener('click', ()=>openDetail(item));
+      card.addEventListener('click',()=>openDetail(item));
       grid.appendChild(card);
     });
   }
 
   // 統計
-  const all = DATA;
-  document.getElementById('sTotal').textContent = all.length;
-  if(all.length){
-    const rated = all.filter(r=>r.score>0);
-    document.getElementById('sAvg').textContent = rated.length ? (rated.reduce((s,r)=>s+r.score,0)/rated.length).toFixed(1) : '—';
-    const best = all.reduce((a,b)=>b.score>a.score?b:a, all[0]);
-    document.getElementById('sBest').textContent = best.score ? best.score+'.0' : '—';
-    const priced = all.filter(r=>r.price>0);
-    document.getElementById('sAvgPrice').textContent = priced.length ? 'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString() : '—';
+  document.getElementById('sTotal').textContent=DATA.length;
+  if(DATA.length){
+    const rated=DATA.filter(r=>r.score>0);
+    document.getElementById('sAvg').textContent=rated.length?(rated.reduce((s,r)=>s+r.score,0)/rated.length).toFixed(1):'—';
+    const best=DATA.reduce((a,b)=>b.score>a.score?b:a,DATA[0]);
+    document.getElementById('sBest').textContent=best.score?(+best.score).toFixed(1):'—';
+    const priced=DATA.filter(r=>r.price>0);
+    document.getElementById('sAvgPrice').textContent=priced.length?'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString():'—';
   } else {
     document.getElementById('sAvg').textContent='—';
     document.getElementById('sBest').textContent='—';
