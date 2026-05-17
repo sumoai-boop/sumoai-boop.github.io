@@ -85,14 +85,16 @@
   /* 常駐底部漸層 + 名稱 */
   .photo-card .card-bottom{
     position:absolute;bottom:0;left:0;right:0;
-    background:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-    padding:28px 10px 9px;
+    background:linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+    padding:40px 10px 10px;
     pointer-events:none;
   }
   .card-name{
     font-size:20px;font-weight:700;color:#fff;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    white-space:normal;overflow:hidden;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
     text-shadow:0 1px 6px rgba(0,0,0,0.8);
+    line-height:1.3;
   }
   /* hover 時顯示的額外資訊 */
   .photo-card .overlay{
