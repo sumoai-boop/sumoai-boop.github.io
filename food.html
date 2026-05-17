@@ -810,13 +810,24 @@ function getCroppedDataUrl(maxW,maxH,quality){
     s.vpW=cropViewport.offsetWidth;
     s.vpH=cropViewport.offsetHeight;
   }
-  // 直接以原圖像素輸出裁切區域，不做 downscale
-  const srcX = -s.x / s.scale;
-  const srcY = -s.y / s.scale;
-  const srcW = s.vpW / s.scale;
-  const srcH = s.vpH / s.scale;
-  const outW = Math.min(Math.round(srcW), maxW);
-  const outH = Math.min(Math.round(srcH), maxH);
+  // 以卡片比例（3:4）從原圖裁切，cover 填滿不留黑邊
+  const targetRatio = 3/4; // 卡片比例
+  let srcW = s.naturalW;
+  let srcH = s.naturalH;
+  if(srcW/srcH > targetRatio){
+    // 原圖比較寬，裁左右
+    srcW = Math.round(srcH * targetRatio);
+  } else {
+    // 原圖比較高，裁上下
+    srcH = Math.round(srcW / targetRatio);
+  }
+  // 以目前裁切器的平移當作構圖中心
+  const centerX = (s.vpW/2 - s.x) / s.scale;
+  const centerY = (s.vpH/2 - s.y) / s.scale;
+  const srcX = Math.max(0, Math.min(s.naturalW - srcW, centerX - srcW/2));
+  const srcY = Math.max(0, Math.min(s.naturalH - srcH, centerY - srcH/2));
+  const outW = Math.min(srcW, maxW);
+  const outH = Math.min(srcH, maxH);
   const out = document.createElement('canvas');
   out.width = outW; out.height = outH;
   out.getContext('2d').drawImage(cropImg, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
