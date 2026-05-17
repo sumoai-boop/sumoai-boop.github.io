@@ -88,12 +88,12 @@ body{
 /* 統計卡 */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
 .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(0,200,83,0.45);border-radius:14px;padding:18px 20px;}
-.stat-label{font-size:25px;letter-spacing:0.05em;color:rgba(240,220,160,0.8);margin-bottom:8px;}
-.stat-val{font-family:'Playfair Display',serif;font-size:68px;font-weight:700;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
-.stat-val em{font-style:normal;color:#00C853;font-size:68px;font-weight:700;}
-.stat-unit{font-size:30px;font-weight:700;vertical-align:baseline;}
-.stat-val em.unit{font-size:38px;color:#ffffff;}
-.stat-val em.num{color:#00C853;}
+.stat-label{font-size:25px;letter-spacing:0.05em;color:rgba(240,220,160,0.8);margin-bottom:8px;font-family:'Space Mono',monospace;}
+.stat-val{font-family:'Space Mono',monospace;font-size:40px;font-weight:700;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
+.stat-val em{font-style:normal;color:#00C853;font-size:40px;font-weight:700;font-family:'Space Mono',monospace;}
+.stat-unit{font-size:20px;font-weight:700;vertical-align:baseline;font-family:'Space Mono',monospace;}
+.stat-val em.unit{font-size:22px;color:#ffffff;font-family:'Space Mono',monospace;}
+.stat-val em.num{color:#00C853;font-size:40px;font-family:'Space Mono',monospace;}
 
 /* 表單 */
 .form-section{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:16px;padding:24px;margin-bottom:24px;}
@@ -173,7 +173,7 @@ body{
   <h1 class="page-title">Uber <em>記錄</em></h1>
   <span class="page-label">— 06 / UBER · 行程收支記錄</span>
 
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:0;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:28px;">
     <div class="tabs" style="margin-bottom:0;">
       <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
       <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
