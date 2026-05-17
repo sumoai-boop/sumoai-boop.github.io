@@ -437,7 +437,7 @@
         <!-- 縮圖列 -->
         <div id="photoThumbRow" style="display:flex;gap:6px;flex-wrap:wrap;min-height:0;"></div>
         <!-- 上傳按鈕 -->
-        <div id="uploadArea" style="margin-top:6px;width:100%;padding:12px;border:2px dashed rgba(180,140,60,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:rgba(180,140,60,0.03);transition:border-color 0.2s;" onclick="document.getElementById('imgInput').click()">
+        <div id="uploadArea" style="margin-top:6px;width:100%;padding:12px;border:2px dashed rgba(180,140,60,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:rgba(180,140,60,0.03);transition:border-color 0.2s;" onclick="document.getElementById('imgInput').value='';document.getElementById('imgInput').click()">
           <span style="font-size:18px;opacity:0.4;">📷</span>
           <span style="font-size:10px;color:rgba(100,60,10,0.4);letter-spacing:0.08em;text-transform:uppercase;">新增照片</span>
         </div>
@@ -833,7 +833,6 @@ function getCroppedDataUrl(maxW,maxH,quality){
 imgInput.addEventListener('change',e=>{
   const files=[...e.target.files];
   if(!files.length) return;
-  imgInput.value='';
   let loaded=0;
   files.forEach(file=>{
     const reader=new FileReader();
@@ -845,6 +844,7 @@ imgInput.addEventListener('change',e=>{
     };
     reader.readAsDataURL(file);
   });
+  imgInput.value=''; // 清掉讓同一張也能重選
 });
 
 // 移除目前這張
