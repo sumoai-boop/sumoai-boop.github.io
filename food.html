@@ -61,69 +61,56 @@
   .photo-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:10px;
+    gap:6px;
   }
   .photo-card{
     position:relative;
-    cursor:pointer;
-    background:rgba(180,140,60,0.04);
-    border:1px solid rgba(180,140,60,0.10);
-    border-radius:10px;
-    overflow:hidden;
-    transition:box-shadow 0.2s, transform 0.2s;
-  }
-  .photo-card:hover{ box-shadow:0 6px 24px rgba(100,50,0,0.18); transform:translateY(-2px); }
-  .photo-card-img{
-    position:relative;
     aspect-ratio:1/1;
     overflow:hidden;
+    cursor:pointer;
     background:rgba(180,140,60,0.06);
+    border:1px solid rgba(180,140,60,0.08);
+    border-radius:8px;
+    transition:transform 0.2s, box-shadow 0.2s;
   }
-  .photo-card-img img{
+  .photo-card:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(80,40,0,0.18); }
+  .photo-card img{
     width:100%;height:100%;
     object-fit:cover;
     transition:transform 0.4s ease;
     display:block;
   }
-  .photo-card:hover .photo-card-img img{transform:scale(1.06);}
+  .photo-card:hover img{transform:scale(1.05);}
+  /* 常駐底部漸層 + 名稱 */
+  .photo-card .card-bottom{
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(to top, rgba(10,5,0,0.82) 0%, rgba(10,5,0,0.3) 60%, transparent 100%);
+    padding:28px 10px 9px;
+    pointer-events:none;
+  }
+  .card-name{
+    font-size:15px;font-weight:700;color:#FFF5E6;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    text-shadow:0 1px 4px rgba(0,0,0,0.6);
+  }
+  /* hover 時顯示的額外資訊 */
   .photo-card .overlay{
     position:absolute;inset:0;
-    background:linear-gradient(to top, rgba(15,8,0,0.82) 0%, rgba(15,8,0,0.2) 55%, transparent 100%);
     opacity:0;
-    transition:opacity 0.28s ease;
-    display:flex;flex-direction:column;justify-content:flex-end;
-    padding:12px;
+    transition:opacity 0.25s ease;
+    display:flex;flex-direction:column;justify-content:flex-start;
+    padding:10px;
     pointer-events:none;
   }
   .photo-card:hover .overlay{opacity:1;}
-  .overlay-meta{display:flex;gap:8px;align-items:center;}
+  .overlay-meta{display:flex;gap:6px;align-items:center;}
   .overlay-price{font-size:10px;color:#FFD200;}
   .overlay-stars{display:flex;gap:2px;}
   .overlay-stars span{font-size:11px;}
-  /* 照片下方名稱條 */
-  .photo-card-info{
-    padding:8px 10px 9px;
-    background:#F5EDE0;
-  }
-  .photo-card-name{
-    font-size:12px;font-weight:700;color:#2C1A0E;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    margin-bottom:2px;
-  }
-  .photo-card-sub{
-    display:flex;gap:6px;align-items:center;flex-wrap:wrap;
-  }
-  .photo-card-type{
-    font-size:9px;color:#C9A84C;letter-spacing:0.05em;
-    background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);
-    border-radius:99px;padding:1px 7px;white-space:nowrap;
-  }
-  .photo-card-score{
-    font-size:10px;color:rgba(100,60,10,0.55);letter-spacing:0.03em;
-  }
 
   /* 無照片佔位 */
-  .photo-card.no-photo .photo-card-img{
+  .photo-card.no-photo{
+    background:rgba(180,140,60,0.04);
     display:flex;align-items:center;justify-content:center;
   }
   .no-photo-icon{font-size:32px;opacity:0.18;}
@@ -1033,40 +1020,19 @@ function render(){
       const card=document.createElement('div');
       card.className='photo-card'+(coverImg?'':' no-photo');
       const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
-      const typeTag=item.type?`<span class="photo-card-type">${item.type}</span>`:'';
-      const scoreStr=item.score?`<span class="photo-card-score">⭐ ${(+item.score).toFixed(1)}</span>`:'';
-      const priceStr=item.price?`<span class="photo-card-score">NT$${item.price.toLocaleString()}</span>`:'';
 
       if(coverImg){
         card.innerHTML=`
-          <div class="photo-card-img">
-            <img src="${coverImg}" alt="${item.name}" loading="lazy">
-            ${photoCount}
-            <div class="overlay">
-              <div class="overlay-meta">
-                <span class="overlay-price">${item.price?'NT$'+item.price.toLocaleString():''}</span>
-                <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
-                ${item.score?`<span style="font-size:10px;color:rgba(255,210,0,0.85);">${(+item.score).toFixed(1)}</span>`:''}
-              </div>
-            </div>
-          </div>
-          <div class="photo-card-info">
-            <div class="photo-card-name">${item.name}</div>
-            <div class="photo-card-sub">${typeTag}${scoreStr}${priceStr}</div>
+          <img src="${coverImg}" alt="${item.name}" loading="lazy">
+          ${photoCount}
+          <div class="card-bottom">
+            <div class="card-name">${item.name}</div>
           </div>`;
       } else {
         card.innerHTML=`
-          <div class="photo-card-img">
-            <div class="no-photo-icon">🍜</div>
-            <div class="overlay">
-              <div class="overlay-meta">
-                <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
-              </div>
-            </div>
-          </div>
-          <div class="photo-card-info">
-            <div class="photo-card-name">${item.name}</div>
-            <div class="photo-card-sub">${typeTag}${scoreStr}${priceStr}</div>
+          <div class="no-photo-icon">🍜</div>
+          <div class="card-bottom">
+            <div class="card-name">${item.name}</div>
           </div>`;
       }
       card.addEventListener('click',()=>openDetail(item));
