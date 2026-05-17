@@ -173,11 +173,17 @@ body{
   <h1 class="page-title">Uber <em>記錄</em></h1>
   <span class="page-label">— 06 / UBER · 行程收支記錄</span>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
-    <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
-    <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
-    <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:0;">
+    <div class="tabs" style="margin-bottom:0;">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
+      <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
+      <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
+      <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
+    </div>
+    <div style="text-align:right;line-height:1.2;">
+      <div style="font-size:11px;color:rgba(240,220,160,0.55);letter-spacing:0.1em;text-transform:uppercase;">總淨利</div>
+      <div style="font-size:22px;font-weight:700;color:#FFD700;">NT$<span id="s-total-net">—</span></div>
+    </div>
   </div>
 
   <!-- 總覽 -->
@@ -185,8 +191,6 @@ body{
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
-      <div style="color:rgba(240,220,160,0.7);font-size:12px;letter-spacing:0.05em;margin-bottom:4px;">總淨利</div>
-      <div style="font-size:28px;font-weight:700;color:#FFD700;margin-bottom:12px;">NT$<span id="s-total-net">—</span></div>
       <div class="stat-card">
         <div class="stat-label">總時數</div>
         <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
