@@ -442,17 +442,11 @@
         <input class="img-upload-input" type="file" accept="image/*" multiple id="imgInput">
       </div>
 
-      <!-- ── 裁切器（每次上傳一張時顯示） ── -->
-      <div id="cropContainer" style="display:none;flex-direction:column;gap:8px;">
-        <div id="cropViewport" style="width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background:#111;cursor:grab;touch-action:none;border:1px solid rgba(255,180,80,0.15);">
-          <img id="cropImg" style="position:absolute;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none;">
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:10px;color:rgba(255,220,160,0.4);white-space:nowrap;">縮放</span>
-          <input type="range" id="cropZoom" min="100" max="300" value="100" style="flex:1;accent-color:#E8622A;cursor:pointer;">
-          <button id="cropClearBtn" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;padding:5px 10px;font-size:10px;cursor:pointer;font-family:inherit;white-space:nowrap;">移除</button>
-        </div>
-        <div style="font-size:9px;color:rgba(255,220,160,0.25);text-align:center;letter-spacing:0.06em;">拖曳移動 · 滑桿縮放</div>
+      <!-- ── 裁切器（已停用） ── -->
+      <div id="cropContainer" style="display:none;">
+        <div id="cropViewport" style="display:none;"><img id="cropImg"></div>
+        <input type="range" id="cropZoom" style="display:none;">
+        <button id="cropClearBtn" style="display:none;"></button>
       </div>
 
       <!-- 名稱 -->
@@ -623,11 +617,27 @@ async function pushToGitHub(data){
     showToast('⏳ 儲存至雲端...',false);
     var sha=localStorage.getItem('gh_food_sha');
     if(!sha){var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});if(r.ok){var fi=await r.json();sha=fi.sha;if(sha)localStorage.setItem('gh_food_sha',sha);}}
-    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
-    var body={message:'更新食記',content:encoded,branch:GH_BRANCH};if(sha)body.sha=sha;
+    var jsonStr=JSON.stringify(data,null,2);
+    // 檢查大小
+    var sizeKB=Math.round(new Blob([jsonStr]).size/1024);
+    if(sizeKB>900){showToast('⚠️ 資料量 '+sizeKB+'KB 接近上限，建議減少照片',true);return;}
+    var encoded=btoa(unescape(encodeURIComponent(jsonStr)));
+    var body={message:'更新食記 ('+sizeKB+'KB)',content:encoded,branch:GH_BRANCH};if(sha)body.sha=sha;
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
-    if(!pr.ok){var e2=await pr.json();localStorage.removeItem('gh_food_sha');showToast('❌ 推送失敗：'+(e2.message||pr.status),true);}
-    else{var prData=await pr.json();var ns=prData.content&&prData.content.sha;if(ns)localStorage.setItem('gh_food_sha',ns);else localStorage.removeItem('gh_food_sha');showToast('✦ 已儲存至 GitHub',false);}
+    if(!pr.ok){
+      var e2=await pr.json();
+      localStorage.removeItem('gh_food_sha');
+      var msg=e2.message||pr.status;
+      if(pr.status===422) msg='資料太大無法上傳（'+sizeKB+'KB），請減少照片';
+      showToast('❌ 推送失敗：'+msg,true);
+    } else {
+      var prData=await pr.json();
+      var ns=prData.content&&prData.content.sha;
+      if(ns)localStorage.setItem('gh_food_sha',ns);else localStorage.removeItem('gh_food_sha');
+      showToast('✦ 已同步至雲端（'+sizeKB+'KB）',false);
+    }
+  }catch(err){
+    showToast('❌ 同步錯誤：'+err.message,true);
   }finally{_pushing=false;}
 }
 
@@ -816,23 +826,19 @@ function getCroppedDataUrl(maxW,maxH,quality){
   return out.toDataURL('image/jpeg',quality);
 }
 
-// 上傳後直接加入，不需要確認
+// 上傳後直接加入，不顯示裁切器
 imgInput.addEventListener('change',e=>{
   const files=[...e.target.files];
   if(!files.length) return;
   imgInput.value='';
   let loaded=0;
-  const startIdx=photosArr.length;
   files.forEach(file=>{
     const reader=new FileReader();
     reader.onload=ev=>{
       photosArr.push({dataUrl:ev.target.result});
       cropStates.push(null);
       loaded++;
-      if(loaded===files.length){
-        renderThumbs();
-        loadCropForIdx(startIdx); // 顯示第一張新照片
-      }
+      if(loaded===files.length) renderThumbs();
     };
     reader.readAsDataURL(file);
   });
@@ -852,15 +858,14 @@ function renderThumbs(){
   row.innerHTML='';
   photosArr.forEach((p,i)=>{
     const wrap=document.createElement('div');
-    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===currentCropIdx?'#E8622A':(i===0?'rgba(232,98,42,0.5)':'rgba(255,180,80,0.2)'))+';cursor:pointer;';
+    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===0?'#E8622A':'rgba(255,180,80,0.2)')+';';
     const img=document.createElement('img');
     img.src=p.dataUrl;
     img.style.cssText='width:100%;height:100%;object-fit:cover;';
-    wrap.addEventListener('click',()=>{ saveCropState(currentCropIdx); loadCropForIdx(i); renderThumbs(); });
     const del=document.createElement('button');
     del.textContent='✕';
     del.style.cssText='position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.65);border:none;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;';
-    del.onclick=(e)=>{ e.stopPropagation(); photosArr.splice(i,1); cropStates.splice(i,1); if(currentCropIdx>=i) currentCropIdx=Math.max(-1,currentCropIdx-1); renderThumbs(); loadCropForIdx(Math.min(currentCropIdx,photosArr.length-1)); };
+    del.onclick=(e)=>{ e.stopPropagation(); photosArr.splice(i,1); cropStates.splice(i,1); renderThumbs(); };
     if(i===0){
       const badge=document.createElement('div');
       badge.textContent='封面';
@@ -904,9 +909,7 @@ function resetFormPhotos(imgs){
   photosArr=(imgs||[]).map(d=>({dataUrl:d}));
   cropStates=photosArr.map(()=>null);
   currentCropIdx=-1;
-  cropContainer.style.display='none';
   renderThumbs();
-  if(photosArr.length>0) loadCropForIdx(0);
 }
 
 /* ───── 表單 Modal ───── */
@@ -956,30 +959,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   const snapshotPhotos=[...photosArr];
   const snapshotStates=[...cropStates];
   const vpW=cropViewport.offsetWidth||300, vpH=cropViewport.offsetHeight||400;
-  const imgs=[];
-  for(let i=0;i<snapshotPhotos.length;i++){
-    const tempImg=new Image();
-    await new Promise(res=>{ tempImg.onload=res; tempImg.src=snapshotPhotos[i].dataUrl; });
-    const targetRatio=3/4;
-    let srcW=tempImg.naturalWidth, srcH=tempImg.naturalHeight;
-    // 從原圖裁出 3:4 區域，不放大
-    if(srcW/srcH>targetRatio){ srcW=Math.round(srcH*targetRatio); }
-    else { srcH=Math.round(srcW/targetRatio); }
-    let cx=tempImg.naturalWidth/2, cy=tempImg.naturalHeight/2;
-    const st=snapshotStates[i];
-    if(st){
-      cx=(vpW/2-st.x)/st.scale;
-      cy=(vpH/2-st.y)/st.scale;
-    }
-    const srcX=Math.max(0,Math.min(tempImg.naturalWidth-srcW,cx-srcW/2));
-    const srcY=Math.max(0,Math.min(tempImg.naturalHeight-srcH,cy-srcH/2));
-    // outW/outH 不超過原圖裁切尺寸（不放大）
-    const outW=Math.min(srcW,1600), outH=Math.min(srcH,1600);
-    const canvas=document.createElement('canvas');
-    canvas.width=outW; canvas.height=outH;
-    canvas.getContext('2d').drawImage(tempImg,srcX,srcY,srcW,srcH,0,0,outW,outH);
-    imgs.push(canvas.toDataURL('image/jpeg',0.92));
-  }
+  // 直接存原圖，不裁切，顯示交給 CSS object-fit:cover
+  // 但先壓縮，避免超過 GitHub 1MB 限制
+  const imgs = await Promise.all(snapshotPhotos.map(p=>compressImage(p.dataUrl,1200,1600,0.82)));
   const img=imgs[0]||'';
 
   // 重新從 localStorage 確認資料沒被清空
