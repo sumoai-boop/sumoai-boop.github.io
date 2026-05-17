@@ -65,7 +65,7 @@
   }
   .photo-card{
     position:relative;
-    aspect-ratio:1/1;
+    aspect-ratio:3/4;
     overflow:hidden;
     cursor:pointer;
     background:#1a1a1a;
@@ -75,6 +75,7 @@
   }
   .photo-card:hover{ transform:translateY(-2px); box-shadow:0 6px 24px rgba(0,0,0,0.5); }
   .photo-card img{
+    position:absolute;inset:0;
     width:100%;height:100%;
     object-fit:cover;
     transition:transform 0.4s ease;
@@ -651,7 +652,7 @@ let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc
 window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
 /* ───── 餐廳類型管理 ───── */
-const DEFAULT_TYPES=['台式料理','日式料理','韓式料理','中式料理','義式料理','美式料理','泰式料理','越南料理','印度料理','法式料理','地中海料理','火鍋','燒烤','海鮮','素食','早午餐','早餐','下午茶','甜點','咖啡廳','手搖飲料','小吃','夜市小吃','拉麵','壽司','燒肉','牛排','漢堡','披薩','自助餐','吃到飽'];
+const DEFAULT_TYPES=[];
 
 function getCustomTypes(){
   try{ return JSON.parse(localStorage.getItem('sumoai_food_types')||'[]'); }catch(e){return [];}
@@ -1039,7 +1040,7 @@ function render(){
 
       if(coverImg){
         card.innerHTML=`
-          <img src="${coverImg}" alt="${item.name}" loading="lazy">
+          <img src="${coverImg}" alt="${item.name}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
           ${photoCount}
           <div class="card-bottom">
             <div class="card-name">${item.name}</div>
