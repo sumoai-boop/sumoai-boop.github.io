@@ -185,7 +185,11 @@ body{
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
-      <div class="stat-card"><div class="stat-label">總時數</div><div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
+      <div class="stat-card">
+        <div style="font-size:13px;color:rgba(240,220,160,0.6);margin-bottom:6px;letter-spacing:0.05em;">總淨利：<span id="s-total-net" style="color:#FFD700;font-weight:700;"></span></div>
+        <div class="stat-label">總時數</div>
+        <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
+      </div>
       <div class="stat-card"><div class="stat-label">平均公里數</div><div class="stat-val" id="s-avg-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">本月行程數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
@@ -1050,6 +1054,8 @@ function updateStats(){
   document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
   document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
   document.getElementById('s-total-hours').innerHTML='<em class="num">'+totalHours.toFixed(1)+'</em> <em class="unit">hr</em>';
+  var totalNet=totalIncome-totalExp;
+  document.getElementById('s-total-net').textContent='NT$'+fmt(totalNet);
   document.getElementById('s-avg-km').innerHTML='<em class="num">'+avgKm+'</em> <em class="unit">km</em>';
   document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-total-trips').innerHTML='<em class="num">'+fmt(totalTrips)+'</em> <em class="unit">趟</em>';
