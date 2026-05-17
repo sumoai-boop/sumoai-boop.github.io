@@ -429,41 +429,35 @@ function renderTop5(){
   var trips = getData('uberTrips');
   if(!trips.length){ el.innerHTML=''; return; }
 
-  function top5(arr){
+  function top10(distArr, roadArr){
     var map={};
-    arr.forEach(function(v){ if(!v||v.trim()==='')return; map[v]=(map[v]||0)+1; });
-    return Object.entries(map).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+    distArr.forEach(function(v){ if(v&&v.trim()) map[v]=(map[v]||0)+1; });
+    roadArr.forEach(function(v){ if(v&&v.trim()) map[v]=(map[v]||0)+1; });
+    return Object.entries(map).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
   }
 
-  var categories = [
-    { title:'上車區域 TOP5',  data: top5(trips.map(function(t){return t.fd||''})) },
-    { title:'下車區域 TOP5',  data: top5(trips.map(function(t){return t.td||''})) },
-    { title:'上車地點 TOP5',  data: top5(trips.map(function(t){return t.fr||''})) },
-    { title:'下車地點 TOP5',  data: top5(trips.map(function(t){return t.tr||''})) },
-  ];
+  var distData = top10(trips.map(function(t){return t.fd||'';}), trips.map(function(t){return t.td||'';}))
+  var roadData  = top10(trips.map(function(t){return t.fr||'';}), trips.map(function(t){return t.tr||'';}));
 
-  var maxTotal = trips.length;
-  el.innerHTML = categories.map(function(cat){
-    var rows = cat.data.map(function(entry, i){
+  function makeCard(title, data){
+    var rows = data.map(function(entry, i){
       var name=entry[0], count=entry[1];
-      var pct = Math.round(count/maxTotal*100);
-      var colors = ['#00C853','#69F0AE','#B9F6CA','#FFD700','#FFF176'];
-      var color = colors[i] || colors[4];
-      return '<div style="margin-bottom:10px;">'
-        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'
-          + '<span style="font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%;" title="'+name+'">'+(i+1)+'. '+name+'</span>'
-          + '<span style="font-size:12px;color:'+color+';font-weight:700;flex-shrink:0;margin-left:8px;">'+count+'趟</span>'
+      var rankColor = i===0?'#FFD700': i===1?'#C0C0C0': i===2?'#CD7F32':'rgba(255,255,255,0.45)';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);">'
+        + '<div style="display:flex;align-items:center;gap:10px;overflow:hidden;">'
+          + '<span style="font-size:13px;font-weight:700;color:'+rankColor+';min-width:20px;text-align:right;">'+(i+1)+'</span>'
+          + '<span style="font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+name+'">'+name+'</span>'
         + '</div>'
-        + '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">'
-          + '<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
-        + '</div>'
+        + '<span style="font-size:13px;font-weight:700;color:#00C853;flex-shrink:0;margin-left:10px;">'+count+'</span>'
       + '</div>';
     }).join('');
     return '<div class="chart-card" style="padding:18px 20px;">'
-      + '<div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:14px;">'+cat.title+'</div>'
-      + (rows || '<div style="color:rgba(255,255,255,0.2);font-size:13px;">尚無資料</div>')
+      + '<div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">'+title+'</div>'
+      + (rows||'<div style="color:rgba(255,255,255,0.2);font-size:13px;">尚無資料</div>')
     + '</div>';
-  }).join('');
+  }
+
+  el.innerHTML = makeCard('區域 TOP10', distData) + makeCard('地點 TOP10', roadData);
 }
 
 
