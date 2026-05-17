@@ -496,7 +496,7 @@
         <div style="display:flex;align-items:center;gap:12px;">
           <div id="starsPick" style="display:flex;gap:4px;cursor:pointer;"></div>
           <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="0.0"
-            style="width:72px;background:rgba(180,140,60,0.06);border:1px solid rgba(180,140,60,0.18);border-radius:8px;padding:8px 10px;color:#2C1A0E;font-family:'Space Mono',monospace;font-size:14px;outline:none;text-align:center;">
+            style="width:72px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,180,80,0.25);border-radius:8px;padding:8px 10px;color:#ffffff;font-family:'Space Mono',monospace;font-size:14px;outline:none;text-align:center;font-weight:700;">
         </div>
       </div>
       <!-- Google Maps 連結 -->
@@ -675,30 +675,54 @@ function refreshTypeList(){
   dl.innerHTML=all.map(v=>`<option value="${v}">`).join('');
 }
 
-/* ───── 星等（點擊設整數，輸入框設小數） ───── */
+/* ───── 星等（點擊設整數，輸入框設小數，支援半星顯示） ───── */
 function buildStarPick(){
   const sp = document.getElementById('starsPick');
   sp.innerHTML='';
   for(let i=1;i<=5;i++){
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.dataset.v=i;
-    btn.style.cssText='font-size:24px;background:none;border:none;cursor:pointer;opacity:0.2;transition:opacity 0.15s,transform 0.15s;padding:0;';
-    btn.textContent='⭐';
-    btn.addEventListener('mouseenter',()=>highlightStars(i));
-    btn.addEventListener('mouseleave',()=>highlightStars(starVal));
-    btn.addEventListener('click',()=>{
-      starVal=i;
-      document.getElementById('fScoreInput').value=i+'.0';
-      highlightStars(i);
+    const wrap=document.createElement('div');
+    wrap.style.cssText='position:relative;width:30px;height:30px;cursor:pointer;';
+    // 暗底星
+    const base=document.createElement('span');
+    base.textContent='⭐';
+    base.style.cssText='position:absolute;inset:0;font-size:26px;opacity:0.2;line-height:30px;';
+    // 亮星（用 clip-path 控制填充比例）
+    const fill=document.createElement('span');
+    fill.className='star-fill';
+    fill.dataset.v=i;
+    fill.textContent='⭐';
+    fill.style.cssText='position:absolute;inset:0;font-size:26px;opacity:1;line-height:30px;clip-path:inset(0 100% 0 0);transition:clip-path 0.1s;';
+    // 左半點擊 → i-0.5，右半 → i
+    wrap.addEventListener('click', e=>{
+      const rect=wrap.getBoundingClientRect();
+      const isLeft = (e.clientX - rect.left) < rect.width/2;
+      const val = isLeft ? i-0.5 : i;
+      starVal=val;
+      document.getElementById('fScoreInput').value=val.toFixed(1);
+      highlightStars(val);
     });
-    sp.appendChild(btn);
+    wrap.addEventListener('mouseenter', e=>{
+      const rect=wrap.getBoundingClientRect();
+      const isLeft=(e.clientX-rect.left)<rect.width/2;
+      highlightStars(isLeft?i-0.5:i);
+    });
+    wrap.addEventListener('mousemove', e=>{
+      const rect=wrap.getBoundingClientRect();
+      const isLeft=(e.clientX-rect.left)<rect.width/2;
+      highlightStars(isLeft?i-0.5:i);
+    });
+    wrap.addEventListener('mouseleave',()=>highlightStars(starVal));
+    wrap.appendChild(base); wrap.appendChild(fill);
+    sp.appendChild(wrap);
   }
 }
 function highlightStars(v){
-  document.querySelectorAll('#starsPick button').forEach(b=>{
-    b.style.opacity = parseInt(b.dataset.v)<=v ? '1' : '0.2';
-    b.style.transform = parseInt(b.dataset.v)<=Math.ceil(v) ? 'scale(1.08)' : 'scale(1)';
+  document.querySelectorAll('#starsPick .star-fill').forEach(el=>{
+    const i=parseInt(el.dataset.v);
+    const fill=Math.min(1,Math.max(0, v-(i-1)));
+    const pct=Math.round(fill*100);
+    el.style.clipPath=`inset(0 ${100-pct}% 0 0)`;
+    el.style.opacity=fill>0?'1':'0';
   });
 }
 // 輸入框同步星等
@@ -782,19 +806,21 @@ function initCropScale(s){
 
 function getCroppedDataUrl(maxW,maxH,quality){
   const s=cropState;
-  // 確保 vpW/vpH 是最新值
   if(!s.vpW||!s.vpH){
     s.vpW=cropViewport.offsetWidth;
     s.vpH=cropViewport.offsetHeight;
   }
-  const canvas=document.createElement('canvas');
-  canvas.width=s.vpW; canvas.height=s.vpH;
-  canvas.getContext('2d').drawImage(cropImg,s.x,s.y,s.naturalW*s.scale,s.naturalH*s.scale);
-  const ratio=Math.min(1,maxW/s.vpW,maxH/s.vpH);
-  const out=document.createElement('canvas');
-  out.width=Math.round(s.vpW*ratio); out.height=Math.round(s.vpH*ratio);
-  out.getContext('2d').drawImage(canvas,0,0,out.width,out.height);
-  return out.toDataURL('image/jpeg',quality);
+  // 直接以原圖像素輸出裁切區域，不做 downscale
+  const srcX = -s.x / s.scale;
+  const srcY = -s.y / s.scale;
+  const srcW = s.vpW / s.scale;
+  const srcH = s.vpH / s.scale;
+  const outW = Math.min(Math.round(srcW), maxW);
+  const outH = Math.min(Math.round(srcH), maxH);
+  const out = document.createElement('canvas');
+  out.width = outW; out.height = outH;
+  out.getContext('2d').drawImage(cropImg, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
+  return out.toDataURL('image/jpeg', quality);
 }
 
 function nextPending(){
@@ -809,7 +835,7 @@ function nextPending(){
 }
 
 cropConfirm.addEventListener('click',()=>{
-  photosArr.push({dataUrl: getCroppedDataUrl(900,675,0.8)});
+  photosArr.push({dataUrl: getCroppedDataUrl(1600,1600,0.95)});
   nextPending();
 });
 cropSkip.addEventListener('click',()=>{ nextPending(); });
@@ -939,13 +965,14 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
 /* ───── 詳情 Modal ───── */
 function starsHTMLDecimal(score){
-  // render 5 stars with partial fill via clip
   let h='';
   for(let i=1;i<=5;i++){
     const fill=Math.min(1,Math.max(0,score-(i-1)));
-    if(fill>=1) h+=`<span style="font-size:18px;">⭐</span>`;
-    else if(fill>0) h+=`<span style="font-size:18px;opacity:0.5;">⭐</span>`;
-    else h+=`<span style="font-size:18px;opacity:0.15;">⭐</span>`;
+    const pct=Math.round(fill*100);
+    h+=`<span style="position:relative;display:inline-block;font-size:18px;width:20px;">
+      <span style="opacity:0.2;">⭐</span>
+      <span style="position:absolute;left:0;top:0;clip-path:inset(0 ${100-pct}% 0 0);">⭐</span>
+    </span>`;
   }
   return h;
 }
