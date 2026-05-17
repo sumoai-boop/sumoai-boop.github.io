@@ -1051,6 +1051,8 @@ function render(){
   } else {
     d.forEach(item=>{
       const coverImg=item.img||(item.imgs&&item.imgs[0])||'';
+      // DEBUG
+      console.log('[食記]', item.name, '| img長度:', (item.img||'').length, '| imgs[0]長度:', (item.imgs&&item.imgs[0]?item.imgs[0].length:0), '| coverImg前50字:', coverImg.slice(0,50));
       const card=document.createElement('div');
       card.className='photo-card'+(coverImg?'':' no-photo');
       const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
