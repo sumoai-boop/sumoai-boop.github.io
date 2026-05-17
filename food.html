@@ -575,31 +575,35 @@ function loadFromGitHub(){
   var token=localStorage.getItem(GH_TOKEN_KEY);
   if(!token){
     token=prompt('請輸入 GitHub Personal Access Token\n（需有 repo 寫入權限，僅儲存在本機）');
-    if(!token){DATA=load();render();return;}
+    if(!token){DATA=load();refreshTypeList();render();return;}
     localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();
   }
-  showToast('⏳ 載入食記資料...',false);
+  // 先從 localStorage 顯示，GitHub 回來再更新
+  DATA=load(); refreshTypeList(); render();
+  showToast('⏳ 同步雲端資料...',false);
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
   fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
     .then(r=>{
       if(!r.ok){
-        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
-        else if(r.status===404){showToast('（尚無雲端資料，使用本機）',false);}
-        else showToast('❌ 載入失敗('+r.status+')',true);
-        DATA=load();render();return null;
+        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效，使用本機資料',true);}
+        else if(r.status===404){showToast('（尚無雲端資料）',false);}
+        else showToast('❌ 載入失敗('+r.status+')，使用本機資料',true);
+        return null;
       }
       return r.json();
     })
     .then(fi=>{
-      if(!fi||!fi.content) return;
-      var raw=atob(fi.content.split('\n').join(''));
-      var arr=JSON.parse(decodeURIComponent(escape(raw)));
-      if(Array.isArray(arr)){
-        DATA=arr;localStorage.setItem(STORE,JSON.stringify(DATA));
-        if(fi.sha) localStorage.setItem('gh_food_sha',fi.sha);
-        showToast('✦ 食記已同步',false);refreshTypeList();render();
-      }
-    }).catch(e=>{console.warn('載入失敗:',e);DATA=load();refreshTypeList();render();});
+      if(!fi||!fi.content){return;}
+      try{
+        var raw=atob(fi.content.split('\n').join(''));
+        var arr=JSON.parse(decodeURIComponent(escape(raw)));
+        if(Array.isArray(arr)&&arr.length>0){
+          DATA=arr;localStorage.setItem(STORE,JSON.stringify(DATA));
+          if(fi.sha) localStorage.setItem('gh_food_sha',fi.sha);
+          showToast('✦ 食記已同步',false);refreshTypeList();render();
+        }
+      }catch(e){console.warn('解析失敗:',e);}
+    }).catch(e=>{console.warn('載入失敗:',e);showToast('❌ 網路錯誤，使用本機資料',true);});
 }
 
 function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){return [];} }
