@@ -180,7 +180,7 @@ body{
       <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
       <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
     </div>
-    <div style="text-align:right;line-height:1.2;">
+    <div id="total-net-display" style="text-align:right;line-height:1.2;">
       <div style="font-size:20px;color:#ffffff;letter-spacing:0.05em;font-weight:600;">總淨利</div>
       <div style="font-size:30px;font-weight:700;color:#ffffff;">NT$<span id="s-total-net">—</span></div>
     </div>
@@ -443,6 +443,8 @@ function switchTab(id,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+  var netEl = document.getElementById('total-net-display');
+  if(netEl) netEl.style.display = id==='overview' ? 'block' : 'none';
 }
 // 資料
 // ── GitHub 設定 ──
@@ -866,7 +868,7 @@ function renderMonthly(){
   var lbl = document.getElementById('monthlyPageLabel');
   if(lbl) lbl.textContent = yr+'/'+(mo+1)+'月';
 
-  var allMonthly=getData('uberMonthly').sort((a,b)=>a.date.localeCompare(b.date));
+  var allMonthly=getData('uberMonthly').sort((a,b)=>b.date.localeCompare(a.date));
   var q=(document.getElementById('monthly-search')?document.getElementById('monthly-search').value:'').toLowerCase();
   var tf=(document.getElementById('monthly-type-filter')?document.getElementById('monthly-type-filter').value:'');
   var monthly=allMonthly.filter(function(m){
