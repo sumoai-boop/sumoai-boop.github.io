@@ -61,41 +61,69 @@
   .photo-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:3px;
+    gap:10px;
   }
   .photo-card{
     position:relative;
+    cursor:pointer;
+    background:rgba(180,140,60,0.04);
+    border:1px solid rgba(180,140,60,0.10);
+    border-radius:10px;
+    overflow:hidden;
+    transition:box-shadow 0.2s, transform 0.2s;
+  }
+  .photo-card:hover{ box-shadow:0 6px 24px rgba(100,50,0,0.18); transform:translateY(-2px); }
+  .photo-card-img{
+    position:relative;
     aspect-ratio:1/1;
     overflow:hidden;
-    cursor:pointer;
     background:rgba(180,140,60,0.06);
-    border:1px solid rgba(180,140,60,0.08);
   }
-  .photo-card img{
+  .photo-card-img img{
     width:100%;height:100%;
     object-fit:cover;
     transition:transform 0.4s ease;
     display:block;
   }
-  .photo-card:hover img{transform:scale(1.06);}
+  .photo-card:hover .photo-card-img img{transform:scale(1.06);}
   .photo-card .overlay{
     position:absolute;inset:0;
-    background:linear-gradient(to top, rgba(15,8,0,0.9) 0%, rgba(15,8,0,0.3) 50%, transparent 100%);
+    background:linear-gradient(to top, rgba(15,8,0,0.82) 0%, rgba(15,8,0,0.2) 55%, transparent 100%);
     opacity:0;
-    transition:opacity 0.3s ease;
+    transition:opacity 0.28s ease;
     display:flex;flex-direction:column;justify-content:flex-end;
-    padding:14px;
+    padding:12px;
+    pointer-events:none;
   }
   .photo-card:hover .overlay{opacity:1;}
-  .overlay-name{font-size:13px;font-weight:700;color:#FFF5E6;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .overlay-meta{display:flex;gap:10px;align-items:center;}
+  .overlay-meta{display:flex;gap:8px;align-items:center;}
   .overlay-price{font-size:10px;color:#FFD200;}
   .overlay-stars{display:flex;gap:2px;}
   .overlay-stars span{font-size:11px;}
+  /* 照片下方名稱條 */
+  .photo-card-info{
+    padding:8px 10px 9px;
+    background:#F5EDE0;
+  }
+  .photo-card-name{
+    font-size:12px;font-weight:700;color:#2C1A0E;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-bottom:2px;
+  }
+  .photo-card-sub{
+    display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+  }
+  .photo-card-type{
+    font-size:9px;color:#C9A84C;letter-spacing:0.05em;
+    background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);
+    border-radius:99px;padding:1px 7px;white-space:nowrap;
+  }
+  .photo-card-score{
+    font-size:10px;color:rgba(100,60,10,0.55);letter-spacing:0.03em;
+  }
 
   /* 無照片佔位 */
-  .photo-card.no-photo{
-    background:rgba(180,140,60,0.04);
+  .photo-card.no-photo .photo-card-img{
     display:flex;align-items:center;justify-content:center;
   }
   .no-photo-icon{font-size:32px;opacity:0.18;}
@@ -181,10 +209,10 @@
   .img-clear{position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:26px;height:26px;color:#fff;cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;}
 
   .field-group{display:flex;flex-direction:column;gap:5px;}
-  .field-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(100,60,10,0.5);}
-  .field-input{background:rgba(180,140,60,0.06);border:1px solid rgba(180,140,60,0.18);border-radius:8px;padding:10px 12px;color:#2C1A0E;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;}
-  .field-input:focus{border-color:rgba(232,98,42,0.5);}
-  .field-input::placeholder{color:rgba(200,170,100,0.25);}
+  .field-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(80,45,5,0.7);}
+  .field-input{background:rgba(180,140,60,0.07);border:1px solid rgba(180,140,60,0.22);border-radius:8px;padding:10px 12px;color:#1a0e04;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;}
+  .field-input:focus{border-color:rgba(232,98,42,0.55);background:rgba(180,140,60,0.10);}
+  .field-input::placeholder{color:rgba(120,75,20,0.38);}
 
   /* 星等選擇 */
   .stars-pick{display:flex;gap:6px;}
@@ -347,11 +375,13 @@
       <input class="search-input" id="searchInput" placeholder="搜尋餐廳名稱或地址…" type="text">
     </div>
     <select class="sort-select" id="sortSelect">
-      <option value="new">最新新增</option>
+      <option value="date-desc" selected>用餐日期（新→舊）</option>
+      <option value="date-asc">用餐日期（舊→新）</option>
       <option value="score-desc">評分最高</option>
       <option value="score-asc">評分最低</option>
       <option value="price-desc">消費最高</option>
       <option value="price-asc">消費最低</option>
+      <option value="new">新增順序</option>
     </select>
     <span class="count-badge" id="countBadge">0 家</span>
     <button class="add-btn" id="addBtn" title="新增食記">＋</button>
@@ -445,6 +475,44 @@
       <div class="field-group">
         <label class="field-label">餐廳名稱 *</label>
         <input class="field-input" id="fName" placeholder="輸入餐廳名稱">
+      </div>
+      <!-- 餐廳類型 -->
+      <div class="field-group">
+        <label class="field-label">餐廳類型</label>
+        <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
+        <datalist id="typeList">
+          <option value="台式料理">
+          <option value="日式料理">
+          <option value="韓式料理">
+          <option value="中式料理">
+          <option value="義式料理">
+          <option value="美式料理">
+          <option value="泰式料理">
+          <option value="越南料理">
+          <option value="印度料理">
+          <option value="法式料理">
+          <option value="地中海料理">
+          <option value="火鍋">
+          <option value="燒烤">
+          <option value="海鮮">
+          <option value="素食">
+          <option value="早午餐">
+          <option value="早餐">
+          <option value="下午茶">
+          <option value="甜點">
+          <option value="咖啡廳">
+          <option value="手搖飲料">
+          <option value="小吃">
+          <option value="夜市小吃">
+          <option value="拉麵">
+          <option value="壽司">
+          <option value="燒肉">
+          <option value="牛排">
+          <option value="漢堡">
+          <option value="披薩">
+          <option value="自助餐">
+          <option value="吃到飽">
+        </datalist>
       </div>
       <!-- 日期 -->
       <div class="field-group">
@@ -624,7 +692,7 @@ function compressImage(dataUrl,maxW,maxH,quality){
   });
 }
 
-let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='new';
+let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc';
 window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
 /* ───── 星等（點擊設整數，輸入框設小數） ───── */
@@ -812,6 +880,7 @@ function openForm(item=null){
   editMode=!!item; currentId=item?item.id:null;
   document.getElementById('formTitle').textContent=item?'編輯食記':'新增食記';
   document.getElementById('fName').value=item?item.name:'';
+  document.getElementById('fType').value=item?(item.type||''):'';
   document.getElementById('fDate').value=item&&item.date?item.date:new Date().toISOString().slice(0,10);
   document.getElementById('fPrice').value=item&&item.price?item.price:'';
   document.getElementById('fAddr').value=item?(item.addr||''):'';
@@ -840,6 +909,7 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   if(!name){alert('請輸入餐廳名稱');return;}
   const price=parseInt(document.getElementById('fPrice').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
+  const type=document.getElementById('fType').value.trim();
   const note=document.getElementById('fNote').value.trim();
   const maps=document.getElementById('fMaps').value.trim();
   const date=document.getElementById('fDate').value;
@@ -852,9 +922,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,type,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,type,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
   }
   save(DATA); closeForm(); closeDetail(); render();
 });
@@ -875,6 +945,17 @@ function starsHTMLDecimal(score){
 function openDetail(item){
   currentId=item.id;
   document.getElementById('dName').textContent=item.name;
+  // 類型標籤
+  const dNameEl=document.getElementById('dName');
+  const existBadge=document.getElementById('dTypeBadge');
+  if(existBadge) existBadge.remove();
+  if(item.type){
+    const badge=document.createElement('span');
+    badge.id='dTypeBadge';
+    badge.textContent=item.type;
+    badge.style.cssText='display:inline-block;margin-left:8px;padding:2px 9px;background:rgba(232,98,42,0.12);color:#C9A84C;border:1px solid rgba(232,98,42,0.25);border-radius:99px;font-size:10px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
+    dNameEl.appendChild(badge);
+  }
   document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
   document.getElementById('dDateText').textContent=item.date||'未填寫日期';
   document.getElementById('dPrice').textContent=item.price?'NT$'+item.price.toLocaleString():'—';
@@ -933,7 +1014,9 @@ function render(){
   else if(sortKey==='score-asc') d.sort((a,b)=>a.score-b.score);
   else if(sortKey==='price-desc') d.sort((a,b)=>(b.price||0)-(a.price||0));
   else if(sortKey==='price-asc') d.sort((a,b)=>(a.price||99999)-(b.price||99999));
-  else d.sort((a,b)=>b.createdAt-a.createdAt);
+  else if(sortKey==='date-asc') d.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  else if(sortKey==='new') d.sort((a,b)=>b.createdAt-a.createdAt);
+  else d.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); // date-desc default
 
   document.getElementById('countBadge').textContent=d.length+' 家';
   const grid=document.getElementById('photoGrid');
@@ -949,28 +1032,41 @@ function render(){
       const coverImg=item.img||(item.imgs&&item.imgs[0])||'';
       const card=document.createElement('div');
       card.className='photo-card'+(coverImg?'':' no-photo');
+      const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
+      const typeTag=item.type?`<span class="photo-card-type">${item.type}</span>`:'';
+      const scoreStr=item.score?`<span class="photo-card-score">⭐ ${(+item.score).toFixed(1)}</span>`:'';
+      const priceStr=item.price?`<span class="photo-card-score">NT$${item.price.toLocaleString()}</span>`:'';
+
       if(coverImg){
-        const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
         card.innerHTML=`
-          <img src="${coverImg}" alt="${item.name}" loading="lazy">
-          ${photoCount}
-          <div class="overlay">
-            <div class="overlay-name">${item.name}</div>
-            <div class="overlay-meta">
-              <span class="overlay-price">${item.price?'NT$'+item.price.toLocaleString():'—'}</span>
-              <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
-              ${item.score?`<span style="font-size:10px;color:rgba(255,210,0,0.8);margin-left:2px;">${(+item.score).toFixed(1)}</span>`:''}
+          <div class="photo-card-img">
+            <img src="${coverImg}" alt="${item.name}" loading="lazy">
+            ${photoCount}
+            <div class="overlay">
+              <div class="overlay-meta">
+                <span class="overlay-price">${item.price?'NT$'+item.price.toLocaleString():''}</span>
+                <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
+                ${item.score?`<span style="font-size:10px;color:rgba(255,210,0,0.85);">${(+item.score).toFixed(1)}</span>`:''}
+              </div>
             </div>
+          </div>
+          <div class="photo-card-info">
+            <div class="photo-card-name">${item.name}</div>
+            <div class="photo-card-sub">${typeTag}${scoreStr}${priceStr}</div>
           </div>`;
       } else {
         card.innerHTML=`
-          <div class="no-photo-icon">🍜</div>
-          <div class="overlay">
-            <div class="overlay-name">${item.name}</div>
-            <div class="overlay-meta">
-              <span class="overlay-price">${item.price?'NT$'+item.price.toLocaleString():'—'}</span>
-              <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
+          <div class="photo-card-img">
+            <div class="no-photo-icon">🍜</div>
+            <div class="overlay">
+              <div class="overlay-meta">
+                <div class="overlay-stars">${starsHTMLSmall(item.score)}</div>
+              </div>
             </div>
+          </div>
+          <div class="photo-card-info">
+            <div class="photo-card-name">${item.name}</div>
+            <div class="photo-card-sub">${typeTag}${scoreStr}${priceStr}</div>
           </div>`;
       }
       card.addEventListener('click',()=>openDetail(item));
