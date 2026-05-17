@@ -1118,13 +1118,17 @@ function render(){
         }
         const bottom = document.createElement('div');
         bottom.className = 'card-bottom';
-        bottom.innerHTML = `<div class="card-name">${item.name}</div>`;
+        const n = item.name;
+        const nameHtml = n.length > 10 ? n.slice(0,10)+'<br>'+n.slice(10) : n;
+        bottom.innerHTML = `<div class="card-name">${nameHtml}</div>`;
         card.appendChild(bottom);
       } else {
+        const n = item.name;
+        const nameHtml = n.length > 10 ? n.slice(0,10)+'<br>'+n.slice(10) : n;
         card.innerHTML=`
           <div class="no-photo-icon">🍜</div>
           <div class="card-bottom">
-            <div class="card-name">${item.name}</div>
+            <div class="card-name">${nameHtml}</div>
           </div>`;
       }
       card.addEventListener('click',()=>openDetail(item));
