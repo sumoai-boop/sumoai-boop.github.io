@@ -86,7 +86,7 @@ body{
 .tab-panel.active{display:block;}
 
 /* 統計卡 */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
 .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(0,200,83,0.45);border-radius:14px;padding:18px 20px;}
 .stat-label{font-size:25px;letter-spacing:0.05em;color:rgba(240,220,160,0.8);margin-bottom:8px;}
 .stat-val{font-family:'Playfair Display',serif;font-size:68px;font-weight:700;color:#ffffff;text-shadow:0 0 30px rgba(255,255,255,0.4);line-height:1;}
@@ -190,18 +190,22 @@ body{
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">每月平均趟數</div><div class="stat-val" id="s-avg-month-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card">
         <div class="stat-label">總時數</div>
         <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
       </div>
       <div class="stat-card"><div class="stat-label">平均公里數</div><div class="stat-val" id="s-avg-km"><em class="num">0</em> <em class="unit">km</em></div></div>
+      <div class="stat-card"><div class="stat-label">總公里數</div><div class="stat-val" id="s-total-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">本月行程數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">總行程數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均行程費用</div><div class="stat-val" id="s-avg-fare"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
+      <div class="stat-card"><div class="stat-label">總載客數</div><div class="stat-val" id="s-total-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
     </div>
@@ -1090,8 +1094,18 @@ function updateStats(){
   var totalIncome=allWeekly.reduce(function(s,w){return s+w.income;},0);
   var totalExp=allMonthly.reduce(function(s,m){return s+m.amount;},0);
 
-  // 平均公里數（所有行程）
-  var avgKm=totalTrips>0?(allTrips.reduce(function(s,t){return s+(t.km||0);},0)/totalTrips).toFixed(2):0;
+  // 總公里數
+  var totalKm = allTrips.reduce(function(s,t){return s+(t.km||0);},0);
+  var avgKm = totalTrips>0?(totalKm/totalTrips).toFixed(2):0;
+  // 平均行程費用（fare）
+  var avgFare = totalTrips>0?Math.round(allTrips.reduce(function(s,t){return s+(t.fare||0);},0)/totalTrips):0;
+  // 總載客數
+  var totalPax = allTrips.reduce(function(s,t){return s+(t.pax||1);},0);
+  // 每月平均趟數（有記錄的月份）
+  var monthSet={};
+  allTrips.forEach(function(t){ if(t.d) monthSet[t.d.slice(0,7)]=1; });
+  var monthCount = Object.keys(monthSet).length||1;
+  var avgMonthTrips = (totalTrips/monthCount).toFixed(1);
 
   // 平均費用明細（所有行程）
   var avgDetail=totalTrips>0?Math.round(allTrips.reduce(function(s,t){return s+(t.detail||0);},0)/totalTrips):0;
@@ -1105,6 +1119,10 @@ function updateStats(){
   var totalNet=totalIncome-totalExp;
   document.getElementById('s-total-net').textContent=fmt(totalNet);
   document.getElementById('s-avg-km').innerHTML='<em class="num">'+avgKm+'</em> <em class="unit">km</em>';
+  document.getElementById('s-avg-month-trips').innerHTML='<em class="num">'+avgMonthTrips+'</em> <em class="unit">趟</em>';
+  document.getElementById('s-total-km').innerHTML='<em class="num">'+totalKm.toFixed(1)+'</em> <em class="unit">km</em>';
+  document.getElementById('s-avg-fare').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgFare)+'</em>';
+  document.getElementById('s-total-pax').innerHTML='<em class="num">'+fmt(totalPax)+'</em> <em class="unit">人</em>';
   document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-total-trips').innerHTML='<em class="num">'+fmt(totalTrips)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-avg-detail').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgDetail)+'</em>';
