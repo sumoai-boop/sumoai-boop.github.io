@@ -444,19 +444,15 @@
 
       <!-- ── 裁切器（每次上傳一張時顯示） ── -->
       <div id="cropContainer" style="display:none;flex-direction:column;gap:8px;">
-        <div style="font-size:10px;color:rgba(100,60,10,0.5);letter-spacing:0.06em;" id="cropLabel">裁切照片 1 / 1</div>
-        <div id="cropViewport" style="width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background:#111;cursor:grab;touch-action:none;border:1px solid rgba(180,140,60,0.2);">
+        <div id="cropViewport" style="width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background:#111;cursor:grab;touch-action:none;border:1px solid rgba(255,180,80,0.15);">
           <img id="cropImg" style="position:absolute;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none;">
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:10px;color:rgba(100,60,10,0.4);white-space:nowrap;">縮放</span>
+          <span style="font-size:10px;color:rgba(255,220,160,0.4);white-space:nowrap;">縮放</span>
           <input type="range" id="cropZoom" min="100" max="300" value="100" style="flex:1;accent-color:#E8622A;cursor:pointer;">
+          <button id="cropClearBtn" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;padding:5px 10px;font-size:10px;cursor:pointer;font-family:inherit;white-space:nowrap;">移除</button>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button id="cropConfirm" style="flex:2;background:linear-gradient(135deg,#E8622A,#c84a15);border:none;color:#fff;border-radius:8px;padding:9px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700;">✓ 確認此張</button>
-          <button id="cropSkip" style="flex:1;background:rgba(180,140,60,0.08);border:1px solid rgba(180,140,60,0.2);color:#C9A84C;border-radius:8px;padding:9px;font-size:11px;cursor:pointer;font-family:inherit;">略過</button>
-        </div>
-        <div style="font-size:9px;color:rgba(100,60,10,0.3);text-align:center;letter-spacing:0.06em;">拖曳移動 · 滑桿縮放 · 滾輪縮放</div>
+        <div style="font-size:9px;color:rgba(255,220,160,0.25);text-align:center;letter-spacing:0.06em;">拖曳移動 · 滑桿縮放</div>
       </div>
 
       <!-- 名稱 -->
@@ -737,126 +733,112 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 /* ───── 多張照片 + 裁切器 ───── */
-let photosArr = [];        // [{dataUrl}] 已確認的照片
-let pendingFiles = [];     // 待裁切的 File 陣列
-let pendingIdx = 0;        // 目前裁切到第幾張
+let photosArr = [];       // [{dataUrl}]
+let cropStates = [];      // 每張的裁切狀態
+let currentCropIdx = -1;
 
 const imgInput     = document.getElementById('imgInput');
 const cropContainer= document.getElementById('cropContainer');
 const cropViewport = document.getElementById('cropViewport');
 const cropImg      = document.getElementById('cropImg');
 const cropZoom     = document.getElementById('cropZoom');
-const cropLabel    = document.getElementById('cropLabel');
-const cropConfirm  = document.getElementById('cropConfirm');
-const cropSkip     = document.getElementById('cropSkip');
+const cropClearBtn = document.getElementById('cropClearBtn');
 
 let cropState = {scale:1,x:0,y:0,dragging:false,lastX:0,lastY:0,naturalW:0,naturalH:0,vpW:0,vpH:0};
 
 function clampCrop(){
   const s=cropState,iw=s.naturalW*s.scale,ih=s.naturalH*s.scale;
   if(iw>=s.vpW){ s.x=Math.min(0,Math.max(s.vpW-iw,s.x)); }
-  else { s.x=(s.vpW-iw)/2; } // 圖比框小時置中
+  else { s.x=(s.vpW-iw)/2; }
   if(ih>=s.vpH){ s.y=Math.min(0,Math.max(s.vpH-ih,s.y)); }
   else { s.y=(s.vpH-ih)/2; }
 }
 function applyCrop(){ cropImg.style.transform=`translate(${cropState.x}px,${cropState.y}px) scale(${cropState.scale})`; }
 
-function loadCropFile(file){
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    // 先把 container 顯示出來，讓瀏覽器 layout 後才能正確讀到 offsetWidth
-    cropContainer.style.display='flex';
-    cropImg.style.transform='none';
-    cropImg.src='';
-    cropImg.onload=()=>{
-      // 用 rAF 確保 layout 已完成
-      requestAnimationFrame(()=>{
-        const s=cropState;
-        s.naturalW=cropImg.naturalWidth; s.naturalH=cropImg.naturalHeight;
-        s.vpW=cropViewport.offsetWidth;  s.vpH=cropViewport.offsetHeight;
-        if(!s.vpW||!s.vpH){
-          // 若還是 0，再等一個 frame
-          requestAnimationFrame(()=>{
-            s.vpW=cropViewport.offsetWidth; s.vpH=cropViewport.offsetHeight;
-            initCropScale(s);
-          });
-        } else {
-          initCropScale(s);
-        }
-      });
-    };
-    cropImg.src=ev.target.result;
-  };
-  reader.readAsDataURL(file);
+function saveCropState(idx){
+  if(idx>=0&&idx<photosArr.length)
+    cropStates[idx]={scale:cropState.scale,x:cropState.x,y:cropState.y};
 }
 
-function initCropScale(s){
-  const scaleW=s.vpW/s.naturalW, scaleH=s.vpH/s.naturalH;
-  // contain：完整顯示原圖，不強制放大
-  const fitScale=Math.min(scaleW,scaleH);
-  s.scale=fitScale;
-  cropZoom.min=Math.round(fitScale*100);
-  cropZoom.max=Math.round(fitScale*300);
-  cropZoom.value=Math.round(fitScale*100);
-  s.x=(s.vpW-s.naturalW*s.scale)/2;
-  s.y=(s.vpH-s.naturalH*s.scale)/2;
-  clampCrop(); applyCrop();
-  cropLabel.textContent=`裁切照片 ${pendingIdx+1} / ${pendingFiles.length}`;
+function loadCropForIdx(idx){
+  if(idx<0||idx>=photosArr.length){ cropContainer.style.display='none'; currentCropIdx=-1; return; }
+  saveCropState(currentCropIdx);
+  currentCropIdx=idx;
+  cropContainer.style.display='flex';
+  cropImg.style.transform='none';
+  cropImg.onload=()=>{
+    requestAnimationFrame(()=>{
+      const s=cropState;
+      s.naturalW=cropImg.naturalWidth; s.naturalH=cropImg.naturalHeight;
+      s.vpW=cropViewport.offsetWidth;  s.vpH=cropViewport.offsetHeight;
+      const init=()=>{
+        if(cropStates[idx]){
+          const sv=cropStates[idx]; s.scale=sv.scale; s.x=sv.x; s.y=sv.y;
+        } else {
+          const fitScale=Math.min(s.vpW/s.naturalW, s.vpH/s.naturalH);
+          s.scale=fitScale;
+          s.x=(s.vpW-s.naturalW*s.scale)/2;
+          s.y=(s.vpH-s.naturalH*s.scale)/2;
+        }
+        cropZoom.min=Math.round(Math.min(s.vpW/s.naturalW,s.vpH/s.naturalH)*100);
+        cropZoom.max=Math.round(Math.min(s.vpW/s.naturalW,s.vpH/s.naturalH)*300);
+        cropZoom.value=Math.round(s.scale*100);
+        clampCrop(); applyCrop();
+      };
+      if(!s.vpW||!s.vpH){ requestAnimationFrame(()=>{ s.vpW=cropViewport.offsetWidth; s.vpH=cropViewport.offsetHeight; init(); }); }
+      else { init(); }
+    });
+  };
+  cropImg.src=photosArr[idx].dataUrl;
 }
 
 function getCroppedDataUrl(maxW,maxH,quality){
   const s=cropState;
-  if(!s.vpW||!s.vpH){
-    s.vpW=cropViewport.offsetWidth;
-    s.vpH=cropViewport.offsetHeight;
-  }
-  // 以卡片比例（3:4）從原圖裁切，cover 填滿不留黑邊
-  const targetRatio = 3/4; // 卡片比例
-  let srcW = s.naturalW;
-  let srcH = s.naturalH;
-  if(srcW/srcH > targetRatio){
-    // 原圖比較寬，裁左右
-    srcW = Math.round(srcH * targetRatio);
-  } else {
-    // 原圖比較高，裁上下
-    srcH = Math.round(srcW / targetRatio);
-  }
-  // 以目前裁切器的平移當作構圖中心
-  const centerX = (s.vpW/2 - s.x) / s.scale;
-  const centerY = (s.vpH/2 - s.y) / s.scale;
-  const srcX = Math.max(0, Math.min(s.naturalW - srcW, centerX - srcW/2));
-  const srcY = Math.max(0, Math.min(s.naturalH - srcH, centerY - srcH/2));
-  const outW = Math.min(srcW, maxW);
-  const outH = Math.min(srcH, maxH);
-  const out = document.createElement('canvas');
-  out.width = outW; out.height = outH;
-  out.getContext('2d').drawImage(cropImg, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
-  return out.toDataURL('image/jpeg', quality);
+  if(!s.vpW||!s.vpH){ s.vpW=cropViewport.offsetWidth; s.vpH=cropViewport.offsetHeight; }
+  const targetRatio=3/4;
+  let srcW=s.naturalW, srcH=s.naturalH;
+  if(srcW/srcH>targetRatio){ srcW=Math.round(srcH*targetRatio); }
+  else { srcH=Math.round(srcW/targetRatio); }
+  const centerX=(s.vpW/2-s.x)/s.scale;
+  const centerY=(s.vpH/2-s.y)/s.scale;
+  const srcX=Math.max(0,Math.min(s.naturalW-srcW,centerX-srcW/2));
+  const srcY=Math.max(0,Math.min(s.naturalH-srcH,centerY-srcH/2));
+  const outW=Math.min(srcW,maxW), outH=Math.min(srcH,maxH);
+  const out=document.createElement('canvas');
+  out.width=outW; out.height=outH;
+  out.getContext('2d').drawImage(cropImg,srcX,srcY,srcW,srcH,0,0,outW,outH);
+  return out.toDataURL('image/jpeg',quality);
 }
 
-function nextPending(){
-  pendingIdx++;
-  if(pendingIdx<pendingFiles.length){
-    loadCropFile(pendingFiles[pendingIdx]);
-  } else {
-    cropContainer.style.display='none';
-    pendingFiles=[]; pendingIdx=0;
-    renderThumbs();
-  }
-}
-
-cropConfirm.addEventListener('click',()=>{
-  photosArr.push({dataUrl: getCroppedDataUrl(1600,1600,0.95)});
-  nextPending();
-});
-cropSkip.addEventListener('click',()=>{ nextPending(); });
-
+// 上傳後直接加入，不需要確認
 imgInput.addEventListener('change',e=>{
   const files=[...e.target.files];
   if(!files.length) return;
   imgInput.value='';
-  pendingFiles=files; pendingIdx=0;
-  loadCropFile(files[0]);
+  let loaded=0;
+  const startIdx=photosArr.length;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      photosArr.push({dataUrl:ev.target.result});
+      cropStates.push(null);
+      loaded++;
+      if(loaded===files.length){
+        renderThumbs();
+        loadCropForIdx(startIdx); // 顯示第一張新照片
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+// 移除目前這張
+cropClearBtn.addEventListener('click',()=>{
+  if(currentCropIdx<0) return;
+  photosArr.splice(currentCropIdx,1);
+  cropStates.splice(currentCropIdx,1);
+  renderThumbs();
+  loadCropForIdx(Math.min(currentCropIdx,photosArr.length-1));
 });
 
 function renderThumbs(){
@@ -864,14 +846,15 @@ function renderThumbs(){
   row.innerHTML='';
   photosArr.forEach((p,i)=>{
     const wrap=document.createElement('div');
-    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===0?'#E8622A':'rgba(180,140,60,0.25)')+';';
+    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===currentCropIdx?'#E8622A':(i===0?'rgba(232,98,42,0.5)':'rgba(255,180,80,0.2)'))+';cursor:pointer;';
     const img=document.createElement('img');
     img.src=p.dataUrl;
     img.style.cssText='width:100%;height:100%;object-fit:cover;';
+    wrap.addEventListener('click',()=>{ saveCropState(currentCropIdx); loadCropForIdx(i); renderThumbs(); });
     const del=document.createElement('button');
     del.textContent='✕';
     del.style.cssText='position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.65);border:none;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;';
-    del.onclick=()=>{ photosArr.splice(i,1); renderThumbs(); };
+    del.onclick=(e)=>{ e.stopPropagation(); photosArr.splice(i,1); cropStates.splice(i,1); if(currentCropIdx>=i) currentCropIdx=Math.max(-1,currentCropIdx-1); renderThumbs(); loadCropForIdx(Math.min(currentCropIdx,photosArr.length-1)); };
     if(i===0){
       const badge=document.createElement('div');
       badge.textContent='封面';
@@ -912,11 +895,12 @@ cropZoom.addEventListener('input',()=>{
 });
 
 function resetFormPhotos(imgs){
-  // imgs: array of dataUrl strings (existing) or empty
-  photosArr = (imgs||[]).map(d=>({dataUrl:d}));
-  pendingFiles=[]; pendingIdx=0;
+  photosArr=(imgs||[]).map(d=>({dataUrl:d}));
+  cropStates=photosArr.map(()=>null);
+  currentCropIdx=-1;
   cropContainer.style.display='none';
   renderThumbs();
+  if(photosArr.length>0) loadCropForIdx(0);
 }
 
 /* ───── 表單 Modal ───── */
@@ -961,7 +945,33 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   sv=Math.round(sv*10)/10;
   starVal=sv;
 
-  const imgs=photosArr.map(p=>p.dataUrl);
+  // 儲存時裁切每張照片
+  saveCropState(currentCropIdx);
+  const imgs=[];
+  for(let i=0;i<photosArr.length;i++){
+    // 切換到每張照片取得其裁切狀態
+    const savedState=cropStates[i];
+    const tempImg=new Image();
+    await new Promise(res=>{ tempImg.onload=res; tempImg.src=photosArr[i].dataUrl; });
+    const targetRatio=3/4;
+    let srcW=tempImg.naturalWidth, srcH=tempImg.naturalHeight;
+    if(srcW/srcH>targetRatio){ srcW=Math.round(srcH*targetRatio); }
+    else { srcH=Math.round(srcW/targetRatio); }
+    let cx=tempImg.naturalWidth/2, cy=tempImg.naturalHeight/2;
+    if(savedState && cropStates[i]){
+      // 用儲存的裁切中心
+      const vpW=cropViewport.offsetWidth||300, vpH=cropViewport.offsetHeight||400;
+      cx=(vpW/2-savedState.x)/savedState.scale;
+      cy=(vpH/2-savedState.y)/savedState.scale;
+    }
+    const srcX=Math.max(0,Math.min(tempImg.naturalWidth-srcW,cx-srcW/2));
+    const srcY=Math.max(0,Math.min(tempImg.naturalHeight-srcH,cy-srcH/2));
+    const outW=Math.min(srcW,1600), outH=Math.min(srcH,1600);
+    const canvas=document.createElement('canvas');
+    canvas.width=outW; canvas.height=outH;
+    canvas.getContext('2d').drawImage(tempImg,srcX,srcY,srcW,srcH,0,0,outW,outH);
+    imgs.push(canvas.toDataURL('image/jpeg',0.92));
+  }
   const img=imgs[0]||'';
 
   if(editMode&&currentId){
