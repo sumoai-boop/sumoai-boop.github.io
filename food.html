@@ -1140,19 +1140,52 @@ function render(){
       const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
 
       if(coverImg){
-        // 用 DOM API 建立 img，避免 innerHTML 截斷 base64
+        const imgs = item.imgs && item.imgs.length > 0 ? item.imgs : [coverImg];
+        let idx = 0;
+
         const img = document.createElement('img');
-        img.src = coverImg;
+        img.src = imgs[0];
         img.alt = item.name;
         img.loading = 'eager';
-        img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;';
+        img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;';
         card.appendChild(img);
-        if(item.imgs && item.imgs.length > 1){
-          const badge = document.createElement('span');
-          badge.textContent = `⧉ ${item.imgs.length}`;
-          badge.style.cssText = 'position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;';
-          card.appendChild(badge);
+
+        if(imgs.length > 1){
+          // 左右按鈕
+          const btnL = document.createElement('button');
+          btnL.innerHTML = '&#8249;';
+          btnL.style.cssText = 'position:absolute;left:6px;top:50%;transform:translateY(-50%);z-index:5;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:28px;height:28px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+          const btnR = document.createElement('button');
+          btnR.innerHTML = '&#8250;';
+          btnR.style.cssText = 'position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:5;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:28px;height:28px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+
+          // 點數指示
+          const dots = document.createElement('div');
+          dots.style.cssText = 'position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:5;';
+          const renderDots = () => {
+            dots.innerHTML = '';
+            imgs.forEach((_,i)=>{
+              const d = document.createElement('div');
+              d.style.cssText = `width:5px;height:5px;border-radius:50%;background:${i===idx?'#fff':'rgba(255,255,255,0.4)'};transition:background 0.2s;`;
+              dots.appendChild(d);
+            });
+          };
+          renderDots();
+
+          const go = (dir, e) => {
+            e.stopPropagation();
+            idx = (idx + dir + imgs.length) % imgs.length;
+            img.style.opacity = '0';
+            setTimeout(()=>{ img.src = imgs[idx]; img.style.opacity = '1'; }, 150);
+            renderDots();
+          };
+          btnL.addEventListener('click', e => go(-1, e));
+          btnR.addEventListener('click', e => go(1, e));
+          card.appendChild(btnL);
+          card.appendChild(btnR);
+          card.appendChild(dots);
         }
+
         const bottom = document.createElement('div');
         bottom.className = 'card-bottom';
         const line1 = item.name1 || item.name || '';
