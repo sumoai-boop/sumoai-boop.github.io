@@ -623,7 +623,6 @@ async function pushToGitHub(data){
     var jsonStr=JSON.stringify(data,null,2);
     // 檢查大小
     var sizeKB=Math.round(new Blob([jsonStr]).size/1024);
-    if(sizeKB>900){showToast('⚠️ 資料量 '+sizeKB+'KB 接近上限，建議減少照片',true);return;}
     var encoded=btoa(unescape(encodeURIComponent(jsonStr)));
     var body={message:'更新食記 ('+sizeKB+'KB)',content:encoded,branch:GH_BRANCH};if(sha)body.sha=sha;
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
@@ -829,7 +828,20 @@ function getCroppedDataUrl(maxW,maxH,quality){
   return out.toDataURL('image/jpeg',quality);
 }
 
-// 上傳後直接加入，不顯示裁切器
+const IMGBB_KEY = '16a2f30e62f60a1a802412b56c208cb0';
+
+async function uploadToImgBB(dataUrl){
+  const base64 = dataUrl.split(',')[1];
+  const form = new FormData();
+  form.append('key', IMGBB_KEY);
+  form.append('image', base64);
+  const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
+  const json = await res.json();
+  if(json.success) return json.data.url;
+  throw new Error(json.error?.message || '上傳失敗');
+}
+
+// 上傳後直接加入（先存 dataUrl 預覽，儲存時才上傳 ImgBB）
 imgInput.addEventListener('change',e=>{
   const files=[...e.target.files];
   if(!files.length) return;
@@ -837,14 +849,14 @@ imgInput.addEventListener('change',e=>{
   files.forEach(file=>{
     const reader=new FileReader();
     reader.onload=ev=>{
-      photosArr.push({dataUrl:ev.target.result});
+      photosArr.push({dataUrl:ev.target.result, url:null});
       cropStates.push(null);
       loaded++;
       if(loaded===files.length) renderThumbs();
     };
     reader.readAsDataURL(file);
   });
-  imgInput.value=''; // 清掉讓同一張也能重選
+  imgInput.value='';
 });
 
 // 移除目前這張
@@ -863,7 +875,7 @@ function renderThumbs(){
     const wrap=document.createElement('div');
     wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===0?'#E8622A':'rgba(255,180,80,0.2)')+';';
     const img=document.createElement('img');
-    img.src=p.dataUrl;
+    img.src = p.url || p.dataUrl;
     img.style.cssText='width:100%;height:100%;object-fit:cover;';
     const del=document.createElement('button');
     del.textContent='✕';
@@ -909,7 +921,11 @@ cropZoom.addEventListener('input',()=>{
 });
 
 function resetFormPhotos(imgs){
-  photosArr=(imgs||[]).map(d=>({dataUrl:d}));
+  // imgs 可能是 URL 陣列（ImgBB）或 base64 陣列（舊資料）
+  photosArr=(imgs||[]).map(d=>({
+    dataUrl: d.startsWith('http') ? d : d, // 預覽用
+    url: d.startsWith('http') ? d : null    // 已上傳的直接用 URL
+  }));
   cropStates=photosArr.map(()=>null);
   currentCropIdx=-1;
   renderThumbs();
@@ -960,14 +976,30 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   sv=Math.round(sv*10)/10;
   starVal=sv;
 
-  // 儲存時裁切每張照片（先快照避免 closeForm 清空）
+  // 上傳新照片到 ImgBB，已有 URL 的直接用
   saveCropState(currentCropIdx);
   const snapshotPhotos=[...photosArr];
-  const snapshotStates=[...cropStates];
-  const vpW=cropViewport.offsetWidth||300, vpH=cropViewport.offsetHeight||400;
-  // 直接存原圖，不裁切，顯示交給 CSS object-fit:cover
-  // 但先壓縮，避免超過 GitHub 1MB 限制
-  const imgs = await Promise.all(snapshotPhotos.map(p=>compressImage(p.dataUrl,1200,1600,0.82)));
+  showToast('⏳ 上傳照片中...', false);
+  const imgs=[];
+  for(let i=0;i<snapshotPhotos.length;i++){
+    const p=snapshotPhotos[i];
+    if(p.url){
+      // 已上傳過，直接用舊 URL
+      imgs.push(p.url);
+    } else {
+      // 新照片，壓縮後上傳 ImgBB
+      try{
+        const compressed = await compressImage(p.dataUrl, 1200, 1600, 0.82);
+        const url = await uploadToImgBB(compressed);
+        imgs.push(url);
+        // 更新 photosArr 裡的 url 避免重複上傳
+        if(photosArr[i]) photosArr[i].url = url;
+      } catch(err){
+        showToast('❌ 照片上傳失敗：'+err.message, true);
+        return;
+      }
+    }
+  }
   const img=imgs[0]||'';
 
   // 重新從 localStorage 確認資料沒被清空
