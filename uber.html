@@ -364,10 +364,10 @@ body{
     <!-- 左右並排：圓餅圖 + 新增表單 -->
     <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-bottom:20px;">
       <!-- 左：圓餅圖 -->
-      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:12px;">總支出</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:32px;">
-          <canvas id="monthlyPieChart" width="240" height="240" style="flex-shrink:0;"></canvas>
+      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;display:flex;flex-direction:column;">
+        <div style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:16px;text-align:left;">總支出</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex:1;">
+          <canvas id="monthlyPieChart" width="300" height="300" style="flex-shrink:0;"></canvas>
           <div id="pieLegend"></div>
         </div>
       </div>
@@ -943,9 +943,9 @@ function renderMonthly(){
     var canvas = document.getElementById('monthlyPieChart');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,240,240);
+    ctx.clearRect(0,0,300,300);
 
-    var cx=120, cy=120, r=108;
+    var cx=150, cy=150, r=132;
     var startAngle = -Math.PI/2;
     types.forEach(function(t, i){
       var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
@@ -976,23 +976,24 @@ function renderMonthly(){
 
     // 圖例
     var leg = document.getElementById('pieLegend');
+    var leg = document.getElementById('pieLegend');
     leg.innerHTML = types.map(function(t,i){
       var pct = (typeMap[t]/grandTotal*100).toFixed(1);
-      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">'
-        +'<div style="display:flex;align-items:center;gap:8px;">'
-        +'<div style="width:12px;height:12px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
-        +'<span style="font-size:13px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
+      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;">'
+        +'<div style="display:flex;align-items:center;gap:10px;">'
+        +'<div style="width:14px;height:14px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
+        +'<span style="font-size:16px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
         +'</div>'
-        +'<div style="text-align:right;">'
-        +'<div style="font-size:13px;color:#E8EAF0;font-weight:600;">'+typeMap[t].toLocaleString()+' $</div>'
+        +'<div style="text-align:right;white-space:nowrap;">'
+        +'<div style="font-size:16px;color:#E8EAF0;font-weight:700;">'+typeMap[t].toLocaleString()+'</div>'
+        +'<div style="font-size:13px;color:rgba(255,255,255,0.45);">'+pct+'%</div>'
         +'</div></div>';
     }).join('')
-    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;">'
-    + '<span style="font-size:12px;color:rgba(255,255,255,0.5);">總額</span>'
-    + '<span style="font-size:13px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
+    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
+    + '<span style="font-size:15px;color:rgba(255,255,255,0.5);">總額</span>'
+    + '<span style="font-size:18px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
     + '</div>';
   })();
-
 
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
