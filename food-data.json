@@ -96,8 +96,8 @@
   },
   {
     "id": "1779026171815",
-    "name": "Lazy Pasta 慵懶義式廚房 信義市府店",
-    "name1": "Lazy Pasta 慵懶義式廚房",
+    "name": "Lazy Pasta慵懶義式廚房 信義市府店",
+    "name1": "Lazy Pasta慵懶義式廚房",
     "name2": "信義市府店",
     "type": "意大利餐廳",
     "price": 1202,
@@ -112,6 +112,6 @@
     ],
     "img": "https://i.ibb.co/WNk2wJXg/d67b154b5fea.jpg",
     "createdAt": 1779026171815,
-    "updatedAt": 1779073261090
+    "updatedAt": 1779073282309
   }
 ]
