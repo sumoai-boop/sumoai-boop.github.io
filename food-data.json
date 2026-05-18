@@ -1,5 +1,25 @@
 [
   {
+    "id": "1779098060207",
+    "name": "週末炸雞俱樂部 信義店",
+    "name1": "週末炸雞俱樂部",
+    "name2": "信義店",
+    "type": "炸雞餐館",
+    "price": 815,
+    "visits": 0,
+    "gscore": 4.3,
+    "addr": "110臺北市信義區中興里基隆路二段74號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%80%B1%E6%9C%AB%E7%82%B8%E9%9B%9E%E4%BF%B1%E6%A8%82%E9%83%A8+%E4%BF%A1%E7%BE%A9%E5%BA%97+%2F+WEEKEND+CHICKEN+CLUB+%26+BAR/@25.0306396,121.5579169,17z/data=!4m15!1m8!3m7!1s0x3442ab463628ac65:0x77015a740d185273!2z6YCx5pyr54K46Zue5L-x5qiC6YOoIOS_oee-qeW6lyAvIFdFRUtFTkQgQ0hJQ0tFTiBDTFVCICYgQkFS!8m2!3d25.0307526!4d121.5578593!10e9!16s%2Fg%2F11rx2vg9ns!3m5!1s0x3442ab463628ac65:0x77015a740d185273!8m2!3d25.0307526!4d121.5578593!16s%2Fg%2F11rx2vg9ns?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-02-14",
+    "score": 3.1,
+    "imgs": [
+      "https://i.ibb.co/TD7xm1rs/5d20307ef1d0.jpg"
+    ],
+    "img": "https://i.ibb.co/TD7xm1rs/5d20307ef1d0.jpg",
+    "createdAt": 1779098060207
+  },
+  {
     "id": "1779083250434",
     "name": "品湯白色麻辣鍋 信義市府店",
     "name1": "品湯白色麻辣鍋",
