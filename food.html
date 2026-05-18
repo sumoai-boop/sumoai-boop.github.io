@@ -90,9 +90,9 @@
     pointer-events:none;
   }
   .card-name{
-    font-size:20px;font-weight:700;color:#fff;
+    font-size:15px;font-weight:700;color:#fff;
     white-space:normal;overflow:hidden;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
     text-shadow:0 1px 6px rgba(0,0,0,0.8);
     line-height:1.3;
   }
@@ -1194,8 +1194,8 @@ function render(){
         bottom.innerHTML = `
           <div class="card-name">${line1}</div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;">
-            <div class="card-name" style="font-size:16px;opacity:0.85;">${line2}</div>
-            <div style="font-size:16px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
+            <div class="card-name" style="font-size:12px;opacity:0.85;">${line2}</div>
+            <div style="font-size:12px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
           </div>`;
         card.appendChild(bottom);
       } else {
@@ -1207,8 +1207,8 @@ function render(){
           <div class="card-bottom">
             <div class="card-name">${line1}</div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;">
-              <div class="card-name" style="font-size:16px;opacity:0.85;">${line2}</div>
-              <div style="font-size:16px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
+              <div class="card-name" style="font-size:12px;opacity:0.85;">${line2}</div>
+              <div style="font-size:12px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
             </div>
           </div>`;
       }
