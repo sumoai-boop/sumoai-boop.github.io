@@ -406,7 +406,13 @@
       <div class="modal-row">
         <span class="modal-price" id="dPrice"></span>
         <span class="modal-price-lbl">元</span>
-        <div class="modal-stars" id="dStars"></div>
+        <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
+          <span id="dVisits" style="font-size:11px;color:rgba(255,220,160,0.55);"></span>
+          <span id="dGscore" style="font-size:11px;color:rgba(255,220,160,0.55);"></span>
+        </div>
+      </div>
+      <div class="modal-row" style="margin-top:4px;">
+        <div class="modal-stars" id="dStars" style="margin-left:0;"></div>
         <span class="modal-score-num" id="dScoreNum"></span>
       </div>
       <!-- 備註 -->
@@ -451,51 +457,66 @@
         <button id="cropClearBtn" style="display:none;"></button>
       </div>
 
-      <!-- 名稱 -->
+      <!-- 名稱（全寬） -->
       <div class="field-group">
         <label class="field-label">餐廳名稱 * <span style="opacity:0.4;font-size:9px;">第一行 / 第二行</span></label>
         <input class="field-input" id="fName1" placeholder="第一行（例：Lazy Pasta）" autocomplete="off">
         <input class="field-input" id="fName2" placeholder="第二行（例：慵懶義式廚房）" style="margin-top:6px;" autocomplete="off">
       </div>
-      <!-- 餐廳類型 -->
-      <div class="field-group">
-        <label class="field-label">餐廳類型</label>
-        <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
-        <datalist id="typeList"></datalist>
+
+      <!-- 二欄區塊 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <!-- 餐廳類型 -->
+        <div class="field-group">
+          <label class="field-label">餐廳類型</label>
+          <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
+          <datalist id="typeList"></datalist>
+        </div>
+        <!-- 用餐日期 -->
+        <div class="field-group">
+          <label class="field-label">用餐日期</label>
+          <input class="field-input" id="fDate" type="date">
+        </div>
+        <!-- 平均消費 -->
+        <div class="field-group">
+          <label class="field-label">平均消費（元）</label>
+          <input class="field-input" id="fPrice" type="number" min="0" placeholder="例：350" autocomplete="off">
+        </div>
+        <!-- 回訪次數 -->
+        <div class="field-group">
+          <label class="field-label">回訪次數</label>
+          <input class="field-input" id="fVisits" type="number" min="0" placeholder="例：3" autocomplete="off">
+        </div>
+        <!-- 我的評分 -->
+        <div class="field-group">
+          <label class="field-label">我的評分 <span style="opacity:0.4;font-size:9px;">可小數</span></label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div id="starsPick" style="display:flex;gap:2px;cursor:pointer;"></div>
+            <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="0.0" autocomplete="off"
+              style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,180,80,0.25);border-radius:8px;padding:8px 8px;color:#ffffff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;font-weight:700;">
+          </div>
+        </div>
+        <!-- Google 評分 -->
+        <div class="field-group">
+          <label class="field-label">Google 評分</label>
+          <input class="field-input" id="fGscore" type="number" min="0" max="5" step="0.1" placeholder="例：4.2" autocomplete="off">
+        </div>
       </div>
-      <!-- 日期 -->
-      <div class="field-group">
-        <label class="field-label">用餐日期</label>
-        <input class="field-input" id="fDate" type="date">
-      </div>
-      <!-- 金額 -->
-      <div class="field-group">
-        <label class="field-label">平均消費（元）</label>
-        <input class="field-input" id="fPrice" type="number" min="0" placeholder="例：350" autocomplete="off">
-      </div>
-      <!-- 地址 -->
+
+      <!-- 地址（全寬） -->
       <div class="field-group">
         <label class="field-label">地址</label>
         <input class="field-input" id="fAddr" placeholder="例：台北市大安區忠孝東路四段" autocomplete="off">
       </div>
-      <!-- 備註 -->
-      <div class="field-group">
-        <label class="field-label">備註</label>
-        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的…" style="resize:vertical;min-height:72px;line-height:1.6;" autocomplete="off"></textarea>
-      </div>
-      <!-- 評分 -->
-      <div class="field-group">
-        <label class="field-label">評分 <span style="opacity:0.5;font-size:9px;">可輸入小數（例：4.3）</span></label>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div id="starsPick" style="display:flex;gap:4px;cursor:pointer;"></div>
-          <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="0.0" autocomplete="off"
-            style="width:72px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,180,80,0.25);border-radius:8px;padding:8px 10px;color:#ffffff;font-family:'Space Mono',monospace;font-size:14px;outline:none;text-align:center;font-weight:700;">
-        </div>
-      </div>
-      <!-- Google Maps 連結 -->
+      <!-- Google Maps（全寬） -->
       <div class="field-group">
         <label class="field-label">Google Maps 連結</label>
         <input class="field-input" id="fMaps" placeholder="貼上 Google Maps 網址" autocomplete="off">
+      </div>
+      <!-- 備註（全寬） -->
+      <div class="field-group">
+        <label class="field-label">備註</label>
+        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的…" style="resize:vertical;min-height:72px;line-height:1.6;" autocomplete="off"></textarea>
       </div>
 
     </div>
@@ -938,6 +959,8 @@ function openForm(item=null){
   document.getElementById('fName1').value=item?(item.name1||item.name||''):'';
   document.getElementById('fName2').value=item?(item.name2||''):'';
   document.getElementById('fType').value=item?(item.type||''):'';
+  document.getElementById('fVisits').value=item&&item.visits?item.visits:'';
+  document.getElementById('fGscore').value=item&&item.gscore?item.gscore:'';
   document.getElementById('fDate').value=item&&item.date?item.date:new Date().toISOString().slice(0,10);
   document.getElementById('fPrice').value=item&&item.price?item.price:'';
   document.getElementById('fAddr').value=item?(item.addr||''):'';
@@ -967,6 +990,8 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   const name=name1+(name2?' '+name2:''); // 合併用於搜尋/統計
   if(!name1){alert('請輸入餐廳名稱');return;}
   const price=parseInt(document.getElementById('fPrice').value)||0;
+  const visits=parseInt(document.getElementById('fVisits').value)||0;
+  const gscore=parseFloat(document.getElementById('fGscore').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
   const type=document.getElementById('fType').value.trim();
   const note=document.getElementById('fNote').value.trim();
@@ -1007,9 +1032,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
   }
   if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
@@ -1047,6 +1072,8 @@ function openDetail(item){
   document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
   document.getElementById('dDateText').textContent=item.date||'未填寫日期';
   document.getElementById('dPrice').textContent=item.price?'NT$'+item.price.toLocaleString():'—';
+  document.getElementById('dVisits').textContent=item.visits?'🔁 回訪 '+item.visits+' 次':'';
+  document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
   if(item.maps){mapsLink.href=item.maps;mapsRow.style.display='flex';}else{mapsRow.style.display='none';}
