@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>食記 — Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{background:#0e0e0e;min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;}
@@ -19,7 +19,7 @@
   .c2{width:350px;height:350px;background:radial-gradient(circle, rgba(150,80,20,0.05), transparent 70%);bottom:-80px;left:-60px;}
 
   /* ── 主內容 ── */
-  .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:72px 32px 100px;}
+  .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:48px 12px 80px;}
 
   .page-header{margin-bottom:28px;}
   .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,64px);font-weight:300;color:#f0e6d6;line-height:1;margin-bottom:4px;}
@@ -29,8 +29,8 @@
   /* ── 統計列 ── */
   .stats-row{display:flex;gap:24px;margin-bottom:28px;flex-wrap:wrap;}
   .stat-item{display:flex;flex-direction:column;gap:2px;}
-  .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#ffffff;line-height:1;}
-  .stat-lbl{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,220,160,0.5);}
+  .stat-num{font-family:'Noto Sans TC',sans-serif;font-size:36px;font-weight:900;color:#ffffff;line-height:1;letter-spacing:-0.02em;}
+  .stat-lbl{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,220,160,0.5);font-family:'Noto Sans TC',sans-serif;margin-top:4px;}
   .stat-sep{width:1px;background:rgba(255,180,80,0.15);align-self:stretch;margin:4px 0;}
 
   /* ── 工具列 ── */
@@ -60,8 +60,8 @@
   /* ── IG 照片牆 ── */
   .photo-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:6px;
+    grid-template-columns:repeat(5,1fr);
+    gap:4px;
   }
   .photo-card{
     position:relative;
@@ -90,9 +90,9 @@
     pointer-events:none;
   }
   .card-name{
-    font-size:20px;font-weight:700;color:#fff;
+    font-size:15px;font-weight:700;color:#fff;
     white-space:normal;overflow:hidden;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
     text-shadow:0 1px 6px rgba(0,0,0,0.8);
     line-height:1.3;
   }
@@ -171,7 +171,7 @@
     background:#1a1a1a;
     border:1px solid rgba(255,180,80,0.15);
     border-radius:16px;
-    max-width:460px;width:100%;
+    max-width:640px;width:100%;
     overflow:hidden;
     box-shadow:0 24px 80px rgba(0,0,0,0.9);
     animation:modalIn 0.28s cubic-bezier(0.34,1.2,0.64,1);
@@ -278,7 +278,6 @@
   .ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
   .ic-uber   {background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
   .ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
-  .ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
 
   @media(max-width:600px){
     .dock-icon{width:46px;height:46px;font-size:22px;border-radius:12px;}
@@ -407,7 +406,13 @@
       <div class="modal-row">
         <span class="modal-price" id="dPrice"></span>
         <span class="modal-price-lbl">元</span>
-        <div class="modal-stars" id="dStars"></div>
+        <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
+          <span id="dVisits" style="font-size:11px;color:rgba(255,220,160,0.55);"></span>
+          <span id="dGscore" style="font-size:11px;color:rgba(255,220,160,0.55);"></span>
+        </div>
+      </div>
+      <div class="modal-row" style="margin-top:4px;">
+        <div class="modal-stars" id="dStars" style="margin-left:0;"></div>
         <span class="modal-score-num" id="dScoreNum"></span>
       </div>
       <!-- 備註 -->
@@ -452,51 +457,66 @@
         <button id="cropClearBtn" style="display:none;"></button>
       </div>
 
-      <!-- 名稱 -->
+      <!-- 名稱（全寬） -->
       <div class="field-group">
         <label class="field-label">餐廳名稱 * <span style="opacity:0.4;font-size:9px;">第一行 / 第二行</span></label>
         <input class="field-input" id="fName1" placeholder="第一行（例：Lazy Pasta）" autocomplete="off">
         <input class="field-input" id="fName2" placeholder="第二行（例：慵懶義式廚房）" style="margin-top:6px;" autocomplete="off">
       </div>
-      <!-- 餐廳類型 -->
-      <div class="field-group">
-        <label class="field-label">餐廳類型</label>
-        <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
-        <datalist id="typeList"></datalist>
+
+      <!-- 二欄區塊 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <!-- 餐廳類型 -->
+        <div class="field-group">
+          <label class="field-label">餐廳類型</label>
+          <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
+          <datalist id="typeList"></datalist>
+        </div>
+        <!-- 用餐日期 -->
+        <div class="field-group">
+          <label class="field-label">用餐日期</label>
+          <input class="field-input" id="fDate" type="date">
+        </div>
+        <!-- 平均消費 -->
+        <div class="field-group">
+          <label class="field-label">平均消費（元）</label>
+          <input class="field-input" id="fPrice" type="number" min="0" placeholder="例：350" autocomplete="off">
+        </div>
+        <!-- 回訪次數 -->
+        <div class="field-group">
+          <label class="field-label">回訪次數</label>
+          <input class="field-input" id="fVisits" type="number" min="0" placeholder="例：3" autocomplete="off">
+        </div>
+        <!-- 我的評分 -->
+        <div class="field-group">
+          <label class="field-label">我的評分 <span style="opacity:0.4;font-size:9px;">可小數</span></label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div id="starsPick" style="display:flex;gap:2px;cursor:pointer;"></div>
+            <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="0.0" autocomplete="off"
+              style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,180,80,0.25);border-radius:8px;padding:8px 8px;color:#ffffff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;font-weight:700;">
+          </div>
+        </div>
+        <!-- Google 評分 -->
+        <div class="field-group">
+          <label class="field-label">Google 評分</label>
+          <input class="field-input" id="fGscore" type="number" min="0" max="5" step="0.1" placeholder="例：4.2" autocomplete="off">
+        </div>
       </div>
-      <!-- 日期 -->
-      <div class="field-group">
-        <label class="field-label">用餐日期</label>
-        <input class="field-input" id="fDate" type="date">
-      </div>
-      <!-- 金額 -->
-      <div class="field-group">
-        <label class="field-label">平均消費（元）</label>
-        <input class="field-input" id="fPrice" type="number" min="0" placeholder="例：350" autocomplete="off">
-      </div>
-      <!-- 地址 -->
+
+      <!-- 地址（全寬） -->
       <div class="field-group">
         <label class="field-label">地址</label>
         <input class="field-input" id="fAddr" placeholder="例：台北市大安區忠孝東路四段" autocomplete="off">
       </div>
-      <!-- 備註 -->
-      <div class="field-group">
-        <label class="field-label">備註</label>
-        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的…" style="resize:vertical;min-height:72px;line-height:1.6;" autocomplete="off"></textarea>
-      </div>
-      <!-- 評分 -->
-      <div class="field-group">
-        <label class="field-label">評分 <span style="opacity:0.5;font-size:9px;">可輸入小數（例：4.3）</span></label>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div id="starsPick" style="display:flex;gap:4px;cursor:pointer;"></div>
-          <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="0.0" autocomplete="off"
-            style="width:72px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,180,80,0.25);border-radius:8px;padding:8px 10px;color:#ffffff;font-family:'Space Mono',monospace;font-size:14px;outline:none;text-align:center;font-weight:700;">
-        </div>
-      </div>
-      <!-- Google Maps 連結 -->
+      <!-- Google Maps（全寬） -->
       <div class="field-group">
         <label class="field-label">Google Maps 連結</label>
         <input class="field-input" id="fMaps" placeholder="貼上 Google Maps 網址" autocomplete="off">
+      </div>
+      <!-- 備註（全寬） -->
+      <div class="field-group">
+        <label class="field-label">備註</label>
+        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的…" style="resize:vertical;min-height:72px;line-height:1.6;" autocomplete="off"></textarea>
       </div>
 
     </div>
@@ -544,10 +564,6 @@
       <div class="dock-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
       <span class="dock-label">提醒事項</span>
     </a>
-    <a href="top10.html" class="dock-item" onclick="event.stopPropagation()">
-      <div class="dock-icon ic-netflix" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#E50914;letter-spacing:1px;">TOP</div>
-      <span class="dock-label">Netflix Top10</span>
-    </a>
   </div>
 </div>
 
@@ -555,35 +571,6 @@
 <div class="dock-trigger" id="dockTrigger"></div>
 
 <script>
-
-const SUMOAI_TOKEN_KEY = 'sumoai_gh_token';
-function getGHToken(){ return localStorage.getItem(SUMOAI_TOKEN_KEY)||null; }
-function saveGHToken(t){ localStorage.setItem(SUMOAI_TOKEN_KEY, t.trim()); }
-window.clearGHToken = function(){ localStorage.removeItem(SUMOAI_TOKEN_KEY); alert('Token 已清除，重新整理後重新輸入'); };
-function showTokenModal(onSuccess){
-  if(document.getElementById('_tokenModal')) return;
-  var el=document.createElement('div');
-  el.id='_tokenModal';
-  el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);font-family:sans-serif;';
-  el.innerHTML='<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:32px;width:420px;max-width:92vw;"><div style="font-size:28px;margin-bottom:10px;">&#128273;</div><div style="color:#f0f0f0;font-size:17px;font-weight:500;margin-bottom:6px;">輸入 GitHub Token</div><div style="color:#888;font-size:13px;margin-bottom:20px;line-height:1.6;">輸入一次後本站所有分頁都能使用。<br>Token 只存在你的瀏覽器，不會上傳。</div><input id=\"_tokenInput\" type=\"password\" placeholder=\"ghp_xxxxxxxxxxxxxxxx\" style=\"width:100%;padding:10px 14px;background:#242424;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#f0f0f0;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;margin-bottom:8px;\"><div id=\"_tokenErr\" style=\"color:#ff6b6b;font-size:12px;margin-bottom:12px;min-height:16px;\"></div><div style=\"display:flex;gap:10px;\"><button id=\"_tokenOk\" style=\"flex:1;padding:10px;background:#E50914;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:500;\">確認</button><a href=\"https://github.com/settings/tokens\" target=\"_blank\" style=\"padding:10px 14px;background:transparent;color:#888;border:1px solid rgba(255,255,255,0.2);border-radius:8px;font-size:12px;text-decoration:none;display:flex;align-items:center;white-space:nowrap;\">產生 Token &#8599;</a></div></div>';
-  document.body.appendChild(el);
-  setTimeout(function(){ var i=document.getElementById('_tokenInput'); if(i) i.focus(); },100);
-  function trySubmit(){
-    var val=(document.getElementById('_tokenInput').value||'').trim();
-    if(!val){ document.getElementById('_tokenErr').textContent='請輸入 Token'; return; }
-    document.getElementById('_tokenOk').textContent='驗證中...';
-    document.getElementById('_tokenOk').disabled=true;
-    fetch('https://api.github.com/user',{headers:{'Authorization':'token '+val,'Accept':'application/vnd.github.v3+json'}})
-      .then(function(r){
-        if(r.ok){ saveGHToken(val); el.remove(); if(onSuccess) onSuccess(val); }
-        else{ document.getElementById('_tokenErr').textContent='Token 無效，請確認並重試'; document.getElementById('_tokenOk').textContent='確認'; document.getElementById('_tokenOk').disabled=false; }
-      }).catch(function(){ document.getElementById('_tokenErr').textContent='網路錯誤，請再試一次'; document.getElementById('_tokenOk').textContent='確認'; document.getElementById('_tokenOk').disabled=false; });
-  }
-  document.getElementById('_tokenOk').onclick=trySubmit;
-  document.getElementById('_tokenInput').onkeydown=function(e){ if(e.key==='Enter') trySubmit(); };
-}
-function requireToken(cb){ var t=getGHToken(); if(t){ cb(t); return; } showTokenModal(cb); }
-
 /* ───── GitHub 同步設定 ───── */
 const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_food';
 const GH_DATA_PATH='food-data.json';
@@ -596,12 +583,19 @@ function showToast(msg,isErr){
   clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
 }
 function getToken(){
-  return GH_TOKEN;
+  var tk=localStorage.getItem(GH_TOKEN_KEY);
+  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
+  return tk.trim();
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 function loadFromGitHub(){
-  var token=getGHToken()||'';
+  var token=localStorage.getItem(GH_TOKEN_KEY);
+  if(!token){
+    token=prompt('請輸入 GitHub Personal Access Token\n（需有 repo 寫入權限，僅儲存在本機）');
+    if(!token){DATA=load();refreshTypeList();render();return;}
+    localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();
+  }
   // 先從 localStorage 顯示，GitHub 回來再更新
   DATA=load(); refreshTypeList(); render();
   showToast('⏳ 同步雲端資料...',false);
@@ -688,7 +682,7 @@ function compressImage(dataUrl,maxW,maxH,quality){
 }
 
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc';
-window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
+window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
 /* ───── 餐廳類型管理 ───── */
 const DEFAULT_TYPES=[];
@@ -965,6 +959,8 @@ function openForm(item=null){
   document.getElementById('fName1').value=item?(item.name1||item.name||''):'';
   document.getElementById('fName2').value=item?(item.name2||''):'';
   document.getElementById('fType').value=item?(item.type||''):'';
+  document.getElementById('fVisits').value=item&&item.visits?item.visits:'';
+  document.getElementById('fGscore').value=item&&item.gscore?item.gscore:'';
   document.getElementById('fDate').value=item&&item.date?item.date:new Date().toISOString().slice(0,10);
   document.getElementById('fPrice').value=item&&item.price?item.price:'';
   document.getElementById('fAddr').value=item?(item.addr||''):'';
@@ -994,6 +990,8 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   const name=name1+(name2?' '+name2:''); // 合併用於搜尋/統計
   if(!name1){alert('請輸入餐廳名稱');return;}
   const price=parseInt(document.getElementById('fPrice').value)||0;
+  const visits=parseInt(document.getElementById('fVisits').value)||0;
+  const gscore=parseFloat(document.getElementById('fGscore').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
   const type=document.getElementById('fType').value.trim();
   const note=document.getElementById('fNote').value.trim();
@@ -1034,9 +1032,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
   }
   if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
@@ -1074,6 +1072,8 @@ function openDetail(item){
   document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
   document.getElementById('dDateText').textContent=item.date||'未填寫日期';
   document.getElementById('dPrice').textContent=item.price?'NT$'+item.price.toLocaleString():'—';
+  document.getElementById('dVisits').textContent=item.visits?'🔁 回訪 '+item.visits+' 次':'';
+  document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
   if(item.maps){mapsLink.href=item.maps;mapsRow.style.display='flex';}else{mapsRow.style.display='none';}
@@ -1217,15 +1217,26 @@ function render(){
         bottom.className = 'card-bottom';
         const line1 = item.name1 || item.name || '';
         const line2 = item.name2 || '';
-        bottom.innerHTML = `<div class="card-name">${line1}${line2?'<br>'+line2:''}</div>`;
+        const priceStr = item.price ? 'NT$'+item.price.toLocaleString() : '';
+        bottom.innerHTML = `
+          <div class="card-name">${line1}</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;">
+            <div class="card-name" style="font-size:12px;opacity:0.85;">${line2}</div>
+            <div style="font-size:12px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
+          </div>`;
         card.appendChild(bottom);
       } else {
         const line1 = item.name1 || item.name || '';
         const line2 = item.name2 || '';
+        const priceStr = item.price ? 'NT$'+item.price.toLocaleString() : '';
         card.innerHTML=`
           <div class="no-photo-icon">🍜</div>
           <div class="card-bottom">
-            <div class="card-name">${line1}${line2?'<br>'+line2:''}</div>
+            <div class="card-name">${line1}</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;">
+              <div class="card-name" style="font-size:12px;opacity:0.85;">${line2}</div>
+              <div style="font-size:12px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
+            </div>
           </div>`;
       }
       card.addEventListener('click',()=>openDetail(item));
