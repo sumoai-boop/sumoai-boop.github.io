@@ -31,7 +31,7 @@ nav button{background:transparent;border:none;color:var(--muted);font-size:13px;
 nav button:hover{color:var(--text);background:rgba(255,255,255,0.05)}
 nav button.active{color:var(--text);background:var(--surface2);border-bottom:2px solid var(--red)}
 
-main{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 28px)}
 .section{display:none}.section.active{display:block}
 
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem}
@@ -125,9 +125,51 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
   main{padding:1.5rem 1rem}
   nav button{padding:8px 10px;font-size:12px}
 }
+
+  /* ── Menubar ── */
+  .menubar{position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:rgba(255,255,255,0.92);}
+  .gm-left{display:flex;align-items:center;gap:16px;font-weight:600;}
+  .gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
+  .mb-menu{padding:0 6px;border-radius:4px;cursor:default;transition:background 0.15s;font-size:12px;font-family:'Noto Sans TC',sans-serif;}
+  .mb-menu:hover{background:rgba(255,255,255,0.2);}
+  /* ── Dock ── */
+  .dock-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;}
+  .dock-wrap.hidden{transform:translateX(-50%) translateY(calc(100% + 20px));opacity:0;}
+  .dock-trigger{position:fixed;bottom:0;left:0;right:0;height:6px;z-index:199;}
+  .dock{display:flex;align-items:flex-end;gap:10px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.25);border-radius:22px;padding:10px 16px;box-shadow:0 8px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);}
+  .dock-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;position:relative;cursor:pointer;}
+  .dock-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+  .dock-item:hover .dock-icon{transform:translateY(-14px) scale(1.28);}
+  .dock-label{font-size:9px;letter-spacing:0.06em;color:rgba(255,255,255,0.85);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 7px;border-radius:4px;position:absolute;bottom:-22px;}
+  .dock-item:hover .dock-label{opacity:1;}
+  .dock-sep{width:1px;height:48px;background:rgba(255,255,255,0.22);margin:0 4px;align-self:center;}
+  .ic-about{background:linear-gradient(135deg,#667eea,#764ba2);}
+  .ic-photos{background:linear-gradient(135deg,#f093fb,#f5576c);}
+  .ic-dramas{background:linear-gradient(135deg,#1a1a2e,#e8622a);}
+  .ic-food{background:linear-gradient(135deg,#f7971e,#ffd200);}
+  .ic-travel{background:linear-gradient(135deg,#0f2027,#2c5364);}
+  .ic-threads{background:linear-gradient(135deg,#111,#333);}
+  .ic-uber{background:linear-gradient(135deg,#000,#1a1a1a);border:2px solid rgba(255,255,255,0.3);}
+  .ic-reminder{background:linear-gradient(135deg,#00b09b,#96c93d);}
+  .ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
+  @media(max-width:600px){.dock-icon{width:46px;height:46px;font-size:22px;border-radius:12px;}.dock{gap:7px;padding:8px 12px;}}
 </style>
 </head>
 <body>
+
+<div class="menubar">
+  <div class="gm-left">
+    <span style="font-size:16px">🗿</span>
+    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
+    <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span>
+    <span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span>
+    <span class="mb-menu">視窗</span><span class="mb-menu">輔助說明</span>
+  </div>
+  <div class="gm-right">
+    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px">
+    <span id="mbTime"></span>
+  </div>
+</div>
 
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-box">
@@ -229,7 +271,7 @@ Anaconda 2,700,000"></textarea>
 </main>
 
 <script>
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const GITHUB_OWNER = 'sumoai-boop';
 const GITHUB_REPO  = 'sumoai-boop.github.io';
 const DATA_FILE    = 'top10-data.json';
@@ -538,5 +580,47 @@ async function deleteWeek(w) {
 
 init();
 </script>
+
+<!-- Dock -->
+<style>
+.dock-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;}
+.dock-wrap.hidden{transform:translateX(-50%) translateY(calc(100% + 20px));opacity:0;}
+</style>
+<div class="dock-wrap hidden" id="dockWrap">
+  <div class="dock">
+    <a href="about.html" class="dock-item"><div class="dock-icon ic-about">👤</div><span class="dock-label">關於</span></a>
+    <a href="photos.html" class="dock-item"><div class="dock-icon ic-photos">📷</div><span class="dock-label">照片</span></a>
+    <a href="dramas.html" class="dock-item"><div class="dock-icon ic-dramas">🎬</div><span class="dock-label">追劇</span></a>
+    <a href="food.html" class="dock-item"><div class="dock-icon ic-food">🍜</div><span class="dock-label">食記</span></a>
+    <div class="dock-sep"></div>
+    <a href="travel.html" class="dock-item"><div class="dock-icon ic-travel">✈️</div><span class="dock-label">旅遊足跡</span></a>
+    <a href="threads.html" class="dock-item"><div class="dock-icon ic-threads">🧵</div><span class="dock-label">Threads</span></a>
+    <a href="uber.html" class="dock-item"><div class="dock-icon ic-uber">🚗</div><span class="dock-label">Uber</span></a>
+    <a href="reminder.html" class="dock-item"><div class="dock-icon ic-reminder">🔔</div><span class="dock-label">提醒事項</span></a>
+    <a href="top10.html" class="dock-item"><div class="dock-icon ic-netflix" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#E50914;letter-spacing:1px;">TOP</div><span class="dock-label">Netflix Top10</span></a>
+  </div>
+</div>
+<div class="dock-trigger" id="dockTrigger"></div>
+
+<script>
+(function(){
+  var dock=document.getElementById('dockWrap');
+  var trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger)return;
+  trigger.addEventListener('mouseenter',function(){dock.classList.remove('hidden');});
+  dock.addEventListener('mouseleave',function(){dock.classList.add('hidden');});
+})();
+function updateMbTime(){
+  var now=new Date();
+  var d=['日','一','二','三','四','五','六'][now.getDay()];
+  var h=String(now.getHours()).padStart(2,'0');
+  var m=String(now.getMinutes()).padStart(2,'0');
+  var el=document.getElementById('mbTime');
+  if(el) el.textContent='週'+d+' '+( now.getMonth()+1)+'/'+now.getDate()+' '+h+':'+m;
+}
+updateMbTime();
+setInterval(updateMbTime,10000);
+</script>
+
 </body>
 </html>
