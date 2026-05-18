@@ -364,11 +364,11 @@ body{
     <!-- 左右並排：圓餅圖 + 新增表單 -->
     <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-bottom:20px;">
       <!-- 左：圓餅圖 -->
-      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;">
+      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
         <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:12px;">總支出</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:32px;">
           <canvas id="monthlyPieChart" width="240" height="240" style="flex-shrink:0;"></canvas>
-          <div id="pieLegend" style="flex:1;"></div>
+          <div id="pieLegend"></div>
         </div>
       </div>
       <!-- 右：新增表單 -->
