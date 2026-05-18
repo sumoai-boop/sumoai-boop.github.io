@@ -1699,25 +1699,21 @@ render();
     DATA.splice(idx, 1);
     render();
     if(typeof buildTop5 === 'function') buildTop5();
-    var token = getGHToken()||'';
-    var apiBase = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
+    requireToken(async function(token){
+    var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
     var headers = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 正在連線 GitHub...', false);
-    var getResp = await fetch(apiBase + '?ref=' + GH_BRANCH, { headers: headers });
-    if(!getResp.ok){ showToast('❌ GitHub 連線失敗（' + getResp.status + '）', true); return; }
-    var fileInfo = await getResp.json();
-    var sha = fileInfo.sha;
-    var currentContent;
-    if(fileInfo.content && fileInfo.content.trim() !== ''){
-      currentContent = decodeURIComponent(escape(atob(fileInfo.content.replace(/\n/g, ''))));
-    } else if(fileInfo.download_url){
-      showToast('⏳ 下載中...', false);
-      var dlResp = await fetch(fileInfo.download_url);
-      currentContent = await dlResp.text();
-    } else { showToast('❌ 無法取得檔案內容', true); return; }
-    var targetJson = JSON.stringify(target);
-    var newContent = currentContent.replace(targetJson + ',', '').replace(',' + targetJson, '').replace(targetJson, '');
-    if(newContent === currentContent){ showToast('❌ 找不到對應記錄', true); return; }
+    // 直接用 DATA（已刪除目標）推上去，不用字串比對
+    var sha = localStorage.getItem('gh_dramas_sha') || null;
+    if(!sha){
+      var getResp = await fetch(api + '?ref=' + GH_BRANCH, { headers: headers });
+      if(getResp.status === 404){ sha = null; }
+      else if(!getResp.ok){ showToast('❌ GitHub 連線失敗（' + getResp.status + '）', true); return; }
+      else { var fi = await getResp.json(); sha = fi.sha||null; if(sha) localStorage.setItem('gh_dramas_sha',sha); }
+    }
+    var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA))));
+    var putBody = { message: '刪除：'+target.title, content: encoded, branch: GH_BRANCH };
+    if(sha) putBody.sha = sha;
     var encoded = btoa(unescape(encodeURIComponent(newContent)));
     var pushResp = await fetch(apiBase, {method:'PUT',headers:headers,body:JSON.stringify({message:'刪除：'+target.title,content:encoded,sha:sha,branch:GH_BRANCH})});
     if(!pushResp.ok){ var err = await pushResp.json(); showToast('❌ 推送失敗：'+(err.message||pushResp.status), true); }
