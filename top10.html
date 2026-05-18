@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix Top 10 追蹤器</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --red:#E50914;--red-dark:#B20710;
+  --bg:#0d0d0d;--surface:#1a1a1a;--surface2:#242424;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#f0f0f0;--muted:#888;--muted2:#555;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh}
+
+header{background:#000;border-bottom:2px solid var(--red);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:2px}
+.logo span{color:var(--text);font-size:16px;margin-left:12px;letter-spacing:1px;opacity:0.7}
+.sync-status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted2);flex-shrink:0}
+.sync-dot.ok{background:#43A047}
+.sync-dot.err{background:var(--red)}
+.sync-dot.loading{background:#FB8C00;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+nav{display:flex;gap:4px}
+nav button{background:transparent;border:none;color:var(--muted);font-size:13px;font-family:'Noto Sans TC',sans-serif;padding:8px 16px;cursor:pointer;border-radius:4px;transition:all .2s;letter-spacing:0.5px}
+nav button:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+nav button.active{color:var(--text);background:var(--surface2);border-bottom:2px solid var(--red)}
+
+main{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+.section{display:none}.section.active{display:block}
+
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red)}
+.metric .val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);letter-spacing:1px}
+.metric .lbl{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.rank-row:last-child{border-bottom:none}
+.rank-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted2);width:24px;text-align:center;flex-shrink:0}
+.rank-num.gold{color:#FFD700}.rank-num.silver{color:#C0C0C0}.rank-num.bronze{color:#CD7F32}
+.rank-info{flex:1;min-width:0}
+.rank-title-text{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-bar-wrap{width:80px;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:5px}
+.rank-bar{height:100%;background:var(--red);border-radius:2px}
+.rank-val{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right;min-width:50px}
+
+.badge{display:inline-block;font-size:10px;padding:2px 6px;border-radius:3px;margin-left:6px;vertical-align:middle}
+.b-movie{background:rgba(229,9,20,0.15);color:#ff6b6b;border:1px solid rgba(229,9,20,0.3)}
+.b-show{background:rgba(30,136,229,0.15);color:#64b5f6;border:1px solid rgba(30,136,229,0.3)}
+.b-en{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
+.b-nonen{background:rgba(67,160,71,0.15);color:#81c784;border:1px solid rgba(67,160,71,0.3)}
+
+.ones-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.ones-row:last-child{border-bottom:none}
+.ones-week{color:var(--muted);font-size:11px;width:130px;flex-shrink:0}
+.ones-title{flex:1;color:var(--text)}
+.ones-views{color:var(--muted);font-size:12px;white-space:nowrap}
+.chart-wrap{position:relative;width:100%;height:240px;margin-top:8px}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.form-group input,.form-group select,.form-group textarea{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:6px;
+  color:var(--text);font-size:13px;padding:8px 12px;font-family:'Noto Sans TC',sans-serif;
+  outline:none;transition:border-color .2s
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--red)}
+.form-group select option{background:var(--surface2)}
+.form-group textarea{resize:vertical;line-height:1.6}
+
+.btn-red{background:var(--red);color:#fff;border:none;padding:9px 22px;border-radius:6px;font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;font-weight:500;transition:background .2s}
+.btn-red:hover{background:var(--red-dark)}
+.btn-red:disabled{background:var(--muted2);cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);padding:9px 22px;border-radius:6px;font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{color:var(--text)}
+.btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+.status-box{font-size:13px;padding:10px 14px;border-radius:6px;margin-top:10px;border-left:3px solid var(--red);background:var(--surface2);color:var(--muted)}
+.status-box.ok{border-left-color:#43A047;color:#81c784}
+.status-box.err{border-left-color:var(--red);color:#ff6b6b}
+
+.week-block{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden}
+.week-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;background:var(--surface2);cursor:pointer;user-select:none}
+.week-header:hover{background:#2a2a2a}
+.week-title{font-size:14px;font-weight:500}
+.week-meta{font-size:12px;color:var(--muted)}
+.week-toggle{color:var(--muted);font-size:18px;transition:transform .2s}
+.week-toggle.open{transform:rotate(180deg)}
+.week-body{padding:1rem 1.25rem;display:none}
+.week-body.open{display:block}
+.cat-section{margin-bottom:1rem}
+.cat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.del-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;padding:2px 6px;transition:color .2s;line-height:1;font-family:inherit}
+.del-btn:hover{color:var(--red)}
+
+.preview-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.preview-item:last-child{border-bottom:none}
+.preview-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted2);width:24px;text-align:center}
+.empty{text-align:center;padding:4rem 1rem;color:var(--muted);font-size:14px}
+
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:999}
+.loading-box{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:2rem 2.5rem;text-align:center}
+.loading-box p{color:var(--muted);font-size:13px;margin-top:10px}
+.spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:640px){
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  header{padding:0 1rem}
+  .logo span{display:none}
+  main{padding:1.5rem 1rem}
+  nav button{padding:8px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p id="loading-msg">載入中...</p>
+  </div>
+</div>
+
+<header>
+  <div class="logo">NETFLIX<span>TOP 10 追蹤器</span></div>
+  <div style="display:flex;align-items:center;gap:1.5rem">
+    <div class="sync-status">
+      <div class="sync-dot loading" id="sync-dot"></div>
+      <span id="sync-text">連線中...</span>
+    </div>
+    <nav>
+      <button class="active" onclick="showTab('dashboard',this)">統計</button>
+      <button onclick="showTab('add',this)">＋ 新增</button>
+      <button onclick="showTab('records',this)">歷史</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard" class="section active">
+  <div class="metrics" id="metrics-row">
+    <div class="metric"><div class="val">—</div><div class="lbl">已記錄週數</div></div>
+    <div class="metric"><div class="val">—</div><div class="lbl">不重複作品</div></div>
+    <div class="metric"><div class="val">—</div><div class="lbl">累計觀看次數</div></div>
+    <div class="metric"><div class="val">—</div><div class="lbl">冠軍記錄筆數</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">上榜週數最多</div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
+    <div class="card"><div class="card-title">累計觀看最高</div><div id="rank-views"><div class="empty">載入中...</div></div></div>
+  </div>
+  <div class="card"><div class="card-title">各週 #1 作品</div><div id="ones-list"><div class="empty">載入中...</div></div></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">類別分佈</div><div class="chart-wrap"><canvas id="catChart" role="img" aria-label="類別分佈圓餅圖">類別統計</canvas></div></div>
+    <div class="card"><div class="card-title">英語 vs 非英語</div><div class="chart-wrap"><canvas id="langChart" role="img" aria-label="語言分佈圓餅圖">語言統計</canvas></div></div>
+  </div>
+</div>
+
+<!-- ADD -->
+<div id="tab-add" class="section">
+  <div class="card">
+    <div class="card-title">新增週榜資料</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>週次</label>
+        <input type="text" id="in-week" placeholder="例：4/13/26 - 4/19/26">
+      </div>
+      <div class="form-group">
+        <label>類別</label>
+        <select id="in-cat">
+          <option value="Movies|English">電影 · 英語</option>
+          <option value="Movies|Non-English">電影 · 非英語</option>
+          <option value="Shows|English">影集 · 英語</option>
+          <option value="Shows|Non-English">影集 · 非英語</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label>貼上 Top10 文字（片名 + 觀看數，一行一筆）</label>
+      <textarea id="in-paste" rows="10" placeholder="Thrash 34,500,000
+180 9,500,000
+Roommates 8,800,000
+Sisu 4,500,000
+KPop Demon Hunters 4,400,000
+Sniper 2 3,600,000
+War Machine 3,500,000
+Husband, Father, Killer 3,400,000
+Escape Plan 2: Hades 3,000,000
+Anaconda 2,700,000"></textarea>
+    </div>
+    <div id="ai-status" class="status-box" style="display:none"></div>
+    <div class="btn-row">
+      <button class="btn-red" id="btn-ai" onclick="parseWithAI()">✦ AI 解析</button>
+      <button class="btn-ghost" onclick="manualAdd()">直接存入</button>
+    </div>
+  </div>
+  <div id="preview-card" class="card" style="display:none">
+    <div class="card-title">解析結果預覽</div>
+    <div id="preview-list"></div>
+    <div id="save-status" class="status-box" style="display:none"></div>
+    <div class="btn-row">
+      <button class="btn-red" id="btn-confirm" onclick="confirmSave()">確認儲存到雲端</button>
+      <button class="btn-ghost" onclick="cancelPreview()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECORDS -->
+<div id="tab-records" class="section">
+  <div id="records-list"></div>
+</div>
+
+</main>
+
+<script>
+const GITHUB_TOKEN = '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';
+const GITHUB_OWNER = 'sumoai-boop';
+const GITHUB_REPO  = 'sumoai-boop.github.io';
+const DATA_FILE    = 'top10-data.json';
+const API_BASE     = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + DATA_FILE;
+
+let db = [];
+let fileSha = null;
+let pendingEntries = null;
+let catChartInst = null, langChartInst = null;
+
+const catMap = {
+  'Movies|English':'電影 · 英語',
+  'Movies|Non-English':'電影 · 非英語',
+  'Shows|English':'影集 · 英語',
+  'Shows|Non-English':'影集 · 非英語'
+};
+
+async function ghRead() {
+  const r = await fetch(API_BASE, {
+    headers: { Authorization: 'token ' + GITHUB_TOKEN, Accept: 'application/vnd.github.v3+json' }
+  });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error('讀取失敗 ' + r.status);
+  const j = await r.json();
+  fileSha = j.sha;
+  return JSON.parse(atob(j.content.replace(/\n/g, '')));
+}
+
+async function ghWrite(data) {
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  const body = { message: 'update top10-data.json', content };
+  if (fileSha) body.sha = fileSha;
+  const r = await fetch(API_BASE, {
+    method: 'PUT',
+    headers: {
+      Authorization: 'token ' + GITHUB_TOKEN,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const err = await r.json();
+    throw new Error(err.message || '寫入失敗');
+  }
+  const j = await r.json();
+  fileSha = j.content.sha;
+}
+
+function setSyncStatus(state, text) {
+  document.getElementById('sync-dot').className = 'sync-dot ' + state;
+  document.getElementById('sync-text').textContent = text;
+}
+
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg || '處理中...';
+  document.getElementById('loading-overlay').style.display = 'flex';
+}
+function hideLoading() {
+  document.getElementById('loading-overlay').style.display = 'none';
+}
+
+async function init() {
+  setSyncStatus('loading', '連線中...');
+  showLoading('從 GitHub 載入資料...');
+  try {
+    const data = await ghRead();
+    db = data || [];
+    setSyncStatus('ok', '已同步');
+    renderDashboard();
+  } catch(e) {
+    setSyncStatus('err', '連線失敗');
+  }
+  hideLoading();
+}
+
+function showTab(t, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (t === 'dashboard') renderDashboard();
+  if (t === 'records') renderRecords();
+}
+
+function fmtViews(n) {
+  if (!n && n !== 0) return '—';
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+  return n + '';
+}
+function parseViews(s) {
+  if (!s) return 0;
+  s = s.replace(/,/g, '').trim();
+  if (s.endsWith('M')) return Math.round(parseFloat(s) * 1000000);
+  if (s.endsWith('K')) return Math.round(parseFloat(s) * 1000);
+  return parseInt(s) || 0;
+}
+
+function manualAdd() {
+  const week = document.getElementById('in-week').value.trim();
+  const cat  = document.getElementById('in-cat').value;
+  const raw  = document.getElementById('in-paste').value.trim();
+  if (!week || !raw) { alert('請填入週次與內容'); return; }
+  const lines = raw.split('\n').filter(l => l.trim());
+  const entries = lines.slice(0, 10).map((l, i) => {
+    const parts = l.trim().split(/\s+/);
+    const last  = parts[parts.length - 1];
+    const views = parseViews(last);
+    const title = views > 0 ? parts.slice(0, -1).join(' ') : l.trim();
+    return { rank: i + 1, title: title || l.trim(), views, week, cat };
+  });
+  pendingEntries = entries;
+  showPreview(entries);
+}
+
+async function parseWithAI() {
+  const week = document.getElementById('in-week').value.trim();
+  const cat  = document.getElementById('in-cat').value;
+  const raw  = document.getElementById('in-paste').value.trim();
+  if (!week || !raw) { alert('請填入週次與內容'); return; }
+  const st  = document.getElementById('ai-status');
+  const btn = document.getElementById('btn-ai');
+  st.style.display = 'block';
+  st.className = 'status-box';
+  st.textContent = 'AI 解析中...';
+  btn.disabled = true;
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: '從以下 Netflix Top10 文字中提取資料，回傳純 JSON 陣列，不含任何 markdown 或說明文字：\n[{"rank":1,"title":"片名","views":觀看數數字},...]\n\n文字：\n' + raw }]
+      })
+    });
+    const data = await resp.json();
+    let text = data.content.map(c => c.text || '').join('');
+    text = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(text);
+    const entries = parsed.map(e => ({ ...e, week, cat }));
+    pendingEntries = entries;
+    st.className = 'status-box ok';
+    st.textContent = '✓ 成功解析 ' + entries.length + ' 筆資料';
+    showPreview(entries);
+  } catch(e) {
+    st.className = 'status-box err';
+    st.textContent = '解析失敗，請改用「直接存入」或修正格式。';
+  }
+  btn.disabled = false;
+}
+
+function showPreview(entries) {
+  document.getElementById('preview-list').innerHTML = entries.map(e =>
+    '<div class="preview-item"><span class="preview-num">' + e.rank + '</span><span style="flex:1">' + e.title + '</span><span style="color:var(--muted);font-size:12px">' + fmtViews(e.views) + '</span></div>'
+  ).join('');
+  document.getElementById('save-status').style.display = 'none';
+  document.getElementById('preview-card').style.display = 'block';
+}
+
+async function confirmSave() {
+  if (!pendingEntries) return;
+  const ss  = document.getElementById('save-status');
+  const btn = document.getElementById('btn-confirm');
+  ss.style.display = 'block';
+  ss.className = 'status-box';
+  ss.textContent = '儲存中，請勿關閉頁面...';
+  btn.disabled = true;
+  showLoading('寫入 GitHub...');
+  try {
+    const latest = await ghRead();
+    db = latest || [];
+    db = db.filter(e => !(e.week === pendingEntries[0].week && e.cat === pendingEntries[0].cat));
+    db.push(...pendingEntries);
+    await ghWrite(db);
+    ss.className = 'status-box ok';
+    ss.textContent = '✓ 已成功儲存到 GitHub！所有裝置都能看到了。';
+    document.getElementById('in-paste').value = '';
+    document.getElementById('ai-status').style.display = 'none';
+    pendingEntries = null;
+    setSyncStatus('ok', '已同步');
+  } catch(e) {
+    ss.className = 'status-box err';
+    ss.textContent = '儲存失敗：' + e.message;
+    setSyncStatus('err', '同步失敗');
+  }
+  btn.disabled = false;
+  hideLoading();
+}
+
+function cancelPreview() {
+  document.getElementById('preview-card').style.display = 'none';
+  pendingEntries = null;
+}
+
+function renderDashboard() {
+  const weeks = [...new Set(db.map(e => e.week))];
+  const titleMap = {};
+  db.forEach(e => {
+    if (!titleMap[e.title]) titleMap[e.title] = { weeks: 0, views: 0, ones: 0 };
+    titleMap[e.title].weeks++;
+    titleMap[e.title].views += e.views || 0;
+    if (e.rank === 1) titleMap[e.title].ones++;
+  });
+  const totalViews = db.reduce((s, e) => s + (e.views || 0), 0);
+  document.getElementById('metrics-row').innerHTML =
+    '<div class="metric"><div class="val">' + weeks.length + '</div><div class="lbl">已記錄週數</div></div>' +
+    '<div class="metric"><div class="val">' + Object.keys(titleMap).length + '</div><div class="lbl">不重複作品</div></div>' +
+    '<div class="metric"><div class="val">' + fmtViews(totalViews) + '</div><div class="lbl">累計觀看次數</div></div>' +
+    '<div class="metric"><div class="val">' + db.filter(e => e.rank === 1).length + '</div><div class="lbl">冠軍記錄筆數</div></div>';
+
+  function numClass(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; }
+
+  const sortW = Object.entries(titleMap).sort((a,b) => b[1].weeks - a[1].weeks).slice(0,10);
+  const maxW  = sortW[0]?.[1]?.weeks || 1;
+  document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) =>
+    '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + t + '</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>'
+  ).join('') : '<div class="empty">尚無資料</div>';
+
+  const sortV = Object.entries(titleMap).sort((a,b) => b[1].views - a[1].views).slice(0,10);
+  const maxV  = sortV[0]?.[1]?.views || 1;
+  document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) =>
+    '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + t + '</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>'
+  ).join('') : '<div class="empty">尚無資料</div>';
+
+  const ones = db.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
+  document.getElementById('ones-list').innerHTML = ones.length ? ones.slice(0,20).map(e => {
+    const [type, lang] = (e.cat || '').split('|');
+    return '<div class="ones-row"><span class="ones-week">' + e.week + '</span><span class="ones-title">' + e.title +
+      '<span class="badge ' + (type==='Movies'?'b-movie':'b-show') + '">' + (type==='Movies'?'電影':'影集') + '</span>' +
+      '<span class="badge ' + (lang==='English'?'b-en':'b-nonen') + '">' + (lang==='English'?'EN':'非EN') + '</span>' +
+      '</span><span class="ones-views">' + fmtViews(e.views) + '</span></div>';
+  }).join('') : '<div class="empty">尚無資料</div>';
+
+  const catCount = {};
+  db.forEach(e => { catCount[e.cat] = (catCount[e.cat]||0) + 1; });
+  if (catChartInst) catChartInst.destroy();
+  const catKeys = Object.keys(catCount);
+  if (catKeys.length) {
+    catChartInst = new Chart(document.getElementById('catChart'), {
+      type: 'doughnut',
+      data: { labels: catKeys.map(k => catMap[k]||k), datasets: [{ data: catKeys.map(k=>catCount[k]), backgroundColor: ['#E50914','#1E88E5','#43A047','#FB8C00'], borderWidth: 2, borderColor: '#1a1a1a' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12 } } } }
+    });
+  }
+
+  const enCnt    = db.filter(e => e.cat && e.cat.includes('English') && !e.cat.includes('Non')).length;
+  const nonEnCnt = db.filter(e => e.cat && e.cat.includes('Non-English')).length;
+  if (langChartInst) langChartInst.destroy();
+  if (enCnt || nonEnCnt) {
+    langChartInst = new Chart(document.getElementById('langChart'), {
+      type: 'doughnut',
+      data: { labels: ['英語', '非英語'], datasets: [{ data: [enCnt, nonEnCnt], backgroundColor: ['#E50914','#1E88E5'], borderWidth: 2, borderColor: '#1a1a1a' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12 } } } }
+    });
+  }
+}
+
+function renderRecords() {
+  const weeks = [...new Set(db.map(e => e.week))].sort().reverse();
+  const list  = document.getElementById('records-list');
+  if (!weeks.length) { list.innerHTML = '<div class="empty">尚無記錄</div>'; return; }
+  list.innerHTML = weeks.map(w => {
+    const cats  = [...new Set(db.filter(e => e.week === w).map(e => e.cat))];
+    const total = db.filter(e => e.week === w).length;
+    return '<div class="week-block">' +
+      '<div class="week-header" onclick="toggleWeek(this)">' +
+        '<div><div class="week-title">' + w + '</div><div class="week-meta">' + cats.length + ' 個類別 · ' + total + ' 筆記錄</div></div>' +
+        '<div style="display:flex;align-items:center;gap:12px">' +
+          '<button class="del-btn" title="刪除此週" onclick="event.stopPropagation();deleteWeek(\'' + w.replace(/'/g,"\\'") + '\')">✕</button>' +
+          '<span class="week-toggle">▾</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="week-body">' +
+        cats.map(cat => {
+          const items = db.filter(e => e.week===w && e.cat===cat).sort((a,b) => a.rank - b.rank);
+          return '<div class="cat-section"><div class="cat-label">' + (catMap[cat]||cat) + '</div>' +
+            items.map(e => '<div class="rank-row"><span class="rank-num">' + e.rank + '</span><span style="flex:1;font-size:13px">' + e.title + '</span><span style="font-size:12px;color:var(--muted)">' + fmtViews(e.views) + '</span></div>').join('') +
+            '</div>';
+        }).join('') +
+      '</div></div>';
+  }).join('');
+}
+
+function toggleWeek(header) {
+  header.nextElementSibling.classList.toggle('open');
+  header.querySelector('.week-toggle').classList.toggle('open');
+}
+
+async function deleteWeek(w) {
+  if (!confirm('確定刪除「' + w + '」的所有記錄？此操作會同步到 GitHub。')) return;
+  showLoading('刪除中...');
+  try {
+    const latest = await ghRead();
+    db = (latest || []).filter(e => e.week !== w);
+    await ghWrite(db);
+    setSyncStatus('ok', '已同步');
+    renderRecords();
+  } catch(e) {
+    setSyncStatus('err', '刪除失敗');
+    alert('刪除失敗：' + e.message);
+  }
+  hideLoading();
+}
+
+init();
+</script>
+</body>
+</html>
