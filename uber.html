@@ -63,6 +63,7 @@ body{
 .ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
 .ic-uber   {background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
 .ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
+.ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 
 /* 主內容 */
@@ -364,11 +365,11 @@ body{
     <!-- 左右並排：圓餅圖 + 新增表單 -->
     <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-bottom:20px;">
       <!-- 左：圓餅圖 -->
-      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;display:flex;flex-direction:column;">
-        <div style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:16px;text-align:left;">總支出</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex:1;">
-          <canvas id="monthlyPieChart" width="300" height="300" style="flex-shrink:0;"></canvas>
-          <div id="pieLegend"></div>
+      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:12px;">總支出</div>
+        <div style="display:flex;align-items:center;gap:32px;">
+          <canvas id="monthlyPieChart" width="240" height="240" style="flex-shrink:0;"></canvas>
+          <div id="pieLegend" style="flex:1;"></div>
         </div>
       </div>
       <!-- 右：新增表單 -->
@@ -422,6 +423,10 @@ body{
     <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div><span class="gd-label">Threads</span></a>
     <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
     <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
+    <a href="top10.html" class="gd-item">
+      <div class="gd-icon ic-netflix" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#E50914;letter-spacing:1px;">TOP</div>
+      <span class="gd-label">Netflix Top10</span>
+    </a>
   </div>
 </div>
 
@@ -493,7 +498,7 @@ function switchTab(id,btn){
 }
 // 資料
 // ── GitHub 設定 ──
-const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_uber';
+const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_uber', GH_TOKEN='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';
 const GH_DATA_PATH='uber-data.json'; // 獨立 JSON 檔，不改 HTML
 
 function getData(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return[];}}
@@ -506,21 +511,13 @@ function showToast(msg,isErr){
   clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
 }
 function getToken(){
-  var tk=localStorage.getItem(GH_TOKEN_KEY);
-  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
-  return tk.trim();
+  return GH_TOKEN;
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 // 頁面載入時從 GitHub 讀取最新資料
 function loadFromGitHub(){
-  var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token){
-    token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
-    if(!token) return;
-    localStorage.setItem(GH_TOKEN_KEY, token.trim());
-    token=token.trim();
-  }
+  var token=GH_TOKEN;
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
   fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(), {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
     .then(r=>{
@@ -943,9 +940,9 @@ function renderMonthly(){
     var canvas = document.getElementById('monthlyPieChart');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,300,300);
+    ctx.clearRect(0,0,240,240);
 
-    var cx=150, cy=150, r=132;
+    var cx=120, cy=120, r=108;
     var startAngle = -Math.PI/2;
     types.forEach(function(t, i){
       var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
@@ -976,24 +973,23 @@ function renderMonthly(){
 
     // 圖例
     var leg = document.getElementById('pieLegend');
-    var leg = document.getElementById('pieLegend');
     leg.innerHTML = types.map(function(t,i){
       var pct = (typeMap[t]/grandTotal*100).toFixed(1);
-      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;">'
-        +'<div style="display:flex;align-items:center;gap:10px;">'
-        +'<div style="width:14px;height:14px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
-        +'<span style="font-size:16px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
+      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;">'
+        +'<div style="width:12px;height:12px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
+        +'<span style="font-size:13px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
         +'</div>'
-        +'<div style="text-align:right;white-space:nowrap;">'
-        +'<div style="font-size:16px;color:#E8EAF0;font-weight:700;">'+typeMap[t].toLocaleString()+'</div>'
-        +'<div style="font-size:13px;color:rgba(255,255,255,0.45);">'+pct+'%</div>'
+        +'<div style="text-align:right;">'
+        +'<div style="font-size:13px;color:#E8EAF0;font-weight:600;">'+typeMap[t].toLocaleString()+' $</div>'
         +'</div></div>';
     }).join('')
-    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
-    + '<span style="font-size:15px;color:rgba(255,255,255,0.5);">總額</span>'
-    + '<span style="font-size:18px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
+    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;">'
+    + '<span style="font-size:12px;color:rgba(255,255,255,0.5);">總額</span>'
+    + '<span style="font-size:13px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
     + '</div>';
   })();
+
 
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
