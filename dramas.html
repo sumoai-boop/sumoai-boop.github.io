@@ -1413,6 +1413,7 @@ render();
 (function(){
   // ── GitHub 設定（儲存在 localStorage，不寫入原始碼）──
   var GH_TOKEN_KEY = 'ghToken_dramas';
+  var GH_TOKEN = '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';
   var GH_OWNER = 'sumoai-boop';
   var GH_REPO  = 'sumoai-boop.github.io';
   var GH_PATH  = 'dramas.html';
@@ -1421,13 +1422,16 @@ render();
 
   // ── 從 dramas-data.json 讀取最新資料 ──
   (function(){
-    var token = localStorage.getItem(GH_TOKEN_KEY);
-    if(!token) return;
+    var token = GH_TOKEN;
     var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
     fetch(api + '?ref=' + GH_BRANCH + '&t=' + Date.now(), {
       headers: {'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json'}
-    }).then(function(r){ return r.json(); }).then(function(fi){
+    }).then(function(r){
+      if(r.status === 404){ localStorage.removeItem('gh_dramas_sha'); return null; }
+      return r.json();
+    }).then(function(fi){
       if(!fi || !fi.sha) return;
+      localStorage.setItem('gh_dramas_sha', fi.sha);
       var raw;
       if(fi.content && fi.content.trim() !== ''){
         raw = decodeURIComponent(escape(atob(fi.content.split('\n').join(''))));
@@ -1504,18 +1508,12 @@ render();
     if(_dramaPushing){ showToast('⏳ 推送中，請稍候...', false); return false; }
     _dramaPushing = true;
     try{
-      var token = localStorage.getItem(GH_TOKEN_KEY);
-      if(!token){
-        token = prompt('請輸入 GitHub Personal Access Token：');
-        if(!token) return false;
-        localStorage.setItem(GH_TOKEN_KEY, token.trim());
-        token = token.trim();
-      }
+      var token = GH_TOKEN;
       var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
       var hdrs = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
 
-      // 用快取 SHA 避免衝突
-      var sha = localStorage.getItem('gh_dramas_sha');
+      // 用快取 SHA 避免衝突（首次建立檔案時 sha 為 null）
+      var sha = localStorage.getItem('gh_dramas_sha') || null;
       if(!sha){
         showToast('⏳ 連線 GitHub...', false);
         var ctrl1 = new AbortController();
@@ -1523,13 +1521,17 @@ render();
         var r = await fetch(api+'?ref='+GH_BRANCH, {headers:hdrs, signal:ctrl1.signal}).catch(function(e){ clearTimeout(t1); showToast('❌ 連線逾時', true); return null; });
         clearTimeout(t1);
         if(!r) return false;
-        if(!r.ok){
-          if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
+        if(r.status === 404){
+          sha = null;
+        } else if(!r.ok){
+          if(r.status===401){ showToast('❌ Token 無效',true); }
           else showToast('❌ 連線失敗('+r.status+')',true);
           return false;
+        } else {
+          var fi = await r.json();
+          sha = fi.sha || null;
+          if(sha) localStorage.setItem('gh_dramas_sha', sha);
         }
-        var fi = await r.json();
-        sha = fi.sha;
       }
 
       // 直接把 DATA 推上去
@@ -1537,10 +1539,9 @@ render();
       showToast('⏳ 推送中...', false);
       var ctrl2 = new AbortController();
       var t2 = setTimeout(()=>ctrl2.abort(), 30000);
-      var pr = await fetch(api, {method:'PUT', headers:hdrs, signal:ctrl2.signal, body:JSON.stringify({
-        message: newRecord ? '新增：'+newRecord.title : '更新觀影記錄',
-        content: encoded, sha: sha, branch: GH_BRANCH
-      })});
+      var putBody = { message: newRecord ? '新增：'+newRecord.title : '更新觀影記錄', content: encoded, branch: GH_BRANCH };
+      if(sha) putBody.sha = sha;
+      var pr = await fetch(api, {method:'PUT', headers:hdrs, signal:ctrl2.signal, body:JSON.stringify(putBody)});
 
       clearTimeout(t2);
       if(!pr.ok){
@@ -1670,8 +1671,7 @@ render();
     DATA.splice(idx, 1);
     render();
     if(typeof buildTop5 === 'function') buildTop5();
-    var token = localStorage.getItem(GH_TOKEN_KEY);
-    if(!token){ token = prompt('請輸入 GitHub Personal Access Token：'); if(!token) return; localStorage.setItem(GH_TOKEN_KEY, token.trim()); token = token.trim(); }
+    var token = GH_TOKEN;
     var apiBase = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
     var headers = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 正在連線 GitHub...', false);

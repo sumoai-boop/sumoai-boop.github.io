@@ -556,7 +556,7 @@
 
 <script>
 /* ───── GitHub 同步設定 ───── */
-const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_food';
+const GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_TOKEN_KEY='gh_token_food', GH_TOKEN='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';
 const GH_DATA_PATH='food-data.json';
 const STORE = 'sumoai_food_v2';
 
@@ -567,19 +567,12 @@ function showToast(msg,isErr){
   clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
 }
 function getToken(){
-  var tk=localStorage.getItem(GH_TOKEN_KEY);
-  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
-  return tk.trim();
+  return GH_TOKEN;
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 function loadFromGitHub(){
-  var token=localStorage.getItem(GH_TOKEN_KEY);
-  if(!token){
-    token=prompt('請輸入 GitHub Personal Access Token\n（需有 repo 寫入權限，僅儲存在本機）');
-    if(!token){DATA=load();refreshTypeList();render();return;}
-    localStorage.setItem(GH_TOKEN_KEY,token.trim());token=token.trim();
-  }
+  var token=GH_TOKEN;
   // 先從 localStorage 顯示，GitHub 回來再更新
   DATA=load(); refreshTypeList(); render();
   showToast('⏳ 同步雲端資料...',false);
