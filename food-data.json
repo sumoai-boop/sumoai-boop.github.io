@@ -37,8 +37,8 @@
   },
   {
     "id": "1779030806421",
-    "name": "TGI FRIDAYS 星期五美式餐廳 環球餐廳",
-    "name1": "TGI FRIDAYS 星期五美式餐廳",
+    "name": "TGI FRIDAYS 環球餐廳",
+    "name1": "TGI FRIDAYS",
     "name2": "環球餐廳",
     "type": "美式餐廳",
     "price": 825,
@@ -55,7 +55,8 @@
       "https://i.ibb.co/FbnvyHVJ/ca9b6b3c742a.jpg"
     ],
     "img": "https://i.ibb.co/C56ymfPG/84aa3613f829.jpg",
-    "createdAt": 1779030806421
+    "createdAt": 1779030806421,
+    "updatedAt": 1779073276547
   },
   {
     "id": "1779030532202",
