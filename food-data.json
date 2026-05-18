@@ -78,8 +78,8 @@
   },
   {
     "id": "1779026245011",
-    "name": "Phở Wild 越式生牛肉河粉 宜蘭新月店",
-    "name1": "Phở Wild 越式生牛肉河粉",
+    "name": "Phở Wild越式生牛肉河粉 宜蘭新月店",
+    "name1": "Phở Wild越式生牛肉河粉",
     "name2": "宜蘭新月店",
     "type": "越式河粉餐廳",
     "price": 180,
@@ -92,7 +92,8 @@
       "https://i.ibb.co/pr2rDBKc/0f1a26482ab3.jpg"
     ],
     "img": "https://i.ibb.co/pr2rDBKc/0f1a26482ab3.jpg",
-    "createdAt": 1779026245011
+    "createdAt": 1779026245011,
+    "updatedAt": 1779073290412
   },
   {
     "id": "1779026171815",
