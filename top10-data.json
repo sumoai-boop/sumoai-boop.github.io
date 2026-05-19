@@ -898,5 +898,105 @@
     "titleEn": "Strangers in the Park",
     "titleZh": "親陌公園",
     "country": "AR"
+  },
+  {
+    "rank": 1,
+    "title": "Accused",
+    "views": 7600000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Accused",
+    "titleZh": "指控之後",
+    "country": "IN"
+  },
+  {
+    "rank": 2,
+    "title": "Firebreak",
+    "views": 4600000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Firebreak",
+    "titleZh": "浴火之森",
+    "country": "ES"
+  },
+  {
+    "rank": 3,
+    "title": "Street Flow 3",
+    "views": 4400000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Street Flow 3",
+    "titleZh": "巴黎男孩 3",
+    "country": "FR"
+  },
+  {
+    "rank": 4,
+    "title": "The Orphans",
+    "views": 1800000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Orphans",
+    "titleZh": "",
+    "country": "FR"
+  },
+  {
+    "rank": 5,
+    "title": "With Love",
+    "views": 1200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "With Love",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 6,
+    "title": "#SalveRosa",
+    "views": 1200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "#SalveRosa",
+    "titleZh": "",
+    "country": "BR"
+  },
+  {
+    "rank": 7,
+    "title": "Strangers in the Park",
+    "views": 1100000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Strangers in the Park",
+    "titleZh": "親陌公園",
+    "country": "AR"
+  },
+  {
+    "rank": 8,
+    "title": "The Trip 8",
+    "views": 1100000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Trip 8",
+    "titleZh": "",
+    "country": "CO"
+  },
+  {
+    "rank": 9,
+    "title": "Dhurandhar",
+    "views": 1000000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar",
+    "titleZh": "黑境行者",
+    "country": "IN"
+  },
+  {
+    "rank": 10,
+    "title": "A Father's Miracle",
+    "views": 1000000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "A Father's Miracle",
+    "titleZh": "",
+    "country": "MX,ES"
   }
 ]
