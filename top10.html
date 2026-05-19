@@ -476,8 +476,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const TMDB_API_KEY = 'e174d0983218845b167176a27b04b83f';
 
-async function fetchTMDBTitle(title, cat) {
-  // 判斷搜尋類型：電影 or 影集
+// 國家代碼對照表
+const COUNTRY_MAP = {
+  'US':'🇺🇸 美國','GB':'🇬🇧 英國','KR':'🇰🇷 韓國','JP':'🇯🇵 日本',
+  'IN':'🇮🇳 印度','FR':'🇫🇷 法國','DE':'🇩🇪 德國','ES':'🇪🇸 西班牙',
+  'IT':'🇮🇹 義大利','MX':'🇲🇽 墨西哥','BR':'🇧🇷 巴西','TH':'🇹🇭 泰國',
+  'TR':'🇹🇷 土耳其','CN':'🇨🇳 中國','TW':'🇹🇼 台灣','HK':'🇭🇰 香港',
+  'AU':'🇦🇺 澳洲','CA':'🇨🇦 加拿大','AR':'🇦🇷 阿根廷','PL':'🇵🇱 波蘭',
+  'SE':'🇸🇪 瑞典','NO':'🇳🇴 挪威','DK':'🇩🇰 丹麥','FI':'🇫🇮 芬蘭',
+  'NL':'🇳🇱 荷蘭','BE':'🇧🇪 比利時','PT':'🇵🇹 葡萄牙','CO':'🇨🇴 哥倫比亞',
+  'ZA':'🇿🇦 南非','NG':'🇳🇬 奈及利亞','ID':'🇮🇩 印尼','PH':'🇵🇭 菲律賓'
+};
+
+async function fetchTMDBInfo(title, cat) {
   const isMovie = cat && cat.includes('Movies');
   const type = isMovie ? 'movie' : 'tv';
   const url = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=zh-TW&page=1`;
@@ -485,14 +496,18 @@ async function fetchTMDBTitle(title, cat) {
     const r = await fetch(url);
     const d = await r.json();
     const result = d.results && d.results[0];
-    if (!result) return null;
-    // 電影用 title，影集用 name
+    if (!result) return { titleZh: '', country: '' };
     const zhTitle = isMovie ? result.title : result.name;
     const origTitle = isMovie ? result.original_title : result.original_name;
-    // 如果中文跟英文一樣（沒翻譯），回傳 null
-    if (zhTitle && zhTitle !== origTitle && zhTitle !== title) return zhTitle;
-    return null;
-  } catch(e) { return null; }
+    const finalZh = (zhTitle && zhTitle !== origTitle && zhTitle !== title) ? zhTitle : '';
+    // 取國家
+    let country = '';
+    const countries = result.origin_country || (result.production_countries && result.production_countries.map(c => c.iso_3166_1)) || [];
+    if (countries.length > 0) {
+      country = countries.slice(0,2).map(code => COUNTRY_MAP[code] || code).join('、');
+    }
+    return { titleZh: finalZh, country };
+  } catch(e) { return { titleZh: '', country: '' }; }
 }
 
 async function parseJSON() {
@@ -513,8 +528,8 @@ async function parseJSON() {
     st.textContent = '查詢 TMDB 中文片名...';
     // 並行查詢所有片名
     const entries = await Promise.all(parsed.map(async (e) => {
-      const zhTitle = await fetchTMDBTitle(e.title, cat);
-      return { ...e, week, cat, titleEn: e.title, titleZh: zhTitle || '' };
+      const info = await fetchTMDBInfo(e.title, cat);
+      return { ...e, week, cat, titleEn: e.title, titleZh: info.titleZh, country: info.country };
     }));
     pendingEntries = entries;
     st.className = 'status-box ok';
@@ -529,9 +544,13 @@ async function parseJSON() {
 
 function showPreview(entries) {
   document.getElementById('preview-list').innerHTML = entries.map(e => {
-    const zhLine = e.titleZh ? '<div style="font-size:11px;color:#E50914;margin-top:2px;">' + e.titleZh + '</div>' : '';
+    const main = e.titleZh || e.title;
+    const sub  = e.titleZh ? '<div style="font-size:10px;color:var(--muted);margin-top:1px;">' + e.title + '</div>' : '';
+    const flag = e.country ? '<span style="font-size:10px;color:var(--muted);margin-left:6px;">' + e.country + '</span>' : '';
     return '<div class="preview-item"><span class="preview-num">' + e.rank + '</span>' +
-      '<div style="flex:1;min-width:0"><div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + e.title + '</div>' + zhLine + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + main + flag + '</div>' + sub +
+      '</div>' +
       '<span style="color:var(--muted);font-size:12px;white-space:nowrap;margin-left:8px">' + fmtViews(e.views) + '</span></div>';
   }).join('');
   document.getElementById('save-status').style.display = 'none';
@@ -580,10 +599,12 @@ function renderDashboard() {
   const weeks = [...new Set(db.map(e => e.week))];
   const titleMap = {};
   db.forEach(e => {
-    if (!titleMap[e.title]) titleMap[e.title] = { weeks: 0, views: 0, ones: 0 };
+    if (!titleMap[e.title]) titleMap[e.title] = { weeks: 0, views: 0, ones: 0, titleZh: e.titleZh||'', country: e.country||'' };
     titleMap[e.title].weeks++;
     titleMap[e.title].views += e.views || 0;
     if (e.rank === 1) titleMap[e.title].ones++;
+    if (!titleMap[e.title].titleZh && e.titleZh) titleMap[e.title].titleZh = e.titleZh;
+    if (!titleMap[e.title].country && e.country) titleMap[e.title].country = e.country;
   });
   const totalViews = db.reduce((s, e) => s + (e.views || 0), 0);
   document.getElementById('metrics-row').innerHTML =
@@ -596,23 +617,36 @@ function renderDashboard() {
 
   const sortW = Object.entries(titleMap).sort((a,b) => b[1].weeks - a[1].weeks).slice(0,10);
   const maxW  = sortW[0]?.[1]?.weeks || 1;
-  document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) =>
-    '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + t + '</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>'
-  ).join('') : '<div class="empty">尚無資料</div>';
+  document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) => {
+    const disp = v.titleZh || t;
+    const sub  = v.titleZh ? '<div style="font-size:10px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
+    const flag = v.country ? '<span style="font-size:9px;color:var(--muted);margin-left:4px;">' + v.country + '</span>' : '';
+    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>';
+  }).join('') : '<div class="empty">尚無資料</div>';
 
   const sortV = Object.entries(titleMap).sort((a,b) => b[1].views - a[1].views).slice(0,10);
   const maxV  = sortV[0]?.[1]?.views || 1;
-  document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) =>
-    '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + t + '</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>'
-  ).join('') : '<div class="empty">尚無資料</div>';
+  document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) => {
+    const disp = v.titleZh || t;
+    const sub  = v.titleZh ? '<div style="font-size:10px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
+    const flag = v.country ? '<span style="font-size:9px;color:var(--muted);margin-left:4px;">' + v.country + '</span>' : '';
+    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
+  }).join('') : '<div class="empty">尚無資料</div>';
 
   const ones = db.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
   document.getElementById('ones-list').innerHTML = ones.length ? ones.slice(0,20).map(e => {
     const [type, lang] = (e.cat || '').split('|');
-    return '<div class="ones-row"><span class="ones-week">' + e.week + '</span><span class="ones-title">' + e.title +
-      '<span class="badge ' + (type==='Movies'?'b-movie':'b-show') + '">' + (type==='Movies'?'電影':'影集') + '</span>' +
-      '<span class="badge ' + (lang==='English'?'b-en':'b-nonen') + '">' + (lang==='English'?'EN':'非EN') + '</span>' +
-      '</span><span class="ones-views">' + fmtViews(e.views) + '</span></div>';
+    const disp = e.titleZh || e.title;
+    const sub  = e.titleZh ? '<div style="font-size:10px;color:var(--muted);margin-top:1px;">' + e.title + '</div>' : '';
+    const flag = e.country ? '<span style="font-size:10px;color:var(--muted);margin-left:4px;">' + e.country + '</span>' : '';
+    return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
+      '<div class="ones-title" style="flex:1;min-width:0">' +
+        '<div>' + disp + flag +
+          '<span class="badge ' + (type==='Movies'?'b-movie':'b-show') + '">' + (type==='Movies'?'電影':'影集') + '</span>' +
+          '<span class="badge ' + (lang==='English'?'b-en':'b-nonen') + '">' + (lang==='English'?'EN':'非EN') + '</span>' +
+        '</div>' + sub +
+      '</div>' +
+      '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const catCount = {};
