@@ -298,5 +298,105 @@
     "titleEn": "Untouchables",
     "titleZh": "",
     "country": "TR"
+  },
+  {
+    "rank": 1,
+    "title": "Toaster",
+    "views": 4400000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Toaster",
+    "titleZh": "吐司機大危機",
+    "country": "IN"
+  },
+  {
+    "rank": 2,
+    "title": "Feel My Voice",
+    "views": 3500000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Feel My Voice",
+    "titleZh": "心之高歌",
+    "country": "IT"
+  },
+  {
+    "rank": 3,
+    "title": "Ustaad Bhagat Singh",
+    "views": 2500000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Ustaad Bhagat Singh",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 4,
+    "title": "Youth",
+    "views": 2200000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Youth",
+    "titleZh": "年輕氣盛",
+    "country": "IT,FR"
+  },
+  {
+    "rank": 5,
+    "title": "Eat Pray Bark",
+    "views": 2000000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Eat Pray Bark",
+    "titleZh": "汪星人訓練營",
+    "country": "DE"
+  },
+  {
+    "rank": 6,
+    "title": "Tu Yaa Main",
+    "views": 2000000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Tu Yaa Main",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 7,
+    "title": "Mudborn",
+    "views": 1700000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Mudborn",
+    "titleZh": "泥娃娃",
+    "country": "TW"
+  },
+  {
+    "rank": 8,
+    "title": "Humint",
+    "views": 1600000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Humint",
+    "titleZh": "諜報暗線",
+    "country": "KR"
+  },
+  {
+    "rank": 9,
+    "title": "18th Rose",
+    "views": 1400000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "18th Rose",
+    "titleZh": "第18朵玫瑰",
+    "country": "PH"
+  },
+  {
+    "rank": 10,
+    "title": "Do Deewane Seher Mein",
+    "views": 1400000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Do Deewane Seher Mein",
+    "titleZh": "",
+    "country": "IN"
   }
 ]
