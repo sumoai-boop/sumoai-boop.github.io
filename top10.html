@@ -474,7 +474,28 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-function parseJSON() {
+const TMDB_API_KEY = 'e174d0983218845b167176a27b04b83f';
+
+async function fetchTMDBTitle(title, cat) {
+  // 判斷搜尋類型：電影 or 影集
+  const isMovie = cat && cat.includes('Movies');
+  const type = isMovie ? 'movie' : 'tv';
+  const url = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=zh-TW&page=1`;
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    const result = d.results && d.results[0];
+    if (!result) return null;
+    // 電影用 title，影集用 name
+    const zhTitle = isMovie ? result.title : result.name;
+    const origTitle = isMovie ? result.original_title : result.original_name;
+    // 如果中文跟英文一樣（沒翻譯），回傳 null
+    if (zhTitle && zhTitle !== origTitle && zhTitle !== title) return zhTitle;
+    return null;
+  } catch(e) { return null; }
+}
+
+async function parseJSON() {
   const week = document.getElementById('in-week').value.trim();
   const cat  = document.getElementById('in-cat').value;
   const raw  = document.getElementById('in-paste').value.trim();
@@ -484,11 +505,17 @@ function parseJSON() {
   const btn = document.getElementById('btn-ai');
   st.style.display = 'block';
   st.className = 'status-box';
+  btn.disabled = true;
   try {
     const clean = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
     if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('格式錯誤');
-    const entries = parsed.map(e => ({ ...e, week, cat }));
+    st.textContent = '查詢 TMDB 中文片名...';
+    // 並行查詢所有片名
+    const entries = await Promise.all(parsed.map(async (e) => {
+      const zhTitle = await fetchTMDBTitle(e.title, cat);
+      return { ...e, week, cat, titleEn: e.title, titleZh: zhTitle || '' };
+    }));
     pendingEntries = entries;
     st.className = 'status-box ok';
     st.textContent = '✓ 成功解析 ' + entries.length + ' 筆資料';
@@ -497,12 +524,16 @@ function parseJSON() {
     st.className = 'status-box err';
     st.textContent = '解析失敗，請確認 JSON 格式正確。';
   }
+  btn.disabled = false;
 }
 
 function showPreview(entries) {
-  document.getElementById('preview-list').innerHTML = entries.map(e =>
-    '<div class="preview-item"><span class="preview-num">' + e.rank + '</span><span style="flex:1">' + e.title + '</span><span style="color:var(--muted);font-size:12px">' + fmtViews(e.views) + '</span></div>'
-  ).join('');
+  document.getElementById('preview-list').innerHTML = entries.map(e => {
+    const zhLine = e.titleZh ? '<div style="font-size:11px;color:#E50914;margin-top:2px;">' + e.titleZh + '</div>' : '';
+    return '<div class="preview-item"><span class="preview-num">' + e.rank + '</span>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + e.title + '</div>' + zhLine + '</div>' +
+      '<span style="color:var(--muted);font-size:12px;white-space:nowrap;margin-left:8px">' + fmtViews(e.views) + '</span></div>';
+  }).join('');
   document.getElementById('save-status').style.display = 'none';
   document.getElementById('preview-card').style.display = 'block';
 }
