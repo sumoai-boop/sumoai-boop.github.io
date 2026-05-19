@@ -50,7 +50,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .rank-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted2);width:24px;text-align:center;flex-shrink:0}
 .rank-num.gold{color:#FFD700}.rank-num.silver{color:#C0C0C0}.rank-num.bronze{color:#CD7F32}
 .rank-info{flex:1;min-width:0}
-.rank-title-text{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-title-text{font-size:18px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rank-bar-wrap{width:80px;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:5px}
 .rank-bar{height:100%;background:var(--red);border-radius:2px}
 .rank-val{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right;min-width:50px}
@@ -350,7 +350,7 @@ async function ghRead() {
   if (!r.ok) throw new Error('讀取失敗 ' + r.status);
   const j = await r.json();
   fileSha = j.sha;
-  return JSON.parse(atob(j.content.replace(/\n/g, '')));
+  return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, '')))));
 }
 
 async function ghWrite(data) {
@@ -619,7 +619,7 @@ function renderDashboard() {
   const maxW  = sortW[0]?.[1]?.weeks || 1;
   document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) => {
     const disp = v.titleZh || t;
-    const sub  = v.titleZh ? '<div style="font-size:10px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
     const flag = v.country ? '<span style="font-size:9px;color:var(--muted);margin-left:4px;">' + v.country + '</span>' : '';
     return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
@@ -628,7 +628,7 @@ function renderDashboard() {
   const maxV  = sortV[0]?.[1]?.views || 1;
   document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) => {
     const disp = v.titleZh || t;
-    const sub  = v.titleZh ? '<div style="font-size:10px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
     const flag = v.country ? '<span style="font-size:9px;color:var(--muted);margin-left:4px;">' + v.country + '</span>' : '';
     return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
