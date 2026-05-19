@@ -1700,24 +1700,23 @@ render();
     render();
     if(typeof buildTop5 === 'function') buildTop5();
     requireToken(async function(token){
-    var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
-    var headers = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    showToast('⏳ 正在連線 GitHub...', false);
-    // 直接用 DATA（已刪除目標）推上去，不用字串比對
-    var sha = localStorage.getItem('gh_dramas_sha') || null;
-    if(!sha){
-      var getResp = await fetch(api + '?ref=' + GH_BRANCH, { headers: headers });
-      if(getResp.status === 404){ sha = null; }
-      else if(!getResp.ok){ showToast('❌ GitHub 連線失敗（' + getResp.status + '）', true); return; }
-      else { var fi = await getResp.json(); sha = fi.sha||null; if(sha) localStorage.setItem('gh_dramas_sha',sha); }
-    }
-    var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA))));
-    var putBody = { message: '刪除：'+target.title, content: encoded, branch: GH_BRANCH };
-    if(sha) putBody.sha = sha;
-    var encoded = btoa(unescape(encodeURIComponent(newContent)));
-    var pushResp = await fetch(apiBase, {method:'PUT',headers:headers,body:JSON.stringify({message:'刪除：'+target.title,content:encoded,sha:sha,branch:GH_BRANCH})});
-    if(!pushResp.ok){ var err = await pushResp.json(); showToast('❌ 推送失敗：'+(err.message||pushResp.status), true); }
-    else { showToast('✦ 已刪除「'+target.title+'」', false); }
+      var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
+      var headers = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+      showToast('⏳ 正在連線 GitHub...', false);
+      var sha = localStorage.getItem('gh_dramas_sha') || null;
+      if(!sha){
+        var getResp = await fetch(api + '?ref=' + GH_BRANCH, { headers: headers });
+        if(getResp.status === 404){ sha = null; }
+        else if(!getResp.ok){ showToast('❌ GitHub 連線失敗（' + getResp.status + '）', true); return; }
+        else { var fi = await getResp.json(); sha = fi.sha||null; if(sha) localStorage.setItem('gh_dramas_sha', sha); }
+      }
+      var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA))));
+      var putBody = { message: '刪除：'+target.title, content: encoded, branch: GH_BRANCH };
+      if(sha) putBody.sha = sha;
+      var pushResp = await fetch(api, {method:'PUT', headers:headers, body:JSON.stringify(putBody)});
+      if(!pushResp.ok){ var err = await pushResp.json(); showToast('❌ 推送失敗：'+(err.message||pushResp.status), true); }
+      else{ var pd = await pushResp.json(); if(pd.content&&pd.content.sha) localStorage.setItem('gh_dramas_sha', pd.content.sha); showToast('✦ 已刪除「'+target.title+'」', false); }
+    });
   }
   window.deleteRecord = deleteRecord;
 })();
