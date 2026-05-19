@@ -255,19 +255,26 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
       </div>
     </div>
     <div class="form-group" style="margin-bottom:0">
-      <label>上傳 Netflix Top10 截圖</label>
+      <label>步驟 1：上傳截圖（選擇性，方便對照）</label>
       <div id="upload-zone" onclick="document.getElementById('img-input').click()"
-        style="border:2px dashed rgba(229,9,20,0.4);border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--surface2);min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
-        <div style="font-size:32px">📷</div>
-        <div style="font-size:13px;color:var(--muted)">點擊選擇截圖，或拖曳圖片到此處</div>
-        <div style="font-size:11px;color:var(--muted2)">支援 JPG、PNG、WEBP</div>
+        style="border:2px dashed rgba(229,9,20,0.3);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+        <div style="font-size:28px">📷</div>
+        <div style="font-size:13px;color:var(--muted)">點擊或拖曳截圖到此處</div>
       </div>
       <input type="file" id="img-input" accept="image/*" style="display:none" onchange="onImageSelected(this)">
-      <img id="img-preview" style="display:none;max-width:100%;border-radius:8px;margin-top:10px;max-height:300px;object-fit:contain;">
+      <img id="img-preview" style="display:none;max-width:100%;border-radius:8px;margin-top:8px;max-height:260px;object-fit:contain;">
+    </div>
+    <div class="form-group" style="margin-bottom:0;margin-top:1rem">
+      <label>步驟 2：把截圖丟給 Claude 解析，貼入回傳的 JSON</label>
+      <div style="background:rgba(229,9,20,0.08);border:1px solid rgba(229,9,20,0.25);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;">
+        把截圖上傳給 <a href="https://claude.ai" target="_blank" style="color:#E50914;text-decoration:none;">claude.ai</a>，並輸入提示詞：<br>
+        <span style="color:rgba(255,255,255,0.7);font-family:monospace;">「從這張 Netflix Top10 截圖提取資料，回傳純 JSON 陣列：[{"rank":1,"title":"片名","views":觀看數純數字},...]」</span>
+      </div>
+      <textarea id="in-paste" rows="6" placeholder='[{"rank":1,"title":"Swapped","views":38700000},{"rank":2,"title":"Apex","views":16200000}]' style="font-family:monospace;font-size:12px;"></textarea>
     </div>
     <div id="ai-status" class="status-box" style="display:none"></div>
     <div class="btn-row">
-      <button class="btn-red" id="btn-ai" onclick="parseWithAI()">✦ AI 解析截圖</button>
+      <button class="btn-red" id="btn-ai" onclick="parseJSON()">✦ 解析 JSON</button>
     </div>
   </div>
   <div id="preview-card" class="card" style="display:none">
@@ -434,19 +441,13 @@ function manualAdd() {
   showPreview(entries);
 }
 
-let selectedImageBase64 = null;
-let selectedImageType = 'image/jpeg';
-
 function onImageSelected(input) {
   const file = input.files[0];
   if (!file) return;
-  selectedImageType = file.type || 'image/jpeg';
   const reader = new FileReader();
   reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    selectedImageBase64 = dataUrl.split(',')[1];
     const preview = document.getElementById('img-preview');
-    preview.src = dataUrl;
+    preview.src = e.target.result;
     preview.style.display = 'block';
     document.getElementById('upload-zone').style.borderColor = 'rgba(229,9,20,0.8)';
     document.querySelector('#upload-zone div').textContent = '✓ ' + file.name;
@@ -459,10 +460,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const zone = document.getElementById('upload-zone');
   if (!zone) return;
   zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.style.borderColor = '#E50914'; });
-  zone.addEventListener('dragleave', function() { zone.style.borderColor = 'rgba(229,9,20,0.4)'; });
+  zone.addEventListener('dragleave', function() { zone.style.borderColor = 'rgba(229,9,20,0.3)'; });
   zone.addEventListener('drop', function(e) {
     e.preventDefault();
-    zone.style.borderColor = 'rgba(229,9,20,0.4)';
+    zone.style.borderColor = 'rgba(229,9,20,0.3)';
     const file = e.dataTransfer.files[0];
     if (!file || !file.type.startsWith('image/')) return;
     const input = document.getElementById('img-input');
@@ -473,43 +474,20 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-async function parseWithAI() {
+function parseJSON() {
   const week = document.getElementById('in-week').value.trim();
   const cat  = document.getElementById('in-cat').value;
+  const raw  = document.getElementById('in-paste').value.trim();
   if (!week) { alert('請填入週次'); return; }
-  if (!selectedImageBase64) { alert('請先選擇截圖'); return; }
+  if (!raw)  { alert('請貼入 Claude 回傳的 JSON'); return; }
   const st  = document.getElementById('ai-status');
   const btn = document.getElementById('btn-ai');
   st.style.display = 'block';
   st.className = 'status-box';
-  st.textContent = 'AI 解析截圖中...';
-  btn.disabled = true;
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: { type: 'base64', media_type: selectedImageType, data: selectedImageBase64 }
-            },
-            {
-              type: 'text',
-              text: '這是 Netflix Top10 的截圖。請從圖中提取排行榜資料，回傳純 JSON 陣列，不含任何 markdown 或說明文字：[{"rank":1,"title":"片名","views":觀看數數字（純數字，無逗號）},...]'
-            }
-          ]
-        }]
-      })
-    });
-    const data = await resp.json();
-    let text = data.content.map(c => c.text || '').join('');
-    text = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(text);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('格式錯誤');
     const entries = parsed.map(e => ({ ...e, week, cat }));
     pendingEntries = entries;
     st.className = 'status-box ok';
@@ -517,9 +495,8 @@ async function parseWithAI() {
     showPreview(entries);
   } catch(e) {
     st.className = 'status-box err';
-    st.textContent = '解析失敗：' + e.message;
+    st.textContent = '解析失敗，請確認 JSON 格式正確。';
   }
-  btn.disabled = false;
 }
 
 function showPreview(entries) {
@@ -547,10 +524,10 @@ async function confirmSave() {
     await ghWrite(db);
     ss.className = 'status-box ok';
     ss.textContent = '✓ 已成功儲存到 GitHub！所有裝置都能看到了。';
-    selectedImageBase64 = null;
+    document.getElementById('in-paste').value = '';
     document.getElementById('img-input').value = '';
     document.getElementById('img-preview').style.display = 'none';
-    document.getElementById('upload-zone').style.borderColor = 'rgba(229,9,20,0.4)';
+    document.getElementById('upload-zone').style.borderColor = 'rgba(229,9,20,0.3)';
     document.getElementById('ai-status').style.display = 'none';
     pendingEntries = null;
     setSyncStatus('ok', '已同步');
