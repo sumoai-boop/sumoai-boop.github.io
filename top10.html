@@ -501,30 +501,43 @@ const COUNTRY_MAP = {
 
 async function fetchTMDBInfo(title, cat) {
   const isMovie = cat && cat.includes('Movies');
+  const isNonEn = cat && cat.includes('Non-English');
   const type = isMovie ? 'movie' : 'tv';
-  const searchUrl = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=zh-TW&page=1`;
+  // 非英語內容：用原始語言搜尋效果更好
+  const lang = isNonEn ? 'zh-TW' : 'zh-TW';
+  const searchUrl = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=${lang}&page=1`;
   try {
     // Step 1: 搜尋取得 id 和中文片名
     const r = await fetch(searchUrl);
     const d = await r.json();
-    const result = d.results && d.results[0];
-    if (!result) return { titleZh: '', country: '' };
-    const zhTitle = isMovie ? result.title : result.name;
+    if (!d.results || d.results.length === 0) return { titleZh: '', country: '' };
+
+    // 非英語：優先選非英語結果（original_language 不是 en）
+    let result;
+    if (isNonEn) {
+      result = d.results.find(x => x.original_language && x.original_language !== 'en') || d.results[0];
+    } else {
+      result = d.results[0];
+    }
+
+    const zhTitle  = isMovie ? result.title : result.name;
     const origTitle = isMovie ? result.original_title : result.original_name;
-    const finalZh = (zhTitle && zhTitle !== origTitle && zhTitle !== title) ? zhTitle : '';
+    const finalZh  = (zhTitle && zhTitle !== origTitle && zhTitle !== title) ? zhTitle : '';
 
     // Step 2: 用 id 取詳細資料（含製作國家）
-    let country = '';
     const detailUrl = `https://api.themoviedb.org/3/${type}/${result.id}?api_key=${TMDB_API_KEY}&language=zh-TW`;
     const dr = await fetch(detailUrl);
     const dd = await dr.json();
+
     // 電影用 production_countries，影集用 origin_country
-    const codes = isMovie
-      ? (dd.production_countries || []).map(c => c.iso_3166_1)
-      : (dd.origin_country || []);
-    if (codes.length > 0) {
-      country = codes.slice(0, 2).map(code => COUNTRY_MAP[code] || code).join('、');
-    }
+    const rawCodes = isMovie
+      ? (dd.production_countries || []).map(x => x.iso_3166_1.toUpperCase())
+      : (dd.origin_country || []).map(x => x.toUpperCase());
+
+    const country = rawCodes.slice(0, 2)
+      .map(code => COUNTRY_MAP[code] || code)
+      .join('、');
+
     return { titleZh: finalZh, country };
   } catch(e) { return { titleZh: '', country: '' }; }
 }
@@ -565,7 +578,7 @@ function showPreview(entries) {
   document.getElementById('preview-list').innerHTML = entries.map(e => {
     const main = e.titleZh || e.title;
     const sub  = e.titleZh ? '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:1px;">' + e.title + '</div>' : '';
-    const flag = e.country ? '<span style="margin-right:6px;">' + e.country.split(' ')[0] + '</span>' : '';
+    const flag = e.country ? '<span style="margin-right:5px;font-size:16px;">' + e.country.split('、').map(x=>x.split(' ')[0]).join('') + '</span>' : '';
     return '<div class="preview-item"><span class="preview-num">' + e.rank + '</span>' +
       '<div style="flex:1;min-width:0">' +
         '<div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + flag + main + '</div>' + sub +
@@ -653,7 +666,7 @@ function renderDashboard() {
   document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) => {
     const disp = v.titleZh || t;
     const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + t + '</div>' : '';
-    const flag = v.country ? '<span style="margin-right:6px;">' + v.country.split(' ')[0] + '</span>' : '';
+    const flag = v.country ? '<span style="margin-right:5px;font-size:16px;">' + v.country.split('、').map(x=>x.split(' ')[0]).join('') + '</span>' : '';
     return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
@@ -662,7 +675,7 @@ function renderDashboard() {
   document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) => {
     const disp = v.titleZh || t;
     const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + t + '</div>' : '';
-    const flag = v.country ? '<span style="margin-right:6px;">' + v.country.split(' ')[0] + '</span>' : '';
+    const flag = v.country ? '<span style="margin-right:5px;font-size:16px;">' + v.country.split('、').map(x=>x.split(' ')[0]).join('') + '</span>' : '';
     return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
@@ -671,7 +684,7 @@ function renderDashboard() {
     const [type, lang] = (e.cat || '').split('|');
     const disp = e.titleZh || e.title;
     const sub  = e.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + e.title + '</div>' : '';
-    const flag = e.country ? '<span style="margin-right:6px;">' + e.country.split(' ')[0] + '</span>' : '';
+    const flag = e.country ? '<span style="margin-right:5px;font-size:16px;">' + e.country.split('、').map(x=>x.split(' ')[0]).join('') + '</span>' : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
       '<div class="ones-title" style="flex:1;min-width:0">' +
         '<div>' + flag + disp +
