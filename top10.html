@@ -255,22 +255,19 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
       </div>
     </div>
     <div class="form-group" style="margin-bottom:0">
-      <label>貼上 Top10 文字（片名 + 觀看數，一行一筆）</label>
-      <textarea id="in-paste" rows="10" placeholder="Thrash 34,500,000
-180 9,500,000
-Roommates 8,800,000
-Sisu 4,500,000
-KPop Demon Hunters 4,400,000
-Sniper 2 3,600,000
-War Machine 3,500,000
-Husband, Father, Killer 3,400,000
-Escape Plan 2: Hades 3,000,000
-Anaconda 2,700,000"></textarea>
+      <label>上傳 Netflix Top10 截圖</label>
+      <div id="upload-zone" onclick="document.getElementById('img-input').click()"
+        style="border:2px dashed rgba(229,9,20,0.4);border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--surface2);min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+        <div style="font-size:32px">📷</div>
+        <div style="font-size:13px;color:var(--muted)">點擊選擇截圖，或拖曳圖片到此處</div>
+        <div style="font-size:11px;color:var(--muted2)">支援 JPG、PNG、WEBP</div>
+      </div>
+      <input type="file" id="img-input" accept="image/*" style="display:none" onchange="onImageSelected(this)">
+      <img id="img-preview" style="display:none;max-width:100%;border-radius:8px;margin-top:10px;max-height:300px;object-fit:contain;">
     </div>
     <div id="ai-status" class="status-box" style="display:none"></div>
     <div class="btn-row">
-      <button class="btn-red" id="btn-ai" onclick="parseWithAI()">✦ AI 解析</button>
-      <button class="btn-ghost" onclick="manualAdd()">直接存入</button>
+      <button class="btn-red" id="btn-ai" onclick="parseWithAI()">✦ AI 解析截圖</button>
     </div>
   </div>
   <div id="preview-card" class="card" style="display:none">
@@ -437,16 +434,55 @@ function manualAdd() {
   showPreview(entries);
 }
 
+let selectedImageBase64 = null;
+let selectedImageType = 'image/jpeg';
+
+function onImageSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  selectedImageType = file.type || 'image/jpeg';
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    selectedImageBase64 = dataUrl.split(',')[1];
+    const preview = document.getElementById('img-preview');
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+    document.getElementById('upload-zone').style.borderColor = 'rgba(229,9,20,0.8)';
+    document.querySelector('#upload-zone div').textContent = '✓ ' + file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+// 拖曳上傳
+document.addEventListener('DOMContentLoaded', function() {
+  const zone = document.getElementById('upload-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.style.borderColor = '#E50914'; });
+  zone.addEventListener('dragleave', function() { zone.style.borderColor = 'rgba(229,9,20,0.4)'; });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    zone.style.borderColor = 'rgba(229,9,20,0.4)';
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const input = document.getElementById('img-input');
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    onImageSelected(input);
+  });
+});
+
 async function parseWithAI() {
   const week = document.getElementById('in-week').value.trim();
   const cat  = document.getElementById('in-cat').value;
-  const raw  = document.getElementById('in-paste').value.trim();
-  if (!week || !raw) { alert('請填入週次與內容'); return; }
+  if (!week) { alert('請填入週次'); return; }
+  if (!selectedImageBase64) { alert('請先選擇截圖'); return; }
   const st  = document.getElementById('ai-status');
   const btn = document.getElementById('btn-ai');
   st.style.display = 'block';
   st.className = 'status-box';
-  st.textContent = 'AI 解析中...';
+  st.textContent = 'AI 解析截圖中...';
   btn.disabled = true;
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -455,7 +491,19 @@ async function parseWithAI() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
-        messages: [{ role: 'user', content: '從以下 Netflix Top10 文字中提取資料，回傳純 JSON 陣列，不含任何 markdown 或說明文字：\n[{"rank":1,"title":"片名","views":觀看數數字},...]\n\n文字：\n' + raw }]
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: selectedImageType, data: selectedImageBase64 }
+            },
+            {
+              type: 'text',
+              text: '這是 Netflix Top10 的截圖。請從圖中提取排行榜資料，回傳純 JSON 陣列，不含任何 markdown 或說明文字：[{"rank":1,"title":"片名","views":觀看數數字（純數字，無逗號）},...]'
+            }
+          ]
+        }]
       })
     });
     const data = await resp.json();
@@ -469,7 +517,7 @@ async function parseWithAI() {
     showPreview(entries);
   } catch(e) {
     st.className = 'status-box err';
-    st.textContent = '解析失敗，請改用「直接存入」或修正格式。';
+    st.textContent = '解析失敗：' + e.message;
   }
   btn.disabled = false;
 }
@@ -499,7 +547,10 @@ async function confirmSave() {
     await ghWrite(db);
     ss.className = 'status-box ok';
     ss.textContent = '✓ 已成功儲存到 GitHub！所有裝置都能看到了。';
-    document.getElementById('in-paste').value = '';
+    selectedImageBase64 = null;
+    document.getElementById('img-input').value = '';
+    document.getElementById('img-preview').style.display = 'none';
+    document.getElementById('upload-zone').style.borderColor = 'rgba(229,9,20,0.4)';
     document.getElementById('ai-status').style.display = 'none';
     pendingEntries = null;
     setSyncStatus('ok', '已同步');
