@@ -241,8 +241,8 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
   </div>
   <div class="card"><div class="card-title" id="title-ones">各週 #1 作品</div><div id="ones-list"><div class="empty">載入中...</div></div></div>
   <div class="grid2">
-    <div class="card"><div class="card-title">類別分佈</div><div class="chart-wrap"><canvas id="catChart" role="img" aria-label="類別分佈圓餅圖">類別統計</canvas></div></div>
-    <div class="card"><div class="card-title">英語 vs 非英語</div><div class="chart-wrap"><canvas id="langChart" role="img" aria-label="語言分佈圓餅圖">語言統計</canvas></div></div>
+    <div class="card"><div class="card-title">各國家上榜部數（不重複）</div><div id="country-titles"></div></div>
+    <div class="card"><div class="card-title">各國家上榜次數（含重複週次）</div><div id="country-weeks"></div></div>
   </div>
 </div>
 
@@ -344,7 +344,7 @@ const API_BASE     = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITH
 let db = [];
 let fileSha = null;
 let pendingEntries = null;
-let catChartInst = null, langChartInst = null;
+
 
 const catMap = {
   'Movies|English':'電影 · 英語',
@@ -707,43 +707,78 @@ function renderDashboard() {
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const ones = filtered.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
-  document.getElementById('ones-list').innerHTML = ones.length ? ones.slice(0,20).map(e => {
-    const [type, lang] = (e.cat || '').split('|');
+  // 每個週次每個類別取最高觀看的 #1，依週次新→舊排列
+  const onesMap = {};
+  ones.forEach(e => {
+    const key = e.week + '|' + e.cat;
+    if (!onesMap[key] || (e.views||0) > (onesMap[key].views||0)) onesMap[key] = e;
+  });
+  const onesSorted = Object.values(onesMap).sort((a,b) => (b.week||'').localeCompare(a.week||''));
+  document.getElementById('ones-list').innerHTML = onesSorted.length ? onesSorted.map(e => {
     const disp = e.titleZh || e.title;
-    const sub  = e.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + e.title + '</div>' : '';
+    const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
       '<div class="ones-title" style="flex:1;min-width:0">' +
-        '<div>' + flag + disp +
-          '<span class="badge ' + (type==='Movies'?'b-movie':'b-show') + '">' + (type==='Movies'?'電影':'影集') + '</span>' +
-          '<span class="badge ' + (lang==='English'?'b-en':'b-nonen') + '">' + (lang==='English'?'EN':'非EN') + '</span>' +
-        '</div>' + sub +
+        '<div style="font-size:15px;">' + flag + disp + '</div>' + sub +
       '</div>' +
       '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
-  const catCount = {};
-  (currentCat === 'all' ? db : filtered).forEach(e => { catCount[e.cat] = (catCount[e.cat]||0) + 1; });
-  if (catChartInst) catChartInst.destroy();
-  const catKeys = Object.keys(catCount);
-  if (catKeys.length) {
-    catChartInst = new Chart(document.getElementById('catChart'), {
-      type: 'doughnut',
-      data: { labels: catKeys.map(k => catMap[k]||k), datasets: [{ data: catKeys.map(k=>catCount[k]), backgroundColor: ['#E50914','#1E88E5','#43A047','#FB8C00'], borderWidth: 2, borderColor: '#1a1a1a' }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12 } } } }
+  // ── 各國家上榜部數（不重複：同國家同片名只算1部）──
+  const countryTitles = {}; // { 'TH': Set of titles }
+  filtered.forEach(e => {
+    if (!e.country) return;
+    e.country.split(',').forEach(code => {
+      code = code.trim();
+      if (!code) return;
+      if (!countryTitles[code]) countryTitles[code] = new Set();
+      countryTitles[code].add(e.title);
     });
-  }
+  });
+  const sortedTitles = Object.entries(countryTitles)
+    .map(([code, titles]) => ({ code, count: titles.size }))
+    .sort((a, b) => b.count - a.count);
+  const maxT = sortedTitles[0]?.count || 1;
+  document.getElementById('country-titles').innerHTML = sortedTitles.length ? sortedTitles.map((x, i) => {
+    const name = COUNTRY_MAP[x.code] || x.code;
+    const numCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    return '<div class="rank-row">' +
+      '<span class="rank-num ' + numCls + '">' + (i+1) + '</span>' +
+      '<div class="rank-info">' +
+        '<div class="rank-title-text">' + flagImg(x.code) + name + '</div>' +
+        '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(x.count/maxT*100) + '%"></div></div>' +
+      '</div>' +
+      '<span class="rank-val">' + x.count + ' 部</span>' +
+    '</div>';
+  }).join('') : '<div class="empty">尚無資料</div>';
 
-  const enCnt    = filtered.filter(e => e.cat && e.cat.includes('English') && !e.cat.includes('Non')).length;
-  const nonEnCnt = filtered.filter(e => e.cat && e.cat.includes('Non-English')).length;
-  if (langChartInst) langChartInst.destroy();
-  if (enCnt || nonEnCnt) {
-    langChartInst = new Chart(document.getElementById('langChart'), {
-      type: 'doughnut',
-      data: { labels: ['英語', '非英語'], datasets: [{ data: [enCnt, nonEnCnt], backgroundColor: ['#E50914','#1E88E5'], borderWidth: 2, borderColor: '#1a1a1a' }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12 } } } }
+  // ── 各國家上榜次數（含重複週次：同片上榜3週算3次）──
+  const countryWeeks = {}; // { 'TH': count }
+  filtered.forEach(e => {
+    if (!e.country) return;
+    e.country.split(',').forEach(code => {
+      code = code.trim();
+      if (!code) return;
+      countryWeeks[code] = (countryWeeks[code] || 0) + 1;
     });
-  }
+  });
+  const sortedWeeks = Object.entries(countryWeeks)
+    .map(([code, count]) => ({ code, count }))
+    .sort((a, b) => b.count - a.count);
+  const maxW2 = sortedWeeks[0]?.count || 1;
+  document.getElementById('country-weeks').innerHTML = sortedWeeks.length ? sortedWeeks.map((x, i) => {
+    const name = COUNTRY_MAP[x.code] || x.code;
+    const numCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    return '<div class="rank-row">' +
+      '<span class="rank-num ' + numCls + '">' + (i+1) + '</span>' +
+      '<div class="rank-info">' +
+        '<div class="rank-title-text">' + flagImg(x.code) + name + '</div>' +
+        '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(x.count/maxW2*100) + '%"></div></div>' +
+      '</div>' +
+      '<span class="rank-val">' + x.count + ' 次</span>' +
+    '</div>';
+  }).join('') : '<div class="empty">尚無資料</div>';
 }
 
 function renderRecords() {
