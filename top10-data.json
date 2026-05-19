@@ -498,5 +498,105 @@
     "titleEn": "It Takes a Village",
     "titleZh": "村民總動員",
     "country": "PL"
+  },
+  {
+    "rank": 1,
+    "title": "Humint",
+    "views": 11000000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Humint",
+    "titleZh": "諜報暗線",
+    "country": "KR"
+  },
+  {
+    "rank": 2,
+    "title": "Eat Pray Bark",
+    "views": 7000000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Eat Pray Bark",
+    "titleZh": "汪星人訓練營",
+    "country": "DE"
+  },
+  {
+    "rank": 3,
+    "title": "The Red Line",
+    "views": 6400000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Red Line",
+    "titleZh": "赤紅生死線",
+    "country": "TH"
+  },
+  {
+    "rank": 4,
+    "title": "Mardaani 3",
+    "views": 6300000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Mardaani 3",
+    "titleZh": "寶萊塢之爆裂女警官 3",
+    "country": "IN"
+  },
+  {
+    "rank": 5,
+    "title": "The Giant Falls",
+    "views": 4400000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Giant Falls",
+    "titleZh": "巨人的告別",
+    "country": "AR"
+  },
+  {
+    "rank": 6,
+    "title": "The Passion of the Christ",
+    "views": 3500000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Passion of the Christ",
+    "titleZh": "受難記：最後的激情",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "SUZUKI=BAKUDAN",
+    "views": 2800000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "SUZUKI=BAKUDAN",
+    "titleZh": "爆彈",
+    "country": "JP"
+  },
+  {
+    "rank": 8,
+    "title": "53 Sundays",
+    "views": 2700000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "53 Sundays",
+    "titleZh": "53 個週日",
+    "country": "ES"
+  },
+  {
+    "rank": 9,
+    "title": "It Takes a Village",
+    "views": 2400000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "It Takes a Village",
+    "titleZh": "村民總動員",
+    "country": "PL"
+  },
+  {
+    "rank": 10,
+    "title": "Dhurandhar",
+    "views": 1800000,
+    "week": "3/30/26 - 4/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar",
+    "titleZh": "黑境行者",
+    "country": "IN"
   }
 ]
