@@ -698,5 +698,105 @@
     "titleEn": "Sous écrous",
     "titleZh": "",
     "country": "FR"
+  },
+  {
+    "rank": 1,
+    "title": "Made in Korea",
+    "views": 6700000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Made in Korea",
+    "titleZh": "韓國製造的我",
+    "country": "IN"
+  },
+  {
+    "rank": 2,
+    "title": "Border 2",
+    "views": 3300000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Border 2",
+    "titleZh": "攻殼機動隊ARISE border: 2 Ghost Whispers",
+    "country": "JP"
+  },
+  {
+    "rank": 3,
+    "title": "Dhurandhar",
+    "views": 2300000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar",
+    "titleZh": "黑境行者",
+    "country": "IN"
+  },
+  {
+    "rank": 4,
+    "title": "Firebreak",
+    "views": 1200000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Firebreak",
+    "titleZh": "浴火之森",
+    "country": "ES"
+  },
+  {
+    "rank": 5,
+    "title": "The Secret Agent",
+    "views": 1000000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Secret Agent",
+    "titleZh": "這不只是個間諜故事",
+    "country": "BR"
+  },
+  {
+    "rank": 6,
+    "title": "Sosok Ketiga: Lintrik",
+    "views": 1000000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Sosok Ketiga: Lintrik",
+    "titleZh": "",
+    "country": "ID"
+  },
+  {
+    "rank": 7,
+    "title": "With Love",
+    "views": 900000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "With Love",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 8,
+    "title": "The Dreamseller",
+    "views": 900000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Dreamseller",
+    "titleZh": "售夢人",
+    "country": "BR"
+  },
+  {
+    "rank": 9,
+    "title": "The Pact",
+    "views": 900000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Pact",
+    "titleZh": "咒願",
+    "country": "KR"
+  },
+  {
+    "rank": 10,
+    "title": "Retirement Home",
+    "views": 800000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Retirement Home",
+    "titleZh": "抓狂養老院",
+    "country": "FR"
   }
 ]
