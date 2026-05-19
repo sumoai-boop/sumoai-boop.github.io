@@ -111,6 +111,7 @@ body{
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
   .del-btn:hover{color:#ff6b6b;}
 
+
 .global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
 .global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
 .global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
@@ -495,9 +496,7 @@ function showToast(msg,isErr){
   t.textContent=msg;t.style.background=isErr?'rgba(180,30,30,0.95)':'rgba(30,80,50,0.95)';t.style.color='#fff';t.style.opacity='1';
   clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
 }
-function getToken(){
-  return GH_TOKEN;
-}
+function getToken(){ return getGHToken()||''; }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 // 頁面載入時從 GitHub 讀取最新資料
@@ -507,7 +506,7 @@ function loadFromGitHub(){
   fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(), {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
     .then(r=>{
       if(!r.ok){
-        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效，請重新輸入');}
+        if(r.status===401){localStorage.removeItem('sumoai_gh_token');showToast('❌ Token 無效，請重新整理',true);}
         return null;
       }
       return r.json();
@@ -540,21 +539,27 @@ async function pushToGitHub(){
     var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 連線 GitHub...',false);
     // 用快取的 SHA，避免連續推送衝突
-    var sha=localStorage.getItem('gh_json_sha');
+    var sha=localStorage.getItem('gh_json_sha')||null;
     if(!sha){
       var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-      if(!r.ok){
-        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
+      if(r.status===404){
+        sha=null;
+      } else if(!r.ok){
+        if(r.status===401){localStorage.removeItem('sumoai_gh_token');showToast('❌ Token 無效',true);}
         else showToast('❌ 連線失敗('+r.status+')',true);
         return;
+      } else {
+        var fi=await r.json();
+        sha=fi.sha||null;
+        if(sha) localStorage.setItem('gh_json_sha',sha);
       }
-      var fi=await r.json();
-      sha=fi.sha;
     }
     var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
     showToast('⏳ 推送中...',false);
-    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
+    var putBody={message:'更新Uber記錄',content:encoded,branch:GH_BRANCH};
+    if(sha) putBody.sha=sha;
+    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(putBody)});
     if(!pr.ok){
       var e2=await pr.json();
       localStorage.removeItem('gh_json_sha'); // 清除快取，下次重抓
@@ -1165,6 +1170,8 @@ renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart
   dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
 })();
 </script>
+
+
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
