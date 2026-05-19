@@ -713,7 +713,14 @@ function renderDashboard() {
     const key = e.week + '|' + e.cat;
     if (!onesMap[key] || (e.views||0) > (onesMap[key].views||0)) onesMap[key] = e;
   });
-  const onesSorted = Object.values(onesMap).sort((a,b) => (b.week||'').localeCompare(a.week||''));
+  function parseWeek(w) {
+    // 格式：'5/4/26 - 5/10/26'，取前半段解析
+    if (!w) return 0;
+    const part = w.split(' - ')[0].trim();
+    const [m, d, y] = part.split('/').map(Number);
+    return new Date(2000 + y, m - 1, d).getTime();
+  }
+  const onesSorted = Object.values(onesMap).sort((a,b) => parseWeek(b.week) - parseWeek(a.week));
   document.getElementById('ones-list').innerHTML = onesSorted.length ? onesSorted.map(e => {
     const disp = e.titleZh || e.title;
     const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
