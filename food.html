@@ -270,15 +270,15 @@
 .gd-item:hover .gd-label{opacity:1;}
 .gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
 .gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about{background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-.ic-photos{background:linear-gradient(145deg,#FF6B9D,#C8365A);}
-.ic-dramas{background:linear-gradient(145deg,#2D1B69,#7C3AED);}
-.ic-food{background:linear-gradient(145deg,#0EA5E9,#0369A1);}
-.ic-travel{background:linear-gradient(145deg,#FF6B35,#D93A00);}
-.ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
-.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
-.ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
+
+
+
+
+
+
+
+
+
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 </style>
 </head>
@@ -566,7 +566,7 @@ function loadFromGitHub(){
   fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
     .then(r=>{
       if(!r.ok){
-        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效，使用本機資料',true);}
+        if(r.status===401){localStorage.removeItem(SUMOAI_TOKEN_KEY);showToast('❌ Token 無效，請重新整理',true);}
         else if(r.status===404){showToast('（尚無雲端資料）',false);}
         else showToast('❌ 載入失敗('+r.status+')，使用本機資料',true);
         return null;
@@ -585,6 +585,7 @@ function loadFromGitHub(){
         }
       }catch(e){console.warn('解析失敗:',e);}
     }).catch(e=>{console.warn('載入失敗:',e);showToast('❌ 網路錯誤，使用本機資料',true);});
+  }); // end requireToken
 }
 
 function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){return [];} }
@@ -1251,6 +1252,13 @@ function updateTime(){
 updateTime();
 setInterval(updateTime, 10000);</script>
 
+
+
+<script>
+// Dock
+</script>
+
+<div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
     <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
@@ -1265,7 +1273,6 @@ setInterval(updateTime, 10000);</script>
     <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#E50914;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
   </div>
 </div>
-
 <script>
 // Dock
 (function(){
