@@ -198,5 +198,105 @@
     "titleEn": "Janur Ireng",
     "titleZh": "",
     "country": "ID"
+  },
+  {
+    "rank": 1,
+    "title": "Love at Last",
+    "views": 2600000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Love at Last",
+    "titleZh": "",
+    "country": "TR"
+  },
+  {
+    "rank": 2,
+    "title": "Do Deewane Seher Mein",
+    "views": 2500000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Do Deewane Seher Mein",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 3,
+    "title": "Toaster",
+    "views": 2300000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Toaster",
+    "titleZh": "吐司機大危機",
+    "country": "IN"
+  },
+  {
+    "rank": 4,
+    "title": "Youth",
+    "views": 2300000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Youth",
+    "titleZh": "年輕氣盛",
+    "country": "IT,FR"
+  },
+  {
+    "rank": 5,
+    "title": "Ustaad Bhagat Singh",
+    "views": 1900000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Ustaad Bhagat Singh",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 6,
+    "title": "On Your Lap",
+    "views": 1300000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "On Your Lap",
+    "titleZh": "柔情咖啡屋",
+    "country": "ID,SA"
+  },
+  {
+    "rank": 7,
+    "title": "Yiya Murano: Death at Tea Time",
+    "views": 1300000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Yiya Murano: Death at Tea Time",
+    "titleZh": "",
+    "country": "AR"
+  },
+  {
+    "rank": 8,
+    "title": "Feel My Voice",
+    "views": 1200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Feel My Voice",
+    "titleZh": "心之高歌",
+    "country": "IT"
+  },
+  {
+    "rank": 9,
+    "title": "Humint",
+    "views": 1200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Humint",
+    "titleZh": "諜報暗線",
+    "country": "KR"
+  },
+  {
+    "rank": 10,
+    "title": "Untouchables",
+    "views": 1200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Untouchables",
+    "titleZh": "",
+    "country": "TR"
   }
 ]
