@@ -67,6 +67,9 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .ones-title{flex:1;color:var(--text)}
 .ones-views{color:var(--muted);font-size:12px;white-space:nowrap}
 .chart-wrap{position:relative;width:100%;height:240px;margin-top:8px}
+.cat-btn{padding:7px 16px;border-radius:var(--border-radius-md,6px);font-size:12px;cursor:pointer;border:1px solid rgba(229,9,20,0.3);background:transparent;color:var(--muted);font-family:inherit;transition:all .2s;}
+.cat-btn:hover{border-color:var(--red);color:var(--text);}
+.cat-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
 
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-group{display:flex;flex-direction:column;gap:6px}
@@ -224,11 +227,19 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
     <div class="metric"><div class="val">—</div><div class="lbl">累計觀看次數</div></div>
     <div class="metric"><div class="val">—</div><div class="lbl">冠軍記錄筆數</div></div>
   </div>
-  <div class="grid2">
-    <div class="card"><div class="card-title">上榜週數最多</div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
-    <div class="card"><div class="card-title">累計觀看最高</div><div id="rank-views"><div class="empty">載入中...</div></div></div>
+  <!-- 分類切換 -->
+  <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
+    <button class="cat-btn active" data-cat="all" onclick="switchCat(this)">全部</button>
+    <button class="cat-btn" data-cat="Movies|English" onclick="switchCat(this)">🎬 電影</button>
+    <button class="cat-btn" data-cat="Movies|Non-English" onclick="switchCat(this)">🌍 非英語電影</button>
+    <button class="cat-btn" data-cat="Shows|English" onclick="switchCat(this)">📺 影集</button>
+    <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchCat(this)">🌏 非英語影集</button>
   </div>
-  <div class="card"><div class="card-title">各週 #1 作品</div><div id="ones-list"><div class="empty">載入中...</div></div></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title" id="title-weeks">上榜週數最多</div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
+    <div class="card"><div class="card-title" id="title-views">累計觀看最高</div><div id="rank-views"><div class="empty">載入中...</div></div></div>
+  </div>
+  <div class="card"><div class="card-title" id="title-ones">各週 #1 作品</div><div id="ones-list"><div class="empty">載入中...</div></div></div>
   <div class="grid2">
     <div class="card"><div class="card-title">類別分佈</div><div class="chart-wrap"><canvas id="catChart" role="img" aria-label="類別分佈圓餅圖">類別統計</canvas></div></div>
     <div class="card"><div class="card-title">英語 vs 非英語</div><div class="chart-wrap"><canvas id="langChart" role="img" aria-label="語言分佈圓餅圖">語言統計</canvas></div></div>
@@ -595,10 +606,24 @@ function cancelPreview() {
   pendingEntries = null;
 }
 
+let currentCat = 'all';
+
+function switchCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = btn.dataset.cat;
+  renderDashboard();
+}
+
 function renderDashboard() {
-  const weeks = [...new Set(db.map(e => e.week))];
+  const filtered = currentCat === 'all' ? db : db.filter(e => e.cat === currentCat);
+  const catLabel = {
+    'all':'全部','Movies|English':'電影','Movies|Non-English':'非英語電影',
+    'Shows|English':'影集','Shows|Non-English':'非英語影集'
+  }[currentCat] || currentCat;
+  const weeks = [...new Set(filtered.map(e => e.week))];
   const titleMap = {};
-  db.forEach(e => {
+  filtered.forEach(e => {
     if (!titleMap[e.title]) titleMap[e.title] = { weeks: 0, views: 0, ones: 0, titleZh: e.titleZh||'', country: e.country||'' };
     titleMap[e.title].weeks++;
     titleMap[e.title].views += e.views || 0;
@@ -606,12 +631,12 @@ function renderDashboard() {
     if (!titleMap[e.title].titleZh && e.titleZh) titleMap[e.title].titleZh = e.titleZh;
     if (!titleMap[e.title].country && e.country) titleMap[e.title].country = e.country;
   });
-  const totalViews = db.reduce((s, e) => s + (e.views || 0), 0);
+  const totalViews = filtered.reduce((s, e) => s + (e.views || 0), 0);
   document.getElementById('metrics-row').innerHTML =
     '<div class="metric"><div class="val">' + weeks.length + '</div><div class="lbl">已記錄週數</div></div>' +
     '<div class="metric"><div class="val">' + Object.keys(titleMap).length + '</div><div class="lbl">不重複作品</div></div>' +
     '<div class="metric"><div class="val">' + fmtViews(totalViews) + '</div><div class="lbl">累計觀看次數</div></div>' +
-    '<div class="metric"><div class="val">' + db.filter(e => e.rank === 1).length + '</div><div class="lbl">冠軍記錄筆數</div></div>';
+    '<div class="metric"><div class="val">' + filtered.filter(e => e.rank === 1).length + '</div><div class="lbl">冠軍記錄筆數</div></div>';
 
   function numClass(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; }
 
@@ -633,7 +658,7 @@ function renderDashboard() {
     return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
-  const ones = db.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
+  const ones = filtered.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
   document.getElementById('ones-list').innerHTML = ones.length ? ones.slice(0,20).map(e => {
     const [type, lang] = (e.cat || '').split('|');
     const disp = e.titleZh || e.title;
@@ -650,7 +675,7 @@ function renderDashboard() {
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const catCount = {};
-  db.forEach(e => { catCount[e.cat] = (catCount[e.cat]||0) + 1; });
+  (currentCat === 'all' ? db : filtered).forEach(e => { catCount[e.cat] = (catCount[e.cat]||0) + 1; });
   if (catChartInst) catChartInst.destroy();
   const catKeys = Object.keys(catCount);
   if (catKeys.length) {
@@ -661,8 +686,8 @@ function renderDashboard() {
     });
   }
 
-  const enCnt    = db.filter(e => e.cat && e.cat.includes('English') && !e.cat.includes('Non')).length;
-  const nonEnCnt = db.filter(e => e.cat && e.cat.includes('Non-English')).length;
+  const enCnt    = filtered.filter(e => e.cat && e.cat.includes('English') && !e.cat.includes('Non')).length;
+  const nonEnCnt = filtered.filter(e => e.cat && e.cat.includes('Non-English')).length;
   if (langChartInst) langChartInst.destroy();
   if (enCnt || nonEnCnt) {
     langChartInst = new Chart(document.getElementById('langChart'), {
