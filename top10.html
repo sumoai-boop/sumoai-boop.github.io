@@ -502,20 +502,28 @@ const COUNTRY_MAP = {
 async function fetchTMDBInfo(title, cat) {
   const isMovie = cat && cat.includes('Movies');
   const type = isMovie ? 'movie' : 'tv';
-  const url = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=zh-TW&page=1`;
+  const searchUrl = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=zh-TW&page=1`;
   try {
-    const r = await fetch(url);
+    // Step 1: 搜尋取得 id 和中文片名
+    const r = await fetch(searchUrl);
     const d = await r.json();
     const result = d.results && d.results[0];
     if (!result) return { titleZh: '', country: '' };
     const zhTitle = isMovie ? result.title : result.name;
     const origTitle = isMovie ? result.original_title : result.original_name;
     const finalZh = (zhTitle && zhTitle !== origTitle && zhTitle !== title) ? zhTitle : '';
-    // 取國家
+
+    // Step 2: 用 id 取詳細資料（含製作國家）
     let country = '';
-    const countries = result.origin_country || (result.production_countries && result.production_countries.map(c => c.iso_3166_1)) || [];
-    if (countries.length > 0) {
-      country = countries.slice(0,2).map(code => COUNTRY_MAP[code] || code).join('、');
+    const detailUrl = `https://api.themoviedb.org/3/${type}/${result.id}?api_key=${TMDB_API_KEY}&language=zh-TW`;
+    const dr = await fetch(detailUrl);
+    const dd = await dr.json();
+    // 電影用 production_countries，影集用 origin_country
+    const codes = isMovie
+      ? (dd.production_countries || []).map(c => c.iso_3166_1)
+      : (dd.origin_country || []);
+    if (codes.length > 0) {
+      country = codes.slice(0, 2).map(code => COUNTRY_MAP[code] || code).join('、');
     }
     return { titleZh: finalZh, country };
   } catch(e) { return { titleZh: '', country: '' }; }
