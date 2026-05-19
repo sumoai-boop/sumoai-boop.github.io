@@ -798,5 +798,105 @@
     "titleEn": "Retirement Home",
     "titleZh": "抓狂養老院",
     "country": "FR"
+  },
+  {
+    "rank": 1,
+    "title": "Made in Korea",
+    "views": 4100000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Made in Korea",
+    "titleZh": "韓國製造的我",
+    "country": "IN"
+  },
+  {
+    "rank": 2,
+    "title": "The Secret Agent",
+    "views": 2800000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Secret Agent",
+    "titleZh": "這不只是個間諜故事",
+    "country": "BR"
+  },
+  {
+    "rank": 3,
+    "title": "Street Flow 3",
+    "views": 2700000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Street Flow 3",
+    "titleZh": "巴黎男孩 3",
+    "country": "FR"
+  },
+  {
+    "rank": 4,
+    "title": "With Love",
+    "views": 1800000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "With Love",
+    "titleZh": "",
+    "country": "ID"
+  },
+  {
+    "rank": 5,
+    "title": "Firebreak",
+    "views": 1700000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Firebreak",
+    "titleZh": "浴火之森",
+    "country": "ES"
+  },
+  {
+    "rank": 6,
+    "title": "Accused",
+    "views": 1500000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Accused",
+    "titleZh": "指控之後",
+    "country": "IN"
+  },
+  {
+    "rank": 7,
+    "title": "Dhurandhar",
+    "views": 1000000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar",
+    "titleZh": "黑境行者",
+    "country": "IN"
+  },
+  {
+    "rank": 8,
+    "title": "The Orphans",
+    "views": 900000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Orphans",
+    "titleZh": "",
+    "country": "FR"
+  },
+  {
+    "rank": 9,
+    "title": "Banduan",
+    "views": 900000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Banduan",
+    "titleZh": "",
+    "country": "MY"
+  },
+  {
+    "rank": 10,
+    "title": "Strangers in the Park",
+    "views": 800000,
+    "week": "3/9/26 - 3/15/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Strangers in the Park",
+    "titleZh": "親陌公園",
+    "country": "AR"
   }
 ]
