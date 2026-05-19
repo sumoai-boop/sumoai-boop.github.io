@@ -165,10 +165,10 @@ blockquote.text-post-media{
 .ic-dramas{background:linear-gradient(145deg,#2D1B69,#7C3AED);}
 .ic-food{background:linear-gradient(145deg,#0EA5E9,#0369A1);}
 .ic-travel{background:linear-gradient(145deg,#FF6B35,#D93A00);}
-.ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
+.ic-threads{background:linear-gradient(145deg,#3F3F46,#71717A);}
 .ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
-.ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
+.ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
+.ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 </style>
   /* ── 全域 Menubar ── */
@@ -250,49 +250,9 @@ blockquote.text-post-media{
   </div>
 </div>
 <!-- 底部觸發區 -->
-<div class="dock-trigger-zone" id="dockTrigger"></div>
 
 <!-- 全域 Dock -->
-<div class="global-dock-wrap" id="globalDock">
-  <div class="global-dock">
-    <a href="about.html" class="gd-item">
-      <div class="gd-icon ic-about">👤</div>
-      <span class="gd-label">關於</span>
-      
-    </a>
-    <a href="photos.html" class="gd-item">
-      <div class="gd-icon ic-photos">📷</div>
-      <span class="gd-label">照片</span>
-      
-    </a>
-    <a href="dramas.html" class="gd-item">
-      <div class="gd-icon ic-dramas">🎬</div>
-      <span class="gd-label">追劇</span>
-      
-    </a>
-    <a href="food.html" class="gd-item">
-      <div class="gd-icon ic-food">🍜</div>
-      <span class="gd-label">食記</span>
-      
-    </a>
-    <div class="gd-sep"></div>
-    <a href="travel.html" class="gd-item">
-      <div class="gd-icon ic-travel">✈️</div>
-      <span class="gd-label">旅遊足跡</span>
-      
-    </a>
-    <a href="threads.html" class="gd-item">
-      <div class="gd-icon ic-threads">🧵</div>
-      <span class="gd-label">Threads</span>
-      <div class="gd-dot"></div>
-    </a>
-    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber">🚗</div><span class="gd-label">Uber</span></a>
-    <a href="top10.html" class="gd-item">
-      <div class="gd-icon ic-netflix" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#E50914;letter-spacing:1px;">TOP</div>
-      <span class="gd-label">Netflix Top10</span>
-    </a>
-  </div>
-</div>
+
 
 <script>
 // 時鐘
@@ -313,6 +273,10 @@ blockquote.text-post-media{
 
 </script>
 
+
+
+
+
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
@@ -328,9 +292,7 @@ blockquote.text-post-media{
     <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#E50914;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
   </div>
 </div>
-
 <script>
-// Dock
 (function(){
   var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
   if(!dock||!trigger)return;
