@@ -556,11 +556,11 @@ async function parseJSON() {
 function showPreview(entries) {
   document.getElementById('preview-list').innerHTML = entries.map(e => {
     const main = e.titleZh || e.title;
-    const sub  = e.titleZh ? '<div style="font-size:10px;color:var(--muted);margin-top:1px;">' + e.title + '</div>' : '';
-    const flag = e.country ? '<span style="font-size:10px;color:var(--muted);margin-left:6px;">' + e.country + '</span>' : '';
+    const sub  = e.titleZh ? '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:1px;">' + e.title + '</div>' : '';
+    const flag = e.country ? '<span style="margin-right:6px;">' + e.country.split(' ')[0] + '</span>' : '';
     return '<div class="preview-item"><span class="preview-num">' + e.rank + '</span>' +
       '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + main + flag + '</div>' + sub +
+        '<div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + flag + main + '</div>' + sub +
       '</div>' +
       '<span style="color:var(--muted);font-size:12px;white-space:nowrap;margin-left:8px">' + fmtViews(e.views) + '</span></div>';
   }).join('');
@@ -644,29 +644,29 @@ function renderDashboard() {
   const maxW  = sortW[0]?.[1]?.weeks || 1;
   document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) => {
     const disp = v.titleZh || t;
-    const sub  = v.titleZh ? '<div style="font-size:14px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
-    const flag = v.country ? '<span style="font-size:9px;color:var(--muted);margin-left:4px;">' + v.country + '</span>' : '';
-    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>';
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + t + '</div>' : '';
+    const flag = v.country ? '<span style="margin-right:6px;">' + v.country.split(' ')[0] + '</span>' : '';
+    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const sortV = Object.entries(titleMap).sort((a,b) => b[1].views - a[1].views).slice(0,10);
   const maxV  = sortV[0]?.[1]?.views || 1;
   document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) => {
     const disp = v.titleZh || t;
-    const sub  = v.titleZh ? '<div style="font-size:14px;color:var(--muted2);margin-top:1px;">' + t + '</div>' : '';
-    const flag = v.country ? '<span style="font-size:9px;color:var(--muted);margin-left:4px;">' + v.country + '</span>' : '';
-    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + disp + flag + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + t + '</div>' : '';
+    const flag = v.country ? '<span style="margin-right:6px;">' + v.country.split(' ')[0] + '</span>' : '';
+    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const ones = filtered.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
   document.getElementById('ones-list').innerHTML = ones.length ? ones.slice(0,20).map(e => {
     const [type, lang] = (e.cat || '').split('|');
     const disp = e.titleZh || e.title;
-    const sub  = e.titleZh ? '<div style="font-size:10px;color:var(--muted);margin-top:1px;">' + e.title + '</div>' : '';
-    const flag = e.country ? '<span style="font-size:10px;color:var(--muted);margin-left:4px;">' + e.country + '</span>' : '';
+    const sub  = e.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + e.title + '</div>' : '';
+    const flag = e.country ? '<span style="margin-right:6px;">' + e.country.split(' ')[0] + '</span>' : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
       '<div class="ones-title" style="flex:1;min-width:0">' +
-        '<div>' + disp + flag +
+        '<div>' + flag + disp +
           '<span class="badge ' + (type==='Movies'?'b-movie':'b-show') + '">' + (type==='Movies'?'電影':'影集') + '</span>' +
           '<span class="badge ' + (lang==='English'?'b-en':'b-nonen') + '">' + (lang==='English'?'EN':'非EN') + '</span>' +
         '</div>' + sub +
