@@ -5307,7 +5307,7 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US,IS"
+    "country": "US"
   },
   {
     "rank": 2,
@@ -5407,7 +5407,7 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US,IS"
+    "country": "US"
   },
   {
     "rank": 2,
@@ -5517,7 +5517,7 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US,IS"
+    "country": "US"
   },
   {
     "rank": 3,
@@ -5597,6 +5597,106 @@
     "cat": "Movies|English",
     "titleEn": "Home",
     "titleZh": "好家在一起",
+    "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Swapped",
+    "views": 26400000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "Remarkably Bright Creatures",
+    "views": 20300000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Remarkably Bright Creatures",
+    "titleZh": "明亮燦爛的你",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "The Crash",
+    "views": 11700000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "The Crash",
+    "titleZh": "致命撞擊：青春情殺案",
+    "country": "GB"
+  },
+  {
+    "rank": 4,
+    "title": "Apex",
+    "views": 10600000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Apex",
+    "titleZh": "巔峰獵殺",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "Goat",
+    "views": 9200000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Goat",
+    "titleZh": "山羊巔峰",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "KPop Demon Hunters",
+    "views": 3800000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "Mother's Day",
+    "views": 3300000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Mother's Day",
+    "titleZh": "幸福百分百",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Stolen Baby: The Murder of Heidi Broussard",
+    "views": 2900000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Stolen Baby: The Murder of Heidi Broussard",
+    "titleZh": "",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Mechanic: Resurrection",
+    "views": 2800000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "Mechanic: Resurrection",
+    "titleZh": "極速秒殺2",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "I Am Legend",
+    "views": 2800000,
+    "week": "5/11/26 - 5/17/26",
+    "cat": "Movies|English",
+    "titleEn": "I Am Legend",
+    "titleZh": "我是傳奇",
     "country": "US"
   }
 ]
