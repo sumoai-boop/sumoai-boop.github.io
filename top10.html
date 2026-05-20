@@ -589,9 +589,13 @@ async function fetchTMDBInfo(title, cat) {
   const isMovie = cat && cat.includes('Movies');
   const isNonEn = cat && cat.includes('Non-English');
   const type = isMovie ? 'movie' : 'tv';
-  // 非英語內容：用原始語言搜尋效果更好
-  const lang = isNonEn ? 'zh-TW' : 'zh-TW';
-  const searchUrl = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=${lang}&page=1`;
+  // 影集：去除 ': Season X'、': Limited Series'、': Part X' 等後綴再搜尋
+  let searchTitle = title;
+  if (!isMovie) {
+    searchTitle = title.replace(/:\s*(Season\s*\d+|Limited Series|Part\s*\d+|Volume\s*\d+|Chapter\s*\d+|Series\s*\d+)\s*$/i, '').trim();
+  }
+  const lang = 'zh-TW';
+  const searchUrl = `https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTitle)}&language=${lang}&page=1`;
   try {
     // Step 1: 搜尋取得 id 和中文片名
     const r = await fetch(searchUrl);
