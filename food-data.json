@@ -6,7 +6,7 @@
     "name2": "信義遠百店",
     "type": "涮涮鍋",
     "price": 1793,
-    "visits": 0,
+    "visits": 2,
     "gscore": 4.2,
     "addr": "110臺北市信義區西村里松仁路58號7樓",
     "note": "公主",
@@ -17,7 +17,8 @@
       "https://i.ibb.co/9HHP6X7j/de2c2ec017d8.jpg"
     ],
     "img": "https://i.ibb.co/9HHP6X7j/de2c2ec017d8.jpg",
-    "createdAt": 1779279654730
+    "createdAt": 1779279654730,
+    "updatedAt": 1779279762937
   },
   {
     "id": "1779098060207",
