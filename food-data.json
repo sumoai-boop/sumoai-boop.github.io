@@ -5,7 +5,7 @@
     "name1": "明水然無菜單鐵板燒",
     "name2": "慶城店",
     "type": "鐵板燒",
-    "price": 2751,
+    "price": 3751,
     "visits": 1,
     "gscore": 4.5,
     "addr": "105臺北市松山區中正里慶城街18之1號2樓",
@@ -16,7 +16,7 @@
     "visitLog": [
       {
         "date": "2025-11-04",
-        "price": 2751
+        "price": 3751
       }
     ],
     "imgs": [
@@ -26,7 +26,8 @@
       "https://i.ibb.co/9dqM9wh/279a4a335e88.jpg"
     ],
     "img": "https://i.ibb.co/LdVZTkCR/499c69aaa457.jpg",
-    "createdAt": 1779281849102
+    "createdAt": 1779281849102,
+    "updatedAt": 1779281917831
   },
   {
     "id": "1779281483314",
