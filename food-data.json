@@ -57,13 +57,17 @@
     ],
     "img": "https://i.ibb.co/fzzcrdwG/becc124e36e1.jpg",
     "createdAt": 1779083250434,
-    "visits": 1,
+    "visits": 2,
     "gscore": 4.6,
-    "updatedAt": 1779280201567,
+    "updatedAt": 1779280406425,
     "visitLog": [
       {
         "date": "2026-04-26",
         "price": 1296
+      },
+      {
+        "date": "2025-12-21",
+        "price": 2420
       }
     ]
   },
