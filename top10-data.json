@@ -4398,5 +4398,105 @@
     "titleEn": "Norbit",
     "titleZh": "糯米正傳",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Joe's College Road Trip",
+    "views": 10400000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Joe's College Road Trip",
+    "titleZh": "祖孫大學公路遊",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "Prometheus",
+    "views": 6600000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Prometheus",
+    "titleZh": "普羅米修斯",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "KPop Demon Hunters",
+    "views": 6000000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "The Addams Family",
+    "views": 5300000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "The Addams Family",
+    "titleZh": "阿達一族",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "The Addams Family 2",
+    "views": 5200000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "The Addams Family 2",
+    "titleZh": "阿達一族2",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "Fall",
+    "views": 3600000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Fall",
+    "titleZh": "墜",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "The Rip",
+    "views": 3600000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "The Rip",
+    "titleZh": "全信沒收",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "The Expendables 4",
+    "views": 2900000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "The Expendables 4",
+    "titleZh": "浴血任務4",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Wrath of the Titans",
+    "views": 2800000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Wrath of the Titans",
+    "titleZh": "怒戰天神",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Rumble",
+    "views": 2800000,
+    "week": "2/16/26 - 2/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Rumble",
+    "titleZh": "打怪大亂鬥",
+    "country": "US"
   }
 ]
