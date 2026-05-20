@@ -403,6 +403,8 @@
         <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:5px;">備註</div>
         <div id="dNoteText" style="font-size:14px;color:#f0e6d6;line-height:1.7;white-space:pre-wrap;"></div>
       </div>
+      <!-- 用餐記錄 -->
+      <div id="dVisitLog" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;"></div>
       <div class="modal-actions">
         <button class="modal-btn modal-btn-edit" id="dEdit">✏️ 編輯</button>
         <button class="modal-btn modal-btn-del" id="dDel">🗑 刪除</button>
@@ -457,19 +459,8 @@
         </div>
         <!-- 用餐日期 -->
         <div class="field-group">
-          <label class="field-label">用餐日期</label>
-          <input class="field-input" id="fDate" type="date">
-        </div>
-        <!-- 平均消費 -->
-        <div class="field-group">
-          <label class="field-label">平均消費（元）</label>
-          <input class="field-input" id="fPrice" type="number" min="0" placeholder="例：350" autocomplete="off">
-        </div>
-        <!-- 回訪次數 -->
-        <div class="field-group">
-          <label class="field-label">回訪次數</label>
-          <input class="field-input" id="fVisits" type="number" min="0" placeholder="例：3" autocomplete="off">
-        </div>
+        <!-- 用餐日期（移到visits列表） -->
+        <!-- 回訪次數（自動計算） -->
         <!-- 我的評分 -->
         <div class="field-group">
           <label class="field-label">我的評分 <span style="opacity:0.4;font-size:9px;">可小數</span></label>
@@ -484,6 +475,15 @@
           <label class="field-label">Google 評分</label>
           <input class="field-input" id="fGscore" type="number" min="0" max="5" step="0.1" placeholder="例：4.2" autocomplete="off">
         </div>
+      </div>
+
+      <!-- 用餐記錄（多筆，全寬） -->
+      <div class="field-group">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label class="field-label">用餐記錄 <span style="opacity:0.4;font-size:9px;">可新增多次</span></label>
+          <button type="button" id="addVisitBtn" style="background:rgba(232,98,42,0.15);border:1px solid rgba(232,98,42,0.35);color:#E8622A;border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;">＋ 新增</button>
+        </div>
+        <div id="visitsList" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
 
       <!-- 地址（全寬） -->
@@ -929,22 +929,61 @@ function resetFormPhotos(imgs){
 }
 
 /* ───── 表單 Modal ───── */
+/* ───── 用餐記錄列表 ───── */
+function renderVisitsList(visits){
+  const list=document.getElementById('visitsList');
+  list.innerHTML='';
+  (visits||[]).forEach((v,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;';
+    row.innerHTML=`
+      <input class="field-input visit-date" type="date" value="${v.date||''}" style="font-size:12px;padding:8px 10px;">
+      <input class="field-input visit-price" type="number" min="0" placeholder="金額（元）" value="${v.price||''}" autocomplete="off" style="font-size:12px;padding:8px 10px;">
+      <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').remove()">✕</button>`;
+    list.appendChild(row);
+  });
+}
+function getVisitsFromForm(){
+  const rows=document.querySelectorAll('#visitsList > div');
+  const result=[];
+  rows.forEach(row=>{
+    const date=row.querySelector('.visit-date')?.value||'';
+    const price=parseInt(row.querySelector('.visit-price')?.value)||0;
+    if(date) result.push({date,price});
+  });
+  return result.length ? result : [{date:new Date().toISOString().slice(0,10),price:0}];
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('addVisitBtn').addEventListener('click',()=>{
+    const list=document.getElementById('visitsList');
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;';
+    row.innerHTML=`
+      <input class="field-input visit-date" type="date" value="${new Date().toISOString().slice(0,10)}" style="font-size:12px;padding:8px 10px;">
+      <input class="field-input visit-price" type="number" min="0" placeholder="金額（元）" autocomplete="off" style="font-size:12px;padding:8px 10px;">
+      <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').remove()">✕</button>`;
+    list.appendChild(row);
+    row.querySelector('.visit-date').focus();
+  });
+});
+
 function openForm(item=null){
   editMode=!!item; currentId=item?item.id:null;
   document.getElementById('formTitle').textContent=item?'編輯食記':'新增食記';
   document.getElementById('fName1').value=item?(item.name1||item.name||''):'';
   document.getElementById('fName2').value=item?(item.name2||''):'';
   document.getElementById('fType').value=item?(item.type||''):'';
-  document.getElementById('fVisits').value=item&&item.visits?item.visits:'';
   document.getElementById('fGscore').value=item&&item.gscore?item.gscore:'';
-  document.getElementById('fDate').value=item&&item.date?item.date:new Date().toISOString().slice(0,10);
-  document.getElementById('fPrice').value=item&&item.price?item.price:'';
   document.getElementById('fAddr').value=item?(item.addr||''):'';
   document.getElementById('fNote').value=item?(item.note||''):'';
   document.getElementById('fMaps').value=item?(item.maps||''):'';
   starVal=item?(item.score||0):0;
   buildStarPick(); highlightStars(starVal);
   document.getElementById('fScoreInput').value=starVal?starVal.toFixed(1):'';
+  // 用餐記錄
+  const visits = item&&item.visitLog ? item.visitLog
+    : (item&&item.date ? [{date:item.date, price:item.price||0}] : [{date:new Date().toISOString().slice(0,10), price:''}]);
+  renderVisitsList(visits);
   // 照片
   const existImgs = item ? (item.imgs || (item.img ? [item.img] : [])) : [];
   resetFormPhotos(existImgs);
@@ -963,16 +1002,20 @@ document.getElementById('formMask').addEventListener('click',e=>{if(e.target===d
 document.getElementById('formSave').addEventListener('click',async()=>{
   const name1=document.getElementById('fName1').value.trim();
   const name2=document.getElementById('fName2').value.trim();
-  const name=name1+(name2?' '+name2:''); // 合併用於搜尋/統計
+  const name=name1+(name2?' '+name2:'');
   if(!name1){alert('請輸入餐廳名稱');return;}
-  const price=parseInt(document.getElementById('fPrice').value)||0;
-  const visits=parseInt(document.getElementById('fVisits').value)||0;
   const gscore=parseFloat(document.getElementById('fGscore').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
   const type=document.getElementById('fType').value.trim();
   const note=document.getElementById('fNote').value.trim();
   const maps=document.getElementById('fMaps').value.trim();
-  const date=document.getElementById('fDate').value;
+  // 讀取多筆用餐記錄
+  const visitLog=getVisitsFromForm();
+  // 排序取最新日期和最新金額
+  const sortedLog=[...visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const date=sortedLog[0]?.date||new Date().toISOString().slice(0,10);
+  const price=sortedLog[0]?.price||0;
+  const visits=visitLog.length;
   let sv=parseFloat(document.getElementById('fScoreInput').value)||0;
   sv=Math.round(sv*10)/10;
   starVal=sv;
@@ -1008,9 +1051,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,createdAt:Date.now()});
   }
   if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
@@ -1048,8 +1091,23 @@ function openDetail(item){
   document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
   document.getElementById('dDateText').textContent=item.date||'未填寫日期';
   document.getElementById('dPrice').textContent=item.price?'NT$'+item.price.toLocaleString():'—';
-  document.getElementById('dVisits').textContent=item.visits?'🔁 回訪 '+item.visits+' 次':'';
+  document.getElementById('dVisits').textContent=item.visits>1?`🔁 共 ${item.visits} 次`:(item.visits===1?'':item.visits?`🔁 共 ${item.visits} 次`:'');
   document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
+  // 用餐記錄列表
+  const dVisitLog=document.getElementById('dVisitLog');
+  if(dVisitLog){
+    if(item.visitLog&&item.visitLog.length>1){
+      const sorted=[...item.visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      dVisitLog.style.display='block';
+      dVisitLog.innerHTML='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:6px;">用餐記錄</div>'+
+        sorted.map(v=>`<div style="display:flex;justify-content:space-between;font-size:13px;color:#f0e6d6;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span>${v.date||'—'}</span>
+          <span style="color:#FFD200;">${v.price?'NT$'+v.price.toLocaleString():'—'}</span>
+        </div>`).join('');
+    } else {
+      dVisitLog.style.display='none';
+    }
+  }
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
   if(item.maps){mapsLink.href=item.maps;mapsRow.style.display='flex';}else{mapsRow.style.display='none';}
