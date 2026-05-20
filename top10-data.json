@@ -2817,7 +2817,7 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO,GB"
+    "country": "NO"
   },
   {
     "rank": 3,
@@ -2907,7 +2907,7 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO,GB"
+    "country": "NO"
   },
   {
     "rank": 2,
@@ -3017,7 +3017,7 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO,GB"
+    "country": "NO"
   },
   {
     "rank": 3,
@@ -3098,5 +3098,105 @@
     "titleEn": "Phantom Lawyer: Season 1",
     "titleZh": "神與律師事務所",
     "country": "KR"
+  },
+  {
+    "rank": 1,
+    "title": "Bandi: Season 1",
+    "views": 5200000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Bandi: Season 1",
+    "titleZh": "聰明少年",
+    "country": "FR"
+  },
+  {
+    "rank": 2,
+    "title": "Ronaldinho: The One and Only: Limited Series",
+    "views": 4700000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Ronaldinho: The One and Only: Limited Series",
+    "titleZh": "羅納迪諾：獨步球壇",
+    "country": "BR"
+  },
+  {
+    "rank": 3,
+    "title": "Bloodhounds: Season 2",
+    "views": 3700000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Bloodhounds: Season 2",
+    "titleZh": "獵犬",
+    "country": "KR"
+  },
+  {
+    "rank": 4,
+    "title": "Fake Profile: Season 3",
+    "views": 2800000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Fake Profile: Season 3",
+    "titleZh": "人設騙局",
+    "country": "CO"
+  },
+  {
+    "rank": 5,
+    "title": "Someone Has to Know: Limited Series",
+    "views": 2600000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Someone Has to Know: Limited Series",
+    "titleZh": "沉默知情者",
+    "country": "CL"
+  },
+  {
+    "rank": 6,
+    "title": "Made with Love: Season 1",
+    "views": 2400000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Made with Love: Season 1",
+    "titleZh": "真情入味",
+    "country": "ID"
+  },
+  {
+    "rank": 7,
+    "title": "Bloodhounds: Season 1",
+    "views": 2000000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Bloodhounds: Season 1",
+    "titleZh": "獵犬",
+    "country": "KR"
+  },
+  {
+    "rank": 8,
+    "title": "The Law According to Lidia Poët: Season 3",
+    "views": 2000000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "The Law According to Lidia Poët: Season 3",
+    "titleZh": "律師女王",
+    "country": "IT"
+  },
+  {
+    "rank": 9,
+    "title": "Alpha Males: Season 5",
+    "views": 1700000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Alpha Males: Season 5",
+    "titleZh": "大男人注意",
+    "country": "ES"
+  },
+  {
+    "rank": 10,
+    "title": "Detective Hole: Season 1",
+    "views": 1600000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Detective Hole: Season 1",
+    "titleZh": "哈利警探",
+    "country": "NO"
   }
 ]
