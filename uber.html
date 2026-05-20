@@ -31,7 +31,39 @@ body{
 .mb-menu:hover{background:rgba(255,255,255,0.2);}
 
 /* Dock */
-
+.global-dock-wrap{
+  position:fixed;bottom:0;left:50%;
+  transform:translateX(-50%) translateY(calc(100% - 2px));
+  z-index:9998;
+  transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;
+  opacity:0;
+}
+.global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
+.global-dock{
+  display:flex;align-items:flex-end;gap:8px;
+  background:rgba(255,255,255,0.16);
+  backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:20px 20px 0 0;
+  padding:10px 14px 14px;
+  box-shadow:0 -4px 30px rgba(0,0,0,0.25);
+}
+.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
+.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
+.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
+.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;font-family:'Space Mono',monospace;}
+.gd-item:hover .gd-label{opacity:1;}
+.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
+.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
+.ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
+.ic-photos {background:linear-gradient(145deg,#FF6B9D,#C8365A);}
+.ic-dramas {background:linear-gradient(145deg,#2D1B69,#7C3AED);}
+.ic-food   {background:linear-gradient(145deg,#0EA5E9,#0369A1);}
+.ic-travel {background:linear-gradient(145deg,#FF6B35,#D93A00);}
+.ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
+.ic-uber   {background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+.ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
+.dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 
 /* 主內容 */
 .page-content{
@@ -110,31 +142,12 @@ body{
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
   .del-btn:hover{color:#ff6b6b;}
-
-
-.global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
-.global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
-.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
-.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
-.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
-.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
-.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;font-family:'Space Mono',monospace;}
-.gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
-.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about{background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-.ic-photos{background:linear-gradient(145deg,#FF6B9D,#C8365A);}
-.ic-dramas{background:linear-gradient(145deg,#2D1B69,#7C3AED);}
-.ic-food{background:linear-gradient(145deg,#0EA5E9,#0369A1);}
-.ic-travel{background:linear-gradient(145deg,#FF6B35,#D93A00);}
-.ic-threads{background:linear-gradient(145deg,#3F3F46,#71717A);}
-.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
-.ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
-.dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 </style>
 </head>
 <body>
+
+
+
 
 <!-- Menubar -->
 <div class="global-menubar">
@@ -351,11 +364,11 @@ body{
     <!-- 左右並排：圓餅圖 + 新增表單 -->
     <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-bottom:20px;">
       <!-- 左：圓餅圖 -->
-      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;">
-        <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:12px;">總支出</div>
-        <div style="display:flex;align-items:center;gap:32px;">
-          <canvas id="monthlyPieChart" width="240" height="240" style="flex-shrink:0;"></canvas>
-          <div id="pieLegend" style="flex:1;"></div>
+      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;display:flex;flex-direction:column;">
+        <div style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:16px;text-align:left;">總支出</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex:1;">
+          <canvas id="monthlyPieChart" width="300" height="300" style="flex-shrink:0;"></canvas>
+          <div id="pieLegend"></div>
         </div>
       </div>
       <!-- 右：新增表單 -->
@@ -396,36 +409,24 @@ body{
   </div>
 </div>
 
+<!-- Dock -->
+<div class="dock-trigger-zone" id="dockTrigger"></div>
+<div class="global-dock-wrap" id="globalDock">
+  <div class="global-dock">
+    <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
+    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
+    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
+    <div class="gd-sep"></div>
+    <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><span class="gd-label">旅遊足跡</span></a>
+    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div><span class="gd-label">Threads</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
+    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
+  </div>
+</div>
+
+
 <script>
-
-const SUMOAI_TOKEN_KEY = 'sumoai_gh_token';
-function getGHToken(){ return localStorage.getItem(SUMOAI_TOKEN_KEY)||null; }
-function saveGHToken(t){ localStorage.setItem(SUMOAI_TOKEN_KEY, t.trim()); }
-window.clearGHToken = function(){ localStorage.removeItem(SUMOAI_TOKEN_KEY); alert('Token 已清除，重新整理後重新輸入'); };
-function showTokenModal(onSuccess){
-  if(document.getElementById('_tokenModal')) return;
-  var el=document.createElement('div');
-  el.id='_tokenModal';
-  el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);font-family:sans-serif;';
-  el.innerHTML='<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:32px;width:420px;max-width:92vw;"><div style="font-size:28px;margin-bottom:10px;">&#128273;</div><div style="color:#f0f0f0;font-size:17px;font-weight:500;margin-bottom:6px;">輸入 GitHub Token</div><div style="color:#888;font-size:13px;margin-bottom:20px;line-height:1.6;">輸入一次後本站所有分頁都能使用。<br>Token 只存在你的瀏覽器，不會上傳。</div><input id=\"_tokenInput\" type=\"password\" placeholder=\"ghp_xxxxxxxxxxxxxxxx\" style=\"width:100%;padding:10px 14px;background:#242424;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#f0f0f0;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;margin-bottom:8px;\"><div id=\"_tokenErr\" style=\"color:#ff6b6b;font-size:12px;margin-bottom:12px;min-height:16px;\"></div><div style=\"display:flex;gap:10px;\"><button id=\"_tokenOk\" style=\"flex:1;padding:10px;background:#E50914;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:500;\">確認</button><a href=\"https://github.com/settings/tokens\" target=\"_blank\" style=\"padding:10px 14px;background:transparent;color:#888;border:1px solid rgba(255,255,255,0.2);border-radius:8px;font-size:12px;text-decoration:none;display:flex;align-items:center;white-space:nowrap;\">產生 Token &#8599;</a></div></div>';
-  document.body.appendChild(el);
-  setTimeout(function(){ var i=document.getElementById('_tokenInput'); if(i) i.focus(); },100);
-  function trySubmit(){
-    var val=(document.getElementById('_tokenInput').value||'').trim();
-    if(!val){ document.getElementById('_tokenErr').textContent='請輸入 Token'; return; }
-    document.getElementById('_tokenOk').textContent='驗證中...';
-    document.getElementById('_tokenOk').disabled=true;
-    fetch('https://api.github.com/user',{headers:{'Authorization':'token '+val,'Accept':'application/vnd.github.v3+json'}})
-      .then(function(r){
-        if(r.ok){ saveGHToken(val); el.remove(); if(onSuccess) onSuccess(val); }
-        else{ document.getElementById('_tokenErr').textContent='Token 無效，請確認並重試'; document.getElementById('_tokenOk').textContent='確認'; document.getElementById('_tokenOk').disabled=false; }
-      }).catch(function(){ document.getElementById('_tokenErr').textContent='網路錯誤，請再試一次'; document.getElementById('_tokenOk').textContent='確認'; document.getElementById('_tokenOk').disabled=false; });
-  }
-  document.getElementById('_tokenOk').onclick=trySubmit;
-  document.getElementById('_tokenInput').onkeydown=function(e){ if(e.key==='Enter') trySubmit(); };
-}
-function requireToken(cb){ var t=getGHToken(); if(t){ cb(t); return; } showTokenModal(cb); }
-
 function renderTop5(){
   var el = document.getElementById('top5Section');
   if(!el) return;
@@ -472,7 +473,15 @@ function renderTop5(){
     el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
   }t();setInterval(t,10000);
 })();
-
+// Dock
+(function(){
+  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger)return;
+  var timer;
+  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
+})();
 // Tab
 function switchTab(id,btn){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -496,17 +505,27 @@ function showToast(msg,isErr){
   t.textContent=msg;t.style.background=isErr?'rgba(180,30,30,0.95)':'rgba(30,80,50,0.95)';t.style.color='#fff';t.style.opacity='1';
   clearTimeout(t._to);if(!isErr)t._to=setTimeout(()=>t.style.opacity='0',3000);
 }
-function getToken(){ return getGHToken()||''; }
+function getToken(){
+  var tk=localStorage.getItem(GH_TOKEN_KEY);
+  if(!tk){tk=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：');if(!tk)return null;localStorage.setItem(GH_TOKEN_KEY,tk.trim());}
+  return tk.trim();
+}
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 // 頁面載入時從 GitHub 讀取最新資料
 function loadFromGitHub(){
-  var token=getGHToken()||'';
+  var token=localStorage.getItem(GH_TOKEN_KEY);
+  if(!token){
+    token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
+    if(!token) return;
+    localStorage.setItem(GH_TOKEN_KEY, token.trim());
+    token=token.trim();
+  }
   var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
   fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(), {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
     .then(r=>{
       if(!r.ok){
-        if(r.status===401){localStorage.removeItem('sumoai_gh_token');showToast('❌ Token 無效，請重新整理',true);}
+        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效，請重新輸入');}
         return null;
       }
       return r.json();
@@ -526,7 +545,7 @@ function loadFromGitHub(){
       if(typeof renderMonthly==='function') renderMonthly();
     }).catch(e=>console.warn('載入失敗:',e));
 }
-window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
+window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
 var _pushing=false;
 async function pushToGitHub(){
@@ -539,27 +558,21 @@ async function pushToGitHub(){
     var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 連線 GitHub...',false);
     // 用快取的 SHA，避免連續推送衝突
-    var sha=localStorage.getItem('gh_json_sha')||null;
+    var sha=localStorage.getItem('gh_json_sha');
     if(!sha){
       var r=await fetch(api+'?ref='+GH_BRANCH,{headers:hdrs});
-      if(r.status===404){
-        sha=null;
-      } else if(!r.ok){
-        if(r.status===401){localStorage.removeItem('sumoai_gh_token');showToast('❌ Token 無效',true);}
+      if(!r.ok){
+        if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);}
         else showToast('❌ 連線失敗('+r.status+')',true);
         return;
-      } else {
-        var fi=await r.json();
-        sha=fi.sha||null;
-        if(sha) localStorage.setItem('gh_json_sha',sha);
       }
+      var fi=await r.json();
+      sha=fi.sha;
     }
     var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
     showToast('⏳ 推送中...',false);
-    var putBody={message:'更新Uber記錄',content:encoded,branch:GH_BRANCH};
-    if(sha) putBody.sha=sha;
-    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(putBody)});
+    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
     if(!pr.ok){
       var e2=await pr.json();
       localStorage.removeItem('gh_json_sha'); // 清除快取，下次重抓
@@ -718,8 +731,8 @@ function renderTrips(){
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.td||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1);font-size:16px;font-weight:600">${(t.km||0).toFixed(2)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:16px;font-weight:600">NT$${fmt(t.fare||0)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:16px;font-weight:600">NT$${fmt(t.service||0)}</td>
+      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">NT$${fmt(t.fare||0)}</td>
+      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">NT$${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-size:16px;font-weight:700">NT$${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
       <td style="color:rgba(240,220,160,0.6)">${t.note||'—'}</td>
@@ -930,9 +943,9 @@ function renderMonthly(){
     var canvas = document.getElementById('monthlyPieChart');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,240,240);
+    ctx.clearRect(0,0,300,300);
 
-    var cx=120, cy=120, r=108;
+    var cx=150, cy=150, r=132;
     var startAngle = -Math.PI/2;
     types.forEach(function(t, i){
       var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
@@ -963,23 +976,24 @@ function renderMonthly(){
 
     // 圖例
     var leg = document.getElementById('pieLegend');
+    var leg = document.getElementById('pieLegend');
     leg.innerHTML = types.map(function(t,i){
       var pct = (typeMap[t]/grandTotal*100).toFixed(1);
-      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">'
-        +'<div style="display:flex;align-items:center;gap:8px;">'
-        +'<div style="width:12px;height:12px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
-        +'<span style="font-size:13px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
+      return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;">'
+        +'<div style="display:flex;align-items:center;gap:10px;">'
+        +'<div style="width:14px;height:14px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
+        +'<span style="font-size:16px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
         +'</div>'
-        +'<div style="text-align:right;">'
-        +'<div style="font-size:13px;color:#E8EAF0;font-weight:600;">'+typeMap[t].toLocaleString()+' $</div>'
+        +'<div style="text-align:right;white-space:nowrap;">'
+        +'<div style="font-size:16px;color:#E8EAF0;font-weight:700;">'+typeMap[t].toLocaleString()+'</div>'
+        +'<div style="font-size:13px;color:rgba(255,255,255,0.45);">'+pct+'%</div>'
         +'</div></div>';
     }).join('')
-    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;">'
-    + '<span style="font-size:12px;color:rgba(255,255,255,0.5);">總額</span>'
-    + '<span style="font-size:13px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
+    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
+    + '<span style="font-size:15px;color:rgba(255,255,255,0.5);">總額</span>'
+    + '<span style="font-size:18px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
     + '</div>';
   })();
-
 
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
@@ -1155,47 +1169,6 @@ function updateDistricts(type){
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
 renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();
-</script>
-
-
-
-<script>
-// Dock
-(function(){
-  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
-  if(!dock||!trigger)return;
-  var timer;
-  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
-  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
-  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
-})();
-</script>
-
-
-<div class="dock-trigger-zone" id="dockTrigger"></div>
-<div class="global-dock-wrap" id="globalDock">
-  <div class="global-dock">
-    <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
-    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
-    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
-    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
-    <div class="gd-sep"></div>
-    <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><span class="gd-label">旅遊足跡</span></a>
-    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div><span class="gd-label">Threads</span></a>
-    <a href="uber.html" class="gd-item"><div class="gd-dot" style="position:absolute;bottom:-8px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);"></div><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
-    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
-    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-  </div>
-</div>
-<script>
-(function(){
-  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
-  if(!dock||!trigger)return;
-  var timer;
-  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
-  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
-  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
-})();
 </script>
 </body>
 </html>
