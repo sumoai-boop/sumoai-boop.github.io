@@ -2817,7 +2817,7 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO"
+    "country": "NO,GB"
   },
   {
     "rank": 3,
@@ -2907,7 +2907,7 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO"
+    "country": "NO,GB"
   },
   {
     "rank": 2,
@@ -2997,6 +2997,106 @@
     "cat": "Shows|Non-English",
     "titleEn": "BTS THE COMEBACK LIVE | ARIRANG",
     "titleZh": "",
+    "country": "KR"
+  },
+  {
+    "rank": 1,
+    "title": "Bloodhounds: Season 2",
+    "views": 7400000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Bloodhounds: Season 2",
+    "titleZh": "獵犬",
+    "country": "KR"
+  },
+  {
+    "rank": 2,
+    "title": "Detective Hole: Season 1",
+    "views": 3000000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Detective Hole: Season 1",
+    "titleZh": "哈利警探",
+    "country": "NO,GB"
+  },
+  {
+    "rank": 3,
+    "title": "Bloodhounds: Season 1",
+    "views": 3000000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Bloodhounds: Season 1",
+    "titleZh": "獵犬",
+    "country": "KR"
+  },
+  {
+    "rank": 4,
+    "title": "Sins of Kujo: Season 1",
+    "views": 2200000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Sins of Kujo: Season 1",
+    "titleZh": "九條的大罪",
+    "country": "JP"
+  },
+  {
+    "rank": 5,
+    "title": "Gangs of Galicia: Season 2",
+    "views": 2100000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Gangs of Galicia: Season 2",
+    "titleZh": "毒幫家族",
+    "country": "ES"
+  },
+  {
+    "rank": 6,
+    "title": "Bandi: Season 1",
+    "views": 2100000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Bandi: Season 1",
+    "titleZh": "聰明少年",
+    "country": "FR"
+  },
+  {
+    "rank": 7,
+    "title": "Radioactive Emergency: Season 1",
+    "views": 2000000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Radioactive Emergency: Season 1",
+    "titleZh": "放射危機",
+    "country": "BR"
+  },
+  {
+    "rank": 8,
+    "title": "High Tides: Season 3",
+    "views": 1600000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "High Tides: Season 3",
+    "titleZh": "鍍金盛夏",
+    "country": "BE"
+  },
+  {
+    "rank": 9,
+    "title": "Maamla Legal Hai: Season 2",
+    "views": 1600000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Maamla Legal Hai: Season 2",
+    "titleZh": "律界沒法度",
+    "country": "IN"
+  },
+  {
+    "rank": 10,
+    "title": "Phantom Lawyer: Season 1",
+    "views": 1500000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Phantom Lawyer: Season 1",
+    "titleZh": "神與律師事務所",
     "country": "KR"
   }
 ]
