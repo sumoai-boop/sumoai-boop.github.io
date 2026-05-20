@@ -676,11 +676,13 @@ function refreshTypeList(){
   if(!dl) return;
   const fromData=[...new Set(DATA.map(r=>r.type).filter(Boolean))];
   const custom=getCustomTypes();
-  const all=[...new Set([...DEFAULT_TYPES, ...custom, ...fromData])].sort();
+  const all=[...new Set([...DEFAULT_TYPES,...custom,...fromData])].sort();
   dl.innerHTML=all.map(v=>`<option value="${v}">`).join('');
   if(tf){
     const cur=tf.value;
-    tf.innerHTML='<option value="">所有類型</option>'+all.map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('');
+    // 只顯示資料中實際有的類型
+    const inUse=[...new Set(DATA.map(r=>r.type).filter(Boolean))].sort();
+    tf.innerHTML='<option value="">所有類型</option>'+inUse.map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('');
   }
 }
 
