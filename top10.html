@@ -61,7 +61,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .b-en{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
 .b-nonen{background:rgba(67,160,71,0.15);color:#81c784;border:1px solid rgba(67,160,71,0.3)}
 
-.ones-row{display:flex;align-items:center;gap:10px;padding:0;min-height:72px;border-bottom:1px solid var(--border);font-size:13px}
+.ones-row{display:flex;align-items:center;gap:10px;padding:0;min-height:72px;border-bottom:1px solid var(--border)}
 .ones-row:last-child{border-bottom:none}
 .ones-week{color:var(--muted);font-size:11px;width:130px;flex-shrink:0}
 .ones-title{flex:1;color:var(--text);display:flex;flex-direction:column;justify-content:center;min-height:52px;}
@@ -754,7 +754,7 @@ function renderDashboard() {
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
       '<div class="ones-title" style="flex:1;min-width:0">' +
-        '<div style="font-size:15px;">' + flag + disp + '</div>' + sub +
+        '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
       '</div>' +
       '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
   }).join('') : '<div class="empty">尚無資料</div>';
