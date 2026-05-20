@@ -1326,7 +1326,7 @@
     "week": "1/26/26 - 2/1/26",
     "cat": "Movies|Non-English",
     "titleEn": "Tere Ishk Mein",
-    "titleZh": "",
+    "titleZh": "在你的愛裡",
     "country": "IN"
   },
   {
@@ -1398,5 +1398,105 @@
     "titleEn": "The Great Flood",
     "titleZh": "巨洪",
     "country": "KR"
+  },
+  {
+    "rank": 1,
+    "title": "Tere Ishk Mein",
+    "views": 3800000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Tere Ishk Mein",
+    "titleZh": "在你的愛裡",
+    "country": "IN"
+  },
+  {
+    "rank": 2,
+    "title": "The Big Fake",
+    "views": 3100000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Big Fake",
+    "titleZh": "偽術奇才",
+    "country": "IT"
+  },
+  {
+    "rank": 3,
+    "title": "From the Ashes: The Pit",
+    "views": 1600000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "From the Ashes: The Pit",
+    "titleZh": "校園火劫：深淵",
+    "country": "SA"
+  },
+  {
+    "rank": 4,
+    "title": "The Great Flood",
+    "views": 1400000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Great Flood",
+    "titleZh": "巨洪",
+    "country": "KR"
+  },
+  {
+    "rank": 5,
+    "title": "Haq",
+    "views": 1200000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Haq",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 6,
+    "title": "De De Pyaar De 2",
+    "views": 1100000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "De De Pyaar De 2",
+    "titleZh": "給我你的愛 2",
+    "country": "IN"
+  },
+  {
+    "rank": 7,
+    "title": "Cosmic Princess Kaguya!",
+    "views": 1000000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Cosmic Princess Kaguya!",
+    "titleZh": "超時空輝耀姬！",
+    "country": "JP"
+  },
+  {
+    "rank": 8,
+    "title": "Labinak: They Are Amongst Us",
+    "views": 900000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Labinak: They Are Amongst Us",
+    "titleZh": "",
+    "country": "ID"
+  },
+  {
+    "rank": 9,
+    "title": "L'amour ouf",
+    "views": 900000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "L'amour ouf",
+    "titleZh": "狂愛",
+    "country": "FR"
+  },
+  {
+    "rank": 10,
+    "title": "Agen +62",
+    "views": 700000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Agen +62",
+    "titleZh": "",
+    "country": "ID"
   }
 ]
