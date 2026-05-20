@@ -246,7 +246,7 @@
     "name": "TGI FRIDAYS 環球餐廳",
     "name1": "TGI FRIDAYS",
     "name2": "環球餐廳",
-    "type": "美式餐廳",
+    "type": "美式",
     "price": 825,
     "addr": "235新北市中和區員山里中山路三段122號4樓",
     "note": "",
@@ -262,9 +262,15 @@
     ],
     "img": "https://i.ibb.co/C56ymfPG/84aa3613f829.jpg",
     "createdAt": 1779030806421,
-    "updatedAt": 1779279132224,
-    "visits": 0,
-    "gscore": 4.4
+    "updatedAt": 1779280245591,
+    "visits": 1,
+    "gscore": 4.4,
+    "visitLog": [
+      {
+        "date": "2026-04-11",
+        "price": 825
+      }
+    ]
   },
   {
     "id": "1779030532202",
