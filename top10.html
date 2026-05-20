@@ -659,7 +659,23 @@ async function confirmSave() {
   try {
     const latest = await ghRead();
     db = latest || [];
+    // 1. 清除同週次同類別的舊資料
     db = db.filter(e => !(e.week === pendingEntries[0].week && e.cat === pendingEntries[0].cat));
+    // 2. 額外清除：同片名但 country/titleZh 被手動修改過的舊資料（避免重複）
+    const newTitles = new Set(pendingEntries.map(e => e.title));
+    const newWeek   = pendingEntries[0].week;
+    const newCat    = pendingEntries[0].cat;
+    db = db.filter(e => {
+      // 如果是同片名、同類別、不同週次的舊資料 → 更新 country/titleZh
+      if (newTitles.has(e.title) && e.cat === newCat && e.week !== newWeek) {
+        const newEntry = pendingEntries.find(p => p.title === e.title);
+        if (newEntry) {
+          if (newEntry.country) e.country = newEntry.country;
+          if (newEntry.titleZh) e.titleZh = newEntry.titleZh;
+        }
+      }
+      return true;
+    });
     db.push(...pendingEntries);
     await ghWrite(db);
     ss.className = 'status-box ok';
