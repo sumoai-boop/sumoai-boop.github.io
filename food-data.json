@@ -72,7 +72,7 @@
     "name": "PS TAPAS西班牙餐酒館",
     "name1": "PS TAPAS西班牙餐酒館",
     "name2": "",
-    "type": "西班牙餐廳",
+    "type": "西班牙",
     "price": 2673,
     "addr": "106臺北市大安區建倫里安和路一段21巷19號",
     "note": "",
@@ -89,9 +89,15 @@
     ],
     "img": "https://i.ibb.co/W4VF2Zxz/1f7efd3c0332.jpg",
     "createdAt": 1779074453702,
-    "visits": 0,
+    "visits": 1,
     "gscore": 4.3,
-    "updatedAt": 1779279204353
+    "updatedAt": 1779280227382,
+    "visitLog": [
+      {
+        "date": "2026-02-21",
+        "price": 2673
+      }
+    ]
   },
   {
     "id": "1779073974361",
