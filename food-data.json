@@ -100,7 +100,10 @@
       "https://i.ibb.co/gMY65TZf/5c1122cb7528.jpg"
     ],
     "img": "https://i.ibb.co/gMY65TZf/5c1122cb7528.jpg",
-    "createdAt": 1779073820041
+    "createdAt": 1779073820041,
+    "visits": 0,
+    "gscore": 4.8,
+    "updatedAt": 1779279183105
   },
   {
     "id": "1779073669441",
