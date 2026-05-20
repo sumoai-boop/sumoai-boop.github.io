@@ -4298,5 +4298,105 @@
     "titleEn": "The Adventures of Sharkboy and Lavagirl",
     "titleZh": "立體小奇兵：鯊魚男孩與岩漿女孩",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Joe's College Road Trip",
+    "views": 12500000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "Joe's College Road Trip",
+    "titleZh": "祖孫大學公路遊",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "The Investigation of Lucy Letby",
+    "views": 6600000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "The Investigation of Lucy Letby",
+    "titleZh": "露西萊比的調查",
+    "country": "GB"
+  },
+  {
+    "rank": 3,
+    "title": "How to Train Your Dragon",
+    "views": 6100000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "How to Train Your Dragon",
+    "titleZh": "馴龍高手",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "KPop Demon Hunters",
+    "views": 5700000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "Overboard (2018)",
+    "views": 5100000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "Overboard (2018)",
+    "titleZh": "小迷糊又天翻地覆",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "The Rip",
+    "views": 4700000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "The Rip",
+    "titleZh": "全信沒收",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "Noah",
+    "views": 3600000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "Noah",
+    "titleZh": "挪亞方舟",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Twisters",
+    "views": 3100000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "Twisters",
+    "titleZh": "龍捲風暴",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Homefront",
+    "views": 3100000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "Homefront",
+    "titleZh": "最後防線",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Norbit",
+    "views": 2700000,
+    "week": "2/9/26 - 2/15/26",
+    "cat": "Movies|English",
+    "titleEn": "Norbit",
+    "titleZh": "糯米正傳",
+    "country": "US"
   }
 ]
