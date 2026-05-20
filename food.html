@@ -327,8 +327,8 @@
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
-        <div class="stat-num" id="sBest">—</div>
-        <div class="stat-lbl">最高評分</div>
+        <div class="stat-num" id="sTotalVisits">—</div>
+        <div class="stat-lbl">造訪次數</div>
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
@@ -1292,8 +1292,8 @@ function render(){
   if(DATA.length){
     const rated=DATA.filter(r=>r.score>0);
     document.getElementById('sAvg').textContent=rated.length?(rated.reduce((s,r)=>s+r.score,0)/rated.length).toFixed(1):'—';
-    const best=DATA.reduce((a,b)=>b.score>a.score?b:a,DATA[0]);
-    document.getElementById('sBest').textContent=best.score?(+best.score).toFixed(1):'—';
+    const totalVisits=DATA.reduce((s,r)=>s+(r.visits||1),0);
+    document.getElementById('sTotalVisits').textContent=totalVisits;
     const priced=DATA.filter(r=>r.price>0);
     document.getElementById('sAvgPrice').textContent=priced.length?'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString():'—';
   } else {
