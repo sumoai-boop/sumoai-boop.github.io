@@ -4498,5 +4498,105 @@
     "titleEn": "Rumble",
     "titleZh": "打怪大亂鬥",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Jurassic World Rebirth",
+    "views": 5600000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "Jurassic World Rebirth",
+    "titleZh": "侏羅紀世界：重生",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "KPop Demon Hunters",
+    "views": 5000000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "The Addams Family",
+    "views": 4900000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "The Addams Family",
+    "titleZh": "阿達一族",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "Hierarchy",
+    "views": 4100000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "Hierarchy",
+    "titleZh": "",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "The Addams Family 2",
+    "views": 4000000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "The Addams Family 2",
+    "titleZh": "阿達一族2",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "The World Will Tremble",
+    "views": 3900000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "The World Will Tremble",
+    "titleZh": "",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "Trap House",
+    "views": 2900000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "Trap House",
+    "titleZh": "毒窟風暴",
+    "country": "GB"
+  },
+  {
+    "rank": 8,
+    "title": "Joe's College Road Trip",
+    "views": 2800000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "Joe's College Road Trip",
+    "titleZh": "祖孫大學公路遊",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "The Expendables 4",
+    "views": 2500000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "The Expendables 4",
+    "titleZh": "浴血任務4",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "The Rip",
+    "views": 2400000,
+    "week": "2/23/26 - 3/1/26",
+    "cat": "Movies|English",
+    "titleEn": "The Rip",
+    "titleZh": "全信沒收",
+    "country": "US"
   }
 ]
