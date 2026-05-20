@@ -785,13 +785,31 @@ function renderDashboard() {
   document.getElementById('country-titles').innerHTML = sortedTitles.length ? sortedTitles.map((x, i) => {
     const name = COUNTRY_MAP[x.code] || x.code;
     const numCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return '<div class="rank-row">' +
-      '<span class="rank-num ' + numCls + '">' + (i+1) + '</span>' +
-      '<div class="rank-info">' +
-        '<div class="rank-title-text">' + flagImg(x.code) + name + '</div>' +
-        '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(x.count/maxT*100) + '%"></div></div>' +
-      '</div>' +
-      '<span class="rank-val">' + x.count + ' 部</span>' +
+    // 找出該國所有不重複的片，依觀看數排序
+    const titleList = [...countryTitles[x.code]];
+    const titlesWithInfo = titleList.map(t => {
+      const entries = filtered.filter(e => e.title === t);
+      const totalViews = entries.reduce((s,e) => s+(e.views||0), 0);
+      const info = entries[0] || {};
+      return { title: t, titleZh: info.titleZh||'', totalViews, weeks: entries.length };
+    }).sort((a,b) => b.totalViews - a.totalViews);
+    const detailHtml = '<div class="detail-panel">' +
+      titlesWithInfo.map(t =>
+        '<div class="detail-week">' +
+          '<span class="detail-week-label">' + (t.titleZh || t.title) + (t.titleZh ? ' <span style="color:var(--muted2);font-size:11px;">'+t.title+'</span>' : '') + '</span>' +
+          '<span>' + t.weeks + ' 週 · ' + fmtViews(t.totalViews) + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+    return '<div>' +
+      '<div class="rank-row" onclick="toggleDetail(this)">' +
+        '<span class="rank-num ' + numCls + '">' + (i+1) + '</span>' +
+        '<div class="rank-info">' +
+          '<div class="rank-title-text">' + flagImg(x.code) + name + '</div>' +
+          '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(x.count/maxT*100) + '%"></div></div>' +
+        '</div>' +
+        '<span class="rank-val">' + x.count + ' 部</span>' +
+      '</div>' + detailHtml +
     '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
@@ -812,13 +830,26 @@ function renderDashboard() {
   document.getElementById('country-weeks').innerHTML = sortedWeeks.length ? sortedWeeks.map((x, i) => {
     const name = COUNTRY_MAP[x.code] || x.code;
     const numCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return '<div class="rank-row">' +
-      '<span class="rank-num ' + numCls + '">' + (i+1) + '</span>' +
-      '<div class="rank-info">' +
-        '<div class="rank-title-text">' + flagImg(x.code) + name + '</div>' +
-        '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(x.count/maxW2*100) + '%"></div></div>' +
-      '</div>' +
-      '<span class="rank-val">' + x.count + ' 次</span>' +
+    // 找出該國所有上榜記錄（含重複週次），依日期新→舊
+    const entries = filtered.filter(e => e.country && e.country.split(',').map(s=>s.trim()).includes(x.code))
+      .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
+    const detailHtml = '<div class="detail-panel">' +
+      entries.map(e =>
+        '<div class="detail-week">' +
+          '<span class="detail-week-label">' + (e.week||'') + '</span>' +
+          '<span>' + (e.titleZh || e.title) + ' · 第' + e.rank + '名 · ' + fmtViews(e.views) + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+    return '<div>' +
+      '<div class="rank-row" onclick="toggleDetail(this)">' +
+        '<span class="rank-num ' + numCls + '">' + (i+1) + '</span>' +
+        '<div class="rank-info">' +
+          '<div class="rank-title-text">' + flagImg(x.code) + name + '</div>' +
+          '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(x.count/maxW2*100) + '%"></div></div>' +
+        '</div>' +
+        '<span class="rank-val">' + x.count + ' 次</span>' +
+      '</div>' + detailHtml +
     '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 }
