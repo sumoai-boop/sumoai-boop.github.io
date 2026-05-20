@@ -5198,5 +5198,105 @@
     "titleEn": "Beast (English)",
     "titleZh": "獸",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Thrash",
+    "views": 34500000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Thrash",
+    "titleZh": "狂鯊風暴",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "180",
+    "views": 9500000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "180",
+    "titleZh": "180 度",
+    "country": "ZA"
+  },
+  {
+    "rank": 3,
+    "title": "Roommates",
+    "views": 8800000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Roommates",
+    "titleZh": "我的室友好雷",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "Sisu",
+    "views": 4500000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Sisu",
+    "titleZh": "SISU：黃金硬漢",
+    "country": "FI"
+  },
+  {
+    "rank": 5,
+    "title": "KPop Demon Hunters",
+    "views": 4400000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "Sniper 2",
+    "views": 3600000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Sniper 2",
+    "titleZh": "戰略陰謀2",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "War Machine",
+    "views": 3500000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "War Machine",
+    "titleZh": "侵略機器",
+    "country": "AU"
+  },
+  {
+    "rank": 8,
+    "title": "Husband, Father, Killer: The Alyssa Pladl Story",
+    "views": 3400000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Husband, Father, Killer: The Alyssa Pladl Story",
+    "titleZh": "父親、丈夫與殺手：三重身份殺機",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Escape Plan 2: Hades",
+    "views": 3000000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Escape Plan 2: Hades",
+    "titleZh": "鋼鐵墳墓2",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Anaconda",
+    "views": 2700000,
+    "week": "4/13/26 - 4/19/26",
+    "cat": "Movies|English",
+    "titleEn": "Anaconda",
+    "titleZh": "大蟒蛇",
+    "country": "US"
   }
 ]
