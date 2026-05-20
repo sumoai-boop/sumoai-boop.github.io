@@ -5398,5 +5398,105 @@
     "titleEn": "Shooter",
     "titleZh": "狙擊生死線",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Apex",
+    "views": 40200000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Apex",
+    "titleZh": "巔峰獵殺",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "Swapped",
+    "views": 15500000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "Thrash",
+    "views": 4300000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Thrash",
+    "titleZh": "狂鯊風暴",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "Migration",
+    "views": 4100000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Migration",
+    "titleZh": "天劫倒數 2：大遷徙",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "KPop Demon Hunters",
+    "views": 3900000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "180",
+    "views": 3700000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "180",
+    "titleZh": "180 度",
+    "country": "ZA"
+  },
+  {
+    "rank": 7,
+    "title": "Roommates",
+    "views": 3600000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Roommates",
+    "titleZh": "我的室友好雷",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Trust",
+    "views": 3500000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Trust",
+    "titleZh": "獵狼連線",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Miraculous World: Paris, Tales of Shadybug and Claw Noir",
+    "views": 3300000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Miraculous World: Paris, Tales of Shadybug and Claw Noir",
+    "titleZh": "瓢蟲少女：巴黎篇",
+    "country": "CA"
+  },
+  {
+    "rank": 10,
+    "title": "Gladiator II",
+    "views": 3000000,
+    "week": "4/27/26 - 5/3/26",
+    "cat": "Movies|English",
+    "titleEn": "Gladiator II",
+    "titleZh": "神鬼戰士II",
+    "country": "US"
   }
 ]
