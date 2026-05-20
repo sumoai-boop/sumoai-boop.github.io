@@ -1,5 +1,35 @@
 [
   {
+    "id": "1779281022708",
+    "name": "Kamekona 夏威夷鐵板燒 安和店",
+    "name1": "Kamekona 夏威夷鐵板燒",
+    "name2": "安和店",
+    "type": "鐵板燒",
+    "price": 6706,
+    "visits": 1,
+    "gscore": 4.7,
+    "addr": "106臺北市大安區通安里安和路二段29號",
+    "note": "公主生日餐",
+    "maps": "https://www.google.com/maps/place/Kamekona+%E5%A4%8F%E5%A8%81%E5%A4%B7%E9%90%B5%E6%9D%BF%E7%87%92+%EF%BC%88%E5%AE%89%E5%92%8C%E5%BA%97%EF%BC%89/@25.0319066,121.5526635,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abcc5fdb625b:0x27377c87568ff20f!8m2!3d25.0319066!4d121.5526635!16s%2Fg%2F11dfmgy7bq?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-12-23",
+    "score": 4.5,
+    "visitLog": [
+      {
+        "date": "2025-12-23",
+        "price": 6706
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/XfKhXJVw/21cfbe2cfdcf.jpg",
+      "https://i.ibb.co/83FrkvT/e0d709cd7551.jpg",
+      "https://i.ibb.co/27RMd1Ks/0516b98813d5.jpg",
+      "https://i.ibb.co/TD30PNSc/0f4ecdad9934.jpg",
+      "https://i.ibb.co/Vbhv1kY/cfaf33068960.jpg"
+    ],
+    "img": "https://i.ibb.co/XfKhXJVw/21cfbe2cfdcf.jpg",
+    "createdAt": 1779281022708
+  },
+  {
     "id": "1779279654730",
     "name": "涮乃葉 信義遠百店",
     "name1": "涮乃葉",
