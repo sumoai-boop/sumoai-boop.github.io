@@ -1598,5 +1598,105 @@
     "titleEn": "Troll 2",
     "titleZh": "山怪巨魔 2",
     "country": "NO"
+  },
+  {
+    "rank": 1,
+    "title": "The Great Flood",
+    "views": 5200000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Great Flood",
+    "titleZh": "巨洪",
+    "country": "KR"
+  },
+  {
+    "rank": 2,
+    "title": "Haq",
+    "views": 4500000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Haq",
+    "titleZh": "",
+    "country": "IN"
+  },
+  {
+    "rank": 3,
+    "title": "De De Pyaar De 2",
+    "views": 3500000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "De De Pyaar De 2",
+    "titleZh": "給我你的愛 2",
+    "country": "IN"
+  },
+  {
+    "rank": 4,
+    "title": "Akhanda 2: Thaandavam",
+    "views": 2000000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Akhanda 2: Thaandavam",
+    "titleZh": "阿坎達2：神聖之舞",
+    "country": "IN"
+  },
+  {
+    "rank": 5,
+    "title": "The Ugly",
+    "views": 2000000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Ugly",
+    "titleZh": "醜得要命",
+    "country": "KR"
+  },
+  {
+    "rank": 6,
+    "title": "Ekō from the Infinite Chronicles of Kurichan",
+    "views": 2000000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Ekō from the Infinite Chronicles of Kurichan",
+    "titleZh": "深山回音",
+    "country": "IN"
+  },
+  {
+    "rank": 7,
+    "title": "100 Meters",
+    "views": 1100000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "100 Meters",
+    "titleZh": "一百公尺。",
+    "country": "JP"
+  },
+  {
+    "rank": 8,
+    "title": "Troll 2",
+    "views": 1100000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Troll 2",
+    "titleZh": "山怪巨魔 2",
+    "country": "NO"
+  },
+  {
+    "rank": 9,
+    "title": "A Time For Bravery",
+    "views": 1100000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "A Time For Bravery",
+    "titleZh": "勇者時刻",
+    "country": "AR"
+  },
+  {
+    "rank": 10,
+    "title": "Sore: A Wife From the Future",
+    "views": 1000000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Sore: A Wife From the Future",
+    "titleZh": "逆時光戀人",
+    "country": "ID"
   }
 ]
