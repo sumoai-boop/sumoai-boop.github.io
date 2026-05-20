@@ -5298,5 +5298,105 @@
     "titleEn": "Anaconda",
     "titleZh": "大蟒蛇",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Apex",
+    "views": 38200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "Apex",
+    "titleZh": "巔峰獵殺",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "180",
+    "views": 17500000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "180",
+    "titleZh": "180 度",
+    "country": "ZA"
+  },
+  {
+    "rank": 3,
+    "title": "Roommates",
+    "views": 12100000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "Roommates",
+    "titleZh": "我的室友好雷",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "Thrash",
+    "views": 9600000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "Thrash",
+    "titleZh": "狂鯊風暴",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "Untold: The Shooting at Hawthorne Hill",
+    "views": 4500000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "Untold: The Shooting at Hawthorne Hill",
+    "titleZh": "體壇秘史：馬術名將槍擊案",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "KPop Demon Hunters",
+    "views": 4200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "War Machine",
+    "views": 3200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "War Machine",
+    "titleZh": "侵略機器",
+    "country": "AU"
+  },
+  {
+    "rank": 8,
+    "title": "Trust",
+    "views": 3100000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "Trust",
+    "titleZh": "獵狼連線",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "The Interpreter",
+    "views": 2900000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "The Interpreter",
+    "titleZh": "雙面翻譯",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Shooter",
+    "views": 2200000,
+    "week": "4/20/26 - 4/26/26",
+    "cat": "Movies|English",
+    "titleEn": "Shooter",
+    "titleZh": "狙擊生死線",
+    "country": "US"
   }
 ]
