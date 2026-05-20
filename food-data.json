@@ -155,7 +155,7 @@
     "name": "開丼 燒肉vs丼飯 美麗華店",
     "name1": "開丼 燒肉vs丼飯",
     "name2": "美麗華店",
-    "type": "日本餐廳",
+    "type": "日本",
     "price": 310,
     "addr": "104臺北市中山區敬業三路20號地下B1樓本(F)館",
     "note": "",
@@ -167,9 +167,15 @@
     ],
     "img": "https://i.ibb.co/V13Qb0H/0fcafd8249c8.jpg",
     "createdAt": 1779073669441,
-    "visits": 0,
+    "visits": 1,
     "gscore": 4.5,
-    "updatedAt": 1779279172993
+    "updatedAt": 1779280254463,
+    "visitLog": [
+      {
+        "date": "2026-03-22",
+        "price": 310
+      }
+    ]
   },
   {
     "id": "1779073507162",
