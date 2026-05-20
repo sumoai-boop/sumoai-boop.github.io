@@ -3898,5 +3898,105 @@
     "titleEn": "The Bad Guys",
     "titleZh": "壞蛋聯盟",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "The Rip",
+    "views": 41600000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "The Rip",
+    "titleZh": "全信沒收",
+    "country": "US"
+  },
+  {
+    "rank": 2,
+    "title": "People We Meet on Vacation",
+    "views": 23300000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "People We Meet on Vacation",
+    "titleZh": "盛夏假期遇見愛",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "One Last Adventure: The Making of Stranger Things 5",
+    "views": 8700000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "One Last Adventure: The Making of Stranger Things 5",
+    "titleZh": "最後的冒險：怪奇物語第 5 季：製作特輯",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "KPop Demon Hunters",
+    "views": 7300000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "Suitcase Killer: The Melanie McGuire Story",
+    "views": 4100000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "Suitcase Killer: The Melanie McGuire Story",
+    "titleZh": "邪惡網紅：喬迪·希爾德布蘭特的故事",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "How to Train Your Dragon: The Hidden World",
+    "views": 3200000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "How to Train Your Dragon: The Hidden World",
+    "titleZh": "馴龍高手3",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "Me Before You",
+    "views": 2800000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "Me Before You",
+    "titleZh": "我就要你好好的",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Paw Patrol: The Movie",
+    "views": 2800000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "Paw Patrol: The Movie",
+    "titleZh": "汪汪隊立大功：超級大電影",
+    "country": "CA"
+  },
+  {
+    "rank": 9,
+    "title": "Madagascar",
+    "views": 2700000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "Madagascar",
+    "titleZh": "馬達加斯加",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Freelance",
+    "views": 2500000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Movies|English",
+    "titleEn": "Freelance",
+    "titleZh": "超危險保鑣",
+    "country": "US"
   }
 ]
