@@ -233,7 +233,7 @@
     "name1": "島語",
     "name2": "桃園台茂店",
     "type": "自助餐",
-    "price": 2938,
+    "price": 3938,
     "addr": "338桃園市蘆竹區錦中里南崁路一段112號6 樓",
     "note": "公主",
     "maps": "https://www.google.com/maps/place/%E5%B3%B6%E8%AA%9E+%E6%A1%83%E5%9C%92%E5%8F%B0%E8%8C%82%E5%BA%97/@25.0533417,121.2851944,17z/data=!3m2!4b1!5s0x3442a074874fa837:0xa01dfe471ef2612e!4m6!3m5!1s0x3442a1006f1c20ed:0x522f163d6cdba975!8m2!3d25.0533369!4d121.2877693!16s%2Fg%2F11ydr5v2y6?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
@@ -249,11 +249,11 @@
     "createdAt": 1779073974361,
     "visits": 1,
     "gscore": 4.8,
-    "updatedAt": 1779280156822,
+    "updatedAt": 1779281896908,
     "visitLog": [
       {
         "date": "2026-02-26",
-        "price": 2938
+        "price": 3938
       }
     ]
   },
