@@ -211,7 +211,10 @@
       "https://i.ibb.co/xt7Xp26f/55fbbc601c58.jpg"
     ],
     "img": "https://i.ibb.co/xt7Xp26f/55fbbc601c58.jpg",
-    "createdAt": 1779030532202
+    "createdAt": 1779030532202,
+    "visits": 0,
+    "gscore": 4.1,
+    "updatedAt": 1779279110648
   },
   {
     "id": "1779026245011",
