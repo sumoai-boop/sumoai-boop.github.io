@@ -388,7 +388,7 @@
       </div>
       <div class="modal-row">
         <span class="modal-price" id="dPrice"></span>
-        <span class="modal-price-lbl">元</span>
+        <span class="modal-price-lbl">元／次均</span>
         <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
           <span id="dVisits" style="font-size:13px;color:rgba(255,220,160,0.8);"></span>
           <span id="dGscore" style="font-size:13px;color:rgba(255,220,160,0.8);"></span>
@@ -1017,6 +1017,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   const sortedLog=[...visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const date=sortedLog[0]?.date||new Date().toISOString().slice(0,10);
   const price=sortedLog[0]?.price||0;
+  // 平均消費
+  const pricedLog=visitLog.filter(v=>v.price>0);
+  const avgPrice=pricedLog.length?Math.round(pricedLog.reduce((s,v)=>s+v.price,0)/pricedLog.length):price;
   const visits=visitLog.length;
   let sv=parseFloat(document.getElementById('fScoreInput').value)||0;
   sv=Math.round(sv*10)/10;
@@ -1053,9 +1056,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price:avgPrice,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price:avgPrice,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,createdAt:Date.now()});
   }
   if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
