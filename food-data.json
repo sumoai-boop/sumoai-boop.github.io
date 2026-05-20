@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779281849102",
+    "name": "明水然無菜單鐵板燒 慶城店",
+    "name1": "明水然無菜單鐵板燒",
+    "name2": "慶城店",
+    "type": "鐵板燒",
+    "price": 2751,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "105臺北市松山區中正里慶城街18之1號2樓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E6%98%8E%E6%B0%B4%E7%84%B6%E7%84%A1%E8%8F%9C%E5%96%AE%E9%90%B5%E6%9D%BF%E7%87%92+%E6%85%B6%E5%9F%8E%E5%BA%97/@25.053294,121.545481,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abe7756adb1f:0xa7c55981179c6aeb!8m2!3d25.053294!4d121.545481!16s%2Fg%2F11dxddl73g?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-11-04",
+    "score": 3.4,
+    "visitLog": [
+      {
+        "date": "2025-11-04",
+        "price": 2751
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/LdVZTkCR/499c69aaa457.jpg",
+      "https://i.ibb.co/4Rcjx5R9/82cca577d104.jpg",
+      "https://i.ibb.co/8gPkGvsk/d482ccf1aea7.jpg",
+      "https://i.ibb.co/9dqM9wh/279a4a335e88.jpg"
+    ],
+    "img": "https://i.ibb.co/LdVZTkCR/499c69aaa457.jpg",
+    "createdAt": 1779281849102
+  },
+  {
     "id": "1779281483314",
     "name": "牛庵",
     "name1": "牛庵",
