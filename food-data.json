@@ -92,7 +92,7 @@
     "name": "島語 桃園台茂店",
     "name1": "島語",
     "name2": "桃園台茂店",
-    "type": "自助餐餐廳",
+    "type": "自助餐",
     "price": 2938,
     "addr": "338桃園市蘆竹區錦中里南崁路一段112號6 樓",
     "note": "公主",
@@ -107,9 +107,15 @@
     ],
     "img": "https://i.ibb.co/2YCB2nXj/7f8635ea3b5d.jpg",
     "createdAt": 1779073974361,
-    "visits": 0,
+    "visits": 1,
     "gscore": 4.8,
-    "updatedAt": 1779279194249
+    "updatedAt": 1779280156822,
+    "visitLog": [
+      {
+        "date": "2026-02-26",
+        "price": 2938
+      }
+    ]
   },
   {
     "id": "1779073820041",
