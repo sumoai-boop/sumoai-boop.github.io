@@ -677,7 +677,7 @@ function refreshTypeList(){
   const fromData=[...new Set(DATA.map(r=>r.type).filter(Boolean))];
   const custom=getCustomTypes();
   const all=[...new Set([...DEFAULT_TYPES,...custom,...fromData])].sort();
-  dl.innerHTML=all.map(v=>`<option value="${v}">`).join('');
+  dl.innerHTML=fromData.map(v=>`<option value="${v}">`).join('');
   if(tf){
     const cur=tf.value;
     // 只顯示資料中實際有的類型
