@@ -344,6 +344,9 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input class="search-input" id="searchInput" placeholder="搜尋餐廳名稱或地址…" type="text">
     </div>
+    <select class="sort-select" id="typeFilter">
+      <option value="">所有類型</option>
+    </select>
     <select class="sort-select" id="sortSelect">
       <option value="date-desc" selected>用餐日期（新→舊）</option>
       <option value="date-asc">用餐日期（舊→新）</option>
@@ -650,7 +653,7 @@ function compressImage(dataUrl,maxW,maxH,quality){
   });
 }
 
-let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc';
+let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilter='';
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
 /* ───── 餐廳類型管理 ───── */
@@ -669,12 +672,16 @@ function addCustomType(t){
 }
 function refreshTypeList(){
   const dl=document.getElementById('typeList');
+  const tf=document.getElementById('typeFilter');
   if(!dl) return;
-  // 從資料中也撈出所有曾用的類型
   const fromData=[...new Set(DATA.map(r=>r.type).filter(Boolean))];
   const custom=getCustomTypes();
   const all=[...new Set([...DEFAULT_TYPES, ...custom, ...fromData])].sort();
   dl.innerHTML=all.map(v=>`<option value="${v}">`).join('');
+  if(tf){
+    const cur=tf.value;
+    tf.innerHTML='<option value="">所有類型</option>'+all.map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('');
+  }
 }
 
 /* ───── 星等（點擊設整數，輸入框設小數，支援半星顯示） ───── */
@@ -1110,7 +1117,11 @@ function starsHTMLSmall(score){
 }
 
 function render(){
-  let d=DATA.filter(r=>{if(!q)return true;return r.name.includes(q)||(r.addr||'').includes(q)||(r.note||'').includes(q);});
+  let d=DATA.filter(r=>{
+    if(typeFilter && r.type!==typeFilter) return false;
+    if(!q) return true;
+    return r.name.includes(q)||(r.name1||'').includes(q)||(r.name2||'').includes(q)||(r.addr||'').includes(q)||(r.note||'').includes(q);
+  });
   if(sortKey==='score-desc') d.sort((a,b)=>b.score-a.score);
   else if(sortKey==='score-asc') d.sort((a,b)=>a.score-b.score);
   else if(sortKey==='price-desc') d.sort((a,b)=>(b.price||0)-(a.price||0));
@@ -1231,6 +1242,7 @@ function render(){
 
 document.getElementById('searchInput').addEventListener('input', e=>{q=e.target.value; render();});
 document.getElementById('sortSelect').addEventListener('change', e=>{sortKey=e.target.value; render();});
+document.getElementById('typeFilter').addEventListener('change', e=>{typeFilter=e.target.value; render();});
 
 (function(){
   function updateTime(){
