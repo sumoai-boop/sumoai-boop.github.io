@@ -4598,5 +4598,105 @@
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "War Machine",
+    "views": 39300000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "War Machine",
+    "titleZh": "侵略機器",
+    "country": "AU"
+  },
+  {
+    "rank": 2,
+    "title": "Jurassic World Rebirth",
+    "views": 6700000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Jurassic World Rebirth",
+    "titleZh": "侏羅紀世界：重生",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "KPop Demon Hunters",
+    "views": 4700000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "Trap House",
+    "views": 4400000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Trap House",
+    "titleZh": "毒窟風暴",
+    "country": "GB"
+  },
+  {
+    "rank": 5,
+    "title": "The Boss Baby",
+    "views": 3300000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "The Boss Baby",
+    "titleZh": "寶貝老闆：耶誕特輯",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "Jurassic World",
+    "views": 3200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Jurassic World",
+    "titleZh": "侏羅紀世界：重生",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "Hierarchy",
+    "views": 3200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Hierarchy",
+    "titleZh": "",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Jurassic World: Dominion",
+    "views": 2800000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Jurassic World: Dominion",
+    "titleZh": "侏羅紀世界：統霸天下",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "The Karate Kid",
+    "views": 2700000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "The Karate Kid",
+    "titleZh": "功夫夢",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Jurassic World: Fallen Kingdom",
+    "views": 2500000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Jurassic World: Fallen Kingdom",
+    "titleZh": "侏羅紀世界：殞落國度",
+    "country": "US"
   }
 ]
