@@ -137,7 +137,10 @@
       "https://i.ibb.co/ymVGCRDg/e21c25ff5393.jpg"
     ],
     "img": "https://i.ibb.co/Gfmx5CZ2/4fa3bfa320a8.jpg",
-    "createdAt": 1779073507162
+    "createdAt": 1779073507162,
+    "visits": 0,
+    "gscore": 4.5,
+    "updatedAt": 1779279162433
   },
   {
     "id": "1779073246755",
