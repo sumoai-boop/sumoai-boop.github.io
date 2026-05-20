@@ -307,7 +307,7 @@
     "name": "Lazy Pasta慵懶義式廚房 信義市府店",
     "name1": "Lazy Pasta慵懶義式廚房",
     "name2": "信義市府店",
-    "type": "意大利餐廳",
+    "type": "義大利",
     "price": 1202,
     "addr": "110臺北市信義區忠孝東路五段71巷30號1樓",
     "note": "公主",
@@ -320,8 +320,14 @@
     ],
     "img": "https://i.ibb.co/WNk2wJXg/d67b154b5fea.jpg",
     "createdAt": 1779026171815,
-    "updatedAt": 1779279093144,
-    "visits": 0,
-    "gscore": 4.6
+    "updatedAt": 1779280217327,
+    "visits": 1,
+    "gscore": 4.6,
+    "visitLog": [
+      {
+        "date": "2026-05-02",
+        "price": 1202
+      }
+    ]
   }
 ]
