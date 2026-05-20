@@ -292,7 +292,7 @@
     "name": "Phở Wild越式生牛肉河粉 宜蘭新月店",
     "name1": "Phở Wild越式生牛肉河粉",
     "name2": "宜蘭新月店",
-    "type": "越式河粉餐廳",
+    "type": "越式河粉",
     "price": 180,
     "addr": "260宜蘭縣宜蘭市民權里民權新路61號1樓",
     "note": "越野牛肉河粉",
@@ -304,9 +304,15 @@
     ],
     "img": "https://i.ibb.co/pr2rDBKc/0f1a26482ab3.jpg",
     "createdAt": 1779026245011,
-    "updatedAt": 1779279080368,
-    "visits": 0,
-    "gscore": 4.7
+    "updatedAt": 1779280235439,
+    "visits": 1,
+    "gscore": 4.7,
+    "visitLog": [
+      {
+        "date": "2026-05-17",
+        "price": 180
+      }
+    ]
   },
   {
     "id": "1779026171815",
