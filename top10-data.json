@@ -4798,5 +4798,105 @@
     "titleEn": "Jurassic World Rebirth",
     "titleZh": "侏羅紀世界：重生",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Peaky Blinders: The Immortal Man",
+    "views": 25300000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Peaky Blinders: The Immortal Man",
+    "titleZh": "浴血黑幫：不朽傳奇",
+    "country": "GB"
+  },
+  {
+    "rank": 2,
+    "title": "War Machine",
+    "views": 18000000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "War Machine",
+    "titleZh": "侵略機器",
+    "country": "AU"
+  },
+  {
+    "rank": 3,
+    "title": "Louis Theroux: Inside the Manosphere",
+    "views": 6300000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Louis Theroux: Inside the Manosphere",
+    "titleZh": "路易泰魯：解構男性圈",
+    "country": "GB"
+  },
+  {
+    "rank": 4,
+    "title": "KPop Demon Hunters",
+    "views": 5400000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "Gaslit By My Husband: The Morgan Metzer Story",
+    "views": 5200000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Gaslit By My Husband: The Morgan Metzer Story",
+    "titleZh": "我丈夫的煤氣燈：摩根·梅澤爾的故事",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "Nobody 2",
+    "views": 4900000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Nobody 2",
+    "titleZh": "無名弒2",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "27 Dresses",
+    "views": 3900000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "27 Dresses",
+    "titleZh": "27件禮服的祕密",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Double Jeopardy",
+    "views": 3300000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Double Jeopardy",
+    "titleZh": "致命追緝令",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Shark Tale",
+    "views": 3300000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "Shark Tale",
+    "titleZh": "鯊魚黑幫",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "The Bad Guardian",
+    "views": 2900000,
+    "week": "3/16/26 - 3/22/26",
+    "cat": "Movies|English",
+    "titleEn": "The Bad Guardian",
+    "titleZh": "劣質監護人",
+    "country": "US"
   }
 ]
