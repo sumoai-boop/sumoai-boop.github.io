@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779282062114",
+    "name": "INPARADISE 饗饗 微風信義店",
+    "name1": "INPARADISE 饗饗",
+    "name2": "微風信義店",
+    "type": "自助餐",
+    "price": 4378,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "110臺北市信義區興雅里忠孝東路五段68號微風信義46樓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/INPARADISE+%E9%A5%97%E9%A5%97+%E5%BE%AE%E9%A2%A8%E4%BF%A1%E7%BE%A9%E5%BA%97/@25.0405147,121.5645888,17z/data=!3m2!4b1!5s0x3442abbbebb04557:0x86260156b660bfa8!4m6!3m5!1s0x3442abbbeadeeae9:0x78dbb9243e9c680a!8m2!3d25.0405099!4d121.5671637!16s%2Fg%2F11g8fl1vjd?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-08-24",
+    "score": 4.7,
+    "visitLog": [
+      {
+        "date": "2025-08-24",
+        "price": 4378
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/RG6Sc31g/9cf781d4c6d1.jpg",
+      "https://i.ibb.co/fd1xz8v4/9d934e41103e.jpg",
+      "https://i.ibb.co/b58QN3C8/bae734f2ae56.jpg"
+    ],
+    "img": "https://i.ibb.co/RG6Sc31g/9cf781d4c6d1.jpg",
+    "createdAt": 1779282062114
+  },
+  {
     "id": "1779281849102",
     "name": "明水然無菜單鐵板燒 慶城店",
     "name1": "明水然無菜單鐵板燒",
