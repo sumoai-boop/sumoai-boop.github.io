@@ -148,7 +148,7 @@
     "name": "一幸拉麵 中和店",
     "name1": "一幸拉麵",
     "name2": "中和店",
-    "type": "拉麵店",
+    "type": "拉麵",
     "price": 235,
     "addr": "235新北市中和區德穗里莒光路72號",
     "note": "",
@@ -160,9 +160,15 @@
     ],
     "img": "https://i.ibb.co/gMY65TZf/5c1122cb7528.jpg",
     "createdAt": 1779073820041,
-    "visits": 0,
+    "visits": 1,
     "gscore": 4.8,
-    "updatedAt": 1779279183105
+    "updatedAt": 1779280769127,
+    "visitLog": [
+      {
+        "date": "2026-03-09",
+        "price": 235
+      }
+    ]
   },
   {
     "id": "1779073669441",
