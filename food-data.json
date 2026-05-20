@@ -1,5 +1,25 @@
 [
   {
+    "id": "1779279654730",
+    "name": "涮乃葉 信義遠百店",
+    "name1": "涮乃葉",
+    "name2": "信義遠百店",
+    "type": "涮涮鍋",
+    "price": 1793,
+    "visits": 0,
+    "gscore": 4.2,
+    "addr": "110臺北市信義區西村里松仁路58號7樓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E6%B6%AE%E4%B9%83%E8%91%89+%E4%BF%A1%E7%BE%A9%E9%81%A0%E7%99%BE%E5%BA%97/@25.0368823,121.5681356,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abc94a673925:0x5862b2fd35913397!8m2!3d25.0368823!4d121.5681356!16s%2Fg%2F11jn4ks17j?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-01-31",
+    "score": 3.6,
+    "imgs": [
+      "https://i.ibb.co/9HHP6X7j/de2c2ec017d8.jpg"
+    ],
+    "img": "https://i.ibb.co/9HHP6X7j/de2c2ec017d8.jpg",
+    "createdAt": 1779279654730
+  },
+  {
     "id": "1779098060207",
     "name": "週末炸雞俱樂部 信義店",
     "name1": "週末炸雞俱樂部",
