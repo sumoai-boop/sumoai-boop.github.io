@@ -308,6 +308,13 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 
 <!-- RECORDS -->
 <div id="tab-records" class="section">
+  <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
+    <button class="cat-btn active" data-cat="all" onclick="switchRecordCat(this)">全部</button>
+    <button class="cat-btn" data-cat="Movies|English" onclick="switchRecordCat(this)">🎬 電影</button>
+    <button class="cat-btn" data-cat="Movies|Non-English" onclick="switchRecordCat(this)">🌍 非英語電影</button>
+    <button class="cat-btn" data-cat="Shows|English" onclick="switchRecordCat(this)">📺 影集</button>
+    <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchRecordCat(this)">🌏 非英語影集</button>
+  </div>
   <div id="records-list"></div>
 </div>
 
@@ -870,16 +877,28 @@ function renderDashboard() {
   }).join('') : '<div class="empty">尚無資料</div>';
 }
 
+let currentRecordCat = 'all';
+
+function switchRecordCat(btn) {
+  document.querySelectorAll('#tab-records .cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRecordCat = btn.dataset.cat;
+  renderRecords();
+}
+
 function renderRecords() {
-  const weeks = [...new Set(db.map(e => e.week))].sort().reverse();
+  const filteredDb = currentRecordCat === 'all' ? db : db.filter(e => e.cat === currentRecordCat);
+  const weeks = [...new Set(filteredDb.map(e => e.week))].sort((a,b) => parseWeekDate(b) - parseWeekDate(a));
   const list  = document.getElementById('records-list');
   if (!weeks.length) { list.innerHTML = '<div class="empty">尚無記錄</div>'; return; }
   list.innerHTML = weeks.map(w => {
-    const cats  = [...new Set(db.filter(e => e.week === w).map(e => e.cat))];
-    const total = db.filter(e => e.week === w).length;
+    const cats  = currentRecordCat === 'all'
+      ? [...new Set(db.filter(e => e.week === w).map(e => e.cat))]
+      : [currentRecordCat];
+    const total = filteredDb.filter(e => e.week === w).length;
     return '<div class="week-block">' +
       '<div class="week-header" onclick="toggleWeek(this)">' +
-        '<div><div class="week-title">' + w + '</div><div class="week-meta">' + cats.length + ' 個類別 · ' + total + ' 筆記錄</div></div>' +
+        '<div><div class="week-title">' + w + '</div><div class="week-meta">' + total + ' 筆記錄</div></div>' +
         '<div style="display:flex;align-items:center;gap:12px">' +
           '<button class="del-btn" title="刪除此週" onclick="event.stopPropagation();deleteWeek(\'' + w.replace(/'/g,"\\'") + '\')">✕</button>' +
           '<span class="week-toggle">▾</span>' +
@@ -888,8 +907,16 @@ function renderRecords() {
       '<div class="week-body">' +
         cats.map(cat => {
           const items = db.filter(e => e.week===w && e.cat===cat).sort((a,b) => a.rank - b.rank);
-          return '<div class="cat-section"><div class="cat-label">' + (catMap[cat]||cat) + '</div>' +
-            items.map(e => '<div class="rank-row"><span class="rank-num">' + e.rank + '</span><span style="flex:1;font-size:13px">' + e.title + '</span><span style="font-size:12px;color:var(--muted)">' + fmtViews(e.views) + '</span></div>').join('') +
+          if (!items.length) return '';
+          const catHeader = currentRecordCat === 'all' ? '<div class="cat-label">' + (catMap[cat]||cat) + '</div>' : '';
+          return '<div class="cat-section">' + catHeader +
+            items.map(e => {
+              const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
+              const zh   = e.titleZh ? '<div style="font-size:11px;color:var(--muted);margin-top:1px;">' + e.titleZh + '</div>' : '';
+              return '<div class="rank-row"><span class="rank-num">' + e.rank + '</span>' +
+                '<div style="flex:1;min-width:0"><div style="font-size:13px;">' + flag + e.title + '</div>' + zh + '</div>' +
+                '<span style="font-size:12px;color:var(--muted);white-space:nowrap;">' + fmtViews(e.views) + '</span></div>';
+            }).join('') +
             '</div>';
         }).join('') +
       '</div></div>';
