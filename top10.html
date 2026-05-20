@@ -177,6 +177,17 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
 .ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
+.edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.edit-modal-overlay.open{display:flex;}
+.edit-modal{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:1.5rem;width:420px;max-width:92vw;}
+.edit-modal h3{font-size:15px;font-weight:500;margin-bottom:1rem;color:var(--text);}
+.edit-field{margin-bottom:12px;}
+.edit-field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;}
+.edit-field input{width:100%;padding:7px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+.edit-field input:focus{border-color:var(--red);}
+.edit-btn-row{display:flex;gap:8px;margin-top:1rem;}
+.rec-edit-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 6px;transition:color .2s;line-height:1;}
+.rec-edit-btn:hover{color:var(--text);}
 .rank-row{cursor:pointer;}
 .rank-row:hover .rank-title-text{color:#E50914;}
 .detail-panel{display:none;padding:8px 0 4px 34px;border-bottom:1px solid var(--border);}
@@ -320,6 +331,22 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 
 </main>
 
+<!-- 編輯記錄 Modal -->
+<div class="edit-modal-overlay" id="editModalOverlay">
+  <div class="edit-modal">
+    <h3>✎ 編輯記錄</h3>
+    <div class="edit-field"><label>片名（英文）</label><input type="text" id="edit-title" readonly style="color:var(--muted);"></div>
+    <div class="edit-field"><label>中文片名</label><input type="text" id="edit-titleZh" placeholder="留空則顯示英文片名"></div>
+    <div class="edit-field"><label>國家代碼（如 KR 或 KR,US）</label><input type="text" id="edit-country" placeholder="KR / TH / IN,US"></div>
+    <div class="edit-field"><label>觀看數</label><input type="number" id="edit-views" placeholder="38700000"></div>
+    <div class="edit-btn-row">
+      <button class="btn-red" onclick="saveEditRecord()">儲存</button>
+      <button class="btn-ghost" onclick="closeEditModal()">取消</button>
+    </div>
+    <div id="edit-status" class="status-box" style="display:none;margin-top:10px;"></div>
+  </div>
+</div>
+
 <script>
 
 const SUMOAI_TOKEN_KEY = 'sumoai_gh_token';
@@ -440,6 +467,13 @@ function parseWeekDate(w) {
   const part = w.split(' - ')[0].trim();
   const [m, d, y] = part.split('/').map(Number);
   return new Date(2000 + (y||0), (m||1) - 1, d||1).getTime();
+}
+
+function getWeekNum(w) {
+  if (!w) return '';
+  const allW = [...new Set(db.map(e => e.week))].sort((a,b) => parseWeekDate(a) - parseWeekDate(b));
+  const idx = allW.indexOf(w);
+  return idx >= 0 ? idx + 1 : '';
 }
 
 function toggleDetail(el) {
@@ -752,7 +786,7 @@ function renderDashboard() {
     const weekEntries = filtered.filter(e => e.title === t)
       .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
     const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">' + (e.week||'') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">W' + (getWeekNum(e.week)||'?') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
       '</div>';
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
@@ -766,7 +800,7 @@ function renderDashboard() {
     const weekEntries = filtered.filter(e => e.title === t)
       .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
     const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">' + (e.week||'') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">W' + (getWeekNum(e.week)||'?') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
       '</div>';
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
@@ -859,7 +893,7 @@ function renderDashboard() {
     const detailHtml = '<div class="detail-panel">' +
       entries.map(e =>
         '<div class="detail-week">' +
-          '<span class="detail-week-label">' + (e.week||'') + '</span>' +
+          '<span class="detail-week-label">W' + (getWeekNum(e.week)||'?') + '</span>' +
           '<span>' + (e.titleZh || e.title) + ' · 第' + e.rank + '名 · ' + fmtViews(e.views) + '</span>' +
         '</div>'
       ).join('') +
@@ -889,6 +923,10 @@ function switchRecordCat(btn) {
 function renderRecords() {
   const filteredDb = currentRecordCat === 'all' ? db : db.filter(e => e.cat === currentRecordCat);
   const weeks = [...new Set(filteredDb.map(e => e.week))].sort((a,b) => parseWeekDate(b) - parseWeekDate(a));
+  // 計算週次編號：全部週次排序（舊→新），找出每週的序號
+  const allWeeks = [...new Set(db.map(e => e.week))].sort((a,b) => parseWeekDate(a) - parseWeekDate(b));
+  const weekNumMap = {};
+  allWeeks.forEach((w, i) => { weekNumMap[w] = i + 1; });
   const list  = document.getElementById('records-list');
   if (!weeks.length) { list.innerHTML = '<div class="empty">尚無記錄</div>'; return; }
   list.innerHTML = weeks.map(w => {
@@ -896,9 +934,10 @@ function renderRecords() {
       ? [...new Set(db.filter(e => e.week === w).map(e => e.cat))]
       : [currentRecordCat];
     const total = filteredDb.filter(e => e.week === w).length;
+    const weekNum = weekNumMap[w] || '';
     return '<div class="week-block">' +
       '<div class="week-header" onclick="toggleWeek(this)">' +
-        '<div><div class="week-title">' + w + '</div><div class="week-meta">' + total + ' 筆記錄</div></div>' +
+        '<div><div class="week-title"><span style="color:var(--red);font-family:Bebas Neue,sans-serif;font-size:20px;margin-right:8px;">W' + weekNum + '</span>' + w + '</div><div class="week-meta">' + total + ' 筆記錄</div></div>' +
         '<div style="display:flex;align-items:center;gap:12px">' +
           '<button class="del-btn" title="刪除此週" onclick="event.stopPropagation();deleteWeek(\'' + w.replace(/'/g,"\\'") + '\')">✕</button>' +
           '<span class="week-toggle">▾</span>' +
@@ -913,15 +952,84 @@ function renderRecords() {
             items.map(e => {
               const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
               const zh   = e.titleZh ? '<div style="font-size:11px;color:var(--muted);margin-top:1px;">' + e.titleZh + '</div>' : '';
+              const eKey = JSON.stringify({week:e.week,cat:e.cat,title:e.title}).replace(/"/g,'&quot;');
               return '<div class="rank-row"><span class="rank-num">' + e.rank + '</span>' +
                 '<div style="flex:1;min-width:0"><div style="font-size:13px;">' + flag + e.title + '</div>' + zh + '</div>' +
-                '<span style="font-size:12px;color:var(--muted);white-space:nowrap;">' + fmtViews(e.views) + '</span></div>';
+                '<div style="display:flex;align-items:center;gap:6px;">' +
+                  '<span style="font-size:12px;color:var(--muted);white-space:nowrap;">' + fmtViews(e.views) + '</span>' +
+                  '<button class="rec-edit-btn" title="編輯" onclick="openEditModal(' + eKey + ')">✎</button>' +
+                '</div></div>';
             }).join('') +
             '</div>';
         }).join('') +
       '</div></div>';
   }).join('');
 }
+
+let _editTarget = null;
+
+function openEditModal(key) {
+  const e = db.find(x => x.week===key.week && x.cat===key.cat && x.title===key.title);
+  if (!e) return;
+  _editTarget = e;
+  document.getElementById('edit-title').value   = e.title || '';
+  document.getElementById('edit-titleZh').value  = e.titleZh || '';
+  document.getElementById('edit-country').value  = e.country || '';
+  document.getElementById('edit-views').value    = e.views || '';
+  document.getElementById('edit-status').style.display = 'none';
+  document.getElementById('editModalOverlay').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('editModalOverlay').classList.remove('open');
+  _editTarget = null;
+}
+
+async function saveEditRecord() {
+  if (!_editTarget) return;
+  const st = document.getElementById('edit-status');
+  st.style.display = 'block';
+  st.className = 'status-box';
+  st.textContent = '儲存中...';
+
+  const newTitleZh = document.getElementById('edit-titleZh').value.trim();
+  const newCountry = document.getElementById('edit-country').value.trim().toUpperCase();
+  const newViews   = parseInt(document.getElementById('edit-views').value) || _editTarget.views;
+
+  // 更新這筆記錄
+  _editTarget.titleZh = newTitleZh;
+  _editTarget.country = newCountry;
+  _editTarget.views   = newViews;
+
+  // 同步同片名所有週次的 titleZh 和 country
+  db.forEach(e => {
+    if (e.title === _editTarget.title) {
+      if (newTitleZh) e.titleZh = newTitleZh;
+      if (newCountry) e.country = newCountry;
+    }
+  });
+
+  try {
+    await ghWrite(db);
+    st.className = 'status-box ok';
+    st.textContent = '✓ 已儲存並同步';
+    setTimeout(() => {
+      closeEditModal();
+      renderRecords();
+      renderDashboard();
+    }, 800);
+  } catch(err) {
+    st.className = 'status-box err';
+    st.textContent = '儲存失敗：' + err.message;
+  }
+}
+
+// 點擊遮罩關閉
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('editModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
+  });
+});
 
 function toggleWeek(header) {
   header.nextElementSibling.classList.toggle('open');
