@@ -4898,5 +4898,105 @@
     "titleEn": "The Bad Guardian",
     "titleZh": "劣質監護人",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "Peaky Blinders: The Immortal Man",
+    "views": 19400000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "Peaky Blinders: The Immortal Man",
+    "titleZh": "浴血黑幫：不朽傳奇",
+    "country": "GB"
+  },
+  {
+    "rank": 2,
+    "title": "War Machine",
+    "views": 10300000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "War Machine",
+    "titleZh": "侵略機器",
+    "country": "AU"
+  },
+  {
+    "rank": 3,
+    "title": "Anaconda",
+    "views": 7900000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "Anaconda",
+    "titleZh": "大蟒蛇",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "KPop Demon Hunters",
+    "views": 4900000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 5,
+    "title": "The Bad Guys 2",
+    "views": 4300000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "The Bad Guys 2",
+    "titleZh": "壞蛋聯盟2",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "Minions: The Rise of Gru",
+    "views": 3900000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "Minions: The Rise of Gru",
+    "titleZh": "小小兵2：格魯的崛起",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "What Happens in Vegas",
+    "views": 3200000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "What Happens in Vegas",
+    "titleZh": "頭彩冤家",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "40 Acres",
+    "views": 3100000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "40 Acres",
+    "titleZh": "40英畝",
+    "country": "CA"
+  },
+  {
+    "rank": 9,
+    "title": "The Rise of the Red Hot Chili Peppers: Our Brother, Hillel",
+    "views": 2800000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "The Rise of the Red Hot Chili Peppers: Our Brother, Hillel",
+    "titleZh": "嗆辣紅椒成名路：好哥們希勒",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "Louis Theroux: Inside the Manosphere",
+    "views": 2400000,
+    "week": "3/23/26 - 3/29/26",
+    "cat": "Movies|English",
+    "titleEn": "Louis Theroux: Inside the Manosphere",
+    "titleZh": "路易泰魯：解構男性圈",
+    "country": "GB"
   }
 ]
