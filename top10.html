@@ -786,7 +786,7 @@ function renderDashboard() {
     const weekEntries = filtered.filter(e => e.title === t)
       .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
     const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">W' + (getWeekNum(e.week)||'?') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
       '</div>';
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
@@ -800,7 +800,7 @@ function renderDashboard() {
     const weekEntries = filtered.filter(e => e.title === t)
       .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
     const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">W' + (getWeekNum(e.week)||'?') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
       '</div>';
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
@@ -893,7 +893,7 @@ function renderDashboard() {
     const detailHtml = '<div class="detail-panel">' +
       entries.map(e =>
         '<div class="detail-week">' +
-          '<span class="detail-week-label">W' + (getWeekNum(e.week)||'?') + '</span>' +
+          '<span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span>' +
           '<span>' + (e.titleZh || e.title) + ' · 第' + e.rank + '名 · ' + fmtViews(e.views) + '</span>' +
         '</div>'
       ).join('') +
@@ -937,7 +937,7 @@ function renderRecords() {
     const weekNum = weekNumMap[w] || '';
     return '<div class="week-block">' +
       '<div class="week-header" onclick="toggleWeek(this)">' +
-        '<div><div class="week-title"><span style="color:var(--red);font-family:Bebas Neue,sans-serif;font-size:20px;margin-right:8px;">W' + weekNum + '</span>' + w + '</div><div class="week-meta">' + total + ' 筆記錄</div></div>' +
+        '<div><div class="week-title"><span style="color:var(--red);font-family:Bebas Neue,sans-serif;font-size:20px;margin-right:8px;">第' + weekNum + '週</span>' + w + '</div><div class="week-meta">' + total + ' 筆記錄</div></div>' +
         '<div style="display:flex;align-items:center;gap:12px">' +
           '<button class="del-btn" title="刪除此週" onclick="event.stopPropagation();deleteWeek(\'' + w.replace(/'/g,"\\'") + '\')">✕</button>' +
           '<span class="week-toggle">▾</span>' +
