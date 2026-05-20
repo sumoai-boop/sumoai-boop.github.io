@@ -4198,5 +4198,105 @@
     "titleEn": "Secret Mall Apartment",
     "titleZh": "秘密購物中心公寓",
     "country": "US"
+  },
+  {
+    "rank": 1,
+    "title": "The Investigation of Lucy Letby",
+    "views": 12900000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "The Investigation of Lucy Letby",
+    "titleZh": "露西萊比的調查",
+    "country": "GB"
+  },
+  {
+    "rank": 2,
+    "title": "The Rip",
+    "views": 7400000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "The Rip",
+    "titleZh": "全信沒收",
+    "country": "US"
+  },
+  {
+    "rank": 3,
+    "title": "KPop Demon Hunters",
+    "views": 6100000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US"
+  },
+  {
+    "rank": 4,
+    "title": "In the Land of Saints and Sinners",
+    "views": 5000000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "In the Land of Saints and Sinners",
+    "titleZh": "罪惡對決",
+    "country": "BE"
+  },
+  {
+    "rank": 5,
+    "title": "Sweet Home Alabama",
+    "views": 4400000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Sweet Home Alabama",
+    "titleZh": "美麗蹺家人",
+    "country": "US"
+  },
+  {
+    "rank": 6,
+    "title": "Overboard (2018)",
+    "views": 3500000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Overboard (2018)",
+    "titleZh": "小迷糊又天翻地覆",
+    "country": "US"
+  },
+  {
+    "rank": 7,
+    "title": "Mike and Dave Need Wedding Dates",
+    "views": 3200000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Mike and Dave Need Wedding Dates",
+    "titleZh": "婚禮玩很大",
+    "country": "US"
+  },
+  {
+    "rank": 8,
+    "title": "Night at the Museum",
+    "views": 3200000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Night at the Museum",
+    "titleZh": "博物館驚魂夜",
+    "country": "US"
+  },
+  {
+    "rank": 9,
+    "title": "Copshop",
+    "views": 3100000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "Copshop",
+    "titleZh": "高玩殺手",
+    "country": "US"
+  },
+  {
+    "rank": 10,
+    "title": "The Adventures of Sharkboy and Lavagirl",
+    "views": 2800000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Movies|English",
+    "titleEn": "The Adventures of Sharkboy and Lavagirl",
+    "titleZh": "立體小奇兵：鯊魚男孩與岩漿女孩",
+    "country": "US"
   }
 ]
