@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779281341291",
+    "name": "恉霜 拉麵專賣",
+    "name1": "恉霜 拉麵專賣",
+    "name2": "",
+    "type": "拉麵",
+    "price": 450,
+    "visits": 1,
+    "gscore": 4.8,
+    "addr": "104臺北市中山區正守里長安東路一段48號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%81%89%E9%9C%9C+%E6%8B%89%E9%BA%B5%E5%B0%88%E8%B3%A3/@25.0483171,121.5275575,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a90a7a0b1985:0x513b468a5c51459f!8m2!3d25.0483171!4d121.5275575!16s%2Fg%2F11x2qkwkdl?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-11-14",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2025-11-14",
+        "price": 450
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/cKP3Qrn3/bbcd9092afc2.jpg",
+      "https://i.ibb.co/ZRVbfTVD/721ee1a29215.jpg"
+    ],
+    "img": "https://i.ibb.co/cKP3Qrn3/bbcd9092afc2.jpg",
+    "createdAt": 1779281341291
+  },
+  {
     "id": "1779281022708",
     "name": "Kamekona 夏威夷鐵板燒 安和店",
     "name1": "Kamekona 夏威夷鐵板燒",
