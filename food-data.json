@@ -45,7 +45,7 @@
     "name": "品湯白色麻辣鍋 信義市府店",
     "name1": "品湯白色麻辣鍋",
     "name2": "信義市府店",
-    "type": "火鍋餐廳",
+    "type": "火鍋",
     "price": 1296,
     "addr": "110臺北市信義區興雅里基隆路一段147巷25號1樓",
     "note": "公主",
@@ -57,9 +57,15 @@
     ],
     "img": "https://i.ibb.co/fzzcrdwG/becc124e36e1.jpg",
     "createdAt": 1779083250434,
-    "visits": 9,
+    "visits": 1,
     "gscore": 4.6,
-    "updatedAt": 1779279790297
+    "updatedAt": 1779280201567,
+    "visitLog": [
+      {
+        "date": "2026-04-26",
+        "price": 1296
+      }
+    ]
   },
   {
     "id": "1779074453702",
