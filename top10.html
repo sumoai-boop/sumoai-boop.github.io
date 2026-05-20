@@ -177,6 +177,13 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
 .ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
+.rank-row{cursor:pointer;}
+.rank-row:hover .rank-title-text{color:#E50914;}
+.detail-panel{display:none;padding:8px 0 4px 34px;border-bottom:1px solid var(--border);}
+.detail-panel.open{display:block;}
+.detail-week{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.04);}
+.detail-week:last-child{border-bottom:none;}
+.detail-week-label{color:rgba(255,255,255,0.6);}
 </style>
 </head>
 <body>
@@ -419,6 +426,22 @@ function showTab(t, btn) {
   if (btn) btn.classList.add('active');
   if (t === 'dashboard') renderDashboard();
   if (t === 'records') renderRecords();
+}
+
+function parseWeekDate(w) {
+  if (!w) return 0;
+  const part = w.split(' - ')[0].trim();
+  const [m, d, y] = part.split('/').map(Number);
+  return new Date(2000 + (y||0), (m||1) - 1, d||1).getTime();
+}
+
+function toggleDetail(el) {
+  const panel = el.nextElementSibling;
+  if (!panel || !panel.classList.contains('detail-panel')) return;
+  const isOpen = panel.classList.contains('open');
+  // 關閉所有其他展開的
+  document.querySelectorAll('.detail-panel.open').forEach(p => p.classList.remove('open'));
+  if (!isOpen) panel.classList.add('open');
 }
 
 function fmtViews(n) {
@@ -694,7 +717,13 @@ function renderDashboard() {
     const disp = v.titleZh || t;
     const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + t + '</div>' : '';
     const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
-    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>';
+    // 找出這部片所有上榜週次（依日期新→舊）
+    const weekEntries = filtered.filter(e => e.title === t)
+      .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
+    const detailHtml = '<div class="detail-panel">' +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">' + (e.week||'') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      '</div>';
+    return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const sortV = Object.entries(titleMap).sort((a,b) => b[1].views - a[1].views).slice(0,10);
@@ -703,7 +732,12 @@ function renderDashboard() {
     const disp = v.titleZh || t;
     const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + t + '</div>' : '';
     const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
-    return '<div class="rank-row"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>';
+    const weekEntries = filtered.filter(e => e.title === t)
+      .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
+    const detailHtml = '<div class="detail-panel">' +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">' + (e.week||'') + '</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      '</div>';
+    return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">尚無資料</div>';
 
   const ones = filtered.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
@@ -713,14 +747,7 @@ function renderDashboard() {
     const key = e.week + '|' + e.cat;
     if (!onesMap[key] || (e.views||0) > (onesMap[key].views||0)) onesMap[key] = e;
   });
-  function parseWeek(w) {
-    // 格式：'5/4/26 - 5/10/26'，取前半段解析
-    if (!w) return 0;
-    const part = w.split(' - ')[0].trim();
-    const [m, d, y] = part.split('/').map(Number);
-    return new Date(2000 + y, m - 1, d).getTime();
-  }
-  const onesSorted = Object.values(onesMap).sort((a,b) => parseWeek(b.week) - parseWeek(a.week));
+  const onesSorted = Object.values(onesMap).sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
   document.getElementById('ones-list').innerHTML = onesSorted.length ? onesSorted.map(e => {
     const disp = e.titleZh || e.title;
     const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
