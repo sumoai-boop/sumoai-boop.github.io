@@ -423,7 +423,7 @@
     "name2": "信義店",
     "type": "炸雞餐館",
     "price": 815,
-    "visits": 0,
+    "visits": 1,
     "gscore": 4.3,
     "addr": "110臺北市信義區中興里基隆路二段74號",
     "note": "",
@@ -434,7 +434,15 @@
       "https://i.ibb.co/TD7xm1rs/5d20307ef1d0.jpg"
     ],
     "img": "https://i.ibb.co/TD7xm1rs/5d20307ef1d0.jpg",
-    "createdAt": 1779098060207
+    "createdAt": 1779098060207,
+    "meal": "晚餐",
+    "visitLog": [
+      {
+        "date": "2026-02-14",
+        "price": 815
+      }
+    ],
+    "updatedAt": 1779341652606
   },
   {
     "id": "1779083250434",
