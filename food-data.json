@@ -4,7 +4,7 @@
     "name": "宏記原士林知高飯",
     "name1": "宏記原士林知高飯",
     "name2": "",
-    "type": "豬腳",
+    "type": "豬腳便當",
     "meal": "",
     "price": 130,
     "visits": 1,
@@ -25,7 +25,8 @@
       "https://i.ibb.co/m5jCkn1s/fcead4632a7a.jpg"
     ],
     "img": "https://i.ibb.co/m5jCkn1s/fcead4632a7a.jpg",
-    "createdAt": 1779374743460
+    "createdAt": 1779374743460,
+    "updatedAt": 1779374777776
   },
   {
     "id": "1779374603647",
