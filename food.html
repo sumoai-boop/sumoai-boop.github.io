@@ -153,7 +153,9 @@
   .modal-addr{font-size:13px;color:rgba(255,220,160,0.7);letter-spacing:0.04em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
   .modal-addr svg{opacity:0.6;flex-shrink:0;}
   .modal-row{display:flex;gap:16px;margin-bottom:6px;align-items:center;}
-  .modal-price{font-family:'Cormorant Garamond',serif;font-size:32px;color:#FFD200;font-weight:600;letter-spacing:0.01em;}
+  .modal-price{font-family:'Cormorant Garamond',serif;color:#FFD200;font-weight:600;letter-spacing:0.01em;}
+  .modal-price .price-prefix{font-size:26px;}
+  .modal-price .price-num{font-size:40px;}
   .modal-price-lbl{font-size:12px;color:rgba(255,220,160,0.6);letter-spacing:0.1em;text-transform:uppercase;margin-left:4px;align-self:flex-end;margin-bottom:3px;}
   .modal-stars{display:flex;gap:3px;margin-left:0;}
   .modal-stars span{font-size:22px;}
@@ -1122,7 +1124,7 @@ function openDetail(item){
     const priced = item.visitLog.filter(v=>v.price>0);
     if(priced.length) displayPrice = Math.round(priced.reduce((s,v)=>s+v.price,0)/priced.length);
   }
-  document.getElementById('dPrice').textContent=displayPrice?'NT$'+displayPrice.toLocaleString():'—';
+  document.getElementById('dPrice').innerHTML=displayPrice?`<span class="price-prefix">NT$</span><span class="price-num">${displayPrice.toLocaleString()}</span>`:'—';
   document.getElementById('dVisits').textContent=item.visits>1?`🔁 共 ${item.visits} 次`:(item.visits===1?'':item.visits?`🔁 共 ${item.visits} 次`:'');
   document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
   // 用餐記錄列表
