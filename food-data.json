@@ -1,5 +1,31 @@
 [
   {
+    "id": "1779335501326",
+    "name": "炸牛元村 遠百信義A13店",
+    "name1": "炸牛元村",
+    "name2": "遠百信義A13店",
+    "type": "日式牛扒",
+    "price": 1276,
+    "visits": 1,
+    "gscore": 4.8,
+    "addr": "110臺北市信義區西村里松仁路58號10F",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E7%82%B8%E7%89%9B%E5%85%83%E6%9D%91+%E9%81%A0%E7%99%BE%E4%BF%A1%E7%BE%A9A13%E5%BA%97/@25.0368737,121.5679503,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abd73406020f:0x108ae556320dab25!8m2!3d25.0368737!4d121.5679503!16s%2Fg%2F11j7y1tcjg?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-11-16",
+    "score": 3.4,
+    "visitLog": [
+      {
+        "date": "2025-11-16",
+        "price": 1276
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/ycV62GtG/d16bb8fbee1a.jpg"
+    ],
+    "img": "https://i.ibb.co/ycV62GtG/d16bb8fbee1a.jpg",
+    "createdAt": 1779335501326
+  },
+  {
     "id": "1779333670292",
     "name": "林家蔬菜羊肉爐",
     "name1": "林家蔬菜羊肉爐",
