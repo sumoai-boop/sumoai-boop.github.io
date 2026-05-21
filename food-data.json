@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779337803742",
+    "name": "Bon Jour 請慢用 法國小皇后",
+    "name1": "Bon Jour 請慢用 法國小皇后",
+    "name2": "",
+    "type": "法國",
+    "price": 3100,
+    "visits": 1,
+    "gscore": 4.6,
+    "addr": "105臺北市松山區東光里南京東路五段23巷6弄25號1樓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/Bon+Jour+%E8%AB%8B%E6%85%A2%E7%94%A8+%E6%B3%95%E5%9C%8B%E5%B0%8F%E7%9A%87%E5%90%8E/@25.0522353,121.5589785,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abb94a3da17f:0xf6675dd5b441886e!8m2!3d25.0522353!4d121.5589785!16s%2Fg%2F1q67jtxdm?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-08-06",
+    "score": 4.7,
+    "visitLog": [
+      {
+        "date": "2025-08-06",
+        "price": 3100
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/N6m1M4pb/e1a6fcae9da5.jpg",
+      "https://i.ibb.co/bjLTD1Zm/cdf15f9a073e.jpg",
+      "https://i.ibb.co/pqZt7wN/836fee8c4414.jpg",
+      "https://i.ibb.co/N6hL8LSr/fb4a86920130.jpg"
+    ],
+    "img": "https://i.ibb.co/N6m1M4pb/e1a6fcae9da5.jpg",
+    "createdAt": 1779337803742
+  },
+  {
     "id": "1779336455354",
     "name": "朱記餡餅粥店 遠東百貨信義A13店",
     "name1": "朱記餡餅粥店",
