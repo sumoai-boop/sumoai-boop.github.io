@@ -1,5 +1,40 @@
 [
   {
+    "id": "1779370376795",
+    "name": "꿉당烤黨Ggupdang 聖水店",
+    "name1": "꿉당烤黨Ggupdang",
+    "name2": "聖水店",
+    "type": "韓國",
+    "meal": "",
+    "price": 667,
+    "visits": 2,
+    "gscore": 4.4,
+    "addr": "南韓 Seoul, Seongdong-gu, Seongsui-ro 20-gil, 10 경협회관 104호",
+    "note": "公主出錢",
+    "maps": "https://www.google.com/maps/place/Ggupdang+Seongsu/@37.5432243,127.057537,17z/data=!3m1!4b1!4m6!3m5!1s0x357ca55613346689:0xe0e21f5e02b1a231!8m2!3d37.5432243!4d127.057537!16s%2Fg%2F11k95prw4c?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-07",
+    "score": 4.6,
+    "visitLog": [
+      {
+        "date": "2026-04-07",
+        "meal": "晚餐",
+        "price": 0
+      },
+      {
+        "date": "2025-07-11",
+        "meal": "晚餐",
+        "price": 667
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/7xZMQWL4/0d215fd68a35.jpg",
+      "https://i.ibb.co/DgrTwWNn/37bdaa8473d6.jpg",
+      "https://i.ibb.co/n8CDmdtV/15f32c09f753.jpg"
+    ],
+    "img": "https://i.ibb.co/7xZMQWL4/0d215fd68a35.jpg",
+    "createdAt": 1779370376795
+  },
+  {
     "id": "1779369964857",
     "name": "士林十全排骨店",
     "name1": "士林十全排骨店",
