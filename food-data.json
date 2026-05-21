@@ -674,14 +674,16 @@
     ],
     "img": "https://i.ibb.co/9HHP6X7j/de2c2ec017d8.jpg",
     "createdAt": 1779279654730,
-    "updatedAt": 1779341656656,
+    "updatedAt": 1779369177324,
     "visitLog": [
       {
         "date": "2026-01-31",
+        "meal": "晚餐",
         "price": 1793
       },
       {
         "date": "2026-02-07",
+        "meal": "晚餐",
         "price": 1782
       }
     ],
