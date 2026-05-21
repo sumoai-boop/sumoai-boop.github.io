@@ -1,9 +1,9 @@
 [
   {
     "id": "1779373162069",
-    "name": "豬肉商會 강남 돼지상회 무한리필 홍대점",
+    "name": "豬肉商會 돼지상회",
     "name1": "豬肉商會",
-    "name2": "강남 돼지상회 무한리필 홍대점",
+    "name2": "돼지상회",
     "type": "韓國",
     "meal": "",
     "price": 508,
@@ -25,7 +25,8 @@
       "https://i.ibb.co/GvXydJJq/8c1d9e47a891.jpg"
     ],
     "img": "https://i.ibb.co/GvXydJJq/8c1d9e47a891.jpg",
-    "createdAt": 1779373162069
+    "createdAt": 1779373162069,
+    "updatedAt": 1779373187889
   },
   {
     "id": "1779373035205",
