@@ -1095,7 +1095,13 @@ function openDetail(item){
   }
   document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
   document.getElementById('dDateText').textContent=item.date||'未填寫日期';
-  document.getElementById('dPrice').textContent=item.price?'NT$'+item.price.toLocaleString():'—';
+  // 金額：從 visitLog 即時算平均，沒有 visitLog 就用 price
+  let displayPrice = item.price;
+  if(item.visitLog && item.visitLog.length > 0){
+    const priced = item.visitLog.filter(v=>v.price>0);
+    if(priced.length) displayPrice = Math.round(priced.reduce((s,v)=>s+v.price,0)/priced.length);
+  }
+  document.getElementById('dPrice').textContent=displayPrice?'NT$'+displayPrice.toLocaleString():'—';
   document.getElementById('dVisits').textContent=item.visits>1?`🔁 共 ${item.visits} 次`:(item.visits===1?'':item.visits?`🔁 共 ${item.visits} 次`:'');
   document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
   // 用餐記錄列表
