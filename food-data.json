@@ -368,8 +368,8 @@
     "name": "家鴻燒鵝 龍江店",
     "name1": "家鴻燒鵝",
     "name2": "龍江店",
-    "type": "燒臘",
-    "meal": "午餐",
+    "type": "燒臘便當",
+    "meal": "",
     "price": 130,
     "visits": 1,
     "gscore": 3.8,
@@ -381,6 +381,7 @@
     "visitLog": [
       {
         "date": "2026-05-21",
+        "meal": "",
         "price": 130
       }
     ],
@@ -388,7 +389,8 @@
       "https://i.ibb.co/F49hz0St/fdbb453762b2.jpg"
     ],
     "img": "https://i.ibb.co/F49hz0St/fdbb453762b2.jpg",
-    "createdAt": 1779368712391
+    "createdAt": 1779368712391,
+    "updatedAt": 1779374765279
   },
   {
     "id": "1779368486510",
