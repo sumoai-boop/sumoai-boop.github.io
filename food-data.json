@@ -1,5 +1,35 @@
 [
   {
+    "id": "1779370565593",
+    "name": "Jay's Pizza",
+    "name1": "Jay's Pizza",
+    "name2": "",
+    "type": "披薩",
+    "meal": "",
+    "price": 0,
+    "visits": 1,
+    "gscore": 4.6,
+    "addr": "南韓 Seoul, Mapo-gu, World Cup buk-ro, 41 제이스피자 1층",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%EC%A0%9C%EC%9D%B4%EC%8A%A4%ED%94%BC%EC%9E%90(jayspizza)/@37.5579643,126.9173539,16z/data=!4m14!1m7!3m6!1s0x357ca55613346689:0xe0e21f5e02b1a231!2sGgupdang+Seongsu!8m2!3d37.5432243!4d127.057537!16s%2Fg%2F11k95prw4c!3m5!1s0x357c997d157ff61f:0x277ed9488ec02eeb!8m2!3d37.5578952!4d126.9181114!16s%2Fg%2F11y60bldgq?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-21",
+    "score": 4.5,
+    "visitLog": [
+      {
+        "date": "2026-05-21",
+        "meal": "",
+        "price": 0
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/5gpQ3D3H/f83e1148f80f.jpg",
+      "https://i.ibb.co/XkKZYpGm/6a2efc7cb5e0.jpg",
+      "https://i.ibb.co/XGzB16P/3573eb908dbb.jpg"
+    ],
+    "img": "https://i.ibb.co/5gpQ3D3H/f83e1148f80f.jpg",
+    "createdAt": 1779370565593
+  },
+  {
     "id": "1779370376795",
     "name": "꿉당烤黨Ggupdang 聖水店",
     "name1": "꿉당烤黨Ggupdang",
