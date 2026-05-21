@@ -351,9 +351,16 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input class="search-input" id="searchInput" placeholder="搜尋餐廳名稱或地址…" type="text">
     </div>
-    <select class="sort-select" id="typeFilter">
-      <option value="">所有類型</option>
-    </select>
+    <!-- 自訂多選類型篩選 -->
+    <div id="typeFilterWrap" style="position:relative;">
+      <button id="typeFilterBtn" class="sort-select" style="cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;" type="button">
+        <span id="typeFilterLabel">所有類型</span>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1 3l4 4 4-4"/></svg>
+      </button>
+      <div id="typeFilterDropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:160px;background:#1a1a1a;border:1px solid rgba(255,180,80,0.2);border-radius:10px;padding:6px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.6);">
+        <div id="typeFilterList" style="display:flex;flex-direction:column;gap:2px;"></div>
+      </div>
+    </div>
     <select class="sort-select" id="sortSelect">
       <option value="date-desc" selected>用餐日期（新→舊）</option>
       <option value="date-asc">用餐日期（舊→新）</option>
@@ -656,7 +663,7 @@ function compressImage(dataUrl,maxW,maxH,quality){
   });
 }
 
-let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilter='';
+let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set();
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
 /* ───── 餐廳類型管理 ───── */
@@ -675,18 +682,55 @@ function addCustomType(t){
 }
 function refreshTypeList(){
   const dl=document.getElementById('typeList');
-  const tf=document.getElementById('typeFilter');
   if(!dl) return;
   const fromData=[...new Set(DATA.map(r=>r.type).filter(Boolean))];
   const custom=getCustomTypes();
   const all=[...new Set([...DEFAULT_TYPES,...custom,...fromData])].sort();
   dl.innerHTML=fromData.map(v=>`<option value="${v}">`).join('');
-  if(tf){
-    const cur=tf.value;
-    // 只顯示資料中實際有的類型
-    const inUse=[...new Set(DATA.map(r=>r.type).filter(Boolean))].sort();
-    tf.innerHTML='<option value="">所有類型</option>'+inUse.map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('');
-  }
+  // 多選 UI
+  const list=document.getElementById('typeFilterList');
+  if(!list) return;
+  const inUse=[...new Set(DATA.map(r=>r.type).filter(Boolean))].sort();
+  list.innerHTML='';
+  // 全選按鈕
+  const allBtn=document.createElement('div');
+  allBtn.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:11px;color:'+(typeFilterSet.size===0?'#fff':'rgba(255,220,160,0.5)')+';background:'+(typeFilterSet.size===0?'rgba(232,98,42,0.3)':'transparent')+';';
+  allBtn.textContent='全部';
+  allBtn.onclick=()=>{ typeFilterSet.clear(); updateTypeFilterUI(); render(); };
+  list.appendChild(allBtn);
+  inUse.forEach(t=>{
+    const item=document.createElement('div');
+    const active=typeFilterSet.has(t);
+    item.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:11px;display:flex;justify-content:space-between;align-items:center;color:'+(active?'#fff':'rgba(255,220,160,0.6)')+';background:'+(active?'rgba(232,98,42,0.25)':'transparent')+';';
+    item.innerHTML=`<span>${t}</span>${active?'<span style="color:#E8622A;">✓</span>':''}`;
+    item.onclick=()=>{
+      if(typeFilterSet.has(t)) typeFilterSet.delete(t); else typeFilterSet.add(t);
+      updateTypeFilterUI(); render();
+    };
+    list.appendChild(item);
+  });
+}
+function updateTypeFilterUI(){
+  const btn=document.getElementById('typeFilterLabel');
+  const list=document.getElementById('typeFilterList');
+  if(!btn) return;
+  if(typeFilterSet.size===0){ btn.textContent='所有類型'; }
+  else if(typeFilterSet.size===1){ btn.textContent=[...typeFilterSet][0]; }
+  else { btn.textContent=`${typeFilterSet.size} 種類型`; }
+  // 重繪 list active 狀態
+  if(list) list.querySelectorAll('div').forEach((el,i)=>{
+    if(i===0){ // 全部
+      el.style.color=typeFilterSet.size===0?'#fff':'rgba(255,220,160,0.5)';
+      el.style.background=typeFilterSet.size===0?'rgba(232,98,42,0.3)':'transparent';
+    } else {
+      const t=el.querySelector('span')?.textContent;
+      if(!t) return;
+      const active=typeFilterSet.has(t);
+      el.style.color=active?'#fff':'rgba(255,220,160,0.6)';
+      el.style.background=active?'rgba(232,98,42,0.25)':'transparent';
+      el.innerHTML=`<span>${t}</span>${active?'<span style="color:#E8622A;">✓</span>':''}`;
+    }
+  });
 }
 
 /* ───── 星等（點擊設整數，輸入框設小數，支援半星顯示） ───── */
@@ -1210,7 +1254,7 @@ function starsHTMLSmall(score){
 
 function render(){
   let d=DATA.filter(r=>{
-    if(typeFilter && r.type!==typeFilter) return false;
+    if(typeFilterSet.size>0 && !typeFilterSet.has(r.type)) return false;
     if(!q) return true;
     return r.name.includes(q)||(r.name1||'').includes(q)||(r.name2||'').includes(q)||(r.addr||'').includes(q)||(r.note||'').includes(q);
   });
@@ -1337,7 +1381,16 @@ function render(){
 
 document.getElementById('searchInput').addEventListener('input', e=>{q=e.target.value; render();});
 document.getElementById('sortSelect').addEventListener('change', e=>{sortKey=e.target.value; render();});
-document.getElementById('typeFilter').addEventListener('change', e=>{typeFilter=e.target.value; render();});
+// 多選下拉開關
+document.addEventListener('DOMContentLoaded',()=>{
+  const btn=document.getElementById('typeFilterBtn');
+  const dd=document.getElementById('typeFilterDropdown');
+  if(btn&&dd){
+    btn.addEventListener('click',e=>{ e.stopPropagation(); dd.style.display=dd.style.display==='none'?'block':'none'; });
+    document.addEventListener('click',()=>{ dd.style.display='none'; });
+    dd.addEventListener('click',e=>e.stopPropagation());
+  }
+});
 
 (function(){
   function updateTime(){
