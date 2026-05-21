@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779371306746",
+    "name": "一片里脊明洞店 일편등심 명동점",
+    "name1": "一片里脊明洞店",
+    "name2": "일편등심 명동점",
+    "type": "韓國",
+    "meal": "",
+    "price": 4151,
+    "visits": 1,
+    "gscore": 4.9,
+    "addr": "南韓 Seoul, Jung District, Myeongdong 10-gil, 18 일편등심 명동점 3층",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E4%B8%80%E7%89%87%E9%87%8C%E8%84%8A%E6%98%8E%E6%B4%9E%E5%BA%97/@37.5639415,126.964492,15z/data=!4m6!3m5!1s0x357ca3d9aec466b9:0x1e657108b9c62860!8m2!3d37.5628485!4d126.9852722!16s%2Fg%2F11y3mng9b4?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-09",
+    "score": 4.4,
+    "visitLog": [
+      {
+        "date": "2026-04-09",
+        "meal": "晚餐",
+        "price": 4151
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/rKXcn1FN/5a6ff3b06a91.jpg"
+    ],
+    "img": "https://i.ibb.co/rKXcn1FN/5a6ff3b06a91.jpg",
+    "createdAt": 1779371306746
+  },
+  {
     "id": "1779371099222",
     "name": "新村奶油燉排骨 소신이쏘",
     "name1": "新村奶油燉排骨",
