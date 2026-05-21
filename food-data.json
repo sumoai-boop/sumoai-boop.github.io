@@ -1,5 +1,31 @@
 [
   {
+    "id": "1779337915800",
+    "name": "石研室 爆炒石頭火鍋 微風南山店",
+    "name1": "石研室 爆炒石頭火鍋",
+    "name2": "微風南山店",
+    "type": "涮涮鍋",
+    "price": 1002,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "110臺北市信義區西村里松智路17號 號B2",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E7%9F%B3%E7%A0%94%E5%AE%A4+%E7%88%86%E7%82%92%E7%9F%B3%E9%A0%AD%E7%81%AB%E9%8D%8B+-+%E5%BE%AE%E9%A2%A8%E5%8D%97%E5%B1%B1%E5%BA%97/@25.0343203,121.5663022,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ab5f028e5323:0x3205de6bfde56b9f!8m2!3d25.0343203!4d121.5663022!16s%2Fg%2F11h3cn2ng2?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-07-26",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2025-07-26",
+        "price": 1002
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/wFh5F74D/538a57ef5185.jpg"
+    ],
+    "img": "https://i.ibb.co/wFh5F74D/538a57ef5185.jpg",
+    "createdAt": 1779337915800
+  },
+  {
     "id": "1779337803742",
     "name": "Bon Jour 請慢用 法國小皇后",
     "name1": "Bon Jour 請慢用 法國小皇后",
