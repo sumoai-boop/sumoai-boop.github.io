@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779354248321",
+    "name": "漢堡排 嘉",
+    "name1": "漢堡排 嘉",
+    "name2": "",
+    "type": "漢堡排",
+    "meal": "晚餐",
+    "price": 592,
+    "visits": 1,
+    "gscore": 3.8,
+    "addr": "235新北市中和區員山里中山路三段122號4樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%BC%A2%E5%A0%A1%E6%8E%92+%E5%98%89/@25.0069668,121.4749549,17z/data=!3m1!5s0x3442a8272f74a955:0x6b417e4559c5603c!4m15!1m8!3m7!1s0x3442a9003fd37701:0xb7af56e0be7a6be1!2z5ryi5aCh5o6SIOWYiQ!8m2!3d25.0069668!4d121.4749549!10e5!16s%2Fg%2F11vyqfn9px!3m5!1s0x3442a9003fd37701:0xb7af56e0be7a6be1!8m2!3d25.0069668!4d121.4749549!16s%2Fg%2F11vyqfn9px?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-06-15",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2025-06-15",
+        "price": 592
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/84by4d7b/5ea1dd9c26c8.jpg"
+    ],
+    "img": "https://i.ibb.co/84by4d7b/5ea1dd9c26c8.jpg",
+    "createdAt": 1779354248322
+  },
+  {
     "id": "1779353955216",
     "name": "食尚曼谷",
     "name1": "食尚曼谷",
