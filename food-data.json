@@ -6,7 +6,7 @@
     "name2": "聖水店",
     "type": "韓國",
     "meal": "",
-    "price": 667,
+    "price": 334,
     "visits": 2,
     "gscore": 4.4,
     "addr": "南韓 Seoul, Seongdong-gu, Seongsui-ro 20-gil, 10 경협회관 104호",
@@ -18,7 +18,7 @@
       {
         "date": "2026-04-07",
         "meal": "晚餐",
-        "price": 0
+        "price": 1
       },
       {
         "date": "2025-07-11",
@@ -33,7 +33,7 @@
     ],
     "img": "https://i.ibb.co/7xZMQWL4/0d215fd68a35.jpg",
     "createdAt": 1779370376795,
-    "updatedAt": 1779370401484
+    "updatedAt": 1779370408660
   },
   {
     "id": "1779369964857",
