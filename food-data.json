@@ -232,7 +232,7 @@
     "type": "西班牙",
     "price": 2673,
     "addr": "106臺北市大安區建倫里安和路一段21巷19號",
-    "note": "",
+    "note": "公主",
     "maps": "https://www.google.com/maps/place/PS+TAPAS+%E8%A5%BF%E7%8F%AD%E7%89%99%E9%A4%90%E9%85%92%E9%A4%A8/@25.0395239,121.548663,17z/data=!3m2!4b1!5s0x3442abcf82c146f5:0x6816a0b552a005d8!4m6!3m5!1s0x3442abc5272ad579:0x2991e578f2572a1!8m2!3d25.0395191!4d121.5512379!16s%2Fg%2F1tg76rnh?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-02-21",
     "score": 4.5,
@@ -248,7 +248,7 @@
     "createdAt": 1779074453702,
     "visits": 1,
     "gscore": 4.3,
-    "updatedAt": 1779280227382,
+    "updatedAt": 1779328287683,
     "visitLog": [
       {
         "date": "2026-02-21",
