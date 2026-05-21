@@ -457,10 +457,18 @@
           <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
           <datalist id="typeList"></datalist>
         </div>
-        <!-- 用餐日期 -->
+        <!-- 用餐時段 -->
         <div class="field-group">
-        <!-- 用餐日期（移到visits列表） -->
-        <!-- 回訪次數（自動計算） -->
+          <label class="field-label">用餐時段</label>
+          <select class="field-input" id="fMeal">
+            <option value="">不指定</option>
+            <option value="早餐">🌅 早餐</option>
+            <option value="午餐">☀️ 午餐</option>
+            <option value="下午茶">🍰 下午茶</option>
+            <option value="晚餐">🌙 晚餐</option>
+            <option value="宵夜">🌃 宵夜</option>
+          </select>
+        </div>
         <!-- 我的評分 -->
         <div class="field-group">
           <label class="field-label">我的評分 <span style="opacity:0.4;font-size:9px;">可小數</span></label>
@@ -975,6 +983,7 @@ function openForm(item=null){
   document.getElementById('fName1').value=item?(item.name1||item.name||''):'';
   document.getElementById('fName2').value=item?(item.name2||''):'';
   document.getElementById('fType').value=item?(item.type||''):'';
+  document.getElementById('fMeal').value=item?(item.meal||''):'';
   document.getElementById('fGscore').value=item&&item.gscore?item.gscore:'';
   document.getElementById('fAddr').value=item?(item.addr||''):'';
   document.getElementById('fNote').value=item?(item.note||''):'';
@@ -1009,6 +1018,7 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   const gscore=parseFloat(document.getElementById('fGscore').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
   const type=document.getElementById('fType').value.trim();
+  const meal=document.getElementById('fMeal').value;
   const note=document.getElementById('fNote').value.trim();
   const maps=document.getElementById('fMaps').value.trim();
   // 讀取多筆用餐記錄
@@ -1056,9 +1066,9 @@ document.getElementById('formSave').addEventListener('click',async()=>{
 
   if(editMode&&currentId){
     const idx=DATA.findIndex(r=>r.id===currentId);
-    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,price:avgPrice,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,updatedAt:Date.now()};
+    if(idx>=0) DATA[idx]={...DATA[idx],name,name1,name2,type,meal,price:avgPrice,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,updatedAt:Date.now()};
   } else {
-    DATA.unshift({id:Date.now()+'',name,name1,name2,type,price:avgPrice,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,createdAt:Date.now()});
+    DATA.unshift({id:Date.now()+'',name,name1,name2,type,meal,price:avgPrice,visits,gscore,addr,note,maps,date,score:starVal,visitLog,imgs,img,createdAt:Date.now()});
   }
   if(type) addCustomType(type);
   save(DATA); closeForm(); closeDetail(); render();
@@ -1092,6 +1102,12 @@ function openDetail(item){
     badge.textContent=item.type;
     badge.style.cssText='display:inline-block;margin-left:8px;padding:3px 10px;background:rgba(232,98,42,0.12);color:#C9A84C;border:1px solid rgba(232,98,42,0.25);border-radius:99px;font-size:12px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
     dNameEl.appendChild(badge);
+  }
+  if(item.meal){
+    const mealBadge=document.createElement('span');
+    mealBadge.textContent=item.meal;
+    mealBadge.style.cssText='display:inline-block;margin-left:6px;padding:3px 10px;background:rgba(100,180,255,0.1);color:rgba(160,210,255,0.85);border:1px solid rgba(100,180,255,0.2);border-radius:99px;font-size:12px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
+    dNameEl.appendChild(mealBadge);
   }
   document.getElementById('dAddrText').textContent=item.addr||'未填寫地址';
   document.getElementById('dDateText').textContent=item.date||'未填寫日期';
