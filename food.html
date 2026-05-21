@@ -1293,18 +1293,18 @@ function render(){
     });
   }
 
-  // 統計
-  document.getElementById('sTotal').textContent=DATA.length;
-  if(DATA.length){
-    const rated=DATA.filter(r=>r.score>0);
+  // 統計（依篩選結果）
+  document.getElementById('sTotal').textContent=d.length;
+  if(d.length){
+    const rated=d.filter(r=>r.score>0);
     document.getElementById('sAvg').textContent=rated.length?(rated.reduce((s,r)=>s+r.score,0)/rated.length).toFixed(1):'—';
-    const totalVisits=DATA.reduce((s,r)=>s+(r.visits||1),0);
+    const totalVisits=d.reduce((s,r)=>s+(r.visits||1),0);
     document.getElementById('sTotalVisits').textContent=totalVisits;
-    const priced=DATA.filter(r=>r.price>0);
+    const priced=d.filter(r=>r.price>0);
     document.getElementById('sAvgPrice').textContent=priced.length?'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString():'—';
   } else {
     document.getElementById('sAvg').textContent='—';
-    document.getElementById('sBest').textContent='—';
+    document.getElementById('sTotalVisits').textContent='—';
     document.getElementById('sAvgPrice').textContent='—';
   }
 }
