@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779371462832",
+    "name": "Shake Shack 仁川機場第一航廈店 쉐이크쉑 인천공항 제1터미널점",
+    "name1": "Shake Shack 仁川機場第一航廈店",
+    "name2": "쉐이크쉑 인천공항 제1터미널점",
+    "type": "漢堡包",
+    "meal": "",
+    "price": 445,
+    "visits": 1,
+    "gscore": 4.1,
+    "addr": "272 3F Gonghang-ro, Jung-gu, Incheon, 南韓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/Shake+Shack+%E4%BB%81%E5%B7%9D%E6%A9%9F%E5%A0%B4%E7%AC%AC%E4%B8%80%E8%88%AA%E5%BB%88%E5%BA%97/@37.5065816,126.2225288,10z/data=!4m6!3m5!1s0x357b9b3e100bb1a3:0x73edf3874fef5c5b!8m2!3d37.4484573!4d126.4507464!16s%2Fg%2F11v4sjnmnr?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-10",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2026-04-10",
+        "meal": "晚餐",
+        "price": 445
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/23gyPc6W/dd2605175752.jpg"
+    ],
+    "img": "https://i.ibb.co/23gyPc6W/dd2605175752.jpg",
+    "createdAt": 1779371462832
+  },
+  {
     "id": "1779371306746",
     "name": "一片里脊明洞店 일편등심 명동점",
     "name1": "一片里脊明洞店",
