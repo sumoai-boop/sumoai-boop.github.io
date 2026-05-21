@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779342709143",
+    "name": "旭集 和食集錦 天母店",
+    "name1": "旭集 和食集錦",
+    "name2": "天母店",
+    "type": "自助餐",
+    "meal": "午餐",
+    "price": 1850,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "111臺北市士林區三玉里忠誠路二段55號5樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%97%AD%E9%9B%86+%E5%92%8C%E9%A3%9F%E9%9B%86%E9%8C%A6+%E5%A4%A9%E6%AF%8D%E5%BA%97/@25.111857,121.531367,17z/data=!3m1!4b1!4m6!3m5!1s0x3442af00614b0163:0xaa684caf6f221d3c!8m2!3d25.111857!4d121.531367!16s%2Fg%2F11kj3qzqr0?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-08-30",
+    "score": 4.8,
+    "visitLog": [
+      {
+        "date": "2025-08-30",
+        "price": 1850
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/RG69NRg2/55fdd158aac2.jpg"
+    ],
+    "img": "https://i.ibb.co/RG69NRg2/55fdd158aac2.jpg",
+    "createdAt": 1779342709143
+  },
+  {
     "id": "1779342593578",
     "name": "旭集 和食集錦 中茂店",
     "name1": "旭集 和食集錦",
