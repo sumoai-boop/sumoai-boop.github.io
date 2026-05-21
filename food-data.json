@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779354449671",
+    "name": "雞二哥",
+    "name1": "雞二哥",
+    "name2": "",
+    "type": "雞肉飯",
+    "meal": "晚餐",
+    "price": 211,
+    "visits": 1,
+    "gscore": 3.4,
+    "addr": "110臺北市信義區西村里松仁路58號4F",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%9B%9E%E4%BA%8C%E5%93%A5/@25.0367912,121.5683018,17z/data=!4m15!1m8!3m7!1s0x3442ab916fb8282d:0x7a60bc155a18a570!2z6Zue5LqM5ZOl!8m2!3d25.0367849!4d121.5679566!10e9!16s%2Fg%2F11kj96f12s!3m5!1s0x3442ab916fb8282d:0x7a60bc155a18a570!8m2!3d25.0367849!4d121.5679566!16s%2Fg%2F11kj96f12s?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-06-29",
+    "score": 3.4,
+    "visitLog": [
+      {
+        "date": "2025-06-29",
+        "price": 211
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/pvqYtwbD/ee6f758c8f7b.jpg"
+    ],
+    "img": "https://i.ibb.co/pvqYtwbD/ee6f758c8f7b.jpg",
+    "createdAt": 1779354449671
+  },
+  {
     "id": "1779354248321",
     "name": "漢堡排 嘉",
     "name1": "漢堡排 嘉",
