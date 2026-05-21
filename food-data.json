@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779368486510",
+    "name": "一階堂拉麵 大全聯中崙店",
+    "name1": "一階堂拉麵",
+    "name2": "大全聯中崙店",
+    "type": "拉麵",
+    "meal": "晚餐",
+    "price": 330,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "104臺北市中山區埤頭里八德路二段306號B1",
+    "note": "雞白濃湯天照",
+    "maps": "https://www.google.com/maps/place/%E4%B8%80%E9%9A%8E%E5%A0%82%E6%8B%89%E9%BA%B5+%E5%A4%A7%E5%85%A8%E8%81%AF%E4%B8%AD%E5%B4%99%E5%BA%97/@25.0468732,121.5425549,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ab4d012cd92d:0xc134060be5c7db92!8m2!3d25.0468732!4d121.5425549!16s%2Fg%2F11x8p8bn3k?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-12-13",
+    "score": 2.5,
+    "visitLog": [
+      {
+        "date": "2025-12-13",
+        "price": 330
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/934wkHRM/d30c10342dbe.jpg"
+    ],
+    "img": "https://i.ibb.co/934wkHRM/d30c10342dbe.jpg",
+    "createdAt": 1779368486510
+  },
+  {
     "id": "1779354449671",
     "name": "雞二哥",
     "name1": "雞二哥",
