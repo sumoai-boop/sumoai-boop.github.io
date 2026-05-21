@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779373035205",
+    "name": "百濟蔘雞湯 백제삼계탕",
+    "name1": "百濟蔘雞湯",
+    "name2": "백제삼계탕",
+    "type": "韓國",
+    "meal": "",
+    "price": 801,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "8-10 Myeongdong 8-gil, Jung District, Seoul, 南韓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E7%99%BE%E6%BF%9F%E8%94%98%E9%9B%9E%E6%B9%AF/@37.5629819,126.9835412,18z/data=!4m6!3m5!1s0x357ca2f04eb2fa65:0x7cc815027b29d490!8m2!3d37.5633343!4d126.9841225!16s%2Fg%2F1tg8gnw3?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-07-09",
+    "score": 3.2,
+    "visitLog": [
+      {
+        "date": "2025-07-09",
+        "meal": "晚餐",
+        "price": 801
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/4w9BXJGQ/b911f0876c51.jpg"
+    ],
+    "img": "https://i.ibb.co/4w9BXJGQ/b911f0876c51.jpg",
+    "createdAt": 1779373035205
+  },
+  {
     "id": "1779371462832",
     "name": "Shake Shack 仁川機場第一航廈店",
     "name1": "Shake Shack",
