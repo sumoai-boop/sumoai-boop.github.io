@@ -390,8 +390,8 @@
     "name": "涮乃葉 信義遠百店",
     "name1": "涮乃葉",
     "name2": "信義遠百店",
-    "type": "涮涮鍋",
-    "price": 1782,
+    "type": "火鍋",
+    "price": 1788,
     "visits": 2,
     "gscore": 4.2,
     "addr": "110臺北市信義區西村里松仁路58號7樓",
@@ -404,7 +404,7 @@
     ],
     "img": "https://i.ibb.co/9HHP6X7j/de2c2ec017d8.jpg",
     "createdAt": 1779279654730,
-    "updatedAt": 1779280476090,
+    "updatedAt": 1779337980448,
     "visitLog": [
       {
         "date": "2026-01-31",
