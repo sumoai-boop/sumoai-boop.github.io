@@ -1,9 +1,9 @@
 [
   {
     "id": "1779371462832",
-    "name": "Shake Shack 仁川機場第一航廈店 쉐이크쉑 인천공항 제1터미널점",
-    "name1": "Shake Shack 仁川機場第一航廈店",
-    "name2": "쉐이크쉑 인천공항 제1터미널점",
+    "name": "Shake Shack 仁川機場第一航廈店",
+    "name1": "Shake Shack",
+    "name2": "仁川機場第一航廈店",
     "type": "漢堡包",
     "meal": "",
     "price": 445,
@@ -25,7 +25,8 @@
       "https://i.ibb.co/23gyPc6W/dd2605175752.jpg"
     ],
     "img": "https://i.ibb.co/23gyPc6W/dd2605175752.jpg",
-    "createdAt": 1779371462832
+    "createdAt": 1779371462832,
+    "updatedAt": 1779371485698
   },
   {
     "id": "1779371306746",
