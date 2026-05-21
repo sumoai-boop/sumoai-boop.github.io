@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779342291692",
+    "name": "晶華酒店栢麗廳 Brasserie",
+    "name1": "晶華酒店栢麗廳 Brasserie",
+    "name2": "",
+    "type": "自助餐",
+    "meal": "晚餐",
+    "price": 3696,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "10491臺北市中山區康樂里中山北路二段39巷3號",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E5%8F%B0%E5%8C%97%E6%99%B6%E8%8F%AF%E9%85%92%E5%BA%97%E6%A0%A2%E9%BA%97%E5%BB%B3+Brasserie/@25.0541778,121.524244,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a968f90507c9:0x32371c5db2902158!8m2!3d25.0541778!4d121.524244!16s%2Fg%2F11f25hq0jh?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-07-03",
+    "score": 4.8,
+    "visitLog": [
+      {
+        "date": "2025-07-03",
+        "price": 3696
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/VnVKhV0/ae9424543b92.jpg",
+      "https://i.ibb.co/d4dmk6tJ/d89bd0eb98f9.jpg"
+    ],
+    "img": "https://i.ibb.co/VnVKhV0/ae9424543b92.jpg",
+    "createdAt": 1779342291692
+  },
+  {
     "id": "1779337915800",
     "name": "石研室 爆炒石頭火鍋 微風南山店",
     "name1": "石研室 爆炒石頭火鍋",
