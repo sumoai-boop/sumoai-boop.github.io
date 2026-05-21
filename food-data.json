@@ -305,7 +305,7 @@
     "name1": "品湯白色麻辣鍋",
     "name2": "信義市府店",
     "type": "火鍋",
-    "price": 1296,
+    "price": 1644,
     "addr": "110臺北市信義區興雅里基隆路一段147巷25號1樓",
     "note": "公主",
     "maps": "https://www.google.com/maps/place/%E5%93%81%E6%B9%AF%E7%99%BD%E8%89%B2%E9%BA%BB%E8%BE%A3%E9%8D%8B+%E4%BF%A1%E7%BE%A9%E5%B8%82%E5%BA%9C%E5%BA%97/@25.0418608,121.5671204,18.75z/data=!4m6!3m5!1s0x3442abbfed24e1a9:0x422fb2aebd080d6a!8m2!3d25.0424449!4d121.5668222!16s%2Fg%2F11rg6styvm?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
@@ -316,9 +316,9 @@
     ],
     "img": "https://i.ibb.co/fzzcrdwG/becc124e36e1.jpg",
     "createdAt": 1779083250434,
-    "visits": 2,
+    "visits": 4,
     "gscore": 4.6,
-    "updatedAt": 1779280406425,
+    "updatedAt": 1779335751899,
     "visitLog": [
       {
         "date": "2026-04-26",
@@ -327,6 +327,14 @@
       {
         "date": "2025-12-21",
         "price": 2420
+      },
+      {
+        "date": "2025-10-12",
+        "price": 1386
+      },
+      {
+        "date": "2025-08-22",
+        "price": 1474
       }
     ]
   },
