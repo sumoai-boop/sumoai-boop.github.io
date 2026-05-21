@@ -63,9 +63,9 @@
   },
   {
     "id": "1779370565593",
-    "name": "Jay's Pizza",
+    "name": "Jay's Pizza 제이스피자",
     "name1": "Jay's Pizza",
-    "name2": "",
+    "name2": "제이스피자",
     "type": "披薩",
     "meal": "",
     "price": 932,
@@ -90,7 +90,7 @@
     ],
     "img": "https://i.ibb.co/SDk0GGMY/174c64d8c2c4.jpg",
     "createdAt": 1779370565593,
-    "updatedAt": 1779370963619
+    "updatedAt": 1779371181942
   },
   {
     "id": "1779370376795",
