@@ -32,7 +32,7 @@
     "name": "富爸爸豬腳大王",
     "name1": "富爸爸豬腳大王",
     "name2": "",
-    "type": "豬腳",
+    "type": "豬腳便當",
     "meal": "",
     "price": 130,
     "visits": 2,
@@ -59,7 +59,7 @@
     ],
     "img": "https://i.ibb.co/fYhH6BHL/58abe2be8d2f.jpg",
     "createdAt": 1779374603647,
-    "updatedAt": 1779374628821
+    "updatedAt": 1779374772031
   },
   {
     "id": "1779373162069",
