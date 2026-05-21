@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779369757159",
+    "name": "小福利麻辣鍋 中和環球店",
+    "name1": "小福利麻辣鍋",
+    "name2": "中和環球店",
+    "type": "火鍋",
+    "meal": "晚餐",
+    "price": 1976,
+    "visits": 1,
+    "gscore": 4.6,
+    "addr": "235新北市中和區員山里中山路三段122號4樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/(%E5%B7%B2%E7%B5%90%E6%9D%9F%E7%87%9F%E6%A5%AD)%E5%B0%8F%E7%A6%8F%E5%88%A9%E9%BA%BB%E8%BE%A3%E9%8D%8B+%E4%B8%AD%E5%92%8C%E7%92%B0%E7%90%83%E5%BA%97/@25.0069749,121.4749955,17z/data=!3m1!5s0x3442a8272f74a955:0x4cf736d4aa92a4c2!4m15!1m8!3m7!1s0x3442a9c42d75e8cf:0x89283abeb8696bf0!2zKOW3sue1kOadn-eHn-alrSnlsI_npo_liKnpurvovqPpjYsg5Lit5ZKM55Kw55CD5bqX!8m2!3d25.0069668!4d121.4749549!10e5!16s%2Fg%2F11q94mvzck!3m5!1s0x3442a9c42d75e8cf:0x89283abeb8696bf0!8m2!3d25.0069668!4d121.4749549!16s%2Fg%2F11q94mvzck?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-03-29",
+    "score": 4.3,
+    "visitLog": [
+      {
+        "date": "2026-03-29",
+        "meal": "晚餐",
+        "price": 1976
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/JYp5T8p/d2aa7d048059.jpg"
+    ],
+    "img": "https://i.ibb.co/JYp5T8p/d2aa7d048059.jpg",
+    "createdAt": 1779369757159
+  },
+  {
     "id": "1779368712391",
     "name": "家鴻燒鵝 龍江店",
     "name1": "家鴻燒鵝",
