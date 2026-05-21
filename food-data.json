@@ -610,9 +610,16 @@
     ],
     "img": "https://i.ibb.co/Gfmx5CZ2/4fa3bfa320a8.jpg",
     "createdAt": 1779073507162,
-    "visits": 0,
+    "visits": 1,
     "gscore": 4.5,
-    "updatedAt": 1779279162433
+    "updatedAt": 1779341628660,
+    "meal": "午餐",
+    "visitLog": [
+      {
+        "date": "2026-03-25",
+        "price": 190
+      }
+    ]
   },
   {
     "id": "1779073246755",
