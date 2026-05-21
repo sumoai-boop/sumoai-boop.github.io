@@ -1,5 +1,33 @@
 [
   {
+    "id": "1779369964857",
+    "name": "士林十全排骨店",
+    "name1": "士林十全排骨店",
+    "name2": "",
+    "type": "藥燉排骨",
+    "meal": "",
+    "price": 270,
+    "visits": 1,
+    "gscore": 3.3,
+    "addr": "111臺北市士林區義信里基河路119號",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E5%A3%AB%E6%9E%97%E5%8D%81%E5%85%A8%E6%8E%92%E9%AA%A8%E5%BA%97/@25.0881972,121.5238973,17z/data=!3m1!4b1!4m6!3m5!1s0x3442aeb06c9d8efb:0xd2307151abd4f743!8m2!3d25.0881972!4d121.5238973!16s%2Fg%2F1tg58t6r?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-01-26",
+    "score": 2.4,
+    "visitLog": [
+      {
+        "date": "2026-01-26",
+        "meal": "晚餐",
+        "price": 270
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/PGWJD3Ft/0555f4a75f63.jpg"
+    ],
+    "img": "https://i.ibb.co/PGWJD3Ft/0555f4a75f63.jpg",
+    "createdAt": 1779369964857
+  },
+  {
     "id": "1779369757159",
     "name": "小福利麻辣鍋 中和環球店",
     "name1": "小福利麻辣鍋",
