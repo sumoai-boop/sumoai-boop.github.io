@@ -462,16 +462,6 @@
           <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
           <datalist id="typeList"></datalist>
         </div>
-        <!-- 用餐時段 -->
-        <div class="field-group">
-          <label class="field-label">用餐時段</label>
-          <select class="field-input" id="fMeal" style="background:#2a2a2a;color:#ffffff;">
-            <option value="" style="background:#2a2a2a;">不指定</option>
-            <option value="早餐" style="background:#2a2a2a;">🌅 早餐</option>
-            <option value="午餐" style="background:#2a2a2a;">☀️ 午餐</option>
-            <option value="晚餐" style="background:#2a2a2a;">🌙 晚餐</option>
-          </select>
-        </div>
         <!-- 我的評分 -->
         <div class="field-group">
           <label class="field-label">我的評分 <span style="opacity:0.4;font-size:9px;">可小數</span></label>
@@ -999,7 +989,6 @@ function openForm(item=null){
   document.getElementById('fName1').value=item?(item.name1||item.name||''):'';
   document.getElementById('fName2').value=item?(item.name2||''):'';
   document.getElementById('fType').value=item?(item.type||''):'';
-  document.getElementById('fMeal').value=item?(item.meal||''):'';
   document.getElementById('fGscore').value=item&&item.gscore?item.gscore:'';
   document.getElementById('fAddr').value=item?(item.addr||''):'';
   document.getElementById('fNote').value=item?(item.note||''):'';
@@ -1034,7 +1023,7 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   const gscore=parseFloat(document.getElementById('fGscore').value)||0;
   const addr=document.getElementById('fAddr').value.trim();
   const type=document.getElementById('fType').value.trim();
-  const meal=document.getElementById('fMeal').value;
+  const meal='';
   const note=document.getElementById('fNote').value.trim();
   const maps=document.getElementById('fMaps').value.trim();
   // 讀取多筆用餐記錄
