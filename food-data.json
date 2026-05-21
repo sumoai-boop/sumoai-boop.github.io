@@ -1,5 +1,38 @@
 [
   {
+    "id": "1779370791637",
+    "name": "祖傳三代馬鈴薯排骨湯",
+    "name1": "祖傳三代馬鈴薯排骨湯",
+    "name2": "",
+    "type": "韓國",
+    "meal": "",
+    "price": 621,
+    "visits": 2,
+    "gscore": 4.1,
+    "addr": "45 Yeonmujang-gil, Seongdong-gu, Seoul, 南韓",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/%E7%A5%96%E5%82%B3%E4%B8%89%E4%BB%A3%E9%A6%AC%E9%88%B4%E8%96%AF%E6%8E%92%E9%AA%A8%E6%B9%AF/@37.5436473,127.0542165,17z/data=!4m6!3m5!1s0x357ca4913140fbb5:0x7897953e193bd3f9!8m2!3d37.5428241!4d127.0543732!16s%2Fg%2F1th0w95x?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-08",
+    "score": 4.3,
+    "visitLog": [
+      {
+        "date": "2026-04-08",
+        "meal": "晚餐",
+        "price": 847
+      },
+      {
+        "date": "2025-07-10",
+        "meal": "晚餐",
+        "price": 394
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/cKmQ6Cq7/fa4d44145534.jpg"
+    ],
+    "img": "https://i.ibb.co/cKmQ6Cq7/fa4d44145534.jpg",
+    "createdAt": 1779370791637
+  },
+  {
     "id": "1779370565593",
     "name": "Jay's Pizza",
     "name1": "Jay's Pizza",
