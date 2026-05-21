@@ -1,5 +1,31 @@
 [
   {
+    "id": "1779332947008",
+    "name": "BURGER OUT",
+    "name1": "BURGER OUT",
+    "name2": "",
+    "type": "漢堡包",
+    "price": 950,
+    "visits": 1,
+    "gscore": 4.6,
+    "addr": "11072臺北市信義區新仁里忠孝東路四段553巷22弄2號",
+    "note": "公主",
+    "maps": "https://www.google.com/maps/place/BURGER+OUT/@25.0431633,121.563065,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ab3840592b03:0xc668a05950184f80!8m2!3d25.0431633!4d121.563065!16s%2Fg%2F11fhv3pgdx?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-12-07",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2025-12-07",
+        "price": 950
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/39GhgC5X/2b404b0823b1.jpg"
+    ],
+    "img": "https://i.ibb.co/39GhgC5X/2b404b0823b1.jpg",
+    "createdAt": 1779332947008
+  },
+  {
     "id": "1779282062114",
     "name": "INPARADISE 饗饗 微風信義店",
     "name1": "INPARADISE 饗饗",
