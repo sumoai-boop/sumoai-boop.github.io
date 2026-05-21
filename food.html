@@ -327,6 +327,11 @@
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
+        <div class="stat-num" id="sGAvg">—</div>
+        <div class="stat-lbl">Google 均分</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
         <div class="stat-num" id="sTotalVisits">—</div>
         <div class="stat-lbl">造訪次數</div>
       </div>
@@ -1312,12 +1317,15 @@ function render(){
   if(d.length){
     const rated=d.filter(r=>r.score>0);
     document.getElementById('sAvg').textContent=rated.length?(rated.reduce((s,r)=>s+r.score,0)/rated.length).toFixed(1):'—';
+    const grated=d.filter(r=>r.gscore>0);
+    document.getElementById('sGAvg').textContent=grated.length?(grated.reduce((s,r)=>s+r.gscore,0)/grated.length).toFixed(1):'—';
     const totalVisits=d.reduce((s,r)=>s+(r.visits||1),0);
     document.getElementById('sTotalVisits').textContent=totalVisits;
     const priced=d.filter(r=>r.price>0);
     document.getElementById('sAvgPrice').textContent=priced.length?'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString():'—';
   } else {
     document.getElementById('sAvg').textContent='—';
+    document.getElementById('sGAvg').textContent='—';
     document.getElementById('sTotalVisits').textContent='—';
     document.getElementById('sAvgPrice').textContent='—';
   }
