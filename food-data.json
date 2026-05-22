@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779465159902",
+    "name": "麥當勞 台北考試院餐廳",
+    "name1": "麥當勞",
+    "name2": "台北考試院餐廳",
+    "type": "快餐",
+    "meal": "",
+    "price": 109,
+    "visits": 1,
+    "gscore": 3.7,
+    "addr": "116臺北市文山區華興里木柵路一段137號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E5%8F%B0%E5%8C%97%E8%80%83%E8%A9%A6%E9%99%A2%E9%A4%90%E5%BB%B3/@24.9876051,121.5476416,17z/data=!3m1!4b1!4m6!3m5!1s0x3442aa76b349e02f:0x4a1a83716d8dd08f!8m2!3d24.9876051!4d121.5502165!16s%2Fg%2F1hc5c7yd7?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-03-10",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-03-10",
+        "meal": "早餐",
+        "price": 109,
+        "menu": "豬滿蛋餐"
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1779465159902
+  },
+  {
     "id": "1779464974950",
     "name": "麥當勞 板橋中山餐廳",
     "name1": "麥當勞",
