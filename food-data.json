@@ -833,7 +833,7 @@
     "name1": "旭集 和食集錦",
     "name2": "天母店",
     "type": "自助餐",
-    "meal": "午餐",
+    "meal": "",
     "price": 1850,
     "visits": 1,
     "gscore": 4.3,
@@ -845,14 +845,17 @@
     "visitLog": [
       {
         "date": "2025-08-30",
-        "price": 1850
+        "meal": "午餐",
+        "price": 1850,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/RG69NRg2/55fdd158aac2.jpg"
     ],
     "img": "https://i.ibb.co/RG69NRg2/55fdd158aac2.jpg",
-    "createdAt": 1779342709143
+    "createdAt": 1779342709143,
+    "updatedAt": 1779463879717
   },
   {
     "id": "1779342593578",
