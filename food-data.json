@@ -893,7 +893,7 @@
     "name1": "晶華酒店栢麗廳 Brasserie",
     "name2": "",
     "type": "自助餐",
-    "meal": "晚餐",
+    "meal": "",
     "price": 3696,
     "visits": 1,
     "gscore": 4.4,
@@ -905,7 +905,9 @@
     "visitLog": [
       {
         "date": "2025-07-03",
-        "price": 3696
+        "meal": "晚餐",
+        "price": 3696,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -913,7 +915,8 @@
       "https://i.ibb.co/d4dmk6tJ/d89bd0eb98f9.jpg"
     ],
     "img": "https://i.ibb.co/VnVKhV0/ae9424543b92.jpg",
-    "createdAt": 1779342291692
+    "createdAt": 1779342291692,
+    "updatedAt": 1779463925918
   },
   {
     "id": "1779337915800",
