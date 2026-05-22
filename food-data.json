@@ -1451,14 +1451,16 @@
     "createdAt": 1779074453702,
     "visits": 1,
     "gscore": 4.3,
-    "updatedAt": 1779341648555,
+    "updatedAt": 1779463836813,
     "visitLog": [
       {
         "date": "2026-02-21",
-        "price": 2673
+        "meal": "晚餐",
+        "price": 2673,
+        "menu": ""
       }
     ],
-    "meal": "晚餐"
+    "meal": ""
   },
   {
     "id": "1779073974361",
