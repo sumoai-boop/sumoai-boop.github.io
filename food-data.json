@@ -1519,7 +1519,7 @@
     "type": "日本",
     "price": 310,
     "addr": "104臺北市中山區敬業三路20號地下B1樓本(F)館",
-    "note": "",
+    "note": "公主",
     "maps": "https://www.google.com/maps/place/%E9%96%8B%E4%B8%BC+%E7%87%92%E8%82%89vs%E4%B8%BC%E9%A3%AF+%E7%BE%8E%E9%BA%97%E8%8F%AF%E5%BA%97/@25.083312,121.5545899,17z/data=!3m2!4b1!5s0x3442ac12fb96cc1f:0xc4a11f333ba320ce!4m6!3m5!1s0x3442adc97408e011:0xb44fb9b6dc439e59!8m2!3d25.0833072!4d121.5571648!16s%2Fg%2F11vc90qlyy?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-03-22",
     "score": 3.5,
@@ -1530,14 +1530,16 @@
     "createdAt": 1779073669441,
     "visits": 1,
     "gscore": 4.5,
-    "updatedAt": 1779341633400,
+    "updatedAt": 1779463792180,
     "visitLog": [
       {
         "date": "2026-03-22",
-        "price": 310
+        "meal": "晚餐",
+        "price": 310,
+        "menu": ""
       }
     ],
-    "meal": "晚餐"
+    "meal": ""
   },
   {
     "id": "1779073507162",
