@@ -10,7 +10,7 @@
     "visits": 1,
     "gscore": 3.6,
     "addr": "10491臺北市中山區松江里錦州街260號",
-    "note": "",
+    "note": "三杯雞飯",
     "maps": "https://www.google.com.tw/maps/place/%E9%8C%A6%E5%B7%9E%E9%9B%9E%E8%85%BF%E7%8E%8B%EF%BC%88%E6%88%91%E5%80%91%E4%B8%8D%E6%98%AF%E5%A4%A7%E5%8D%97%E9%9B%9E%E8%85%BF%E7%8E%8B%EF%BC%89/@25.0602437,121.5339789,19z/data=!3m1!4b1!4m6!3m5!1s0x3442a958d3e0cb93:0x7bf08b18a4b95cc1!8m2!3d25.0602425!4d121.5346226!16s%2Fg%2F1thvdmmr?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-05-12",
     "score": 3.5,
@@ -25,7 +25,8 @@
       "https://i.ibb.co/ks3v8Lj0/0b1dc524c608.jpg"
     ],
     "img": "https://i.ibb.co/ks3v8Lj0/0b1dc524c608.jpg",
-    "createdAt": 1779434802310
+    "createdAt": 1779434802310,
+    "updatedAt": 1779434877526
   },
   {
     "id": "1779374743460",
