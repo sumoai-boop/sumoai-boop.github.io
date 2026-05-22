@@ -451,7 +451,8 @@
       {
         "date": "2026-04-09",
         "meal": "晚餐",
-        "price": 4151
+        "price": 4151,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -461,7 +462,7 @@
     ],
     "img": "https://i.ibb.co/rKXcn1FN/5a6ff3b06a91.jpg",
     "createdAt": 1779371306746,
-    "updatedAt": 1779371331436
+    "updatedAt": 1779463748723
   },
   {
     "id": "1779371099222",
