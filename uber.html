@@ -830,11 +830,13 @@ function renderWeekdayAvg(){
   });
   // 從行程記錄計算每星期幾的平均人數
   var tripPaxSums=[0,0,0,0,0,0,0],tripPaxCounts=[0,0,0,0,0,0,0];
+  var tripKmSums=[0,0,0,0,0,0,0];
   getData('uberTrips').forEach(function(t){
     if(!t.d) return;
     var dow=new Date(t.d).getDay();
     tripPaxSums[dow]+=(t.pax||1);
     tripPaxCounts[dow]++;
+    tripKmSums[dow]+=(t.km||0);
   });
   var cells=ORDER.map(function(dow,i){
     var avg=counts[dow]>0?Math.round(sums[dow]/counts[dow]):null;
@@ -847,6 +849,9 @@ function renderWeekdayAvg(){
         +(paxCounts[dow]>0?(paxSums[dow]/paxCounts[dow]).toFixed(1):'—')+'趟'
         +' / '
         +(tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'人'
+      +'</div>'
+      +'<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px;">'
+        +(tripPaxCounts[dow]>0?(tripKmSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+' km'
       +'</div>'
     +'</div>';
   }).join('');
