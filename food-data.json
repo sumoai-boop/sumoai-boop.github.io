@@ -758,7 +758,7 @@
     "name1": "漢堡排 嘉",
     "name2": "",
     "type": "漢堡排",
-    "meal": "晚餐",
+    "meal": "",
     "price": 592,
     "visits": 1,
     "gscore": 3.8,
@@ -770,14 +770,17 @@
     "visitLog": [
       {
         "date": "2025-06-15",
-        "price": 592
+        "meal": "晚餐",
+        "price": 592,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/84by4d7b/5ea1dd9c26c8.jpg"
     ],
     "img": "https://i.ibb.co/84by4d7b/5ea1dd9c26c8.jpg",
-    "createdAt": 1779354248322
+    "createdAt": 1779354248322,
+    "updatedAt": 1779463934878
   },
   {
     "id": "1779353955216",
