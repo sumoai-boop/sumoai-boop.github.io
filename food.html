@@ -408,7 +408,12 @@
         <div class="modal-stars" id="dStars" style="margin-left:0;"></div>
         <span class="modal-score-num" id="dScoreNum"></span>
       </div>
-      <!-- 用餐記錄（含備註） -->
+      <!-- 備註 -->
+      <div id="dNoteRow" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.05);border-radius:8px;border-left:3px solid rgba(232,98,42,0.5);">
+        <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:5px;">備註</div>
+        <div id="dNoteText" style="font-size:14px;color:#f0e6d6;line-height:1.7;white-space:pre-wrap;"></div>
+      </div>
+      <!-- 用餐記錄（含分頁） -->
       <div id="dVisitLog" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;"></div>
       <div class="modal-actions">
         <button class="modal-btn modal-btn-edit" id="dEdit">✏️ 編輯</button>
@@ -977,17 +982,20 @@ function renderVisitsList(visits){
   list.innerHTML='';
   (visits||[]).forEach((v,i)=>{
     const row=document.createElement('div');
-    row.style.cssText='display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:center;';
+    row.style.cssText='display:flex;flex-direction:column;gap:4px;padding:8px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,180,80,0.1);';
     row.innerHTML=`
-      <input class="field-input visit-date" type="date" value="${v.date||''}" style="font-size:12px;padding:8px 10px;">
-      <select class="field-input visit-meal" style="font-size:12px;padding:8px 8px;background:#2a2a2a;color:#fff;width:80px;">
-        <option value="" ${!v.meal?'selected':''}>—</option>
-        <option value="早餐" ${v.meal==='早餐'?'selected':''}>🌅 早</option>
-        <option value="午餐" ${v.meal==='午餐'?'selected':''}>☀️ 午</option>
-        <option value="晚餐" ${v.meal==='晚餐'?'selected':''}>🌙 晚</option>
-      </select>
-      <input class="field-input visit-price" type="number" min="0" placeholder="金額（元）" value="${v.price||''}" autocomplete="off" style="font-size:12px;padding:8px 10px;">
-      <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').remove()">✕</button>`;
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto;gap:6px;align-items:center;">
+        <input class="field-input visit-date" type="date" value="${v.date||''}" style="font-size:12px;padding:7px 10px;">
+        <select class="field-input visit-meal" style="font-size:12px;padding:7px 8px;background:#2a2a2a;color:#fff;width:76px;">
+          <option value="" ${!v.meal?'selected':''}>—</option>
+          <option value="早餐" ${v.meal==='早餐'?'selected':''}>🌅 早</option>
+          <option value="午餐" ${v.meal==='午餐'?'selected':''}>☀️ 午</option>
+          <option value="晚餐" ${v.meal==='晚餐'?'selected':''}>🌙 晚</option>
+        </select>
+        <input class="field-input visit-price" type="number" min="0" placeholder="金額" value="${v.price||''}" autocomplete="off" style="font-size:12px;padding:7px 10px;">
+        <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').parentElement.remove()">✕</button>
+      </div>
+      <input class="field-input visit-menu" placeholder="🍽 點了什麼（選填）" value="${v.menu||''}" autocomplete="off" style="font-size:12px;padding:7px 10px;">`;
     list.appendChild(row);
   });
 }
@@ -998,25 +1006,29 @@ function getVisitsFromForm(){
     const date=row.querySelector('.visit-date')?.value||'';
     const meal=row.querySelector('.visit-meal')?.value||'';
     const price=parseInt(row.querySelector('.visit-price')?.value)||0;
-    if(date) result.push({date,meal,price});
+    const menu=row.querySelector('.visit-menu')?.value.trim()||'';
+    if(date) result.push({date,meal,price,menu});
   });
-  return result.length ? result : [{date:new Date().toISOString().slice(0,10),meal:'',price:0}];
+  return result.length ? result : [{date:new Date().toISOString().slice(0,10),meal:'',price:0,menu:''}];
 }
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('addVisitBtn').addEventListener('click',()=>{
     const list=document.getElementById('visitsList');
     const row=document.createElement('div');
-    row.style.cssText='display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:center;';
+    row.style.cssText='display:flex;flex-direction:column;gap:4px;padding:8px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,180,80,0.1);';
     row.innerHTML=`
-      <input class="field-input visit-date" type="date" value="${new Date().toISOString().slice(0,10)}" style="font-size:12px;padding:8px 10px;">
-      <select class="field-input visit-meal" style="font-size:12px;padding:8px 8px;background:#2a2a2a;color:#fff;width:80px;">
-        <option value="">—</option>
-        <option value="早餐">🌅 早</option>
-        <option value="午餐">☀️ 午</option>
-        <option value="晚餐">🌙 晚</option>
-      </select>
-      <input class="field-input visit-price" type="number" min="0" placeholder="金額（元）" autocomplete="off" style="font-size:12px;padding:8px 10px;">
-      <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').remove()">✕</button>`;
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto;gap:6px;align-items:center;">
+        <input class="field-input visit-date" type="date" value="${new Date().toISOString().slice(0,10)}" style="font-size:12px;padding:7px 10px;">
+        <select class="field-input visit-meal" style="font-size:12px;padding:7px 8px;background:#2a2a2a;color:#fff;width:76px;">
+          <option value="">—</option>
+          <option value="早餐">🌅 早</option>
+          <option value="午餐">☀️ 午</option>
+          <option value="晚餐">🌙 晚</option>
+        </select>
+        <input class="field-input visit-price" type="number" min="0" placeholder="金額" autocomplete="off" style="font-size:12px;padding:7px 10px;">
+        <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#ff8070;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').parentElement.remove()">✕</button>
+      </div>
+      <input class="field-input visit-menu" placeholder="🍽 點了什麼（選填）" autocomplete="off" style="font-size:12px;padding:7px 10px;">`;
     list.appendChild(row);
     row.querySelector('.visit-date').focus();
   });
@@ -1163,24 +1175,44 @@ function openDetail(item){
   document.getElementById('dPrice').innerHTML=displayPrice?`<span class="price-prefix">NT$</span><span class="price-num">${displayPrice.toLocaleString()}</span>`:'—';
   document.getElementById('dVisits').textContent=item.visits>1?`🔁 共 ${item.visits} 次`:(item.visits===1?'':item.visits?`🔁 共 ${item.visits} 次`:'');
   document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
-  // 用餐記錄（含備註）
+  // 備註
+  const noteRow=document.getElementById('dNoteRow');
+  if(item.note){document.getElementById('dNoteText').textContent=item.note;noteRow.style.display='block';}
+  else noteRow.style.display='none';
+  // 用餐記錄（含菜單欄位，8筆分頁）
   const dVisitLog=document.getElementById('dVisitLog');
   if(dVisitLog){
-    const visits=item.visitLog&&item.visitLog.length>0 ? [...item.visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''))
-      : (item.date?[{date:item.date,price:item.price||0,meal:''}]:[]);
-    let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:6px;">用餐記錄</div>';
-    html+=visits.map(v=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-      <span>${v.date||'—'}${v.meal?` <span style="font-size:11px;color:rgba(160,210,255,0.7);margin-left:6px;">${v.meal}</span>`:''}</span>
-      <span style="color:#FFD200;">${v.price?'NT$'+v.price.toLocaleString():'—'}</span>
-    </div>`).join('');
-    if(item.note){
-      html+=`<div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px;border-left:2px solid rgba(232,98,42,0.4);">
-        <div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.4);margin-bottom:4px;">備註</div>
-        <div style="font-size:13px;color:#f0e6d6;line-height:1.7;white-space:pre-wrap;">${item.note}</div>
+    const allVisits=item.visitLog&&item.visitLog.length>0
+      ? [...item.visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''))
+      : (item.date?[{date:item.date,price:item.price||0,meal:'',menu:''}]:[]);
+    const PAGE=8;
+    let page=0;
+    const renderVisitLog=()=>{
+      const total=allVisits.length;
+      const start=page*PAGE, end=Math.min(start+PAGE,total);
+      const slice=allVisits.slice(start,end);
+      let html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
+      html+=`<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);">用餐記錄</div>`;
+      if(total>PAGE) html+=`<div style="display:flex;gap:6px;align-items:center;font-size:11px;color:rgba(255,220,160,0.5);">
+        <button onclick="__vPage(-1)" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:14px;${page===0?'opacity:0.3;pointer-events:none;':''}">‹</button>
+        <span>${start+1}–${end} / ${total}</span>
+        <button onclick="__vPage(1)" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:14px;${end>=total?'opacity:0.3;pointer-events:none;':''}">›</button>
       </div>`;
-    }
-    dVisitLog.innerHTML=html;
-    dVisitLog.style.display='block';
+      html+='</div>';
+      html+=slice.map(v=>`
+        <div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;">
+            <span>${v.date||'—'}${v.meal?` <span style="font-size:11px;color:rgba(160,210,255,0.7);margin-left:6px;">${v.meal}</span>`:''}</span>
+            <span style="color:#FFD200;font-weight:700;">${v.price?'NT$'+v.price.toLocaleString():'—'}</span>
+          </div>
+          ${v.menu?`<div style="font-size:11px;color:rgba(255,220,160,0.55);margin-top:2px;">🍽 ${v.menu}</div>`:''}
+        </div>`).join('');
+      dVisitLog.innerHTML=html;
+      dVisitLog.style.display='block';
+      dVisitLog.__vPage=(dir)=>{ page=Math.max(0,Math.min(Math.ceil(total/PAGE)-1,page+dir)); renderVisitLog(); };
+      window.__vPage=(dir)=>dVisitLog.__vPage(dir);
+    };
+    renderVisitLog();
   }
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
