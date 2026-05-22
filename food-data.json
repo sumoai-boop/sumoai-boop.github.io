@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779466143156",
+    "name": "麥當勞 土城裕民餐廳",
+    "name1": "麥當勞",
+    "name2": "土城裕民餐廳",
+    "type": "快餐",
+    "meal": "",
+    "price": 241,
+    "visits": 1,
+    "gscore": 3.7,
+    "addr": "236新北市土城區學府里裕民路180號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E5%9C%9F%E5%9F%8E%E8%A3%95%E6%B0%91%E9%A4%90%E5%BB%B3/@24.9851661,121.4502536,17z/data=!3m1!4b1!4m6!3m5!1s0x346802c914b49dbf:0x45cbf84b8db190d4!8m2!3d24.9851661!4d121.4528285!16s%2Fg%2F113hhyrdd?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-12-06",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2025-12-06",
+        "meal": "晚餐",
+        "price": 241,
+        "menu": "二辣腿排餐"
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1779466143156
+  },
+  {
     "id": "1779465159902",
     "name": "麥當勞 台北考試院餐廳",
     "name1": "麥當勞",
