@@ -22,9 +22,12 @@
         "menu": "二辣腿排餐"
       }
     ],
-    "imgs": [],
-    "img": "",
-    "createdAt": 1779466143156
+    "imgs": [
+      "https://i.ibb.co/v6YDMt4h/241ea233ab46.jpg"
+    ],
+    "img": "https://i.ibb.co/v6YDMt4h/241ea233ab46.jpg",
+    "createdAt": 1779466143156,
+    "updatedAt": 1779466248087
   },
   {
     "id": "1779465159902",
