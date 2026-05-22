@@ -35,8 +35,8 @@
     "name2": "土城金城店",
     "type": "快餐",
     "meal": "",
-    "price": 246,
-    "visits": 3,
+    "price": 245,
+    "visits": 4,
     "gscore": 3.6,
     "addr": "236新北市土城區金城里金城路三段54號",
     "note": "",
@@ -58,7 +58,13 @@
       },
       {
         "date": "2026-05-10",
-        "meal": "",
+        "meal": "晚餐",
+        "price": 241,
+        "menu": "二原腿排餐"
+      },
+      {
+        "date": "2026-04-12",
+        "meal": "晚餐",
         "price": 241,
         "menu": "二原腿排餐"
       }
@@ -67,7 +73,8 @@
       "https://i.ibb.co/4gDZTpcW/a6c8e8a5a168.jpg"
     ],
     "img": "https://i.ibb.co/4gDZTpcW/a6c8e8a5a168.jpg",
-    "createdAt": 1779464357152
+    "createdAt": 1779464357152,
+    "updatedAt": 1779464601168
   },
   {
     "id": "1779461285231",
