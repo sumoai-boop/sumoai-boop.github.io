@@ -728,7 +728,7 @@
     "name1": "雞二哥",
     "name2": "",
     "type": "雞肉飯",
-    "meal": "晚餐",
+    "meal": "",
     "price": 211,
     "visits": 1,
     "gscore": 3.4,
@@ -740,14 +740,17 @@
     "visitLog": [
       {
         "date": "2025-06-29",
-        "price": 211
+        "meal": "晚餐",
+        "price": 211,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/pvqYtwbD/ee6f758c8f7b.jpg"
     ],
     "img": "https://i.ibb.co/pvqYtwbD/ee6f758c8f7b.jpg",
-    "createdAt": 1779354449671
+    "createdAt": 1779354449671,
+    "updatedAt": 1779463930830
   },
   {
     "id": "1779354248321",
