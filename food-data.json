@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779464562033",
+    "name": "麥當勞 關西服務區餐廳",
+    "name1": "麥當勞",
+    "name2": "關西服務區餐廳",
+    "type": "快餐",
+    "meal": "",
+    "price": 236,
+    "visits": 1,
+    "gscore": 3.8,
+    "addr": "306新竹縣關西鎮國道3號14號高速公路關西服務區商場一樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E9%97%9C%E8%A5%BF%E6%9C%8D%E5%8B%99%E5%8D%80%E9%A4%90%E5%BB%B3/@24.8012894,121.190087,17z/data=!3m2!4b1!5s0x34683ebdbe57f375:0xd0735f997f005528!4m6!3m5!1s0x346933226948063b:0x377a90842e08730b!8m2!3d24.8012894!4d121.1926619!16s%2Fg%2F11qg42_qhh?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-05",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-04-05",
+        "meal": "晚餐",
+        "price": 236,
+        "menu": "二原腿排餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/JWTm7X6v/4bd979b69de3.jpg"
+    ],
+    "img": "https://i.ibb.co/JWTm7X6v/4bd979b69de3.jpg",
+    "createdAt": 1779464562033
+  },
+  {
     "id": "1779464357152",
     "name": "麥當勞 土城金城店",
     "name1": "麥當勞",
