@@ -36,8 +36,8 @@
     "name2": "板橋中山餐廳",
     "type": "快餐",
     "meal": "",
-    "price": 249,
-    "visits": 1,
+    "price": 164,
+    "visits": 3,
     "gscore": 3.6,
     "addr": "220新北市板橋區光仁里中山路二段257號1樓",
     "note": "",
@@ -50,13 +50,26 @@
         "meal": "晚餐",
         "price": 249,
         "menu": "韓風蒜雞餐"
+      },
+      {
+        "date": "2026-02-24",
+        "meal": "晚餐",
+        "price": 68,
+        "menu": "星級點餐"
+      },
+      {
+        "date": "2026-02-24",
+        "meal": "晚餐",
+        "price": 174,
+        "menu": "五享大麥克餐"
       }
     ],
     "imgs": [
       "https://i.ibb.co/cShTdWf8/615b32d86c51.jpg"
     ],
     "img": "https://i.ibb.co/cShTdWf8/615b32d86c51.jpg",
-    "createdAt": 1779464974950
+    "createdAt": 1779464974950,
+    "updatedAt": 1779465447090
   },
   {
     "id": "1779464882976",
