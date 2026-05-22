@@ -1179,40 +1179,25 @@ function openDetail(item){
   const noteRow=document.getElementById('dNoteRow');
   if(item.note){document.getElementById('dNoteText').textContent=item.note;noteRow.style.display='block';}
   else noteRow.style.display='none';
-  // 用餐記錄（含菜單欄位，8筆分頁）
+  // 用餐記錄（含菜單欄位，最多顯示5筆可捲動）
   const dVisitLog=document.getElementById('dVisitLog');
   if(dVisitLog){
     const allVisits=item.visitLog&&item.visitLog.length>0
       ? [...item.visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''))
       : (item.date?[{date:item.date,price:item.price||0,meal:'',menu:''}]:[]);
-    const PAGE=8;
-    let page=0;
-    const renderVisitLog=()=>{
-      const total=allVisits.length;
-      const start=page*PAGE, end=Math.min(start+PAGE,total);
-      const slice=allVisits.slice(start,end);
-      let html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
-      html+=`<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);">用餐記錄</div>`;
-      if(total>PAGE) html+=`<div style="display:flex;gap:6px;align-items:center;font-size:11px;color:rgba(255,220,160,0.5);">
-        <button onclick="__vPage(-1)" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:14px;${page===0?'opacity:0.3;pointer-events:none;':''}">‹</button>
-        <span>${start+1}–${end} / ${total}</span>
-        <button onclick="__vPage(1)" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:14px;${end>=total?'opacity:0.3;pointer-events:none;':''}">›</button>
-      </div>`;
-      html+='</div>';
-      html+=slice.map(v=>`
-        <div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;">
-            <span>${v.date||'—'}${v.meal?` <span style="font-size:11px;color:rgba(160,210,255,0.7);margin-left:6px;">${v.meal}</span>`:''}</span>
-            <span style="color:#FFD200;font-weight:700;">${v.price?'NT$'+v.price.toLocaleString():'—'}</span>
-          </div>
-          ${v.menu?`<div style="font-size:11px;color:rgba(255,220,160,0.55);margin-top:2px;">🍽 ${v.menu}</div>`:''}
-        </div>`).join('');
-      dVisitLog.innerHTML=html;
-      dVisitLog.style.display='block';
-      dVisitLog.__vPage=(dir)=>{ page=Math.max(0,Math.min(Math.ceil(total/PAGE)-1,page+dir)); renderVisitLog(); };
-      window.__vPage=(dir)=>dVisitLog.__vPage(dir);
-    };
-    renderVisitLog();
+    let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:6px;">用餐記錄</div>';
+    html+=`<div style="max-height:${5*62}px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(232,98,42,0.5) rgba(255,255,255,0.05);border-radius:6px;">`;
+    html+=allVisits.map(v=>`
+      <div style="padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;">
+          <span>${v.date||'—'}${v.meal?` <span style="font-size:11px;color:rgba(160,210,255,0.7);margin-left:6px;">${v.meal}</span>`:''}</span>
+          <span style="color:#FFD200;font-weight:700;">${v.price?'NT$'+v.price.toLocaleString():'—'}</span>
+        </div>
+        ${v.menu?`<div style="font-size:11px;color:rgba(255,220,160,0.55);margin-top:2px;">🍽 ${v.menu}</div>`:''}
+      </div>`).join('');
+    html+='</div>';
+    dVisitLog.innerHTML=html;
+    dVisitLog.style.display='block';
   }
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
