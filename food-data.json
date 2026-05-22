@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779464974950",
+    "name": "麥當勞 板橋中山餐廳",
+    "name1": "麥當勞",
+    "name2": "板橋中山餐廳",
+    "type": "快餐",
+    "meal": "",
+    "price": 249,
+    "visits": 1,
+    "gscore": 3.6,
+    "addr": "220新北市板橋區光仁里中山路二段257號1樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E6%9D%BF%E6%A9%8B%E4%B8%AD%E5%B1%B1%E9%A4%90%E5%BB%B3/@25.0177013,121.4749292,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a9d687937ebf:0x4baf10c64edc4b10!8m2!3d25.0177013!4d121.4775041!16s%2Fg%2F1hc324g33?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-02",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-04-02",
+        "meal": "晚餐",
+        "price": 249,
+        "menu": "韓風蒜雞餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/cShTdWf8/615b32d86c51.jpg"
+    ],
+    "img": "https://i.ibb.co/cShTdWf8/615b32d86c51.jpg",
+    "createdAt": 1779464974950
+  },
+  {
     "id": "1779464882976",
     "name": "麥當勞 新莊富國餐廳",
     "name1": "麥當勞",
