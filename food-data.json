@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779464882976",
+    "name": "麥當勞 新莊富國餐廳",
+    "name1": "麥當勞",
+    "name2": "新莊富國餐廳",
+    "type": "快餐",
+    "meal": "",
+    "price": 232,
+    "visits": 1,
+    "gscore": 3.7,
+    "addr": "242新北市新莊區裕民里中正路877-5號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E6%96%B0%E8%8E%8A%E5%AF%8C%E5%9C%8B%E9%A4%90%E5%BB%B3/@25.0264324,121.4154283,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a78dcc5b8d81:0xfaf887aecf4a4862!8m2!3d25.0264324!4d121.4180032!16s%2Fg%2F11b66j61fz?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-30",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-04-30",
+        "meal": "午餐",
+        "price": 232,
+        "menu": "辣四盎牛餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/Kxzyczmq/0d4327e697e4.jpg"
+    ],
+    "img": "https://i.ibb.co/Kxzyczmq/0d4327e697e4.jpg",
+    "createdAt": 1779464882976
+  },
+  {
     "id": "1779464724363",
     "name": "麥當勞 台北西園二餐廳",
     "name1": "麥當勞",
