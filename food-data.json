@@ -7,25 +7,46 @@
     "type": "雞肉飯",
     "meal": "",
     "price": 150,
-    "visits": 1,
+    "visits": 5,
     "gscore": 4.1,
     "addr": "10491臺北市中山區江寧里錦州街331號",
     "note": "海南雞腿飯",
     "maps": "https://www.google.com.tw/maps/place/%E5%90%88%E9%BA%9F%E6%B5%B7%E5%8D%97%E9%9B%9E%E9%A3%AF/@25.0602473,121.5389202,17z/data=!4m15!1m8!3m7!1s0x3442abe2471a9991:0x3eac628e4bcfa81c!2z5ZCI6bqf5rW35Y2X6Zue6aOv!8m2!3d25.0603619!4d121.5388957!10e9!16s%2Fg%2F11crx_smk7!3m5!1s0x3442abe2471a9991:0x3eac628e4bcfa81c!8m2!3d25.0603619!4d121.5388957!16s%2Fg%2F11crx_smk7?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-05-22",
+    "date": "2026-03-30",
     "score": 4,
     "visitLog": [
       {
-        "date": "2026-05-22",
+        "date": "2026-03-30",
+        "meal": "午餐",
+        "price": 150
+      },
+      {
+        "date": "2026-03-20",
+        "meal": "午餐",
+        "price": 150
+      },
+      {
+        "date": "2026-01-22",
+        "meal": "午餐",
+        "price": 150
+      },
+      {
+        "date": "2026-01-09",
+        "meal": "午餐",
+        "price": 150
+      },
+      {
+        "date": "2025-05-05",
         "meal": "午餐",
         "price": 150
       }
     ],
     "imgs": [
-      "https://i.ibb.co/qLDLt3MN/baeb3d9a4c96.jpg"
+      "https://i.ibb.co/PGVS8tbg/fdeb3758c60b.jpg"
     ],
-    "img": "https://i.ibb.co/qLDLt3MN/baeb3d9a4c96.jpg",
-    "createdAt": 1779443515244
+    "img": "https://i.ibb.co/PGVS8tbg/fdeb3758c60b.jpg",
+    "createdAt": 1779443515244,
+    "updatedAt": 1779443614371
   },
   {
     "id": "1779435561283",
