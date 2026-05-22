@@ -91,8 +91,8 @@
     "name2": "台北西園二餐廳",
     "type": "快餐",
     "meal": "",
-    "price": 266,
-    "visits": 1,
+    "price": 303,
+    "visits": 2,
     "gscore": 3.8,
     "addr": "108臺北市萬華區和德里西園路二段240號",
     "note": "",
@@ -105,13 +105,20 @@
         "meal": "晚餐",
         "price": 266,
         "menu": "蕈菇牛餐"
+      },
+      {
+        "date": "2026-03-20",
+        "meal": "晚餐",
+        "price": 339,
+        "menu": "無敵戰勝餐"
       }
     ],
     "imgs": [
       "https://i.ibb.co/4gDZTpcW/a6c8e8a5a168.jpg"
     ],
     "img": "https://i.ibb.co/4gDZTpcW/a6c8e8a5a168.jpg",
-    "createdAt": 1779464724363
+    "createdAt": 1779464724363,
+    "updatedAt": 1779465218839
   },
   {
     "id": "1779464562033",
