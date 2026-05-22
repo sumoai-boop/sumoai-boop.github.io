@@ -663,7 +663,7 @@ function compressImage(dataUrl,maxW,maxH,quality){
   });
 }
 
-let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set();
+let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set(), typeCountMap={};
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
 /* ───── 餐廳類型管理 ───── */
@@ -690,19 +690,22 @@ function refreshTypeList(){
   // 多選 UI
   const list=document.getElementById('typeFilterList');
   if(!list) return;
-  const inUse=[...new Set(DATA.map(r=>r.type).filter(Boolean))].sort();
+  // 統計每個類型的數量並排序
+  typeCountMap={};
+  DATA.forEach(r=>{ if(r.type) typeCountMap[r.type]=(typeCountMap[r.type]||0)+1; });
+  const inUse=Object.keys(typeCountMap).sort((a,b)=>typeCountMap[b]-typeCountMap[a]);
   list.innerHTML='';
   // 全選按鈕
   const allBtn=document.createElement('div');
-  allBtn.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:11px;color:'+(typeFilterSet.size===0?'#fff':'rgba(255,220,160,0.5)')+';background:'+(typeFilterSet.size===0?'rgba(232,98,42,0.3)':'transparent')+';';
+  allBtn.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:'+(typeFilterSet.size===0?'#fff':'rgba(255,220,160,0.75)')+';background:'+(typeFilterSet.size===0?'rgba(232,98,42,0.3)':'transparent')+';';
   allBtn.textContent='全部';
   allBtn.onclick=()=>{ typeFilterSet.clear(); updateTypeFilterUI(); render(); };
   list.appendChild(allBtn);
   inUse.forEach(t=>{
     const item=document.createElement('div');
     const active=typeFilterSet.has(t);
-    item.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:11px;display:flex;justify-content:space-between;align-items:center;color:'+(active?'#fff':'rgba(255,220,160,0.6)')+';background:'+(active?'rgba(232,98,42,0.25)':'transparent')+';';
-    item.innerHTML=`<span>${t}</span>${active?'<span style="color:#E8622A;">✓</span>':''}`;
+    item.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center;color:'+(active?'#fff':'rgba(255,230,180,0.85)')+';background:'+(active?'rgba(232,98,42,0.25)':'transparent')+';';
+    item.innerHTML=`<span>${t}</span><span style="color:${active?'#E8622A':'rgba(255,220,160,0.3)'};font-size:10px;">${active?'✓':''} ${typeCountMap[t]||''}</span>`;
     item.onclick=()=>{
       if(typeFilterSet.has(t)) typeFilterSet.delete(t); else typeFilterSet.add(t);
       updateTypeFilterUI(); render();
@@ -717,18 +720,17 @@ function updateTypeFilterUI(){
   if(typeFilterSet.size===0){ btn.textContent='所有類型'; }
   else if(typeFilterSet.size===1){ btn.textContent=[...typeFilterSet][0]; }
   else { btn.textContent=`${typeFilterSet.size} 種類型`; }
-  // 重繪 list active 狀態
   if(list) list.querySelectorAll('div').forEach((el,i)=>{
-    if(i===0){ // 全部
+    if(i===0){
       el.style.color=typeFilterSet.size===0?'#fff':'rgba(255,220,160,0.5)';
       el.style.background=typeFilterSet.size===0?'rgba(232,98,42,0.3)':'transparent';
     } else {
       const t=el.querySelector('span')?.textContent;
       if(!t) return;
       const active=typeFilterSet.has(t);
-      el.style.color=active?'#fff':'rgba(255,220,160,0.6)';
+      el.style.color=active?'#fff':'rgba(255,230,180,0.85)';
       el.style.background=active?'rgba(232,98,42,0.25)':'transparent';
-      el.innerHTML=`<span>${t}</span>${active?'<span style="color:#E8622A;">✓</span>':''}`;
+      el.innerHTML=`<span>${t}</span><span style="color:${active?'#E8622A':'rgba(255,220,160,0.5)'};font-size:11px;">${active?'✓':''} ${typeCountMap[t]||''}</span>`;
     }
   });
 }
