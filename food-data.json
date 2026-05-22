@@ -818,7 +818,7 @@
     "name1": "鐘路大多力韓雞湯",
     "name2": "",
     "type": "韓國",
-    "meal": "午餐",
+    "meal": "",
     "price": 742,
     "visits": 1,
     "gscore": 4.4,
@@ -830,14 +830,17 @@
     "visitLog": [
       {
         "date": "2025-02-17",
-        "price": 742
+        "meal": "午餐",
+        "price": 742,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/7J1kdrRD/cec1c88820b8.jpg"
     ],
     "img": "https://i.ibb.co/7J1kdrRD/cec1c88820b8.jpg",
-    "createdAt": 1779353796992
+    "createdAt": 1779353796992,
+    "updatedAt": 1779463945518
   },
   {
     "id": "1779342709143",
