@@ -378,7 +378,8 @@
       {
         "date": "2025-07-08",
         "meal": "午餐",
-        "price": 508
+        "price": 508,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -386,7 +387,7 @@
     ],
     "img": "https://i.ibb.co/GvXydJJq/8c1d9e47a891.jpg",
     "createdAt": 1779373162069,
-    "updatedAt": 1779373187889
+    "updatedAt": 1779463920350
   },
   {
     "id": "1779373035205",
