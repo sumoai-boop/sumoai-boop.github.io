@@ -988,7 +988,9 @@
     "visitLog": [
       {
         "date": "2025-09-27",
-        "price": 695
+        "meal": "晚餐",
+        "price": 695,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -997,8 +999,8 @@
     ],
     "img": "https://i.ibb.co/NPzQTvR/d231be5e1fea.jpg",
     "createdAt": 1779336455354,
-    "meal": "晚餐",
-    "updatedAt": 1779341699812
+    "meal": "",
+    "updatedAt": 1779463884965
   },
   {
     "id": "1779336175862",
