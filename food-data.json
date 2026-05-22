@@ -1510,14 +1510,16 @@
     "createdAt": 1779073820041,
     "visits": 1,
     "gscore": 4.8,
-    "updatedAt": 1779341639562,
+    "updatedAt": 1779463825645,
     "visitLog": [
       {
         "date": "2026-03-09",
-        "price": 235
+        "meal": "午餐",
+        "price": 235,
+        "menu": ""
       }
     ],
-    "meal": "午餐"
+    "meal": ""
   },
   {
     "id": "1779073669441",
