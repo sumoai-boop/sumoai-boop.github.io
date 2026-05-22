@@ -1639,16 +1639,18 @@
     ],
     "img": "https://i.ibb.co/C56ymfPG/84aa3613f829.jpg",
     "createdAt": 1779030806421,
-    "updatedAt": 1779341613380,
+    "updatedAt": 1779463738876,
     "visits": 1,
     "gscore": 4.4,
     "visitLog": [
       {
         "date": "2026-04-11",
-        "price": 825
+        "meal": "晚餐",
+        "price": 825,
+        "menu": ""
       }
     ],
-    "meal": "晚餐"
+    "meal": ""
   },
   {
     "id": "1779030532202",
