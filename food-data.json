@@ -328,12 +328,14 @@
       {
         "date": "2026-04-21",
         "meal": "午餐",
-        "price": 130
+        "price": 130,
+        "menu": "腿庫便當"
       },
       {
         "date": "2026-04-27",
         "meal": "午餐",
-        "price": 130
+        "price": 130,
+        "menu": "腿庫便當"
       }
     ],
     "imgs": [
@@ -341,7 +343,7 @@
     ],
     "img": "https://i.ibb.co/fYhH6BHL/58abe2be8d2f.jpg",
     "createdAt": 1779374603647,
-    "updatedAt": 1779374772031
+    "updatedAt": 1779463705419
   },
   {
     "id": "1779373162069",
