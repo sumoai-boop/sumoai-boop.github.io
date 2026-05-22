@@ -788,7 +788,7 @@
     "name1": "食尚曼谷",
     "name2": "",
     "type": "泰國",
-    "meal": "晚餐",
+    "meal": "",
     "price": 1177,
     "visits": 1,
     "gscore": 4.3,
@@ -800,14 +800,17 @@
     "visitLog": [
       {
         "date": "2025-02-28",
-        "price": 1177
+        "meal": "晚餐",
+        "price": 1177,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/HfSpxtBd/f1a1363a8b61.jpg"
     ],
     "img": "https://i.ibb.co/HfSpxtBd/f1a1363a8b61.jpg",
-    "createdAt": 1779353955216
+    "createdAt": 1779353955216,
+    "updatedAt": 1779463939302
   },
   {
     "id": "1779353796992",
