@@ -142,13 +142,15 @@
     border-radius:16px;
     max-width:520px;width:100%;
     overflow:hidden;
+    max-height:90vh;
+    display:flex;flex-direction:column;
     box-shadow:0 24px 80px rgba(0,0,0,0.9);
     animation:modalIn 0.28s cubic-bezier(0.34,1.2,0.64,1);
   }
   @keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
-  .modal-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#111;}
-  .modal-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#111;font-size:56px;opacity:0.15;}
-  .modal-body{padding:20px 24px 24px;}
+  .modal-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#111;flex-shrink:0;}
+  .modal-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#111;font-size:56px;opacity:0.15;flex-shrink:0;}
+  .modal-body{padding:20px 24px 24px;overflow-y:auto;flex:1;}
   .modal-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#ffffff;margin-bottom:4px;}
   .modal-addr{font-size:13px;color:rgba(255,220,160,0.7);letter-spacing:0.04em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
   .modal-addr svg{opacity:0.6;flex-shrink:0;}
@@ -1186,7 +1188,7 @@ function openDetail(item){
       ? [...item.visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''))
       : (item.date?[{date:item.date,price:item.price||0,meal:'',menu:''}]:[]);
     let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:6px;">用餐記錄</div>';
-    html+=`<div style="max-height:${5*62}px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(232,98,42,0.5) rgba(255,255,255,0.05);border-radius:6px;">`;
+    html+=`<div style="max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(232,98,42,0.5) rgba(255,255,255,0.05);border-radius:6px;">`;
     html+=allVisits.map(v=>`
       <div style="padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.06);">
         <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;">
