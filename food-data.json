@@ -299,7 +299,8 @@
       {
         "date": "2026-04-22",
         "meal": "午餐",
-        "price": 130
+        "price": 130,
+        "menu": "知高飯"
       }
     ],
     "imgs": [
@@ -307,7 +308,7 @@
     ],
     "img": "https://i.ibb.co/m5jCkn1s/fcead4632a7a.jpg",
     "createdAt": 1779374743460,
-    "updatedAt": 1779374777776
+    "updatedAt": 1779463724291
   },
   {
     "id": "1779374603647",
