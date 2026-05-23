@@ -7,7 +7,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "My Dearest Assassin",
     "titleZh": "我的摯愛殺手",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "动作",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 2,
@@ -17,7 +22,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "My Dearest Señorita",
     "titleZh": "我親愛的小姐",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 3,
@@ -27,7 +36,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Buen Camino",
     "titleZh": "尋女朝聖路",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "喜剧",
+      "家庭",
+      "冒险"
+    ]
   },
   {
     "rank": 4,
@@ -37,7 +51,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Je m'appelle Agneta",
     "titleZh": "我叫艾妮塔",
-    "country": "SE"
+    "country": "SE",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 5,
@@ -47,7 +66,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Son-In-Law",
     "titleZh": "當家好女婿",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 6,
@@ -57,7 +81,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Raakaasa",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "奇幻",
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -67,7 +95,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Biker",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -77,7 +109,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Bharathanatyam 2 Mohiniyattam",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -87,7 +123,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Comic 8 Revolution: Santet K4bin3t",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "动作",
+      "喜剧",
+      "奇幻",
+      "恐怖"
+    ]
   },
   {
     "rank": 10,
@@ -97,7 +139,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Prey",
     "titleZh": "獵物",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "惊悚",
+      "动作",
+      "科幻"
+    ]
   },
   {
     "rank": 1,
@@ -107,7 +154,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Buen Camino",
     "titleZh": "尋女朝聖路",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "喜剧",
+      "家庭",
+      "冒险"
+    ]
   },
   {
     "rank": 2,
@@ -117,7 +169,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Je m'appelle Agneta",
     "titleZh": "我叫艾妮塔",
-    "country": "SE"
+    "country": "SE",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 3,
@@ -127,7 +184,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "My Dearest Señorita",
     "titleZh": "我親愛的小姐",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -137,7 +198,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Son-In-Law",
     "titleZh": "當家好女婿",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 5,
@@ -147,7 +213,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Love at Last",
     "titleZh": "",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "喜剧",
+      "音乐",
+      "爱情"
+    ]
   },
   {
     "rank": 6,
@@ -157,7 +228,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Yiya Murano: Death at Tea Time",
     "titleZh": "伊雅穆拉諾：下午茶殺機",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 7,
@@ -167,7 +241,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Raakaasa",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "奇幻",
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -177,7 +255,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Do Deewane Seher Mein",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -187,7 +270,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Prey",
     "titleZh": "獵物",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "惊悚",
+      "动作",
+      "科幻"
+    ]
   },
   {
     "rank": 10,
@@ -197,7 +285,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Janur Ireng",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -207,7 +299,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Love at Last",
     "titleZh": "",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "喜剧",
+      "音乐",
+      "爱情"
+    ]
   },
   {
     "rank": 2,
@@ -217,7 +314,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Do Deewane Seher Mein",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 3,
@@ -227,7 +329,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Toaster",
     "titleZh": "吐司機大危機",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动画",
+      "冒险",
+      "奇幻",
+      "家庭"
+    ]
   },
   {
     "rank": 4,
@@ -237,7 +345,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Youth",
     "titleZh": "年輕氣盛",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "冒险",
+      "奇幻",
+      "悬疑"
+    ]
   },
   {
     "rank": 5,
@@ -247,7 +360,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Ustaad Bhagat Singh",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -257,7 +375,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "On Your Lap",
     "titleZh": "柔情咖啡屋",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -267,7 +388,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Yiya Murano: Death at Tea Time",
     "titleZh": "",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 8,
@@ -277,7 +401,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Feel My Voice",
     "titleZh": "心之高歌",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "音乐",
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -287,7 +416,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Humint",
     "titleZh": "諜報暗線",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "惊悚",
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -297,7 +431,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Untouchables",
     "titleZh": "",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "犯罪",
+      "历史",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -307,7 +446,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Toaster",
     "titleZh": "吐司機大危機",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动画",
+      "冒险",
+      "奇幻",
+      "家庭"
+    ]
   },
   {
     "rank": 2,
@@ -317,7 +462,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Feel My Voice",
     "titleZh": "心之高歌",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "音乐",
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 3,
@@ -327,7 +477,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Ustaad Bhagat Singh",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -337,7 +492,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Youth",
     "titleZh": "年輕氣盛",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "冒险",
+      "奇幻",
+      "悬疑"
+    ]
   },
   {
     "rank": 5,
@@ -347,7 +507,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Eat Pray Bark",
     "titleZh": "汪星人訓練營",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 6,
@@ -357,7 +520,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Tu Yaa Main",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "惊悚",
+      "爱情"
+    ]
   },
   {
     "rank": 7,
@@ -367,7 +534,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Mudborn",
     "titleZh": "泥娃娃",
-    "country": "TW"
+    "country": "TW",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -377,7 +548,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Humint",
     "titleZh": "諜報暗線",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "惊悚",
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -387,7 +563,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "18th Rose",
     "titleZh": "第18朵玫瑰",
-    "country": "PH"
+    "country": "PH",
+    "genres": [
+      "剧情",
+      "爱情",
+      "喜剧"
+    ]
   },
   {
     "rank": 10,
@@ -397,7 +578,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Do Deewane Seher Mein",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -407,7 +593,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Eat Pray Bark",
     "titleZh": "汪星人訓練營",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 2,
@@ -417,7 +606,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Feel My Voice",
     "titleZh": "心之高歌",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "音乐",
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 3,
@@ -427,7 +621,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Humint",
     "titleZh": "諜報暗線",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "惊悚",
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -437,7 +636,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Mudborn",
     "titleZh": "泥娃娃",
-    "country": "TW"
+    "country": "TW",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -447,7 +650,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Giant Falls",
     "titleZh": "巨人的告別",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -457,7 +663,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Vadh 2",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 7,
@@ -467,7 +678,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "18th Rose",
     "titleZh": "第18朵玫瑰",
-    "country": "PH"
+    "country": "PH",
+    "genres": [
+      "剧情",
+      "爱情",
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -477,7 +693,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Red Line",
     "titleZh": "赤紅生死線",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "剧情",
+      "历史",
+      "战争"
+    ]
   },
   {
     "rank": 9,
@@ -487,7 +708,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Mrithyunjay",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "动作"
+    ]
   },
   {
     "rank": 10,
@@ -497,7 +723,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "It Takes a Village",
     "titleZh": "村民總動員",
-    "country": "PL"
+    "country": "PL",
+    "genres": [
+      "恐怖",
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -507,7 +737,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Humint",
     "titleZh": "諜報暗線",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "惊悚",
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -517,7 +752,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Eat Pray Bark",
     "titleZh": "汪星人訓練營",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 3,
@@ -527,7 +765,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Red Line",
     "titleZh": "赤紅生死線",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "剧情",
+      "历史",
+      "战争"
+    ]
   },
   {
     "rank": 4,
@@ -537,7 +780,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Mardaani 3",
     "titleZh": "寶萊塢之爆裂女警官 3",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -547,7 +795,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Giant Falls",
     "titleZh": "巨人的告別",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -557,7 +808,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Passion of the Christ",
     "titleZh": "受難記：最後的激情",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -567,7 +821,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "SUZUKI=BAKUDAN",
     "titleZh": "爆彈",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "惊悚",
+      "悬疑",
+      "犯罪"
+    ]
   },
   {
     "rank": 8,
@@ -577,7 +836,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "53 Sundays",
     "titleZh": "53 個週日",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -587,7 +850,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "It Takes a Village",
     "titleZh": "村民總動員",
-    "country": "PL"
+    "country": "PL",
+    "genres": [
+      "恐怖",
+      "喜剧"
+    ]
   },
   {
     "rank": 10,
@@ -597,7 +864,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 1,
@@ -607,7 +875,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Mardaani 3",
     "titleZh": "寶萊塢之爆裂女警官 3",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -617,7 +890,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Red Line",
     "titleZh": "赤紅生死線",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "剧情",
+      "历史",
+      "战争"
+    ]
   },
   {
     "rank": 3,
@@ -627,7 +905,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "BTS: THE RETURN",
     "titleZh": "BTS：天團回歸",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "纪录",
+      "音乐"
+    ]
   },
   {
     "rank": 4,
@@ -637,7 +919,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 5,
@@ -647,7 +930,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "53 Sundays",
     "titleZh": "53 個週日",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -657,7 +944,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Border 2",
     "titleZh": "攻殼機動隊ARISE border: 2 Ghost Whispers",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动作",
+      "动画",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 7,
@@ -667,7 +960,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Made in Korea",
     "titleZh": "韓國製造的我",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 8,
@@ -677,7 +973,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Pesugihan Sate Gagak",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "恐怖"
+    ]
   },
   {
     "rank": 9,
@@ -687,7 +987,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "It Would Be Night in Caracas",
     "titleZh": "",
-    "country": "VE"
+    "country": "VE",
+    "genres": [
+      "动作",
+      "冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -697,7 +1002,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Sous écrous",
     "titleZh": "",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "动作",
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -707,7 +1016,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Made in Korea",
     "titleZh": "韓國製造的我",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 2,
@@ -717,7 +1029,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Border 2",
     "titleZh": "攻殼機動隊ARISE border: 2 Ghost Whispers",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动作",
+      "动画",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 3,
@@ -727,7 +1045,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 4,
@@ -737,7 +1056,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Firebreak",
     "titleZh": "浴火之森",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 5,
@@ -747,7 +1067,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Secret Agent",
     "titleZh": "這不只是個間諜故事",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 6,
@@ -757,7 +1081,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Sosok Ketiga: Lintrik",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "剧情",
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 7,
@@ -767,7 +1096,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "With Love",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -777,7 +1111,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Dreamseller",
     "titleZh": "售夢人",
-    "country": "BR"
+    "country": "BR",
+    "genres": []
   },
   {
     "rank": 9,
@@ -787,7 +1122,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Pact",
     "titleZh": "咒願",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "恐怖",
+      "悬疑",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -797,7 +1137,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Retirement Home",
     "titleZh": "抓狂養老院",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 1,
@@ -807,7 +1150,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Made in Korea",
     "titleZh": "韓國製造的我",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 2,
@@ -817,7 +1163,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Secret Agent",
     "titleZh": "這不只是個間諜故事",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 3,
@@ -827,7 +1177,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Street Flow 3",
     "titleZh": "巴黎男孩 3",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -837,7 +1190,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "With Love",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -847,7 +1205,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Firebreak",
     "titleZh": "浴火之森",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 6,
@@ -857,7 +1216,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Accused",
     "titleZh": "指控之後",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -867,7 +1230,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 8,
@@ -877,7 +1241,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Orphans",
     "titleZh": "",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -887,7 +1254,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Banduan",
     "titleZh": "",
-    "country": "MY"
+    "country": "MY",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -897,7 +1269,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Strangers in the Park",
     "titleZh": "親陌公園",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 1,
@@ -907,7 +1283,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Accused",
     "titleZh": "指控之後",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -917,7 +1297,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Firebreak",
     "titleZh": "浴火之森",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 3,
@@ -927,7 +1308,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Street Flow 3",
     "titleZh": "巴黎男孩 3",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -937,7 +1321,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Orphans",
     "titleZh": "",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 5,
@@ -947,7 +1334,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "With Love",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 6,
@@ -957,7 +1349,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "#SalveRosa",
     "titleZh": "",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -967,7 +1363,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Strangers in the Park",
     "titleZh": "親陌公園",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 8,
@@ -977,7 +1377,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Trip 8",
     "titleZh": "",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -987,7 +1390,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 10,
@@ -997,7 +1401,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Father's Miracle",
     "titleZh": "",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -1007,7 +1414,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Firebreak",
     "titleZh": "浴火之森",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 2,
@@ -1017,7 +1425,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Accused",
     "titleZh": "指控之後",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -1027,7 +1439,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Orphans",
     "titleZh": "",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -1037,7 +1452,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Pavane",
     "titleZh": "孔雀舞曲",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -1047,7 +1465,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "#SalveRosa",
     "titleZh": "",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -1057,7 +1479,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Trip 8",
     "titleZh": "",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -1067,7 +1492,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Father's Miracle",
     "titleZh": "",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -1077,7 +1505,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Swedish Connection",
     "titleZh": "瑞典救援暗線",
-    "country": "SE"
+    "country": "SE",
+    "genres": [
+      "剧情",
+      "历史",
+      "战争"
+    ]
   },
   {
     "rank": 9,
@@ -1087,7 +1520,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 10,
@@ -1097,7 +1531,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Meet, Greet & Bye",
     "titleZh": "",
-    "country": "PH"
+    "country": "PH",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -1107,7 +1544,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "State of Fear",
     "titleZh": "驚城之亂",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 2,
@@ -1117,7 +1557,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Father's Miracle",
     "titleZh": "",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -1127,7 +1570,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Even If This Love Disappears Tonight",
     "titleZh": "即使，這份戀情今晚會從世上消失",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -1137,7 +1584,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Yoh! Bestie",
     "titleZh": "婚前脫單快樂",
-    "country": "ZA"
+    "country": "ZA",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
   },
   {
     "rank": 5,
@@ -1147,7 +1598,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 6,
@@ -1157,7 +1609,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Anaganaga Oka Raju",
     "titleZh": "婚頭發財夢",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 7,
@@ -1167,7 +1623,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Kang Solah From Kang Mak x Nenek Gayung",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "奇幻",
+      "恐怖"
+    ]
   },
   {
     "rank": 8,
@@ -1177,7 +1638,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Challenger",
     "titleZh": "",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 9,
@@ -1187,7 +1652,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Death Whisperer 3",
     "titleZh": "鬼聲泣3",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "恐怖",
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -1197,7 +1667,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "This is I",
     "titleZh": "我是春菜愛",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "剧情",
+      "音乐"
+    ]
   },
   {
     "rank": 1,
@@ -1207,7 +1681,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 2,
@@ -1217,7 +1692,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Even If This Love Disappears Tonight",
     "titleZh": "即使，這份戀情今晚會從世上消失",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -1227,7 +1706,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "96 Minutes",
     "titleZh": "96分鐘",
-    "country": "TW"
+    "country": "TW",
+    "genres": [
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 4,
@@ -1237,7 +1720,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Death Whisperer 3",
     "titleZh": "鬼聲泣3",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "恐怖",
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -1247,7 +1735,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Yoh! Bestie",
     "titleZh": "婚前脫單快樂",
-    "country": "ZA"
+    "country": "ZA",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
   },
   {
     "rank": 6,
@@ -1257,7 +1749,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Big Fake",
     "titleZh": "偽術奇才",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -1267,7 +1764,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Letter To My Youth",
     "titleZh": "致我的青春",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -1277,7 +1777,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Tere Ishk Mein",
     "titleZh": "在你的愛裡",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -1287,7 +1791,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "La vita va così",
     "titleZh": "路不轉人轉",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -1297,7 +1805,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Cosmic Princess Kaguya!",
     "titleZh": "超時空輝耀姬！",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "奇幻",
+      "音乐",
+      "科幻"
+    ]
   },
   {
     "rank": 1,
@@ -1307,7 +1821,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 2,
@@ -1317,7 +1832,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Big Fake",
     "titleZh": "偽術奇才",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -1327,7 +1847,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Tere Ishk Mein",
     "titleZh": "在你的愛裡",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -1337,7 +1861,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "96 Minutes",
     "titleZh": "96分鐘",
-    "country": "TW"
+    "country": "TW",
+    "genres": [
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -1347,7 +1875,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "From the Ashes: The Pit",
     "titleZh": "校園火劫：深淵",
-    "country": "SA"
+    "country": "SA",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -1357,7 +1889,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Letter To My Youth",
     "titleZh": "致我的青春",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -1367,7 +1902,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "No Other Choice",
     "titleZh": "徵人啟弒",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 8,
@@ -1377,7 +1915,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Cosmic Princess Kaguya!",
     "titleZh": "超時空輝耀姬！",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "奇幻",
+      "音乐",
+      "科幻"
+    ]
   },
   {
     "rank": 9,
@@ -1387,7 +1931,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Captive",
     "titleZh": "文豪獄成記",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 10,
@@ -1397,7 +1946,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Great Flood",
     "titleZh": "巨洪",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 1,
@@ -1407,7 +1959,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Tere Ishk Mein",
     "titleZh": "在你的愛裡",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -1417,7 +1973,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Big Fake",
     "titleZh": "偽術奇才",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -1427,7 +1988,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "From the Ashes: The Pit",
     "titleZh": "校園火劫：深淵",
-    "country": "SA"
+    "country": "SA",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -1437,7 +2002,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Great Flood",
     "titleZh": "巨洪",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 5,
@@ -1447,7 +2015,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Haq",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 6,
@@ -1457,7 +2026,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "De De Pyaar De 2",
     "titleZh": "給我你的愛 2",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 7,
@@ -1467,7 +2040,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Cosmic Princess Kaguya!",
     "titleZh": "超時空輝耀姬！",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "奇幻",
+      "音乐",
+      "科幻"
+    ]
   },
   {
     "rank": 8,
@@ -1477,7 +2056,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Labinak: They Are Amongst Us",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -1487,7 +2070,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "L'amour ouf",
     "titleZh": "狂愛",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "爱情",
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -1497,7 +2085,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Agen +62",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "动作"
+    ]
   },
   {
     "rank": 1,
@@ -1507,7 +2099,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "De De Pyaar De 2",
     "titleZh": "給我你的愛 2",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 2,
@@ -1517,7 +2113,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Great Flood",
     "titleZh": "巨洪",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 3,
@@ -1527,7 +2126,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Haq",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 4,
@@ -1537,7 +2137,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Akhanda 2: Thaandavam",
     "titleZh": "阿坎達2：神聖之舞",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -1557,7 +2161,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Mardaani",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 7,
@@ -1567,7 +2176,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Magik Rompak",
     "titleZh": "",
-    "country": "MY"
+    "country": "MY",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -1577,7 +2191,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Call of the Dead",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "恐怖",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -1587,7 +2206,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "SHAM",
     "titleZh": "捏造：史上最惡殺人教師",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -1597,7 +2220,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Troll 2",
     "titleZh": "山怪巨魔 2",
-    "country": "NO"
+    "country": "NO",
+    "genres": [
+      "动作",
+      "奇幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -1607,7 +2235,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Great Flood",
     "titleZh": "巨洪",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 2,
@@ -1617,7 +2248,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Haq",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 3,
@@ -1627,7 +2259,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "De De Pyaar De 2",
     "titleZh": "給我你的愛 2",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 4,
@@ -1637,7 +2273,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Akhanda 2: Thaandavam",
     "titleZh": "阿坎達2：神聖之舞",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -1647,7 +2287,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Ugly",
     "titleZh": "醜得要命",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 6,
@@ -1667,7 +2311,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "100 Meters",
     "titleZh": "一百公尺。",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -1677,7 +2325,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Troll 2",
     "titleZh": "山怪巨魔 2",
-    "country": "NO"
+    "country": "NO",
+    "genres": [
+      "动作",
+      "奇幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -1687,7 +2340,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Time For Bravery",
     "titleZh": "勇者時刻",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "喜剧",
+      "动作"
+    ]
   },
   {
     "rank": 10,
@@ -1697,7 +2354,13 @@
     "cat": "Movies|Non-English",
     "titleEn": "Sore: A Wife From the Future",
     "titleZh": "逆時光戀人",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "奇幻",
+      "爱情",
+      "剧情",
+      "科幻"
+    ]
   },
   {
     "rank": 1,
@@ -1707,7 +2370,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Land of Sin: Limited Series",
     "titleZh": "罪土",
-    "country": "SE"
+    "country": "SE",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
   },
   {
     "rank": 2,
@@ -1717,7 +2385,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Jujutsu Kaisen: Season 3",
     "titleZh": "咒術迴戰",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 3,
@@ -1727,7 +2400,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Love from 9 to 5: Season 1",
     "titleZh": "戀愛朝九晚五",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -1737,7 +2413,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Cashero: Limited Series",
     "titleZh": "現金英雄",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "动作冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -1747,7 +2427,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Culinary Class Wars: Season 2",
     "titleZh": "黑白大廚：料理階級大戰",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀"
+    ]
   },
   {
     "rank": 6,
@@ -1757,7 +2440,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 4",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -1777,7 +2463,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Dynamite Kiss: Limited Series",
     "titleZh": "一吻爆炸",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -1787,7 +2477,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Pro Bono: Limited Series",
     "titleZh": "公益律師",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -1807,7 +2501,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Taskaree: The Smuggler's Web: Season 1",
     "titleZh": "海關英雄：走私暗戰",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -1817,7 +2516,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Can This Love Be Translated?: Limited Series",
     "titleZh": "愛情怎麼翻譯？",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 3,
@@ -1827,7 +2530,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Jujutsu Kaisen: Season 3",
     "titleZh": "咒術迴戰",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 4,
@@ -1837,7 +2545,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 4",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 5,
@@ -1847,7 +2558,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Queen of Flow: Season 3",
     "titleZh": "",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 6,
@@ -1857,7 +2572,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "No Tail to Tell: Limited Series",
     "titleZh": "今天開始是人類",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -1867,7 +2587,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "To Love, To Lose: Season 1",
     "titleZh": "真愛有代價",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 8,
@@ -1877,7 +2600,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Culinary Class Wars: Season 2",
     "titleZh": "黑白大廚：料理階級大戰",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀"
+    ]
   },
   {
     "rank": 9,
@@ -1887,7 +2613,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Silent Truth: Season 1",
     "titleZh": "再會～沉默的真相～",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "悬疑"
+    ]
   },
   {
     "rank": 10,
@@ -1897,7 +2626,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Cashero: Limited Series",
     "titleZh": "現金英雄",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "动作冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -1907,7 +2640,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Can This Love Be Translated?: Limited Series",
     "titleZh": "愛情怎麼翻譯？",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 2,
@@ -1917,7 +2654,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Single's Inferno: Season 5",
     "titleZh": "單身即地獄",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀",
+      "喜剧",
+      "脱口秀"
+    ]
   },
   {
     "rank": 3,
@@ -1927,7 +2669,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Taskaree: The Smuggler's Web: Season 1",
     "titleZh": "海關英雄：走私暗戰",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -1937,7 +2684,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Jujutsu Kaisen: Season 3",
     "titleZh": "咒術迴戰",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 5,
@@ -1947,7 +2699,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "No Tail to Tell: Limited Series",
     "titleZh": "今天開始是人類",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -1957,7 +2714,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Undercover Miss Hong: Limited Series",
     "titleZh": "臥底洪小姐",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -1967,7 +2729,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "To Love, To Lose: Season 1",
     "titleZh": "",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 8,
@@ -1977,7 +2742,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Queen of Flow: Season 3",
     "titleZh": "",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 9,
@@ -1987,7 +2756,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Frieren: Beyond Journey's End: Season 2",
     "titleZh": "葬送的芙莉蓮",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "剧情",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 10,
@@ -1997,7 +2772,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 4",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -2007,7 +2785,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Can This Love Be Translated?: Limited Series",
     "titleZh": "愛情怎麼翻譯？",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 2,
@@ -2017,7 +2799,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Single's Inferno: Season 5",
     "titleZh": "單身即地獄",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀",
+      "喜剧",
+      "脱口秀"
+    ]
   },
   {
     "rank": 3,
@@ -2027,7 +2814,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Taskaree: The Smuggler's Web: Season 1",
     "titleZh": "海關英雄：走私暗戰",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -2037,7 +2829,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Jujutsu Kaisen: Season 3",
     "titleZh": "咒術迴戰",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 5,
@@ -2047,7 +2844,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Undercover Miss Hong: Limited Series",
     "titleZh": "臥底洪小姐",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -2057,7 +2859,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "No Tail to Tell: Limited Series",
     "titleZh": "今天開始是人類",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -2067,7 +2874,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Frieren: Beyond Journey's End: Season 2",
     "titleZh": "葬送的芙莉蓮",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "剧情",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 8,
@@ -2077,7 +2890,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Hell's Paradise: Jigokuraku: Season 2",
     "titleZh": "地獄樂",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 9,
@@ -2097,7 +2915,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 4",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -2107,7 +2928,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Unfamiliar: Season 1",
     "titleZh": "密屋陌路",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -2117,7 +2943,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Single's Inferno: Season 5",
     "titleZh": "單身即地獄",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀",
+      "喜剧",
+      "脱口秀"
+    ]
   },
   {
     "rank": 3,
@@ -2127,7 +2958,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Can This Love Be Translated?: Limited Series",
     "titleZh": "愛情怎麼翻譯？",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -2137,7 +2972,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Undercover Miss Hong: Limited Series",
     "titleZh": "臥底洪小姐",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -2147,7 +2987,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Cash Queens: Season 1",
     "titleZh": "搶錢女王團",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧",
+      "动作冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -2157,7 +3002,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Jujutsu Kaisen: Season 3",
     "titleZh": "咒術迴戰",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 7,
@@ -2167,7 +3017,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Salvador: Season 1",
     "titleZh": "最後救贖",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 8,
@@ -2177,7 +3031,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "No Tail to Tell: Limited Series",
     "titleZh": "今天開始是人類",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -2187,7 +3046,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Taskaree: The Smuggler's Web: Season 1",
     "titleZh": "海關英雄：走私暗戰",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -2197,7 +3061,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Frieren: Beyond Journey's End: Season 2",
     "titleZh": "葬送的芙莉蓮",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险",
+      "剧情",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 1,
@@ -2207,7 +3077,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Unfamiliar: Season 1",
     "titleZh": "密屋陌路",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -2217,7 +3092,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Lead Children: Limited Series",
     "titleZh": "鉛毒之子",
-    "country": "PL"
+    "country": "PL",
+    "genres": [
+      "剧情",
+      "War & Politics"
+    ]
   },
   {
     "rank": 3,
@@ -2227,7 +3106,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Art of Sarah: Limited Series",
     "titleZh": "莎拉的真偽人生",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -2237,7 +3121,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Salvador: Season 1",
     "titleZh": "最後救贖",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 5,
@@ -2247,7 +3135,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Cash Queens: Season 1",
     "titleZh": "搶錢女王團",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧",
+      "动作冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -2257,7 +3150,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "In the Mud: Season 2",
     "titleZh": "泥濘女子幫",
-    "country": "KW"
+    "country": "KW",
+    "genres": [
+      "剧情",
+      "家庭"
+    ]
   },
   {
     "rank": 7,
@@ -2267,7 +3164,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Motorvalley: Season 1",
     "titleZh": "極速山谷",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "剧情",
+      "动作冒险"
+    ]
   },
   {
     "rank": 8,
@@ -2277,7 +3178,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Single's Inferno: Season 5",
     "titleZh": "單身即地獄",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀",
+      "喜剧",
+      "脱口秀"
+    ]
   },
   {
     "rank": 9,
@@ -2287,7 +3193,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Single's Inferno Reunion: Limited Series",
     "titleZh": "單身即地獄：重聚",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀"
+    ]
   },
   {
     "rank": 10,
@@ -2297,7 +3206,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Kohrra: Season 2",
     "titleZh": "冬霧",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -2307,7 +3220,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Art of Sarah: Limited Series",
     "titleZh": "莎拉的真偽人生",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -2317,7 +3235,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Unfamiliar: Season 1",
     "titleZh": "密屋陌路",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -2327,7 +3250,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Lead Children: Limited Series",
     "titleZh": "鉛毒之子",
-    "country": "PL"
+    "country": "PL",
+    "genres": [
+      "剧情",
+      "War & Politics"
+    ]
   },
   {
     "rank": 4,
@@ -2337,7 +3264,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Museum of Innocence: Limited Series",
     "titleZh": "純真博物館",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -2347,7 +3277,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "In the Mud: Season 2",
     "titleZh": "泥濘女子幫",
-    "country": "KW"
+    "country": "KW",
+    "genres": [
+      "剧情",
+      "家庭"
+    ]
   },
   {
     "rank": 6,
@@ -2357,7 +3291,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Salvador: Season 1",
     "titleZh": "最後救贖",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 7,
@@ -2367,7 +3305,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Single's Inferno Reunion: Limited Series",
     "titleZh": "單身即地獄：重聚",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀"
+    ]
   },
   {
     "rank": 8,
@@ -2377,7 +3318,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Motorvalley: Season 1",
     "titleZh": "極速山谷",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "剧情",
+      "动作冒险"
+    ]
   },
   {
     "rank": 9,
@@ -2387,7 +3332,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Kohrra: Season 2",
     "titleZh": "冬霧",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -2397,7 +3346,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Cash Queens: Season 1",
     "titleZh": "搶錢女王團",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧",
+      "动作冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -2407,7 +3361,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Art of Sarah: Limited Series",
     "titleZh": "莎拉的真偽人生",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -2417,7 +3376,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "BAKI-DOU: The Invincible Samurai: Season 1",
     "titleZh": "刃牙道：無敵武士",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险"
+    ]
   },
   {
     "rank": 3,
@@ -2427,7 +3390,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Unfamiliar: Season 1",
     "titleZh": "密屋陌路",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 4,
@@ -2437,7 +3405,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Museum of Innocence: Limited Series",
     "titleZh": "純真博物館",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -2447,7 +3418,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "In the Mud: Season 2",
     "titleZh": "泥濘女子幫",
-    "country": "KW"
+    "country": "KW",
+    "genres": [
+      "剧情",
+      "家庭"
+    ]
   },
   {
     "rank": 6,
@@ -2457,7 +3432,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Lead Children: Limited Series",
     "titleZh": "鉛毒之子",
-    "country": "PL"
+    "country": "PL",
+    "genres": [
+      "剧情",
+      "War & Politics"
+    ]
   },
   {
     "rank": 7,
@@ -2467,7 +3446,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Undercover Miss Hong: Limited Series",
     "titleZh": "臥底洪小姐",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -2477,7 +3461,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "No Tail to Tell: Limited Series",
     "titleZh": "今天開始是人類",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -2487,7 +3476,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Can This Love Be Translated?: Limited Series",
     "titleZh": "愛情怎麼翻譯？",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 10,
@@ -2497,7 +3490,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Salvador: Season 1",
     "titleZh": "最後救贖",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 1,
@@ -2507,7 +3504,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The TikTok Killer: Limited Series",
     "titleZh": "TikTok 殺手：蛛絲網跡",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -2517,7 +3518,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "A Friend, a Murderer: Limited Series",
     "titleZh": "消失的丹麥女孩：這位朋友，那位兇手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -2527,7 +3532,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "BAKI-DOU: The Invincible Samurai: Season 1",
     "titleZh": "刃牙道：無敵武士",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险"
+    ]
   },
   {
     "rank": 4,
@@ -2537,7 +3546,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Boyfriend on Demand: Limited Series",
     "titleZh": "訂閱男友",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -2547,7 +3561,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Girl From Nowhere The Reset: Season 1",
     "titleZh": "轉學來的女生：重啟",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 6,
@@ -2557,7 +3575,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Art of Sarah: Limited Series",
     "titleZh": "莎拉的真偽人生",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -2567,7 +3590,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Still Shining: Limited Series",
     "titleZh": "依然閃亮",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -2577,7 +3603,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Unfamiliar: Season 1",
     "titleZh": "密屋陌路",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 9,
@@ -2587,7 +3618,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Undercover Miss Hong: Limited Series",
     "titleZh": "臥底洪小姐",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "犯罪",
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -2597,7 +3633,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "DOC: Season 1",
     "titleZh": "失憶醫生: 由你掌握",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -2607,7 +3646,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Boyfriend on Demand: Limited Series",
     "titleZh": "訂閱男友",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -2617,7 +3661,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "That Night: Limited Series",
     "titleZh": "是夜危機",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 3,
@@ -2627,7 +3672,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The TikTok Killer: Limited Series",
     "titleZh": "TikTok 殺手：蛛絲網跡",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 4,
@@ -2637,7 +3686,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "A Friend, a Murderer: Limited Series",
     "titleZh": "消失的丹麥女孩：這位朋友，那位兇手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 5,
@@ -2647,7 +3700,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Girl From Nowhere The Reset: Season 1",
     "titleZh": "轉學來的女生：重啟",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 6,
@@ -2657,7 +3714,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Pursuit of Jade: Season 1",
     "titleZh": "逐玉",
-    "country": "CN"
+    "country": "CN",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -2667,7 +3727,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Phantom Lawyer: Season 1",
     "titleZh": "神與律師事務所",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "Sci-Fi & Fantasy",
+      "悬疑",
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -2677,7 +3743,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Unfamiliar: Season 1",
     "titleZh": "密屋陌路",
-    "country": "DE"
+    "country": "DE",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 9,
@@ -2687,7 +3758,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "BAKI-DOU: The Invincible Samurai: Season 1",
     "titleZh": "刃牙道：無敵武士",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作冒险"
+    ]
   },
   {
     "rank": 10,
@@ -2697,7 +3772,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Still Shining: Limited Series",
     "titleZh": "依然閃亮",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -2727,7 +3805,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "That Night: Limited Series",
     "titleZh": "是夜危機",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 4,
@@ -2737,7 +3816,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Radioactive Emergency: Season 1",
     "titleZh": "放射危機",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "动作冒险"
+    ]
   },
   {
     "rank": 5,
@@ -2747,7 +3831,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Phantom Lawyer: Season 1",
     "titleZh": "神與律師事務所",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "Sci-Fi & Fantasy",
+      "悬疑",
+      "喜剧"
+    ]
   },
   {
     "rank": 6,
@@ -2757,7 +3847,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Boyfriend on Demand: Limited Series",
     "titleZh": "訂閱男友",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -2777,7 +3872,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Pursuit of Jade: Season 1",
     "titleZh": "逐玉",
-    "country": "CN"
+    "country": "CN",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -2787,7 +3885,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "A Friend, a Murderer: Limited Series",
     "titleZh": "消失的丹麥女孩：這位朋友，那位兇手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 10,
@@ -2797,7 +3899,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Girl From Nowhere The Reset: Season 1",
     "titleZh": "轉學來的女生：重啟",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 1,
@@ -2807,7 +3913,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Radioactive Emergency: Season 1",
     "titleZh": "放射危機",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "动作冒险"
+    ]
   },
   {
     "rank": 2,
@@ -2817,7 +3928,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO"
+    "country": "NO",
+    "genres": [
+      "悬疑",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -2837,7 +3952,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Phantom Lawyer: Season 1",
     "titleZh": "神與律師事務所",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "Sci-Fi & Fantasy",
+      "悬疑",
+      "喜剧"
+    ]
   },
   {
     "rank": 5,
@@ -2847,7 +3968,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Pursuit of Jade: Season 1",
     "titleZh": "逐玉",
-    "country": "CN"
+    "country": "CN",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -2877,7 +4001,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "That Night: Limited Series",
     "titleZh": "是夜危機",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 9,
@@ -2887,7 +4012,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Boyfriend on Demand: Limited Series",
     "titleZh": "訂閱男友",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -2897,7 +4027,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Ready or Not: Texas: Season 1",
     "titleZh": "說走就走：李瑞鎮的德州德州",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "真人秀"
+    ]
   },
   {
     "rank": 1,
@@ -2907,7 +4040,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO"
+    "country": "NO",
+    "genres": [
+      "悬疑",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -2917,7 +4054,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 2",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 3,
@@ -2927,7 +4065,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Radioactive Emergency: Season 1",
     "titleZh": "放射危機",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "动作冒险"
+    ]
   },
   {
     "rank": 4,
@@ -2937,7 +4080,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Phantom Lawyer: Season 1",
     "titleZh": "神與律師事務所",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "Sci-Fi & Fantasy",
+      "悬疑",
+      "喜剧"
+    ]
   },
   {
     "rank": 5,
@@ -2947,7 +4096,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Pursuit of Jade: Season 1",
     "titleZh": "逐玉",
-    "country": "CN"
+    "country": "CN",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -2957,7 +4109,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Agent from Above: Season 1",
     "titleZh": "乩身",
-    "country": "TW"
+    "country": "TW",
+    "genres": [
+      "剧情",
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 7,
@@ -2967,7 +4124,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Sins of Kujo: Season 1",
     "titleZh": "九條的大罪",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -2977,7 +4138,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 1",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 9,
@@ -3007,7 +4169,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 2",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 2,
@@ -3017,7 +4180,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO"
+    "country": "NO",
+    "genres": [
+      "悬疑",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -3027,7 +4194,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 1",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 4,
@@ -3037,7 +4205,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Sins of Kujo: Season 1",
     "titleZh": "九條的大罪",
-    "country": "JP"
+    "country": "JP",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -3047,7 +4219,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Gangs of Galicia: Season 2",
     "titleZh": "毒幫家族",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 6,
@@ -3057,7 +4233,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bandi: Season 1",
     "titleZh": "聰明少年",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -3067,7 +4246,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Radioactive Emergency: Season 1",
     "titleZh": "放射危機",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "动作冒险"
+    ]
   },
   {
     "rank": 8,
@@ -3077,7 +4261,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "High Tides: Season 3",
     "titleZh": "鍍金盛夏",
-    "country": "BE"
+    "country": "BE",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -3087,7 +4274,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Maamla Legal Hai: Season 2",
     "titleZh": "律界沒法度",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -3097,7 +4288,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Phantom Lawyer: Season 1",
     "titleZh": "神與律師事務所",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "Sci-Fi & Fantasy",
+      "悬疑",
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -3107,7 +4304,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bandi: Season 1",
     "titleZh": "聰明少年",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -3117,7 +4317,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Ronaldinho: The One and Only: Limited Series",
     "titleZh": "羅納迪諾：獨步球壇",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 3,
@@ -3127,7 +4330,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 2",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 4,
@@ -3137,7 +4341,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Fake Profile: Season 3",
     "titleZh": "人設騙局",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -3147,7 +4354,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "Someone Has to Know: Limited Series",
     "titleZh": "沉默知情者",
-    "country": "CL"
+    "country": "CL",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
   },
   {
     "rank": 6,
@@ -3157,7 +4369,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Made with Love: Season 1",
     "titleZh": "真情入味",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 7,
@@ -3167,7 +4382,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 1",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 8,
@@ -3177,7 +4393,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Law According to Lidia Poët: Season 3",
     "titleZh": "律師女王",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "War & Politics"
+    ]
   },
   {
     "rank": 9,
@@ -3187,7 +4408,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 5",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 10,
@@ -3197,7 +4421,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Detective Hole: Season 1",
     "titleZh": "哈利警探",
-    "country": "NO"
+    "country": "NO",
+    "genres": [
+      "悬疑",
+      "犯罪"
+    ]
   },
   {
     "rank": 1,
@@ -3207,7 +4435,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Sold Out on You: Limited Series",
     "titleZh": "秒殺愛情",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -3217,7 +4449,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Ronaldinho: The One and Only: Limited Series",
     "titleZh": "羅納迪諾：獨步球壇",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 3,
@@ -3227,7 +4462,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Fake Profile: Season 3",
     "titleZh": "人設騙局",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -3237,7 +4475,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "If Wishes Could Kill: Limited Series",
     "titleZh": "奪命許願",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -3247,7 +4489,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 5",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 6,
@@ -3257,7 +4502,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 2",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 7,
@@ -3267,7 +4513,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Flunked: Season 1",
     "titleZh": "臥底代課任務",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧",
+      "犯罪"
+    ]
   },
   {
     "rank": 8,
@@ -3277,7 +4527,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bandi: Season 1",
     "titleZh": "聰明少年",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -3287,7 +4540,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Law According to Lidia Poët: Season 3",
     "titleZh": "律師女王",
-    "country": "IT"
+    "country": "IT",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "War & Politics"
+    ]
   },
   {
     "rank": 10,
@@ -3297,7 +4555,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Made with Love: Season 1",
     "titleZh": "真情入味",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 1,
@@ -3307,7 +4568,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "If Wishes Could Kill: Limited Series",
     "titleZh": "奪命許願",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -3317,7 +4582,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Flunked: Season 1",
     "titleZh": "臥底代課任務",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -3327,7 +4596,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Sold Out on You: Limited Series",
     "titleZh": "秒殺愛情",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -3337,7 +4610,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Straight to Hell: Season 1",
     "titleZh": "地獄占星師",
-    "country": "JP"
+    "country": "JP",
+    "genres": []
   },
   {
     "rank": 5,
@@ -3347,7 +4621,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Envious: Season 4",
     "titleZh": "羨慕嫉妒恨",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -3357,7 +4635,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Santita: Season 1",
     "titleZh": "聖女也瘋狂",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -3367,7 +4648,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Fake Profile: Season 3",
     "titleZh": "人設騙局",
-    "country": "CO"
+    "country": "CO",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -3377,7 +4661,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Ronaldinho: The One and Only: Limited Series",
     "titleZh": "羅納迪諾：獨步球壇",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 9,
@@ -3387,7 +4674,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Bloodhounds: Season 2",
     "titleZh": "獵犬",
-    "country": "KR"
+    "country": "KR",
+    "genres": []
   },
   {
     "rank": 10,
@@ -3397,7 +4685,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Alpha Males: Season 5",
     "titleZh": "大男人注意",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -3407,7 +4698,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "My Royal Nemesis: Limited Series",
     "titleZh": "我的王室死對頭",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 2,
@@ -3417,7 +4713,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "If Wishes Could Kill: Limited Series",
     "titleZh": "奪命許願",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -3427,7 +4727,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Sold Out on You: Limited Series",
     "titleZh": "秒殺愛情",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -3437,7 +4741,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Straight to Hell: Season 1",
     "titleZh": "地獄占星師",
-    "country": "JP"
+    "country": "JP",
+    "genres": []
   },
   {
     "rank": 5,
@@ -3447,7 +4752,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Chestnut Man: Hide and Seek",
     "titleZh": "栗子人殺手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 6,
@@ -3457,7 +4766,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Glory: Season 1",
     "titleZh": "拳魂榮耀",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -3467,7 +4780,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Envious: Season 4",
     "titleZh": "羨慕嫉妒恨",
-    "country": "AR"
+    "country": "AR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -3477,7 +4794,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Thank You, Next: Season 3",
     "titleZh": "真愛下一位",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -3487,7 +4808,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Flunked: Season 1",
     "titleZh": "臥底代課任務",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧",
+      "犯罪"
+    ]
   },
   {
     "rank": 10,
@@ -3497,7 +4822,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Chestnut Man: Season 1",
     "titleZh": "栗子人殺手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 1,
@@ -3507,7 +4836,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "Berlin and the Lady with an Ermine: Limited Series",
     "titleZh": "柏林：抱銀貂的女子",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "动作冒险",
+      "喜剧"
+    ]
   },
   {
     "rank": 2,
@@ -3517,7 +4852,12 @@
     "cat": "Shows|Non-English",
     "titleEn": "My Royal Nemesis: Limited Series",
     "titleZh": "我的王室死對頭",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧",
+      "Sci-Fi & Fantasy"
+    ]
   },
   {
     "rank": 3,
@@ -3527,7 +4867,10 @@
     "cat": "Shows|Non-English",
     "titleEn": "Between Father and Son: Season 1",
     "titleZh": "禁戀父子",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 4,
@@ -3537,7 +4880,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Chestnut Man: Hide and Seek",
     "titleZh": "栗子人殺手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 5,
@@ -3547,7 +4894,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Sold Out on You: Limited Series",
     "titleZh": "秒殺愛情",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
   },
   {
     "rank": 6,
@@ -3557,7 +4908,13 @@
     "cat": "Shows|Non-English",
     "titleEn": "The WONDERfools: Limited Series",
     "titleZh": "超能路人甲",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "动作冒险",
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -3567,7 +4924,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "Thank You, Next: Season 3",
     "titleZh": "真愛下一位",
-    "country": "TR"
+    "country": "TR",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -3577,7 +4938,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "The Chestnut Man: Season 1",
     "titleZh": "栗子人殺手",
-    "country": "DK"
+    "country": "DK",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
   },
   {
     "rank": 9,
@@ -3587,7 +4952,11 @@
     "cat": "Shows|Non-English",
     "titleEn": "If Wishes Could Kill: Limited Series",
     "titleZh": "奪命許願",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "悬疑",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -3597,7 +4966,8 @@
     "cat": "Shows|Non-English",
     "titleEn": "Straight to Hell: Season 1",
     "titleZh": "地獄占星師",
-    "country": "JP"
+    "country": "JP",
+    "genres": []
   },
   {
     "rank": 1,
@@ -3607,7 +4977,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "My Dearest Assassin",
     "titleZh": "我的摯愛殺手",
-    "country": "TH"
+    "country": "TH",
+    "genres": [
+      "动作",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 2,
@@ -3617,7 +4992,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "KARTAVYA",
     "titleZh": "執法交叉點",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作"
+    ]
   },
   {
     "rank": 3,
@@ -3627,7 +5005,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Bride of the Year",
     "titleZh": "年度最佳新娘",
-    "country": "ZA"
+    "country": "ZA",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "家庭"
+    ]
   },
   {
     "rank": 4,
@@ -3637,7 +5020,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Bus: A French Football Mutiny",
     "titleZh": "藍色巴士：法國足球隊罷練事件簿",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 5,
@@ -3647,7 +5033,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar The Revenge (Raw & Undekha)",
     "titleZh": "黑境行者：復仇",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 6,
@@ -3657,7 +5048,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Village of the Dead",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "冒险",
+      "恐怖",
+      "悬疑"
+    ]
   },
   {
     "rank": 7,
@@ -3667,7 +5063,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "My Dearest Señorita",
     "titleZh": "我親愛的小姐",
-    "country": "ES"
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -3677,7 +5077,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Hidden Enemy",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "动作",
+      "冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -3687,7 +5092,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Je m'appelle Agneta",
     "titleZh": "我叫艾妮塔",
-    "country": "SE"
+    "country": "SE",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 10,
@@ -3697,7 +5107,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Bharathanatyam 2 Mohiniyattam",
     "titleZh": "",
-    "country": "IN"
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -3707,7 +5121,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "A Father's Miracle",
     "titleZh": "",
-    "country": "MX"
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -3717,7 +5134,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Firebreak",
     "titleZh": "浴火之森",
-    "country": "ES"
+    "country": "ES",
+    "genres": []
   },
   {
     "rank": 3,
@@ -3727,7 +5145,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Orphans",
     "titleZh": "",
-    "country": "FR"
+    "country": "FR",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -3737,7 +5158,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "State of Fear",
     "titleZh": "驚城之亂",
-    "country": "BR"
+    "country": "BR",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 5,
@@ -3747,7 +5171,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "The Swedish Connection",
     "titleZh": "瑞典救援暗線",
-    "country": "SE"
+    "country": "SE",
+    "genres": [
+      "剧情",
+      "历史",
+      "战争"
+    ]
   },
   {
     "rank": 6,
@@ -3757,7 +5186,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Meet, Greet & Bye",
     "titleZh": "",
-    "country": "PH"
+    "country": "PH",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -3767,7 +5199,10 @@
     "cat": "Movies|Non-English",
     "titleEn": "Pavane",
     "titleZh": "孔雀舞曲",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -3777,7 +5212,8 @@
     "cat": "Movies|Non-English",
     "titleEn": "Dhurandhar",
     "titleZh": "黑境行者",
-    "country": "IN"
+    "country": "IN",
+    "genres": []
   },
   {
     "rank": 9,
@@ -3787,7 +5223,11 @@
     "cat": "Movies|Non-English",
     "titleEn": "Even If This Love Disappears Tonight",
     "titleZh": "即使，這份戀情今晚會從世上消失",
-    "country": "KR"
+    "country": "KR",
+    "genres": [
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 10,
@@ -3797,7 +5237,12 @@
     "cat": "Movies|Non-English",
     "titleEn": "Kang Solah From Kang Mak x Nenek Gayung",
     "titleZh": "",
-    "country": "ID"
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "奇幻",
+      "恐怖"
+    ]
   },
   {
     "rank": 1,
@@ -3807,7 +5252,12 @@
     "cat": "Movies|English",
     "titleEn": "People We Meet on Vacation",
     "titleZh": "盛夏假期遇見愛",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -3817,7 +5267,10 @@
     "cat": "Movies|English",
     "titleEn": "Evil Influencer: The Jodi Hildebrandt Story",
     "titleZh": "邪惡網紅：喬迪·希爾德布蘭特的故事",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 3,
@@ -3827,7 +5280,11 @@
     "cat": "Movies|English",
     "titleEn": "Me Before You",
     "titleZh": "我就要你好好的",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 4,
@@ -3837,7 +5294,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 5,
@@ -3847,7 +5310,13 @@
     "cat": "Movies|English",
     "titleEn": "Madagascar",
     "titleZh": "馬達加斯加",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 6,
@@ -3857,7 +5326,12 @@
     "cat": "Movies|English",
     "titleEn": "Wake Up Dead Man: A Knives Out Mystery",
     "titleZh": "鋒迴路轉：亡者歸來",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "悬疑",
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -3867,7 +5341,14 @@
     "cat": "Movies|English",
     "titleEn": "Paw Patrol: The Movie",
     "titleZh": "汪汪隊立大功：超級大電影",
-    "country": "CA"
+    "country": "CA",
+    "genres": [
+      "冒险",
+      "动画",
+      "喜剧",
+      "家庭",
+      "科幻"
+    ]
   },
   {
     "rank": 8,
@@ -3877,7 +5358,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World",
     "titleZh": "侏羅紀世界：重生",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "科幻",
+      "冒险",
+      "动作"
+    ]
   },
   {
     "rank": 9,
@@ -3887,7 +5373,12 @@
     "cat": "Movies|English",
     "titleEn": "Sicario: Day of the Soldado",
     "titleZh": "怒火邊界2：毒刑者",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -3897,7 +5388,14 @@
     "cat": "Movies|English",
     "titleEn": "The Bad Guys",
     "titleZh": "壞蛋聯盟",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "动画",
+      "喜剧",
+      "犯罪",
+      "家庭"
+    ]
   },
   {
     "rank": 1,
@@ -3907,7 +5405,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -3917,7 +5420,12 @@
     "cat": "Movies|English",
     "titleEn": "People We Meet on Vacation",
     "titleZh": "盛夏假期遇見愛",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 3,
@@ -3927,7 +5435,10 @@
     "cat": "Movies|English",
     "titleEn": "One Last Adventure: The Making of Stranger Things 5",
     "titleZh": "最後的冒險：怪奇物語第 5 季：製作特輯",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 4,
@@ -3937,7 +5448,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 5,
@@ -3947,7 +5464,11 @@
     "cat": "Movies|English",
     "titleEn": "Suitcase Killer: The Melanie McGuire Story",
     "titleZh": "邪惡網紅：喬迪·希爾德布蘭特的故事",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 6,
@@ -3957,7 +5478,12 @@
     "cat": "Movies|English",
     "titleEn": "How to Train Your Dragon: The Hidden World",
     "titleZh": "馴龍高手3",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭",
+      "冒险"
+    ]
   },
   {
     "rank": 7,
@@ -3967,7 +5493,11 @@
     "cat": "Movies|English",
     "titleEn": "Me Before You",
     "titleZh": "我就要你好好的",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 8,
@@ -3977,7 +5507,14 @@
     "cat": "Movies|English",
     "titleEn": "Paw Patrol: The Movie",
     "titleZh": "汪汪隊立大功：超級大電影",
-    "country": "CA"
+    "country": "CA",
+    "genres": [
+      "冒险",
+      "动画",
+      "喜剧",
+      "家庭",
+      "科幻"
+    ]
   },
   {
     "rank": 9,
@@ -3987,7 +5524,13 @@
     "cat": "Movies|English",
     "titleEn": "Madagascar",
     "titleZh": "馬達加斯加",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 10,
@@ -3997,7 +5540,11 @@
     "cat": "Movies|English",
     "titleEn": "Freelance",
     "titleZh": "超危險保鑣",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -4007,7 +5554,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -4017,7 +5569,11 @@
     "cat": "Movies|English",
     "titleEn": "Kidnapped: Elizabeth Smart",
     "titleZh": "在家消失的女孩：伊莉莎白史馬特綁架案",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -4027,7 +5583,12 @@
     "cat": "Movies|English",
     "titleEn": "No Time to Die",
     "titleZh": "007：生死交戰",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "动作",
+      "惊悚",
+      "冒险"
+    ]
   },
   {
     "rank": 4,
@@ -4037,7 +5598,12 @@
     "cat": "Movies|English",
     "titleEn": "People We Meet on Vacation",
     "titleZh": "盛夏假期遇見愛",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 5,
@@ -4047,7 +5613,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 6,
@@ -4057,7 +5629,12 @@
     "cat": "Movies|English",
     "titleEn": "The Magnificent Seven",
     "titleZh": "絕地7騎士",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动作",
+      "西部"
+    ]
   },
   {
     "rank": 7,
@@ -4067,7 +5644,12 @@
     "cat": "Movies|English",
     "titleEn": "Spectre",
     "titleZh": "007：惡魔四伏",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "动作",
+      "冒险",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -4077,7 +5659,12 @@
     "cat": "Movies|English",
     "titleEn": "Max",
     "titleZh": "瘋狂麥斯：憤怒道",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "科幻"
+    ]
   },
   {
     "rank": 9,
@@ -4087,7 +5674,11 @@
     "cat": "Movies|English",
     "titleEn": "Suitcase Killer: The Melanie McGuire Story",
     "titleZh": "邪惡網紅：喬迪·希爾德布蘭特的故事",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 10,
@@ -4097,7 +5688,11 @@
     "cat": "Movies|English",
     "titleEn": "Freelance",
     "titleZh": "超危險保鑣",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -4107,7 +5702,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -4117,7 +5717,11 @@
     "cat": "Movies|English",
     "titleEn": "Kidnapped: Elizabeth Smart",
     "titleZh": "在家消失的女孩：伊莉莎白史馬特綁架案",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -4127,7 +5731,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 4,
@@ -4137,7 +5747,12 @@
     "cat": "Movies|English",
     "titleEn": "Max",
     "titleZh": "瘋狂麥斯：憤怒道",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "科幻"
+    ]
   },
   {
     "rank": 5,
@@ -4147,7 +5762,12 @@
     "cat": "Movies|English",
     "titleEn": "Trap",
     "titleZh": "毒窟風暴",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 6,
@@ -4157,7 +5777,12 @@
     "cat": "Movies|English",
     "titleEn": "M3GAN 2.0",
     "titleZh": "窒友梅根2.0",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 7,
@@ -4167,7 +5792,12 @@
     "cat": "Movies|English",
     "titleEn": "People We Meet on Vacation",
     "titleZh": "盛夏假期遇見愛",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 8,
@@ -4177,7 +5807,12 @@
     "cat": "Movies|English",
     "titleEn": "No Time to Die",
     "titleZh": "007：生死交戰",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "动作",
+      "惊悚",
+      "冒险"
+    ]
   },
   {
     "rank": 9,
@@ -4187,7 +5822,12 @@
     "cat": "Movies|English",
     "titleEn": "In the Land of Saints and Sinners",
     "titleZh": "罪惡對決",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 10,
@@ -4197,7 +5837,10 @@
     "cat": "Movies|English",
     "titleEn": "Secret Mall Apartment",
     "titleZh": "秘密購物中心公寓",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 1,
@@ -4207,7 +5850,11 @@
     "cat": "Movies|English",
     "titleEn": "The Investigation of Lucy Letby",
     "titleZh": "露西萊比的調查",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 2,
@@ -4217,7 +5864,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -4227,7 +5879,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 4,
@@ -4237,7 +5895,12 @@
     "cat": "Movies|English",
     "titleEn": "In the Land of Saints and Sinners",
     "titleZh": "罪惡對決",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 5,
@@ -4247,7 +5910,11 @@
     "cat": "Movies|English",
     "titleEn": "Sweet Home Alabama",
     "titleZh": "美麗蹺家人",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 6,
@@ -4257,7 +5924,11 @@
     "cat": "Movies|English",
     "titleEn": "Overboard (2018)",
     "titleZh": "小迷糊又天翻地覆",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -4267,7 +5938,10 @@
     "cat": "Movies|English",
     "titleEn": "Mike and Dave Need Wedding Dates",
     "titleZh": "婚禮玩很大",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -4277,7 +5951,12 @@
     "cat": "Movies|English",
     "titleEn": "Night at the Museum",
     "titleZh": "博物館驚魂夜",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "家庭",
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -4287,7 +5966,12 @@
     "cat": "Movies|English",
     "titleEn": "Copshop",
     "titleZh": "高玩殺手",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "动作"
+    ]
   },
   {
     "rank": 10,
@@ -4297,7 +5981,12 @@
     "cat": "Movies|English",
     "titleEn": "The Adventures of Sharkboy and Lavagirl",
     "titleZh": "立體小奇兵：鯊魚男孩與岩漿女孩",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "家庭",
+      "科幻"
+    ]
   },
   {
     "rank": 1,
@@ -4307,7 +5996,10 @@
     "cat": "Movies|English",
     "titleEn": "Joe's College Road Trip",
     "titleZh": "祖孫大學公路遊",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 2,
@@ -4317,7 +6009,11 @@
     "cat": "Movies|English",
     "titleEn": "The Investigation of Lucy Letby",
     "titleZh": "露西萊比的調查",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -4327,7 +6023,13 @@
     "cat": "Movies|English",
     "titleEn": "How to Train Your Dragon",
     "titleZh": "馴龍高手",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "家庭",
+      "动作",
+      "冒险"
+    ]
   },
   {
     "rank": 4,
@@ -4337,7 +6039,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 5,
@@ -4347,7 +6055,11 @@
     "cat": "Movies|English",
     "titleEn": "Overboard (2018)",
     "titleZh": "小迷糊又天翻地覆",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
   },
   {
     "rank": 6,
@@ -4357,7 +6069,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 7,
@@ -4367,7 +6084,11 @@
     "cat": "Movies|English",
     "titleEn": "Noah",
     "titleZh": "挪亞方舟",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "冒险"
+    ]
   },
   {
     "rank": 8,
@@ -4377,7 +6098,11 @@
     "cat": "Movies|English",
     "titleEn": "Twisters",
     "titleZh": "龍捲風暴",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -4387,7 +6112,11 @@
     "cat": "Movies|English",
     "titleEn": "Homefront",
     "titleZh": "最後防線",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -4397,7 +6126,10 @@
     "cat": "Movies|English",
     "titleEn": "Norbit",
     "titleZh": "糯米正傳",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 1,
@@ -4407,7 +6139,10 @@
     "cat": "Movies|English",
     "titleEn": "Joe's College Road Trip",
     "titleZh": "祖孫大學公路遊",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 2,
@@ -4417,7 +6152,12 @@
     "cat": "Movies|English",
     "titleEn": "Prometheus",
     "titleZh": "普羅米修斯",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "科幻",
+      "悬疑",
+      "恐怖"
+    ]
   },
   {
     "rank": 3,
@@ -4427,7 +6167,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 4,
@@ -4437,7 +6183,11 @@
     "cat": "Movies|English",
     "titleEn": "The Addams Family",
     "titleZh": "阿達一族",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "奇幻"
+    ]
   },
   {
     "rank": 5,
@@ -4447,7 +6197,14 @@
     "cat": "Movies|English",
     "titleEn": "The Addams Family 2",
     "titleZh": "阿達一族2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭",
+      "喜剧",
+      "奇幻",
+      "冒险"
+    ]
   },
   {
     "rank": 6,
@@ -4457,7 +6214,10 @@
     "cat": "Movies|English",
     "titleEn": "Fall",
     "titleZh": "墜",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚"
+    ]
   },
   {
     "rank": 7,
@@ -4467,7 +6227,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 8,
@@ -4477,7 +6242,12 @@
     "cat": "Movies|English",
     "titleEn": "The Expendables 4",
     "titleZh": "浴血任務4",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -4487,7 +6257,12 @@
     "cat": "Movies|English",
     "titleEn": "Wrath of the Titans",
     "titleZh": "怒戰天神",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "冒险",
+      "动作"
+    ]
   },
   {
     "rank": 10,
@@ -4497,7 +6272,11 @@
     "cat": "Movies|English",
     "titleEn": "Rumble",
     "titleZh": "打怪大亂鬥",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭"
+    ]
   },
   {
     "rank": 1,
@@ -4507,7 +6286,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World Rebirth",
     "titleZh": "侏羅紀世界：重生",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "科幻",
+      "冒险",
+      "动作"
+    ]
   },
   {
     "rank": 2,
@@ -4517,7 +6301,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 3,
@@ -4527,7 +6317,11 @@
     "cat": "Movies|English",
     "titleEn": "The Addams Family",
     "titleZh": "阿達一族",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "奇幻"
+    ]
   },
   {
     "rank": 4,
@@ -4537,7 +6331,12 @@
     "cat": "Movies|English",
     "titleEn": "Hierarchy",
     "titleZh": "",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -4547,7 +6346,14 @@
     "cat": "Movies|English",
     "titleEn": "The Addams Family 2",
     "titleZh": "阿達一族2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭",
+      "喜剧",
+      "奇幻",
+      "冒险"
+    ]
   },
   {
     "rank": 6,
@@ -4557,7 +6363,12 @@
     "cat": "Movies|English",
     "titleEn": "The World Will Tremble",
     "titleZh": "",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "战争",
+      "历史"
+    ]
   },
   {
     "rank": 7,
@@ -4567,7 +6378,12 @@
     "cat": "Movies|English",
     "titleEn": "Trap House",
     "titleZh": "毒窟風暴",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -4577,7 +6393,10 @@
     "cat": "Movies|English",
     "titleEn": "Joe's College Road Trip",
     "titleZh": "祖孫大學公路遊",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 9,
@@ -4587,7 +6406,12 @@
     "cat": "Movies|English",
     "titleEn": "The Expendables 4",
     "titleZh": "浴血任務4",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -4597,7 +6421,12 @@
     "cat": "Movies|English",
     "titleEn": "The Rip",
     "titleZh": "全信沒收",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪"
+    ]
   },
   {
     "rank": 1,
@@ -4607,7 +6436,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -4617,7 +6451,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World Rebirth",
     "titleZh": "侏羅紀世界：重生",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "科幻",
+      "冒险",
+      "动作"
+    ]
   },
   {
     "rank": 3,
@@ -4627,7 +6466,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 4,
@@ -4637,7 +6482,12 @@
     "cat": "Movies|English",
     "titleEn": "Trap House",
     "titleZh": "毒窟風暴",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -4647,7 +6497,12 @@
     "cat": "Movies|English",
     "titleEn": "The Boss Baby",
     "titleZh": "寶貝老闆：耶誕特輯",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭",
+      "冒险"
+    ]
   },
   {
     "rank": 6,
@@ -4657,7 +6512,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World",
     "titleZh": "侏羅紀世界：重生",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "科幻",
+      "冒险",
+      "动作"
+    ]
   },
   {
     "rank": 7,
@@ -4667,7 +6527,12 @@
     "cat": "Movies|English",
     "titleEn": "Hierarchy",
     "titleZh": "",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -4677,7 +6542,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World: Dominion",
     "titleZh": "侏羅紀世界：統霸天下",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -4687,7 +6557,13 @@
     "cat": "Movies|English",
     "titleEn": "The Karate Kid",
     "titleZh": "功夫夢",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "剧情",
+      "家庭"
+    ]
   },
   {
     "rank": 10,
@@ -4697,7 +6573,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World: Fallen Kingdom",
     "titleZh": "侏羅紀世界：殞落國度",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -4707,7 +6588,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -4717,7 +6603,10 @@
     "cat": "Movies|English",
     "titleEn": "Louis Theroux: Inside the Manosphere",
     "titleZh": "路易泰魯：解構男性圈",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 3,
@@ -4727,7 +6616,13 @@
     "cat": "Movies|English",
     "titleEn": "Shark Tale",
     "titleZh": "鯊魚黑幫",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "动作",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 4,
@@ -4737,7 +6632,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 5,
@@ -4747,7 +6648,12 @@
     "cat": "Movies|English",
     "titleEn": "Double Jeopardy",
     "titleZh": "致命追緝令",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "悬疑"
+    ]
   },
   {
     "rank": 6,
@@ -4757,7 +6663,11 @@
     "cat": "Movies|English",
     "titleEn": "Nuremberg",
     "titleZh": "紐倫堡",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "历史",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -4767,7 +6677,12 @@
     "cat": "Movies|English",
     "titleEn": "Nobody 2",
     "titleZh": "無名弒2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -4777,7 +6692,12 @@
     "cat": "Movies|English",
     "titleEn": "The Boss Baby",
     "titleZh": "寶貝老闆：耶誕特輯",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭",
+      "冒险"
+    ]
   },
   {
     "rank": 9,
@@ -4787,7 +6707,11 @@
     "cat": "Movies|English",
     "titleEn": "27 Dresses",
     "titleZh": "27件禮服的祕密",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 10,
@@ -4797,7 +6721,12 @@
     "cat": "Movies|English",
     "titleEn": "Jurassic World Rebirth",
     "titleZh": "侏羅紀世界：重生",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "科幻",
+      "冒险",
+      "动作"
+    ]
   },
   {
     "rank": 1,
@@ -4807,7 +6736,11 @@
     "cat": "Movies|English",
     "titleEn": "Peaky Blinders: The Immortal Man",
     "titleZh": "浴血黑幫：不朽傳奇",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -4817,7 +6750,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 3,
@@ -4827,7 +6765,10 @@
     "cat": "Movies|English",
     "titleEn": "Louis Theroux: Inside the Manosphere",
     "titleZh": "路易泰魯：解構男性圈",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 4,
@@ -4837,7 +6778,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 5,
@@ -4847,7 +6794,12 @@
     "cat": "Movies|English",
     "titleEn": "Gaslit By My Husband: The Morgan Metzer Story",
     "titleZh": "我丈夫的煤氣燈：摩根·梅澤爾的故事",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "惊悚",
+      "电视电影"
+    ]
   },
   {
     "rank": 6,
@@ -4857,7 +6809,12 @@
     "cat": "Movies|English",
     "titleEn": "Nobody 2",
     "titleZh": "無名弒2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -4867,7 +6824,11 @@
     "cat": "Movies|English",
     "titleEn": "27 Dresses",
     "titleZh": "27件禮服的祕密",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 8,
@@ -4877,7 +6838,12 @@
     "cat": "Movies|English",
     "titleEn": "Double Jeopardy",
     "titleZh": "致命追緝令",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "悬疑"
+    ]
   },
   {
     "rank": 9,
@@ -4887,7 +6853,13 @@
     "cat": "Movies|English",
     "titleEn": "Shark Tale",
     "titleZh": "鯊魚黑幫",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "动作",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 10,
@@ -4897,7 +6869,12 @@
     "cat": "Movies|English",
     "titleEn": "The Bad Guardian",
     "titleZh": "劣質監護人",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "电视电影",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -4907,7 +6884,11 @@
     "cat": "Movies|English",
     "titleEn": "Peaky Blinders: The Immortal Man",
     "titleZh": "浴血黑幫：不朽傳奇",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 2,
@@ -4917,7 +6898,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 3,
@@ -4927,7 +6913,12 @@
     "cat": "Movies|English",
     "titleEn": "Anaconda",
     "titleZh": "大蟒蛇",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "喜剧",
+      "恐怖"
+    ]
   },
   {
     "rank": 4,
@@ -4937,7 +6928,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 5,
@@ -4947,7 +6944,14 @@
     "cat": "Movies|English",
     "titleEn": "The Bad Guys 2",
     "titleZh": "壞蛋聯盟2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "家庭",
+      "喜剧",
+      "犯罪",
+      "冒险",
+      "动画"
+    ]
   },
   {
     "rank": 6,
@@ -4957,7 +6961,14 @@
     "cat": "Movies|English",
     "titleEn": "Minions: The Rise of Gru",
     "titleZh": "小小兵2：格魯的崛起",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "犯罪",
+      "科幻",
+      "动画",
+      "家庭"
+    ]
   },
   {
     "rank": 7,
@@ -4967,7 +6978,11 @@
     "cat": "Movies|English",
     "titleEn": "What Happens in Vegas",
     "titleZh": "頭彩冤家",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   },
   {
     "rank": 8,
@@ -4977,7 +6992,13 @@
     "cat": "Movies|English",
     "titleEn": "40 Acres",
     "titleZh": "40英畝",
-    "country": "CA"
+    "country": "CA",
+    "genres": [
+      "动作",
+      "惊悚",
+      "剧情",
+      "奇幻"
+    ]
   },
   {
     "rank": 9,
@@ -4987,7 +7008,11 @@
     "cat": "Movies|English",
     "titleEn": "The Rise of the Red Hot Chili Peppers: Our Brother, Hillel",
     "titleZh": "嗆辣紅椒成名路：好哥們希勒",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录",
+      "音乐"
+    ]
   },
   {
     "rank": 10,
@@ -4997,7 +7022,10 @@
     "cat": "Movies|English",
     "titleEn": "Louis Theroux: Inside the Manosphere",
     "titleZh": "路易泰魯：解構男性圈",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 1,
@@ -5007,7 +7035,12 @@
     "cat": "Movies|English",
     "titleEn": "Anaconda",
     "titleZh": "大蟒蛇",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "喜剧",
+      "恐怖"
+    ]
   },
   {
     "rank": 2,
@@ -5017,7 +7050,10 @@
     "cat": "Movies|English",
     "titleEn": "Untold: The Death & Life of Lamar Odom",
     "titleZh": "體壇秘史：拉瑪爾‧奧多姆的生死邊緣",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 3,
@@ -5027,7 +7063,11 @@
     "cat": "Movies|English",
     "titleEn": "The Truth and Tragedy of Moriah Wilson",
     "titleZh": "悲劇真相-美國自行車選手命案",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 4,
@@ -5037,7 +7077,13 @@
     "cat": "Movies|English",
     "titleEn": "40 Acres",
     "titleZh": "40英畝",
-    "country": "CA"
+    "country": "CA",
+    "genres": [
+      "动作",
+      "惊悚",
+      "剧情",
+      "奇幻"
+    ]
   },
   {
     "rank": 5,
@@ -5047,7 +7093,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 6,
@@ -5057,7 +7108,11 @@
     "cat": "Movies|English",
     "titleEn": "Peaky Blinders: The Immortal Man",
     "titleZh": "浴血黑幫：不朽傳奇",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   },
   {
     "rank": 7,
@@ -5067,7 +7122,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 8,
@@ -5077,7 +7138,13 @@
     "cat": "Movies|English",
     "titleEn": "Madagascar",
     "titleZh": "馬達加斯加",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 9,
@@ -5087,7 +7154,14 @@
     "cat": "Movies|English",
     "titleEn": "Despicable Me 4",
     "titleZh": "神偷奶爸4",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "动画",
+      "喜剧",
+      "家庭",
+      "科幻"
+    ]
   },
   {
     "rank": 10,
@@ -5097,7 +7171,12 @@
     "cat": "Movies|English",
     "titleEn": "Let Him Go",
     "titleZh": "讓他走",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "西部"
+    ]
   },
   {
     "rank": 1,
@@ -5107,7 +7186,11 @@
     "cat": "Movies|English",
     "titleEn": "Thrash",
     "titleZh": "狂鯊風暴",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -5117,7 +7200,11 @@
     "cat": "Movies|English",
     "titleEn": "The Truth and Tragedy of Moriah Wilson",
     "titleZh": "悲劇真相-美國自行車選手命案",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 3,
@@ -5127,7 +7214,12 @@
     "cat": "Movies|English",
     "titleEn": "Anaconda",
     "titleZh": "大蟒蛇",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "喜剧",
+      "恐怖"
+    ]
   },
   {
     "rank": 4,
@@ -5137,7 +7229,13 @@
     "cat": "Movies|English",
     "titleEn": "Striking Distance",
     "titleZh": "終極警探總動員",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "动作",
+      "悬疑",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -5147,7 +7245,13 @@
     "cat": "Movies|English",
     "titleEn": "Jumanji: Welcome to the Jungle",
     "titleZh": "野蠻遊戲：瘋狂叢林",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "喜剧",
+      "奇幻",
+      "动作"
+    ]
   },
   {
     "rank": 6,
@@ -5157,7 +7261,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 7,
@@ -5167,7 +7277,14 @@
     "cat": "Movies|English",
     "titleEn": "Despicable Me 4",
     "titleZh": "神偷奶爸4",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "动画",
+      "喜剧",
+      "家庭",
+      "科幻"
+    ]
   },
   {
     "rank": 8,
@@ -5177,7 +7294,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -5187,7 +7309,13 @@
     "cat": "Movies|English",
     "titleEn": "Madagascar",
     "titleZh": "馬達加斯加",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 10,
@@ -5207,7 +7335,11 @@
     "cat": "Movies|English",
     "titleEn": "Thrash",
     "titleZh": "狂鯊風暴",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -5217,7 +7349,13 @@
     "cat": "Movies|English",
     "titleEn": "180",
     "titleZh": "180 度",
-    "country": "ZA"
+    "country": "ZA",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 3,
@@ -5227,7 +7365,10 @@
     "cat": "Movies|English",
     "titleEn": "Roommates",
     "titleZh": "我的室友好雷",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -5237,7 +7378,12 @@
     "cat": "Movies|English",
     "titleEn": "Sisu",
     "titleZh": "SISU：黃金硬漢",
-    "country": "FI"
+    "country": "FI",
+    "genres": [
+      "动作",
+      "战争",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -5247,7 +7393,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 6,
@@ -5257,7 +7409,10 @@
     "cat": "Movies|English",
     "titleEn": "Sniper 2",
     "titleZh": "戰略陰謀2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作"
+    ]
   },
   {
     "rank": 7,
@@ -5267,7 +7422,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -5277,7 +7437,12 @@
     "cat": "Movies|English",
     "titleEn": "Husband, Father, Killer: The Alyssa Pladl Story",
     "titleZh": "父親、丈夫與殺手：三重身份殺機",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "电视电影"
+    ]
   },
   {
     "rank": 9,
@@ -5287,7 +7452,14 @@
     "cat": "Movies|English",
     "titleEn": "Escape Plan 2: Hades",
     "titleZh": "鋼鐵墳墓2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "犯罪",
+      "悬疑",
+      "科幻"
+    ]
   },
   {
     "rank": 10,
@@ -5297,7 +7469,12 @@
     "cat": "Movies|English",
     "titleEn": "Anaconda",
     "titleZh": "大蟒蛇",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "喜剧",
+      "恐怖"
+    ]
   },
   {
     "rank": 1,
@@ -5307,7 +7484,11 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -5317,7 +7498,13 @@
     "cat": "Movies|English",
     "titleEn": "180",
     "titleZh": "180 度",
-    "country": "ZA"
+    "country": "ZA",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 3,
@@ -5327,7 +7514,10 @@
     "cat": "Movies|English",
     "titleEn": "Roommates",
     "titleZh": "我的室友好雷",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 4,
@@ -5337,7 +7527,11 @@
     "cat": "Movies|English",
     "titleEn": "Thrash",
     "titleZh": "狂鯊風暴",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -5347,7 +7541,10 @@
     "cat": "Movies|English",
     "titleEn": "Untold: The Shooting at Hawthorne Hill",
     "titleZh": "體壇秘史：馬術名將槍擊案",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "纪录"
+    ]
   },
   {
     "rank": 6,
@@ -5357,7 +7554,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 7,
@@ -5367,7 +7570,12 @@
     "cat": "Movies|English",
     "titleEn": "War Machine",
     "titleZh": "侵略機器",
-    "country": "AU"
+    "country": "AU",
+    "genres": [
+      "动作",
+      "科幻",
+      "惊悚"
+    ]
   },
   {
     "rank": 8,
@@ -5377,7 +7585,12 @@
     "cat": "Movies|English",
     "titleEn": "Trust",
     "titleZh": "獵狼連線",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -5387,7 +7600,11 @@
     "cat": "Movies|English",
     "titleEn": "The Interpreter",
     "titleZh": "雙面翻譯",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "惊悚"
+    ]
   },
   {
     "rank": 10,
@@ -5397,7 +7614,12 @@
     "cat": "Movies|English",
     "titleEn": "Shooter",
     "titleZh": "狙擊生死線",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 1,
@@ -5407,7 +7629,11 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 2,
@@ -5417,7 +7643,13 @@
     "cat": "Movies|English",
     "titleEn": "Swapped",
     "titleZh": "奇幻變身大冒險",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
   },
   {
     "rank": 3,
@@ -5427,7 +7659,11 @@
     "cat": "Movies|English",
     "titleEn": "Thrash",
     "titleZh": "狂鯊風暴",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
   },
   {
     "rank": 4,
@@ -5437,7 +7673,12 @@
     "cat": "Movies|English",
     "titleEn": "Migration",
     "titleZh": "天劫倒數 2：大遷徙",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "惊悚",
+      "科幻"
+    ]
   },
   {
     "rank": 5,
@@ -5447,7 +7688,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 6,
@@ -5457,7 +7704,13 @@
     "cat": "Movies|English",
     "titleEn": "180",
     "titleZh": "180 度",
-    "country": "ZA"
+    "country": "ZA",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 7,
@@ -5467,7 +7720,10 @@
     "cat": "Movies|English",
     "titleEn": "Roommates",
     "titleZh": "我的室友好雷",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
   },
   {
     "rank": 8,
@@ -5477,7 +7733,12 @@
     "cat": "Movies|English",
     "titleEn": "Trust",
     "titleZh": "獵狼連線",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "剧情",
+      "惊悚"
+    ]
   },
   {
     "rank": 9,
@@ -5487,7 +7748,14 @@
     "cat": "Movies|English",
     "titleEn": "Miraculous World: Paris, Tales of Shadybug and Claw Noir",
     "titleZh": "瓢蟲少女：巴黎篇",
-    "country": "CA"
+    "country": "CA",
+    "genres": [
+      "动画",
+      "家庭",
+      "动作",
+      "冒险",
+      "奇幻"
+    ]
   },
   {
     "rank": 10,
@@ -5497,7 +7765,12 @@
     "cat": "Movies|English",
     "titleEn": "Gladiator II",
     "titleZh": "神鬼戰士II",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "剧情"
+    ]
   },
   {
     "rank": 1,
@@ -5507,7 +7780,13 @@
     "cat": "Movies|English",
     "titleEn": "Swapped",
     "titleZh": "奇幻變身大冒險",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
   },
   {
     "rank": 2,
@@ -5517,7 +7796,11 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 3,
@@ -5527,7 +7810,11 @@
     "cat": "Movies|English",
     "titleEn": "Remarkably Bright Creatures",
     "titleZh": "明亮燦爛的你",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 4,
@@ -5537,7 +7824,13 @@
     "cat": "Movies|English",
     "titleEn": "Mechanic: Resurrection",
     "titleZh": "極速秒殺2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚",
+      "冒险"
+    ]
   },
   {
     "rank": 5,
@@ -5547,7 +7840,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 6,
@@ -5557,7 +7856,11 @@
     "cat": "Movies|English",
     "titleEn": "Jennifer's Body",
     "titleZh": "辣的要命",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "恐怖",
+      "喜剧"
+    ]
   },
   {
     "rank": 7,
@@ -5567,7 +7870,12 @@
     "cat": "Movies|English",
     "titleEn": "Mother's Day",
     "titleZh": "幸福百分百",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 8,
@@ -5577,7 +7885,12 @@
     "cat": "Movies|English",
     "titleEn": "The Proposal",
     "titleZh": "愛情限時簽",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "剧情"
+    ]
   },
   {
     "rank": 9,
@@ -5587,7 +7900,12 @@
     "cat": "Movies|English",
     "titleEn": "The Hunt",
     "titleZh": "惡獵遊戲",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚",
+      "恐怖"
+    ]
   },
   {
     "rank": 10,
@@ -5597,7 +7915,14 @@
     "cat": "Movies|English",
     "titleEn": "Home",
     "titleZh": "好家在一起",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "喜剧",
+      "动画",
+      "科幻",
+      "家庭"
+    ]
   },
   {
     "rank": 1,
@@ -5607,7 +7932,13 @@
     "cat": "Movies|English",
     "titleEn": "Swapped",
     "titleZh": "奇幻變身大冒險",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
   },
   {
     "rank": 2,
@@ -5617,7 +7948,11 @@
     "cat": "Movies|English",
     "titleEn": "Remarkably Bright Creatures",
     "titleZh": "明亮燦爛的你",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
   },
   {
     "rank": 3,
@@ -5627,7 +7962,11 @@
     "cat": "Movies|English",
     "titleEn": "The Crash",
     "titleZh": "致命撞擊：青春情殺案",
-    "country": "GB"
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
   },
   {
     "rank": 4,
@@ -5637,7 +7976,11 @@
     "cat": "Movies|English",
     "titleEn": "Apex",
     "titleZh": "巔峰獵殺",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
   },
   {
     "rank": 5,
@@ -5647,7 +7990,12 @@
     "cat": "Movies|English",
     "titleEn": "Goat",
     "titleZh": "山羊巔峰",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
   },
   {
     "rank": 6,
@@ -5657,7 +8005,13 @@
     "cat": "Movies|English",
     "titleEn": "KPop Demon Hunters",
     "titleZh": "Kpop 獵魔女團",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   },
   {
     "rank": 7,
@@ -5667,7 +8021,12 @@
     "cat": "Movies|English",
     "titleEn": "Mother's Day",
     "titleZh": "幸福百分百",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
   },
   {
     "rank": 8,
@@ -5677,7 +8036,13 @@
     "cat": "Movies|English",
     "titleEn": "Stolen Baby: The Murder of Heidi Broussard",
     "titleZh": "",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情",
+      "电视电影"
+    ]
   },
   {
     "rank": 9,
@@ -5687,7 +8052,13 @@
     "cat": "Movies|English",
     "titleEn": "Mechanic: Resurrection",
     "titleZh": "極速秒殺2",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚",
+      "冒险"
+    ]
   },
   {
     "rank": 10,
@@ -5697,6 +8068,11 @@
     "cat": "Movies|English",
     "titleEn": "I Am Legend",
     "titleZh": "我是傳奇",
-    "country": "US"
+    "country": "US",
+    "genres": [
+      "剧情",
+      "科幻",
+      "惊悚"
+    ]
   }
 ]
