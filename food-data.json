@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779514398371",
+    "name": "味津烤鴨",
+    "name1": "味津烤鴨",
+    "name2": "",
+    "type": "烤鴨",
+    "meal": "",
+    "price": 200,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "103臺北市大同區國慶里民族西路223-17號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E5%91%B3%E6%B4%A5%E7%83%A4%E9%B4%A8/@25.068762,121.5124916,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a938441a7365:0x44af91370e68bf19!8m2!3d25.068762!4d121.5124916!16s%2Fg%2F11dxm9_l60?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-23",
+    "score": 4.1,
+    "visitLog": [
+      {
+        "date": "2026-05-23",
+        "meal": "午餐",
+        "price": 200,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/G3kLgHGc/44bce699f484.jpg"
+    ],
+    "img": "https://i.ibb.co/G3kLgHGc/44bce699f484.jpg",
+    "createdAt": 1779514398371
+  },
+  {
     "id": "1779510746939",
     "name": "摩斯漢堡 板橋埔墘店",
     "name1": "摩斯漢堡",
