@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779510218244",
+    "name": "摩斯漢堡 民權店",
+    "name1": "摩斯漢堡",
+    "name2": "民權店",
+    "type": "快餐",
+    "meal": "",
+    "price": 489,
+    "visits": 1,
+    "gscore": 3.2,
+    "addr": "10491臺北市中山區下埤里民權東路三段5號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%91%A9%E6%96%AF%E6%BC%A2%E5%A0%A1+%E6%B0%91%E6%AC%8A%E5%BA%97/@25.0626101,121.5367966,16z/data=!4m10!1m2!2m1!1z5pGp5pav!3m6!1s0x3442a969d48e72c5:0x9bcca43ad51db56d!8m2!3d25.0625611!4d121.5411838!15sCgbmkanmlq8iA4gBAVoJIgfmkakg5pavkgEUaGFtYnVyZ2VyX3Jlc3RhdXJhbnTgAQA!16s%2Fg%2F1hc1vbbn_?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-03-13",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-03-13",
+        "meal": "午餐",
+        "price": 489,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/MvK6vvP/5fa744c4b936.jpg"
+    ],
+    "img": "https://i.ibb.co/MvK6vvP/5fa744c4b936.jpg",
+    "createdAt": 1779510218244
+  },
+  {
     "id": "1779466143156",
     "name": "麥當勞 土城裕民餐廳",
     "name1": "麥當勞",
