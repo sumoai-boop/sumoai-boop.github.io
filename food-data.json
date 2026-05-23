@@ -6,7 +6,7 @@
     "name2": "",
     "type": "烤鴨",
     "meal": "",
-    "price": 200,
+    "price": 135,
     "visits": 1,
     "gscore": 4.5,
     "addr": "103臺北市大同區國慶里民族西路223-17號",
@@ -18,7 +18,7 @@
       {
         "date": "2026-05-23",
         "meal": "午餐",
-        "price": 200,
+        "price": 135,
         "menu": ""
       }
     ],
@@ -26,7 +26,8 @@
       "https://i.ibb.co/G3kLgHGc/44bce699f484.jpg"
     ],
     "img": "https://i.ibb.co/G3kLgHGc/44bce699f484.jpg",
-    "createdAt": 1779514398371
+    "createdAt": 1779514398371,
+    "updatedAt": 1779521104109
   },
   {
     "id": "1779510746939",
