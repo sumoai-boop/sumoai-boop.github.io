@@ -6,13 +6,13 @@
     "name2": "土城金城店",
     "type": "快餐",
     "meal": "",
-    "price": 295,
-    "visits": 1,
+    "price": 267,
+    "visits": 3,
     "gscore": 3.6,
     "addr": "236新北市土城區金城里金城路三段58號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E6%91%A9%E6%96%AF%E6%BC%A2%E5%A0%A1+%E5%9C%9F%E5%9F%8E%E9%87%91%E5%9F%8E%E5%BA%97/@24.9867957,121.4660931,17z/data=!4m10!1m2!2m1!1z5pGp5pav!3m6!1s0x346802bf9a3477d9:0x9446b2d9f15fa226!8m2!3d24.9867048!4d121.4661652!15sCgbmkanmlq8iA4gBAVoJIgfmkakg5pavkgEKcmVzdGF1cmFudOABAA!16s%2Fg%2F1tgh9wxh?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-02-13",
+    "date": "2026-04-19",
     "score": 4,
     "visitLog": [
       {
@@ -20,13 +20,26 @@
         "meal": "晚餐",
         "price": 295,
         "menu": "蜜汁烤雞堡"
+      },
+      {
+        "date": "2026-02-20",
+        "meal": "晚餐",
+        "price": 290,
+        "menu": "蜜汁烤雞堡"
+      },
+      {
+        "date": "2026-04-19",
+        "meal": "晚餐",
+        "price": 215,
+        "menu": "蜜汁烤雞堡"
       }
     ],
     "imgs": [
       "https://i.ibb.co/99g0HFbL/952829cf7458.jpg"
     ],
     "img": "https://i.ibb.co/99g0HFbL/952829cf7458.jpg",
-    "createdAt": 1779510539175
+    "createdAt": 1779510539175,
+    "updatedAt": 1779510589703
   },
   {
     "id": "1779510218244",
