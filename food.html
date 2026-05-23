@@ -1189,14 +1189,18 @@ function openDetail(item){
       : (item.date?[{date:item.date,price:item.price||0,meal:'',menu:''}]:[]);
     let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,220,160,0.45);margin-bottom:6px;">用餐記錄</div>';
     html+=`<div style="max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(232,98,42,0.5) rgba(255,255,255,0.05);border-radius:6px;">`;
-    html+=allVisits.map(v=>`
-      <div style="padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;">
-          <span>${v.date||'—'}${v.meal?` <span style="font-size:11px;color:rgba(160,210,255,0.7);margin-left:6px;">${v.meal}</span>`:''}</span>
-          <span style="color:#FFD200;font-weight:700;">${v.price?'NT$'+v.price.toLocaleString():'—'}</span>
-        </div>
-        ${v.menu?`<div style="font-size:11px;color:rgba(255,220,160,0.55);margin-top:2px;">🍽 ${v.menu}</div>`:''}
-      </div>`).join('');
+    html+=allVisits.map(v=>{
+      const mealSpan = v.meal ? '<span style="font-size:11px;color:rgba(160,210,255,0.7);margin-left:6px;">'+v.meal+'</span>' : '';
+      const menuDiv = v.menu ? '<div style="font-size:11px;color:rgba(255,220,160,0.55);margin-top:2px;">🍽 '+v.menu+'</div>' : '';
+      const priceSpan = v.price ? 'NT$'+v.price.toLocaleString() : '—';
+      return '<div style="padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.06);">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#f0e6d6;">'
+        + '<span>'+(v.date||'—')+mealSpan+'</span>'
+        + '<span style="color:#FFD200;font-weight:700;">'+priceSpan+'</span>'
+        + '</div>'
+        + menuDiv
+        + '</div>';
+    }).join('');
     html+='</div>';
     dVisitLog.innerHTML=html;
     dVisitLog.style.display='block';
@@ -1293,6 +1297,13 @@ function render(){
       card.className='photo-card'+(coverImg?'':' no-photo');
       const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
 
+      // 造訪次數角標
+      const visitCount = item.visitLog ? item.visitLog.length : (item.visits||1);
+      const visitBadge = document.createElement('span');
+      visitBadge.textContent = `🔁 ${visitCount}`;
+      visitBadge.style.cssText = 'position:absolute;top:7px;right:7px;z-index:4;background:rgba(0,0,0,0.6);color:#FFD200;font-size:10px;font-weight:700;border-radius:99px;padding:2px 8px;';
+      if(visitCount <= 1) visitBadge.style.display='none';
+
       if(coverImg){
         const imgs = item.imgs && item.imgs.length > 0 ? item.imgs : [coverImg];
         let idx = 0;
@@ -1303,6 +1314,7 @@ function render(){
         img.loading = 'eager';
         img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;';
         card.appendChild(img);
+        card.appendChild(visitBadge);
 
         if(imgs.length > 1){
           // 左右按鈕
@@ -1320,7 +1332,7 @@ function render(){
             dots.innerHTML = '';
             imgs.forEach((_,i)=>{
               const d = document.createElement('div');
-              d.style.cssText = `width:5px;height:5px;border-radius:50%;background:${i===idx?'#fff':'rgba(255,255,255,0.4)'};transition:background 0.2s;`;
+              d.style.cssText = 'width:5px;height:5px;border-radius:50%;background:'+(i===idx?'#fff':'rgba(255,255,255,0.4)')+';transition:background 0.2s;';
               dots.appendChild(d);
             });
           };
@@ -1365,6 +1377,7 @@ function render(){
               <div style="font-size:12px;font-weight:700;color:#FFD200;text-shadow:0 1px 6px rgba(0,0,0,0.8);white-space:nowrap;">${priceStr}</div>
             </div>
           </div>`;
+        card.appendChild(visitBadge);
       }
       card.addEventListener('click',()=>openDetail(item));
       grid.appendChild(card);
