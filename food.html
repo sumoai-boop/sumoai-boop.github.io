@@ -1301,7 +1301,7 @@ function render(){
       const visitCount = item.visitLog ? item.visitLog.length : (item.visits||1);
       const visitBadge = document.createElement('span');
       visitBadge.textContent = visitCount;
-      visitBadge.style.cssText = 'position:absolute;top:7px;right:7px;z-index:4;background:rgba(0,0,0,0.6);color:#FFD200;font-size:20px;font-weight:700;border-radius:99px;padding:2px 10px;';
+      visitBadge.style.cssText = 'position:absolute;top:7px;right:7px;z-index:4;background:rgba(0,0,0,0.6);color:#FF6B6B;font-size:20px;font-weight:700;border-radius:99px;padding:2px 10px;';
       if(visitCount <= 1) visitBadge.style.display='none';
 
       if(coverImg){
