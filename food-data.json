@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779705088570",
+    "name": "頂呱呱 中崙店",
+    "name1": "頂呱呱",
+    "name2": "中崙店",
+    "type": "快餐",
+    "meal": "",
+    "price": 244,
+    "visits": 1,
+    "gscore": 3.6,
+    "addr": "105臺北市松山區復建里八德路三段206號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%A0%82%E5%91%B1%E5%91%B1%E4%B8%AD%E5%B4%99%E5%BA%97/@25.0480691,121.5566123,17z/data=!3m1!5s0x34681dad033dae6b:0xa91f70a4d1416397!4m15!1m8!3m7!1s0x3442abc18e5af717:0xbb464fea7803a0eb!2z6aCC5ZGx5ZGx5Lit5bSZ5bqX!8m2!3d25.047966!4d121.5566066!10e5!16s%2Fg%2F1pzrwlvc5!3m5!1s0x3442abc18e5af717:0xbb464fea7803a0eb!8m2!3d25.047966!4d121.5566066!16s%2Fg%2F1pzrwlvc5?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-16",
+    "score": 3.5,
+    "visitLog": [
+      {
+        "date": "2026-05-16",
+        "meal": "晚餐",
+        "price": 244,
+        "menu": "經典炸雞餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/kgxQKwrZ/cd71dcda7ea1.jpg"
+    ],
+    "img": "https://i.ibb.co/kgxQKwrZ/cd71dcda7ea1.jpg",
+    "createdAt": 1779705088570
+  },
+  {
     "id": "1779702124809",
     "name": "頂呱呱 土城裕民店",
     "name1": "頂呱呱",
