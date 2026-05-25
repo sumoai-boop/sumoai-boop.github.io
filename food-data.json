@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779701983020",
+    "name": "韓姜熙의小廚房 中壢Sogo店",
+    "name1": "韓姜熙의小廚房",
+    "name2": "中壢Sogo店",
+    "type": "韓國",
+    "meal": "",
+    "price": 288,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "32085桃園市中壢區金華里元化路357號B1",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%9F%93%E5%A7%9C%E7%86%99%EC%9D%98%E5%B0%8F%E5%BB%9A%E6%88%BF+%E4%B8%AD%E5%A3%A2Sogo%E5%BA%97/@24.9626629,121.2236111,21z/data=!3m1!5s0x346822314ca2b60d:0x9dc6570df50b9857!4m10!1m2!2m1!1z6Z-T5byP!3m6!1s0x3468235ec6a35b27:0x6408c6adc9a3d774!8m2!3d24.9627266!4d121.2238236!15sCgbpn5PlvI9aCCIG6Z-T5byPkgERa29yZWFuX3Jlc3RhdXJhbnSaASRDaGREU1VoTk1HOW5TMFZKUTBGblNVUlNlbVUyVGpaUlJSQULgAQD6AQQIABAX!16s%2Fg%2F11fpl8b6dg?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-25",
+    "score": 3.4,
+    "visitLog": [
+      {
+        "date": "2026-05-25",
+        "meal": "午餐",
+        "price": 288,
+        "menu": "雙饗海陸嫩豆腐煲定食(豬)"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/G4fQcFf6/f287dcbca33c.jpg"
+    ],
+    "img": "https://i.ibb.co/G4fQcFf6/f287dcbca33c.jpg",
+    "createdAt": 1779701983020
+  },
+  {
     "id": "1779634284432",
     "name": "福喜滿豬腳 南港Lalaport店",
     "name1": "福喜滿豬腳",
