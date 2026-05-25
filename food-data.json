@@ -6,8 +6,8 @@
     "name2": "土城裕民店",
     "type": "快餐",
     "meal": "",
-    "price": 246,
-    "visits": 3,
+    "price": 245,
+    "visits": 5,
     "gscore": 3.7,
     "addr": "236新北市土城區學府里裕民路190號",
     "note": "",
@@ -32,6 +32,18 @@
         "meal": "晚餐",
         "price": 244,
         "menu": "經典炸雞餐"
+      },
+      {
+        "date": "2026-05-19",
+        "meal": "晚餐",
+        "price": 244,
+        "menu": "經典炸雞餐"
+      },
+      {
+        "date": "2026-03-03",
+        "meal": "晚餐",
+        "price": 244,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -39,7 +51,7 @@
     ],
     "img": "https://i.ibb.co/jk9JwpJm/df3bd8cc81f5.jpg",
     "createdAt": 1779702124809,
-    "updatedAt": 1779704889012
+    "updatedAt": 1779704977253
   },
   {
     "id": "1779701983020",
