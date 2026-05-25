@@ -7,7 +7,7 @@
     "type": "快餐",
     "meal": "",
     "price": 234,
-    "visits": 1,
+    "visits": 2,
     "gscore": 3.4,
     "addr": "220新北市板橋區新埔里文化路一段409號",
     "note": "",
@@ -20,11 +20,20 @@
         "meal": "晚餐",
         "price": 234,
         "menu": "經典炸雞餐"
+      },
+      {
+        "date": "2025-08-13",
+        "meal": "晚餐",
+        "price": 234,
+        "menu": "經典炸雞餐"
       }
     ],
-    "imgs": [],
-    "img": "",
-    "createdAt": 1779705468180
+    "imgs": [
+      "https://i.ibb.co/MkYHJ0b1/72fbec751240.jpg"
+    ],
+    "img": "https://i.ibb.co/MkYHJ0b1/72fbec751240.jpg",
+    "createdAt": 1779705468180,
+    "updatedAt": 1779705541532
   },
   {
     "id": "1779705088570",
