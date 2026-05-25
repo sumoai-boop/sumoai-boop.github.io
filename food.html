@@ -1398,18 +1398,17 @@ function render(){
     document.getElementById('sGAvg').textContent=grated.length?(grated.reduce((s,r)=>s+r.gscore,0)/grated.length).toFixed(1):'—';
     const totalVisits=d.reduce((s,r)=>s+(r.visits||1),0);
     document.getElementById('sTotalVisits').textContent=totalVisits;
-    const priced=d.filter(r=>r.price>0);
-    document.getElementById('sAvgPrice').textContent=priced.length?'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString():'—';
     // 總消費：所有造訪記錄的金額加總
-    let totalSpend=0;
+    let totalSpend=0, totalVisitCount=0;
     d.forEach(r=>{
       if(r.visitLog&&r.visitLog.length>0){
-        r.visitLog.forEach(v=>{ if(v.price) totalSpend+=v.price; });
+        r.visitLog.forEach(v=>{ if(v.price){ totalSpend+=v.price; totalVisitCount++; } });
       } else if(r.price){
-        totalSpend+=r.price;
+        totalSpend+=r.price; totalVisitCount++;
       }
     });
     document.getElementById('sTotalSpend').textContent=totalSpend?'NT$'+totalSpend.toLocaleString():'—';
+    document.getElementById('sAvgPrice').textContent=totalVisitCount?'NT$'+Math.round(totalSpend/totalVisitCount).toLocaleString():'—';
   } else {
     document.getElementById('sAvg').textContent='—';
     document.getElementById('sGAvg').textContent='—';
