@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779714721190",
+    "name": "石石鍋創",
+    "name1": "石石鍋創",
+    "name2": "",
+    "type": "涮涮鍋",
+    "meal": "",
+    "price": 1298,
+    "visits": 1,
+    "gscore": 4.8,
+    "addr": "105臺北市松山區中華里敦化北路155巷12號",
+    "note": "李孟錦",
+    "maps": "https://www.google.com/maps/place/%E7%9F%B3%E7%9F%B3%E9%8D%8B%E5%89%B5/@25.054412,121.550908,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abe9e9274877:0x53aefbe1c2bd4c13!8m2!3d25.054412!4d121.550908!16s%2Fg%2F11ffgydsmx?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-11-01",
+    "score": 4.4,
+    "visitLog": [
+      {
+        "date": "2025-11-01",
+        "meal": "晚餐",
+        "price": 1298,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/fY2fNJPD/aa8c80d55606.jpg"
+    ],
+    "img": "https://i.ibb.co/fY2fNJPD/aa8c80d55606.jpg",
+    "createdAt": 1779714721190
+  },
+  {
     "id": "1779714295918",
     "name": "漢來海港 台北天母SOGO店",
     "name1": "漢來海港",
