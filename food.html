@@ -344,6 +344,11 @@
         <div class="stat-num" id="sAvgPrice">—</div>
         <div class="stat-lbl">平均消費</div>
       </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <div class="stat-num" id="sTotalSpend">—</div>
+        <div class="stat-lbl">總消費金額</div>
+      </div>
     </div>
   </div>
 
@@ -1395,11 +1400,22 @@ function render(){
     document.getElementById('sTotalVisits').textContent=totalVisits;
     const priced=d.filter(r=>r.price>0);
     document.getElementById('sAvgPrice').textContent=priced.length?'NT$'+Math.round(priced.reduce((s,r)=>s+r.price,0)/priced.length).toLocaleString():'—';
+    // 總消費：所有造訪記錄的金額加總
+    let totalSpend=0;
+    d.forEach(r=>{
+      if(r.visitLog&&r.visitLog.length>0){
+        r.visitLog.forEach(v=>{ if(v.price) totalSpend+=v.price; });
+      } else if(r.price){
+        totalSpend+=r.price;
+      }
+    });
+    document.getElementById('sTotalSpend').textContent=totalSpend?'NT$'+totalSpend.toLocaleString():'—';
   } else {
     document.getElementById('sAvg').textContent='—';
     document.getElementById('sGAvg').textContent='—';
     document.getElementById('sTotalVisits').textContent='—';
     document.getElementById('sAvgPrice').textContent='—';
+    document.getElementById('sTotalSpend').textContent='—';
   }
 }
 
