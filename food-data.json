@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779713148496",
+    "name": "雪冰 설빙 행리단길 행궁점",
+    "name1": "雪冰",
+    "name2": "설빙 행리단길 행궁점",
+    "type": "冰品",
+    "meal": "",
+    "price": 351,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "南韓 Gyeonggi-do, Suwon-si, Paldal-gu, Sinpung-ro, 48-12 3층",
+    "note": "公主",
+    "maps": "https://www.google.com.tw/maps/place/%EC%84%A4%EB%B9%99+%ED%96%89%EB%A6%AC%EB%8B%A8%EA%B8%B8+%ED%96%89%EA%B6%81%EC%A0%90/@37.2850041,127.0038969,15z/data=!4m10!1m2!2m1!1sice!3m6!1s0x357b5d3c73257431:0x167c63e3069f3cd5!8m2!3d37.2850469!4d127.0147864!15sCgNpY2UiA4gBAVoFIgNpY2WSAQ5pY2VfY3JlYW1fc2hvcOABAA!16s%2Fg%2F11tg4j1q51?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-07-09",
+    "score": 5,
+    "visitLog": [
+      {
+        "date": "2025-07-09",
+        "meal": "午餐",
+        "price": 351,
+        "menu": "西瓜冰"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/5tZBdYC/530d8a6d410d.jpg"
+    ],
+    "img": "https://i.ibb.co/5tZBdYC/530d8a6d410d.jpg",
+    "createdAt": 1779713148496
+  },
+  {
     "id": "1779705468180",
     "name": "頂呱呱 新埔店",
     "name1": "頂呱呱",
