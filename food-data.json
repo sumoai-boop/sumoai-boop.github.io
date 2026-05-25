@@ -1150,8 +1150,8 @@
     "name2": "仁川機場第一航廈店",
     "type": "快餐",
     "meal": "",
-    "price": 445,
-    "visits": 1,
+    "price": 383,
+    "visits": 2,
     "gscore": 4.1,
     "addr": "272 3F Gonghang-ro, Jung-gu, Incheon, 南韓",
     "note": "公主",
@@ -1164,6 +1164,12 @@
         "meal": "晚餐",
         "price": 445,
         "menu": ""
+      },
+      {
+        "date": "2025-07-11",
+        "meal": "晚餐",
+        "price": 321,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -1171,7 +1177,7 @@
     ],
     "img": "https://i.ibb.co/23gyPc6W/dd2605175752.jpg",
     "createdAt": 1779371462832,
-    "updatedAt": 1779464102160
+    "updatedAt": 1779713540041
   },
   {
     "id": "1779371306746",
