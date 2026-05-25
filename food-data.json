@@ -1,5 +1,35 @@
 [
   {
+    "id": "1779714295918",
+    "name": "漢來海港 台北天母SOGO店",
+    "name1": "漢來海港",
+    "name2": "台北天母SOGO店",
+    "type": "自助餐",
+    "meal": "",
+    "price": 2360,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "111臺北市士林區德行里中山北路六段77號7樓",
+    "note": "呂詩祺",
+    "maps": "https://www.google.com/maps/place/%E6%BC%A2%E4%BE%86%E6%B5%B7%E6%B8%AF+%E5%8F%B0%E5%8C%97%E5%A4%A9%E6%AF%8DSOGO%E5%BA%97/@25.1046655,121.5245169,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ae90b4635c4d:0x64fd63adf8787122!8m2!3d25.1046655!4d121.5245169!16s%2Fg%2F11csrgnpnv?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-09-07",
+    "score": 4.1,
+    "visitLog": [
+      {
+        "date": "2025-09-07",
+        "meal": "晚餐",
+        "price": 2360,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/hJ3T8m7q/fae3e3858eae.jpg",
+      "https://i.ibb.co/mrqKHpJG/d7925cb153a3.jpg"
+    ],
+    "img": "https://i.ibb.co/hJ3T8m7q/fae3e3858eae.jpg",
+    "createdAt": 1779714295918
+  },
+  {
     "id": "1779713991847",
     "name": "豬跳舞小餐館",
     "name1": "豬跳舞小餐館",
