@@ -7,7 +7,7 @@
     "type": "台式麵館",
     "meal": "",
     "price": 160,
-    "visits": 1,
+    "visits": 5,
     "gscore": 4.6,
     "addr": "236新北市土城區延和里延和路60號",
     "note": "",
@@ -20,13 +20,38 @@
         "meal": "晚餐",
         "price": 160,
         "menu": "清燉半筋半肉麵"
+      },
+      {
+        "date": "2026-04-06",
+        "meal": "午餐",
+        "price": 160,
+        "menu": "清燉半筋半肉麵"
+      },
+      {
+        "date": "2026-02-20",
+        "meal": "午餐",
+        "price": 160,
+        "menu": "清燉半筋半肉麵"
+      },
+      {
+        "date": "2025-12-28",
+        "meal": "晚餐",
+        "price": 160,
+        "menu": "清燉半筋半肉麵"
+      },
+      {
+        "date": "2025-12-19",
+        "meal": "晚餐",
+        "price": 160,
+        "menu": "清燉半筋半肉麵"
       }
     ],
     "imgs": [
       "https://i.ibb.co/Zz5KYmMP/a22d1dfd6db8.jpg"
     ],
     "img": "https://i.ibb.co/Zz5KYmMP/a22d1dfd6db8.jpg",
-    "createdAt": 1779803614979
+    "createdAt": 1779803614979,
+    "updatedAt": 1779803697406
   },
   {
     "id": "1779803446173",
