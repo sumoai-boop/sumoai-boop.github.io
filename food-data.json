@@ -6,8 +6,8 @@
     "name2": "民享店",
     "type": "雞肉飯",
     "meal": "",
-    "price": 170,
-    "visits": 1,
+    "price": 175,
+    "visits": 4,
     "gscore": 3.9,
     "addr": "235新北市中和區冠穗里民享街86巷34號",
     "note": "",
@@ -20,6 +20,24 @@
         "meal": "晚餐",
         "price": 170,
         "menu": "腿兩雞飯"
+      },
+      {
+        "date": "2026-01-19",
+        "meal": "晚餐",
+        "price": 190,
+        "menu": "九兩雞腿飯"
+      },
+      {
+        "date": "2025-11-05",
+        "meal": "晚餐",
+        "price": 210,
+        "menu": "九兩雞腿飯"
+      },
+      {
+        "date": "2025-09-01",
+        "meal": "晚餐",
+        "price": 130,
+        "menu": "腿兩雞飯"
       }
     ],
     "imgs": [
@@ -27,7 +45,8 @@
       "https://i.ibb.co/S4SBtfm6/0db4c09278c3.jpg"
     ],
     "img": "https://i.ibb.co/k2YfwYRn/eabd2ad0e946.jpg",
-    "createdAt": 1779789015396
+    "createdAt": 1779789015396,
+    "updatedAt": 1779789117001
   },
   {
     "id": "1779779539427",
