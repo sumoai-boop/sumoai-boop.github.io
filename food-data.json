@@ -22,9 +22,12 @@
         "menu": "紅燒牛肉冬粉"
       }
     ],
-    "imgs": [],
-    "img": "",
-    "createdAt": 1779804010122
+    "imgs": [
+      "https://i.ibb.co/bgSzXzZ1/591dacef7c98.jpg"
+    ],
+    "img": "https://i.ibb.co/bgSzXzZ1/591dacef7c98.jpg",
+    "createdAt": 1779804010122,
+    "updatedAt": 1779804032624
   },
   {
     "id": "1779803869637",
