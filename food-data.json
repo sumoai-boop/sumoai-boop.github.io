@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779804307222",
+    "name": "Kanokwan 老麵攤",
+    "name1": "Kanokwan 老麵攤",
+    "name2": "",
+    "type": "泰國",
+    "meal": "",
+    "price": 125,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "104臺北市中山區中吉里四平街21號1樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/Kanokwan+%E8%80%81%E9%BA%B5%E6%94%A4/@25.0536643,121.5309986,16z/data=!4m15!1m8!3m7!1s0x3442a966f93a665d:0xf6fb100a865ecec!2zS2Fub2t3YW4g6ICB6bq15pSk!8m2!3d25.0537296!4d121.5311627!10e9!16s%2Fg%2F11bvcvqcdh!3m5!1s0x3442a966f93a665d:0xf6fb100a865ecec!8m2!3d25.0537296!4d121.5311627!16s%2Fg%2F11bvcvqcdh?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-02-24",
+    "score": 2.5,
+    "visitLog": [
+      {
+        "date": "2026-02-24",
+        "meal": "午餐",
+        "price": 125,
+        "menu": "豬肉末烘蛋飯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/XrmHLmVr/fd9cb1fdf6b4.jpg"
+    ],
+    "img": "https://i.ibb.co/XrmHLmVr/fd9cb1fdf6b4.jpg",
+    "createdAt": 1779804307222
+  },
+  {
     "id": "1779804141295",
     "name": "海口豬腳",
     "name1": "海口豬腳",
