@@ -1668,11 +1668,11 @@
     "name2": "",
     "type": "韓國",
     "meal": "",
-    "price": 742,
-    "visits": 1,
+    "price": 1114,
+    "visits": 2,
     "gscore": 4.4,
     "addr": "103臺北市大同區光能里南京西路81號",
-    "note": "",
+    "note": "呂詩祺",
     "maps": "https://www.google.com/maps/place/%E9%90%98%E8%B7%AF%E5%A4%A7%E5%A4%9A%E5%8A%9B%E9%9F%93%E9%9B%9E%E6%B9%AF/@25.0532775,121.5184918,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a90056217fa5:0xd0a48aee0e51bf39!8m2!3d25.0532775!4d121.5184918!16s%2Fg%2F11w9j_nz2q?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2025-02-17",
     "score": 3.8,
@@ -1681,7 +1681,13 @@
         "date": "2025-02-17",
         "meal": "午餐",
         "price": 742,
-        "menu": ""
+        "menu": "元祖辣雞湯"
+      },
+      {
+        "date": "2025-01-21",
+        "meal": "午餐",
+        "price": 1485,
+        "menu": "元祖辣雞湯"
       }
     ],
     "imgs": [
@@ -1689,7 +1695,7 @@
     ],
     "img": "https://i.ibb.co/7J1kdrRD/cec1c88820b8.jpg",
     "createdAt": 1779353796992,
-    "updatedAt": 1779463945518
+    "updatedAt": 1779763849083
   },
   {
     "id": "1779342709143",
