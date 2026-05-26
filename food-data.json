@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779804686217",
+    "name": "九記何燒臘",
+    "name1": "九記何燒臘",
+    "name2": "",
+    "type": "燒臘便當",
+    "meal": "",
+    "price": 180,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "10491臺北市中山區中原里吉林路124號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E4%B9%9D%E8%A8%98%E4%BD%95%E7%87%92%E8%87%98/@25.0550829,121.5274542,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a9675d3c5545:0x54f5d7f56f5a5843!8m2!3d25.0550781!4d121.5300291!16s%2Fg%2F11b6_f6gv9?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-01-30",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-01-30",
+        "meal": "午餐",
+        "price": 180,
+        "menu": "鴨腿飯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/zV7Tw4X0/ec64c1d48af2.jpg"
+    ],
+    "img": "https://i.ibb.co/zV7Tw4X0/ec64c1d48af2.jpg",
+    "createdAt": 1779804686217
+  },
+  {
     "id": "1779804590307",
     "name": "焢大王",
     "name1": "焢大王",
