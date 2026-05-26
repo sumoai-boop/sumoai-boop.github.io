@@ -1,5 +1,35 @@
 [
   {
+    "id": "1779789015396",
+    "name": "相家。鷄 民享店",
+    "name1": "相家。鷄",
+    "name2": "民享店",
+    "type": "雞肉飯",
+    "meal": "",
+    "price": 170,
+    "visits": 1,
+    "gscore": 3.9,
+    "addr": "235新北市中和區冠穗里民享街86巷34號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E7%9B%B8%E5%AE%B6%E3%80%82%E9%B7%84%EF%BC%88%E6%B0%91%E4%BA%AB%E5%BA%97%EF%BC%89/@25.0006004,121.4682146,17z/data=!3m1!4b1!4m6!3m5!1s0x346803000dfb946d:0x7b9fbb34e4fc0085!8m2!3d25.0005956!4d121.4730855!16s%2Fg%2F11vx8rwnv7?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-03-17",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-03-17",
+        "meal": "晚餐",
+        "price": 170,
+        "menu": "腿兩雞飯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/k2YfwYRn/eabd2ad0e946.jpg",
+      "https://i.ibb.co/S4SBtfm6/0db4c09278c3.jpg"
+    ],
+    "img": "https://i.ibb.co/k2YfwYRn/eabd2ad0e946.jpg",
+    "createdAt": 1779789015396
+  },
+  {
     "id": "1779779539427",
     "name": "大車隊阿姨",
     "name1": "大車隊阿姨",
