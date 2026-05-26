@@ -7,7 +7,7 @@
     "type": "便當",
     "meal": "",
     "price": 160,
-    "visits": 1,
+    "visits": 2,
     "gscore": 4.4,
     "addr": "105臺北市松山區民有里敦化北路222巷30號",
     "note": "",
@@ -20,13 +20,20 @@
         "meal": "午餐",
         "price": 160,
         "menu": "老饕雙拼"
+      },
+      {
+        "date": "2026-03-06",
+        "meal": "午餐",
+        "price": 160,
+        "menu": "稻香食堂"
       }
     ],
     "imgs": [
       "https://i.ibb.co/XZTsQLVM/dfc5d8e26a3a.jpg"
     ],
     "img": "https://i.ibb.co/XZTsQLVM/dfc5d8e26a3a.jpg",
-    "createdAt": 1779803869637
+    "createdAt": 1779803869637,
+    "updatedAt": 1779803901713
   },
   {
     "id": "1779803614979",
