@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779774971395",
+    "name": "好米吉便當專賣",
+    "name1": "好米吉便當專賣",
+    "name2": "",
+    "type": "便當",
+    "meal": "",
+    "price": 110,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "105臺北市松山區介壽里民生東路五段36巷1號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%A5%BD%E7%B1%B3%E5%90%89%E4%BE%BF%E7%95%B6%E5%B0%88%E8%B3%A3/@25.0582334,121.5543628,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abeda7459f01:0x32452f49d16cc302!8m2!3d25.0582286!4d121.5569377!16s%2Fg%2F1v1tksnf?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-26",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-05-26",
+        "meal": "午餐",
+        "price": 110,
+        "menu": "燒肉特餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/5WwXhRTr/e9553d67003f.jpg"
+    ],
+    "img": "https://i.ibb.co/5WwXhRTr/e9553d67003f.jpg",
+    "createdAt": 1779774971395
+  },
+  {
     "id": "1779714950618",
     "name": "Broccoli beer韓國餐酒食堂",
     "name1": "Broccoli beer韓國餐酒食堂",
