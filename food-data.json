@@ -6,8 +6,8 @@
     "name2": "",
     "type": "便當",
     "meal": "",
-    "price": 140,
-    "visits": 1,
+    "price": 147,
+    "visits": 6,
     "gscore": 4.6,
     "addr": "104臺北市中山區江山里合江街154號",
     "note": "",
@@ -20,13 +20,44 @@
         "meal": "午餐",
         "price": 140,
         "menu": "玟瑰油雞腿飯"
+      },
+      {
+        "date": "2025-12-18",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "玟瑰油雞腿飯"
+      },
+      {
+        "date": "2025-08-11",
+        "meal": "午餐",
+        "price": 179,
+        "menu": "玟瑰油雞腿飯"
+      },
+      {
+        "date": "2025-07-18",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "玟瑰油雞腿飯"
+      },
+      {
+        "date": "2025-04-30",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "玟瑰油雞腿飯"
+      },
+      {
+        "date": "2025-04-14",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "玟瑰油雞腿飯"
       }
     ],
     "imgs": [
       "https://i.ibb.co/bMQJ8LD0/713ef3744a53.jpg"
     ],
     "img": "https://i.ibb.co/bMQJ8LD0/713ef3744a53.jpg",
-    "createdAt": 1779805482508
+    "createdAt": 1779805482508,
+    "updatedAt": 1779805737362
   },
   {
     "id": "1779805177493",
