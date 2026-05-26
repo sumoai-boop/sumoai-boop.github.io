@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779804849493",
+    "name": "金菊雞肉飯 合江店",
+    "name1": "金菊雞肉飯",
+    "name2": "合江店",
+    "type": "雞肉飯",
+    "meal": "",
+    "price": 130,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "104臺北市中山區江山里合江街115號1樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%87%91%E8%8F%8A%E9%9B%9E%E8%82%89%E9%A3%AF/@25.0551577,121.4913553,13z/data=!4m10!1m2!2m1!1z6YeR6I-K6Zue6IKJ6aOv!3m6!1s0x3442ab509f807fe7:0x475a654622b0151!8m2!3d25.0601328!4d121.539344!15sCg_ph5Hoj4rpm57ogonpo69aFCIS6YeRIOiPiiDpm57ogokg6aOvkgEEZGVsaeABAA!16s%2Fg%2F11ss5pktr8?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-01-15",
+    "score": 2.8,
+    "visitLog": [
+      {
+        "date": "2026-01-15",
+        "meal": "午餐",
+        "price": 130,
+        "menu": "寶島海南雞腿肉飯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/Y4K7MP9j/ac7ccba903e5.jpg"
+    ],
+    "img": "https://i.ibb.co/Y4K7MP9j/ac7ccba903e5.jpg",
+    "createdAt": 1779804849493
+  },
+  {
     "id": "1779804686217",
     "name": "九記何燒臘",
     "name1": "九記何燒臘",
