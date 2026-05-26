@@ -1,5 +1,32 @@
 [
   {
+    "id": "1779804010122",
+    "name": "八方雲集 中和壽德店",
+    "name1": "八方雲集",
+    "name2": "中和壽德店",
+    "type": "餃子",
+    "meal": "",
+    "price": 168,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "235新北市中和區壽德里民德路332號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E5%85%AB%E6%96%B9%E9%9B%B2%E9%9B%86%EF%BC%88%E4%B8%AD%E5%92%8C%E5%A3%BD%E5%BE%B7%E5%BA%97%EF%BC%89/@24.9942036,121.4662909,20z/data=!4m6!3m5!1s0x346803749094feb7:0x89fd27ea46f44939!8m2!3d24.9942165!4d121.4664397!16s%2Fg%2F11j0ndzw6_?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-03-03",
+    "score": 3.9,
+    "visitLog": [
+      {
+        "date": "2026-03-03",
+        "meal": "午餐",
+        "price": 168,
+        "menu": "紅燒牛肉冬粉"
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1779804010122
+  },
+  {
     "id": "1779803869637",
     "name": "稻香食堂",
     "name1": "稻香食堂",
