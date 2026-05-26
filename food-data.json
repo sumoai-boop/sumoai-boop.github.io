@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779803168507",
+    "name": "阿城鵝肉 吉林總店",
+    "name1": "阿城鵝肉",
+    "name2": "吉林總店",
+    "type": "鵝肉",
+    "meal": "",
+    "price": 50,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "104臺北市中山區中吉里吉林路105號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%98%BF%E5%9F%8E%E9%B5%9D%E8%82%89+%E5%90%89%E6%9E%97%E7%B8%BD%E5%BA%97/@25.0563753,121.5123075,15z/data=!4m10!1m2!2m1!1z6Zi_5Z-O6bWd6IKJ!3m6!1s0x3442a95dec299d8f:0x9a3740ecab3f2e0!8m2!3d25.0563753!4d121.5303319!15sCgzpmL_ln47ptZ3ogokiA4gBAVoRIg_pmL8g5Z-OIOm1nSDogomSARR0YWl3YW5lc2VfcmVzdGF1cmFudOABAA!16s%2Fg%2F1td78vsc?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-15",
+    "score": 3.5,
+    "visitLog": [
+      {
+        "date": "2026-05-15",
+        "meal": "午餐",
+        "price": 50,
+        "menu": "油麵"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/V0WdQNVh/102373e831bd.jpg"
+    ],
+    "img": "https://i.ibb.co/V0WdQNVh/102373e831bd.jpg",
+    "createdAt": 1779803168507
+  },
+  {
     "id": "1779789015396",
     "name": "相家。鷄 民享店",
     "name1": "相家。鷄",
