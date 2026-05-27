@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779861757360",
+    "name": "麵屋鶴立",
+    "name1": "麵屋鶴立",
+    "name2": "",
+    "type": "拉麵",
+    "meal": "",
+    "price": 410,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "103臺北市大同區光能里承德路二段1巷18號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%BA%B5%E5%B1%8B%E9%B6%B4%E7%AB%8B/@25.0535913,121.5185181,17z/data=!4m7!3m6!1s0x3442a9006b8e841f:0x36f0421df01a7f90!8m2!3d25.0535571!4d121.5185093!10e9!16s%2Fg%2F11w8tjc3dc?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-02-12",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2025-02-12",
+        "meal": "晚餐",
+        "price": 410,
+        "menu": "鶴立雞白湯拉麵"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/6JXnkG4M/0bd792bd27d6.jpg"
+    ],
+    "img": "https://i.ibb.co/6JXnkG4M/0bd792bd27d6.jpg",
+    "createdAt": 1779861757360
+  },
+  {
     "id": "1779861619279",
     "name": "waku waku pasta 赤峰店",
     "name1": "waku waku pasta",
