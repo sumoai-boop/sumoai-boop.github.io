@@ -6,7 +6,7 @@
     "name2": "",
     "type": "火鍋",
     "meal": "",
-    "price": 0,
+    "price": 1,
     "visits": 1,
     "gscore": 4.8,
     "addr": "110臺北市信義區三張里松仁路182號",
@@ -18,7 +18,7 @@
       {
         "date": "2025-10-04",
         "meal": "午餐",
-        "price": 0,
+        "price": 1,
         "menu": ""
       }
     ],
@@ -27,7 +27,8 @@
       "https://i.ibb.co/6J7tRvgb/1346c06754f0.jpg"
     ],
     "img": "https://i.ibb.co/n8zzdjRx/f67acf651ae8.jpg",
-    "createdAt": 1779852825013
+    "createdAt": 1779852825013,
+    "updatedAt": 1779852849979
   },
   {
     "id": "1779852727593",
