@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779861220222",
+    "name": "樂邦",
+    "name1": "樂邦",
+    "name2": "",
+    "type": "牛排",
+    "meal": "",
+    "price": 1750,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "106臺北市大安區德安里大安路一段183號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%A8%82%E9%82%A6/@25.0361734,121.546197,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abd187b1a7d5:0x847e9fe4e777d905!8m2!3d25.0361734!4d121.546197!16s%2Fg%2F11cjg4fpzl?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-07-05",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2025-07-05",
+        "meal": "晚餐",
+        "price": 1750,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/wNBfRtQs/512cc56ef7f3.jpg"
+    ],
+    "img": "https://i.ibb.co/wNBfRtQs/512cc56ef7f3.jpg",
+    "createdAt": 1779861220222
+  },
+  {
     "id": "1779861003254",
     "name": "滿大人頂級麻辣鴛鴦鍋",
     "name1": "滿大人頂級麻辣鴛鴦鍋",
