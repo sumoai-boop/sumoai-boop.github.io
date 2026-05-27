@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779860659292",
+    "name": "貴族世家 板橋板新店",
+    "name1": "貴族世家",
+    "name2": "板橋板新店",
+    "type": "牛排",
+    "meal": "",
+    "price": 523,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "220新北市板橋區中山路一段279號1樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E8%B2%B4%E6%97%8F%E4%B8%96%E5%AE%B6-%E6%9D%BF%E6%A9%8B%E6%9D%BF%E6%96%B0%E5%BA%97/@25.0141851,121.469667,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a900766c65cf:0x52ca98007feeb62b!8m2!3d25.0141851!4d121.469667!16s%2Fg%2F11xml25zrh?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-11-12",
+    "score": 3.1,
+    "visitLog": [
+      {
+        "date": "2025-11-12",
+        "meal": "晚餐",
+        "price": 523,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/1tsHVWLC/a0b973f21d18.jpg"
+    ],
+    "img": "https://i.ibb.co/1tsHVWLC/a0b973f21d18.jpg",
+    "createdAt": 1779860659292
+  },
+  {
     "id": "1779855784345",
     "name": "1491越南牛排",
     "name1": "1491越南牛排",
