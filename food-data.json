@@ -4,7 +4,7 @@
     "name": "1491越南牛排",
     "name1": "1491越南牛排",
     "name2": "",
-    "type": "扒房餐廳",
+    "type": "牛排",
     "meal": "",
     "price": 400,
     "visits": 1,
@@ -26,7 +26,8 @@
       "https://i.ibb.co/yB7hp7xF/b3441a81e1a0.jpg"
     ],
     "img": "https://i.ibb.co/yB7hp7xF/b3441a81e1a0.jpg",
-    "createdAt": 1779855784345
+    "createdAt": 1779855784345,
+    "updatedAt": 1779855825440
   },
   {
     "id": "1779855416651",
