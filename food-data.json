@@ -4,7 +4,7 @@
     "name": "京昌園日式燒肉餐廳 林口店",
     "name1": "京昌園日式燒肉餐廳",
     "name2": "林口店",
-    "type": "日式燒肉",
+    "type": "日本",
     "meal": "",
     "price": 1247,
     "visits": 1,
@@ -26,7 +26,8 @@
       "https://i.ibb.co/276gNk00/2e546cfbecd9.jpg"
     ],
     "img": "https://i.ibb.co/276gNk00/2e546cfbecd9.jpg",
-    "createdAt": 1779852462550
+    "createdAt": 1779852462550,
+    "updatedAt": 1779852485061
   },
   {
     "id": "1779852299191",
