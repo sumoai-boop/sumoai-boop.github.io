@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779855416651",
+    "name": "有乾人麻辣鴛鴦火鍋",
+    "name1": "有乾人麻辣鴛鴦火鍋",
+    "name2": "",
+    "type": "火鍋",
+    "meal": "",
+    "price": 1916,
+    "visits": 1,
+    "gscore": 4.7,
+    "addr": "220新北市板橋區華貴里貴興路119巷6號一樓",
+    "note": "呂詩祺",
+    "maps": "https://www.google.com/maps/place/%E6%9C%89%E4%B9%BE%E4%BA%BA%E9%BA%BB%E8%BE%A3%E9%B4%9B%E9%B4%A6%E7%81%AB%E9%8D%8B/@25.0021833,121.4557497,17z/data=!4m15!1m8!3m7!1s0x346802af0d2fd131:0x76feae15d146b090!2z5pyJ5Lm-5Lq66bq76L6j6bSb6bSm54Gr6Y2L!8m2!3d25.0020575!4d121.4555722!10e5!16s%2Fg%2F11c0rn98gn!3m5!1s0x346802af0d2fd131:0x76feae15d146b090!8m2!3d25.0020575!4d121.4555722!16s%2Fg%2F11c0rn98gn?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-04-05",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2025-04-05",
+        "meal": "晚餐",
+        "price": 1916,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/dwjtDBV2/59e25cae309f.jpg"
+    ],
+    "img": "https://i.ibb.co/dwjtDBV2/59e25cae309f.jpg",
+    "createdAt": 1779855416651
+  },
+  {
     "id": "1779855277613",
     "name": "巴獅子德國餐廳 Der Löwe Bavarian Restaurant",
     "name1": "巴獅子德國餐廳",
