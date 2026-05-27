@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779861003254",
+    "name": "滿大人頂級麻辣鴛鴦鍋",
+    "name1": "滿大人頂級麻辣鴛鴦鍋",
+    "name2": "",
+    "type": "火鍋",
+    "meal": "",
+    "price": 0,
+    "visits": 1,
+    "gscore": 4.8,
+    "addr": "10491臺北市中山區新福里民權東路二段7號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%BB%BF%E5%A4%A7%E4%BA%BA%E9%A0%82%E7%B4%9A%E9%BA%BB%E8%BE%A3%E9%B4%9B%E9%B4%A6%E9%8D%8B-%E5%90%83%E5%88%B0%E9%A3%BD%EF%BC%88%E5%8F%B0%E5%8C%97%E4%B8%AD%E5%B1%B1%E5%8D%80%E7%81%AB%E9%8D%8B%E5%90%83%E5%88%B0%E9%A3%BD%E6%8E%A8%E8%96%A6%EF%BC%8F%E4%B8%AD%E5%B1%B1%E5%BF%85%E5%90%83%E7%BE%8E%E9%A3%9F%E9%A4%90%E5%BB%B3%EF%BC%8F%E5%8F%B0%E5%8C%97%E5%A5%BD%E5%90%83%E9%B4%9B%E9%B4%A6%E9%BA%BB%E8%BE%A3%E9%8D%8B+%2F+%E5%8F%B0%E5%8C%97%E5%AE%B6%E5%BA%AD%E8%81%9A%E9%A4%90%E9%A4%90%E5%BB%B3%EF%BC%89/@25.0628248,121.5284697,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a900056ea673:0x3452471f1703bd5f!8m2!3d25.0628248!4d121.5284697!16s%2Fg%2F11w3g7gwhj?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-09-19",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2025-09-19",
+        "meal": "晚餐",
+        "price": 0,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/DDXvRLLh/fc32329ac386.jpg"
+    ],
+    "img": "https://i.ibb.co/DDXvRLLh/fc32329ac386.jpg",
+    "createdAt": 1779861003254
+  },
+  {
     "id": "1779860769311",
     "name": "海灣綠洲 bay & oasis 景觀餐廳",
     "name1": "海灣綠洲 bay & oasis 景觀餐廳",
