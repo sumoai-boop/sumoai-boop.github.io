@@ -1361,7 +1361,7 @@ function render(){
         bottom.className = 'card-bottom';
         const line1 = item.name1 || item.name || '';
         const line2 = item.name2 || '';
-        const priceStr = item.price ? 'NT$'+item.price.toLocaleString() : '';
+        const priceStr = (item.price != null && item.price !== '') ? 'NT$'+Number(item.price).toLocaleString() : '';
         bottom.innerHTML = `
           <div class="card-name">${line1}</div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;">
@@ -1372,7 +1372,7 @@ function render(){
       } else {
         const line1 = item.name1 || item.name || '';
         const line2 = item.name2 || '';
-        const priceStr = item.price ? 'NT$'+item.price.toLocaleString() : '';
+        const priceStr = (item.price != null && item.price !== '') ? 'NT$'+Number(item.price).toLocaleString() : '';
         card.innerHTML=`
           <div class="no-photo-icon">🍜</div>
           <div class="card-bottom">
@@ -1402,9 +1402,9 @@ function render(){
     let totalSpend=0, totalVisitCount=0;
     d.forEach(r=>{
       if(r.visitLog&&r.visitLog.length>0){
-        r.visitLog.forEach(v=>{ if(v.price){ totalSpend+=v.price; totalVisitCount++; } });
-      } else if(r.price){
-        totalSpend+=r.price; totalVisitCount++;
+        r.visitLog.forEach(v=>{ if(v.price!=null && v.price!=='') { totalSpend+=Number(v.price); totalVisitCount++; } });
+      } else if(r.price!=null && r.price!==''){
+        totalSpend+=Number(r.price); totalVisitCount++;
       }
     });
     document.getElementById('sTotalSpend').textContent=totalSpend?'NT$'+totalSpend.toLocaleString():'—';
