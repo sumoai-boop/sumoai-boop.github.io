@@ -1,5 +1,35 @@
 [
   {
+    "id": "1779855277613",
+    "name": "巴獅子德國餐廳 Der Löwe Bavarian Restaurant",
+    "name1": "巴獅子德國餐廳",
+    "name2": "Der Löwe Bavarian Restaurant",
+    "type": "德國",
+    "meal": "",
+    "price": 0,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "B1, No. 19號敦化南路二段63巷義安里大安區臺北市106",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/Der+L%C3%B6we+Bavarian+Restaurant+%E5%B7%B4%E7%8D%85%E5%AD%90%E5%BE%B7%E5%9C%8B%E9%A4%90%E5%BB%B3/@25.0310418,121.5500683,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abcd3fce77e9:0x43ffa486323471db!8m2!3d25.0310418!4d121.5500683!16s%2Fg%2F1262gypvq?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-01-11",
+    "score": 4.8,
+    "visitLog": [
+      {
+        "date": "2025-01-11",
+        "meal": "午餐",
+        "price": 0,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/qMNS9DDL/d2c899cd534c.jpg",
+      "https://i.ibb.co/fGKRVm1t/49a4003cf42c.jpg"
+    ],
+    "img": "https://i.ibb.co/qMNS9DDL/d2c899cd534c.jpg",
+    "createdAt": 1779855277613
+  },
+  {
     "id": "1779852825013",
     "name": "辛喬麻辣私房湯底麻辣鴛鴦",
     "name1": "辛喬麻辣私房湯底麻辣鴛鴦",
