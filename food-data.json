@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779852462550",
+    "name": "京昌園日式燒肉餐廳 林口店",
+    "name1": "京昌園日式燒肉餐廳",
+    "name2": "林口店",
+    "type": "日式燒肉",
+    "meal": "",
+    "price": 1247,
+    "visits": 1,
+    "gscore": 4.8,
+    "addr": "244新北市林口區南勢里文化二路一段123號3樓",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E4%BA%AC%E6%98%8C%E5%9C%92%E6%97%A5%E5%BC%8F%E7%87%92%E8%82%89%E9%A4%90%E5%BB%B3+%E6%9E%97%E5%8F%A3%E5%BA%97/@25.0687375,121.3647912,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a700323efb81:0xf5efc1a511dda23d!8m2!3d25.0687375!4d121.3647912!16s%2Fg%2F11wqb86gnc?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-01-31",
+    "score": 3.3,
+    "visitLog": [
+      {
+        "date": "2025-01-31",
+        "meal": "晚餐",
+        "price": 1247,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/276gNk00/2e546cfbecd9.jpg"
+    ],
+    "img": "https://i.ibb.co/276gNk00/2e546cfbecd9.jpg",
+    "createdAt": 1779852462550
+  },
+  {
     "id": "1779852299191",
     "name": "狼來了！碳烤羊腿",
     "name1": "狼來了！碳烤羊腿",
