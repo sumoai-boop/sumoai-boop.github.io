@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779860769311",
+    "name": "海灣綠洲 bay & oasis 景觀餐廳",
+    "name1": "海灣綠洲 bay & oasis 景觀餐廳",
+    "name2": "",
+    "type": "景觀餐廳",
+    "meal": "",
+    "price": 1618,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "253新北市石門區富基里楓林25-1號",
+    "note": "呂詩祺",
+    "maps": "https://www.google.com/maps/place/%E6%B5%B7%E7%81%A3%E7%B6%A0%E6%B4%B2+bay+%26+oasis+%E6%99%AF%E8%A7%80%E9%A4%90%E5%BB%B3/@25.2916623,121.5454257,17z/data=!3m1!4b1!4m6!3m5!1s0x3442b5d174269489:0x86efb196c1931bd8!8m2!3d25.2916623!4d121.5454257!16s%2Fg%2F11f4_4_gsv?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-04-20",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2025-04-20",
+        "meal": "午餐",
+        "price": 1618,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/bgSqKSGF/ced2b1385534.jpg"
+    ],
+    "img": "https://i.ibb.co/bgSqKSGF/ced2b1385534.jpg",
+    "createdAt": 1779860769311
+  },
+  {
     "id": "1779860659292",
     "name": "貴族世家 板橋板新店",
     "name1": "貴族世家",
