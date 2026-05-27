@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779869800633",
+    "name": "硬派主廚的軟嫩料理 東門市場",
+    "name1": "硬派主廚的軟嫩料理",
+    "name2": "東門市場",
+    "type": "台式餐館",
+    "meal": "",
+    "price": 265,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "300新竹市東區東門市場1143號中央路102巷10號",
+    "note": "李孟錦",
+    "maps": "https://www.google.com/maps/place/%E7%A1%AC%E6%B4%BE%E4%B8%BB%E5%BB%9A%E7%9A%84%E8%BB%9F%E5%AB%A9%E6%96%99%E7%90%86-%E6%9D%B1%E9%96%80%E5%B8%82%E5%A0%B4/@24.8056229,120.9689705,17z/data=!4m15!1m8!3m7!1s0x34683503276cf02b:0xffccde66b82820ad!2z56Gs5rS-5Li75bua55qE6Luf5aup5paZ55CGLeadsemWgOW4guWgtA!8m2!3d24.8054975!4d120.9691403!10e9!16s%2Fg%2F11h0yt5mhm!3m5!1s0x34683503276cf02b:0xffccde66b82820ad!8m2!3d24.8054975!4d120.9691403!16s%2Fg%2F11h0yt5mhm?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-05-04",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2025-05-04",
+        "meal": "午餐",
+        "price": 265,
+        "menu": "硬派主廚的軟嫩牛排飯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/kVPDvvsm/798746dcc895.jpg"
+    ],
+    "img": "https://i.ibb.co/kVPDvvsm/798746dcc895.jpg",
+    "createdAt": 1779869800633
+  },
+  {
     "id": "1779867113290",
     "name": "什玖鍋物",
     "name1": "什玖鍋物",
