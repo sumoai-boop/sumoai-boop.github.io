@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779870360676",
+    "name": "大家樂「神戶牛排」",
+    "name1": "大家樂「神戶牛排」",
+    "name2": "",
+    "type": "牛排",
+    "meal": "",
+    "price": 240,
+    "visits": 1,
+    "gscore": 3.7,
+    "addr": "224新北市瑞芳區龍興里民生街31號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E5%A4%A7%E5%AE%B6%E6%A8%82%E3%80%8C%E7%A5%9E%E6%88%B6%E7%89%9B%E6%8E%92%E3%80%8D%E5%90%83%E5%88%B0%E9%A3%BD%E9%A4%90%E5%BB%B3/@25.10721,121.8058343,17z/data=!3m1!4b1!4m6!3m5!1s0x345d4ff7584faa63:0x87bbffb302e936e2!8m2!3d25.10721!4d121.8058343!16s%2Fg%2F11c537d6f0?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-01-30",
+    "score": 2.5,
+    "visitLog": [
+      {
+        "date": "2025-01-30",
+        "meal": "晚餐",
+        "price": 240,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/9k4qhRgD/6dd224dc8c5f.jpg"
+    ],
+    "img": "https://i.ibb.co/9k4qhRgD/6dd224dc8c5f.jpg",
+    "createdAt": 1779870360676
+  },
+  {
     "id": "1779870261128",
     "name": "霸味薑母鴨",
     "name1": "霸味薑母鴨",
