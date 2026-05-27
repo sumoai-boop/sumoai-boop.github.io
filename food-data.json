@@ -2257,13 +2257,13 @@
     "name2": "土城金城店",
     "type": "快餐",
     "meal": "",
-    "price": 201,
-    "visits": 15,
+    "price": 204,
+    "visits": 16,
     "gscore": 3.6,
     "addr": "236新北市土城區金城里金城路三段54號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E5%9C%9F%E5%9F%8E%E9%87%91%E5%9F%8E%E9%A4%90%E5%BB%B3%EF%BC%8D%E8%A8%AD%E6%9C%89%E5%BE%97%E4%BE%86%E9%80%9F/@24.98663,121.4475864,15z/data=!3m1!4b1!4m6!3m5!1s0x346802c914b49dbf:0x7f9273ee417a448d!8m2!3d24.9866117!4d121.4660403!16s%2Fg%2F1wj_q_vq?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-05-10",
+    "date": "2026-05-27",
     "score": 4,
     "visitLog": [
       {
@@ -2355,6 +2355,12 @@
         "meal": "早餐",
         "price": 154,
         "menu": "豬滿蛋餐"
+      },
+      {
+        "date": "2026-05-27",
+        "meal": "晚餐",
+        "price": 241,
+        "menu": "炭燒秘醬安格斯牛肉堡餐"
       }
     ],
     "imgs": [
@@ -2362,7 +2368,7 @@
     ],
     "img": "https://i.ibb.co/PvGjXZRM/b668ed606284.jpg",
     "createdAt": 1779464357152,
-    "updatedAt": 1779505289254
+    "updatedAt": 1779887743757
   },
   {
     "id": "1779461285231",
