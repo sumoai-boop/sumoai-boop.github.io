@@ -1,5 +1,34 @@
 [
   {
+    "id": "1779852727593",
+    "name": "NARA Thai Cuisine 泰式料理 新北林口三井店",
+    "name1": "NARA Thai Cuisine 泰式料理",
+    "name2": "新北林口三井店",
+    "type": "泰國",
+    "meal": "",
+    "price": 884,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "24448新北市林口區南勢里文化二路一段123號3F",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/NARA+Thai+Cuisine+%E6%B3%B0%E5%BC%8F%E6%96%99%E7%90%86+%E6%96%B0%E5%8C%97%E6%9E%97%E5%8F%A3%E4%B8%89%E4%BA%95%E5%BA%97/@25.0690009,121.3652341,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a72aa3b02741:0x17c3b883e428f559!8m2!3d25.0690009!4d121.3652341!16s%2Fg%2F11y82m1_p3?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-10-24",
+    "score": 4.6,
+    "visitLog": [
+      {
+        "date": "2025-10-24",
+        "meal": "晚餐",
+        "price": 884,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/6MPSm9K/babe43f572c4.jpg"
+    ],
+    "img": "https://i.ibb.co/6MPSm9K/babe43f572c4.jpg",
+    "createdAt": 1779852727593
+  },
+  {
     "id": "1779852619963",
     "name": "思村路1之2号",
     "name1": "思村路1之2号",
