@@ -10768,5 +10768,133 @@
     "titleZh": "怪奇物語",
     "country": "US",
     "genres": []
+  },
+  {
+    "rank": 1,
+    "title": "HIS & HERS: Limited Series",
+    "views": 29500000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "HIS & HERS: Limited Series",
+    "titleZh": "他和她的，謊",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Agatha Christie's Seven Dials: Season 1",
+    "views": 9900000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Agatha Christie's Seven Dials: Season 1",
+    "titleZh": "阿嘉莎克莉絲蒂之七鐘面",
+    "country": "GB",
+    "genres": [
+      "悬疑",
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Run Away: Limited Series",
+    "views": 6100000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Run Away: Limited Series",
+    "titleZh": "危險追逃",
+    "country": "GB",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Stranger Things 5",
+    "views": 5100000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 5",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 5,
+    "title": "Stranger Things 4",
+    "views": 3100000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 4",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 6,
+    "title": "Stranger Things 3",
+    "views": 3000000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 3",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 7,
+    "title": "Stranger Things: Season 1",
+    "views": 2800000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things: Season 1",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "悬疑",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Emily in Paris: Season 5",
+    "views": 2700000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Emily in Paris: Season 5",
+    "titleZh": "艾蜜莉在巴黎",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Stranger Things 2",
+    "views": 2700000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 2",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 10,
+    "title": "Marcello Hernández: American Boy",
+    "views": 2500000,
+    "week": "1/12/26 - 1/18/26",
+    "cat": "Shows|English",
+    "titleEn": "Marcello Hernández: American Boy",
+    "titleZh": "馬塞洛赫南德茲：美國小子",
+    "country": "US",
+    "genres": []
   }
 ]
