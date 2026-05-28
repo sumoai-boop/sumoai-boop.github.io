@@ -10643,5 +10643,130 @@
     "genres": [
       "剧情"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "HIS & HERS: Limited Series",
+    "views": 17200000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "HIS & HERS: Limited Series",
+    "titleZh": "他和她的，謊",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Agatha Christie's Seven Dials: Season 1",
+    "views": 8700000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Agatha Christie's Seven Dials: Season 1",
+    "titleZh": "阿嘉莎克莉絲蒂之七鐘面",
+    "country": "GB",
+    "genres": [
+      "悬疑",
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Skyscraper Live",
+    "views": 6200000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Skyscraper Live",
+    "titleZh": "赤手獨攀台北101：直播",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 4,
+    "title": "Finding Her Edge: Season 1",
+    "views": 5500000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Finding Her Edge: Season 1",
+    "titleZh": "如舞薄冰",
+    "country": "CA",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Stranger Things 5",
+    "views": 3700000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 5",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 6,
+    "title": "Run Away: Limited Series",
+    "views": 3600000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Run Away: Limited Series",
+    "titleZh": "危險追逃",
+    "country": "GB",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Sandokan: The Pirate Prince: Season 1",
+    "views": 3500000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Sandokan: The Pirate Prince: Season 1",
+    "titleZh": "桑多坎：海盜王子",
+    "country": "IT",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Free Bert: Season 1",
+    "views": 3200000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Free Bert: Season 1",
+    "titleZh": "放飛吧伯特",
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Raw: 2026 - January 19, 2026",
+    "views": 2500000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - January 19, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 10,
+    "title": "Stranger Things 4",
+    "views": 2300000,
+    "week": "1/19/26 - 1/25/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 4",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
   }
 ]
