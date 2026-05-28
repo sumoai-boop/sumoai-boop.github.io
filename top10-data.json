@@ -8222,5 +8222,148 @@
       "喜剧",
       "动画"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "KARTAVYA",
+    "views": 4200000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "KARTAVYA",
+    "titleZh": "執法交叉點",
+    "country": "IN",
+    "genres": [
+      "动作"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Bride of the Year",
+    "views": 2500000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Bride of the Year",
+    "titleZh": "年度最佳新娘",
+    "country": "ZA",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Coco Before Chanel",
+    "views": 1700000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Coco Before Chanel",
+    "titleZh": "時尚女王香奈兒",
+    "country": "FR",
+    "genres": [
+      "剧情",
+      "历史"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "The Bus: A French Football Mutiny",
+    "views": 1500000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Bus: A French Football Mutiny",
+    "titleZh": "藍色巴士：法國足球隊罷練事件簿",
+    "country": "FR",
+    "genres": [
+      "纪录"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Dhurandhar The Revenge (Raw & Undekha)",
+    "views": 1300000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar The Revenge (Raw & Undekha)",
+    "titleZh": "黑境行者：復仇",
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Number One",
+    "views": 1100000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Number One",
+    "titleZh": "你能吃到媽媽煮的飯的次數，還剩365次",
+    "country": "KR",
+    "genres": [
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "My Dearest Assassin",
+    "views": 1100000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "My Dearest Assassin",
+    "titleZh": "我的摯愛殺手",
+    "country": "TH",
+    "genres": [
+      "动作",
+      "剧情",
+      "爱情"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Je m'appelle Agneta",
+    "views": 900000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Je m'appelle Agneta",
+    "titleZh": "我叫艾妮塔",
+    "country": "SE",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Village of the Dead",
+    "views": 800000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Village of the Dead",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "冒险",
+      "恐怖",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Hidden Enemy",
+    "views": 700000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Hidden Enemy",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "剧情",
+      "爱情",
+      "惊悚"
+    ]
   }
 ]
