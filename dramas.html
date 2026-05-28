@@ -438,7 +438,8 @@ const TMDB_ID_OVERRIDE={
 };
 const TMDB_TV_OVERRIDE={
   '新聞急先鋒': 15621,
-  '劉在錫的民宿法則！': 246236,
+  '劉在錫的民宿法則！': 318167,
+  '怪奇退休鎮': 224941,
 };
 
 const DIST_LOGO={
@@ -937,7 +938,7 @@ render();
     try {
       const year = movie.year||0;
       const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
-      const isTV = movie.type==='影集';
+      const isTV = movie.type==='影集' || movie.type==='綜藝';
 
       // 直接指定 TMDB TV ID
       if(TMDB_TV_OVERRIDE[title]){
@@ -969,15 +970,16 @@ render();
       function pickBestWithLang(results, year, origLang){
         if(!results||!results.length) return null;
         let pool = results;
-        // 先用 original_language 過濾
+        // 先用 original_language 過濾，若無符合則保留全部
         if(origLang){
           const langMatch = results.filter(r=>r.original_language===origLang);
           if(langMatch.length) pool = langMatch;
         }
+        const getYear = r => parseInt((r.release_date||r.first_air_date||'0').substring(0,4));
         if(year>0){
-          const exact = pool.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
+          const exact = pool.find(r=>getYear(r)===year);
           if(exact) return exact;
-          const near = pool.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
+          const near = pool.find(r=>Math.abs(getYear(r)-year)<=1);
           if(near) return near;
         }
         return pool[0];
@@ -1031,6 +1033,20 @@ render();
           return posterCache[title];
         }
       }
+      // 最後備援：不過濾語言，直接取 TV 搜尋第一筆（跟燈箱邏輯一致）
+      const fallbackQueries = [movie.orig, movie.title].filter(q=>q&&q!=='nan');
+      for(const fq of fallbackQueries){
+        const cleanQ = fq.replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').replace(/\s*시즌\s*\d+$/,'').trim();
+        try{
+          const rf = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanQ)}&language=zh-TW`);
+          const jf = await rf.json();
+          if(jf.results && jf.results[0] && jf.results[0].poster_path){
+            posterCache[title] = `https://image.tmdb.org/t/p/w185${jf.results[0].poster_path}`;
+            return posterCache[title];
+          }
+        }catch{}
+      }
+
       posterCache[title] = null;
       return null;
     } catch(e){ return null; } finally{
