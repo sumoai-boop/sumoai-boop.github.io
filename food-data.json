@@ -2498,13 +2498,13 @@
     "type": "燒臘便當",
     "meal": "",
     "price": 116,
-    "visits": 12,
+    "visits": 13,
     "gscore": 4.2,
     "addr": "104臺北市中山區中庄里錦州街208號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E4%B9%9D%E9%9A%86%E6%B8%AF%E5%BC%8F%E7%87%92%E8%85%8A/@25.0602837,121.5313543,17z/data=!4m17!1m10!3m9!1s0x3442a95eaa26620d:0x4e586661e6047ad!2z5Lmd6ZqG5riv5byP54eS6IWK!8m2!3d25.0602837!4d121.5313543!10e5!14m1!1BCgIYIQ!16s%2Fg%2F11btxpktjx!3m5!1s0x3442a95eaa26620d:0x4e586661e6047ad!8m2!3d25.0602837!4d121.5313543!16s%2Fg%2F11btxpktjx?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-04-15",
-    "score": 4,
+    "date": "2026-05-28",
+    "score": 4.1,
     "visitLog": [
       {
         "date": "2026-04-15",
@@ -2577,6 +2577,12 @@
         "meal": "午餐",
         "price": 115,
         "menu": "油雞燒肉飯"
+      },
+      {
+        "date": "2026-05-28",
+        "meal": "午餐",
+        "price": 115,
+        "menu": "油雞燒肉飯"
       }
     ],
     "imgs": [
@@ -2584,7 +2590,7 @@
     ],
     "img": "https://i.ibb.co/LDw8BDG1/d29c3716f8eb.jpg",
     "createdAt": 1779435561283,
-    "updatedAt": 1779463546849
+    "updatedAt": 1779978864593
   },
   {
     "id": "1779435151443",
