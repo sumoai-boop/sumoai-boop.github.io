@@ -10384,5 +10384,136 @@
     "genres": [
       "剧情"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Bridgerton: Season 4",
+    "views": 23400000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Bridgerton: Season 4",
+    "titleZh": "柏捷頓家族：名門韻事",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "The Lincoln Lawyer: Season 4",
+    "views": 9000000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "The Lincoln Lawyer: Season 4",
+    "titleZh": "下流正義",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "HIS & HERS: Limited Series",
+    "views": 6200000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "HIS & HERS: Limited Series",
+    "titleZh": "他和她的，謊",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Is It Cake? Valentines: Season 1",
+    "views": 4300000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Is It Cake? Valentines: Season 1",
+    "titleZh": "這是蛋糕？！情人節篇",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 5,
+    "title": "Bridgerton: Season 1",
+    "views": 3500000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Bridgerton: Season 1",
+    "titleZh": "柏捷頓家族：名門韻事",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Raw: 2026 - February 2, 2026",
+    "views": 3100000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - February 2, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 7,
+    "title": "Jeffrey Epstein: Filthy Rich: Limited Series",
+    "views": 3100000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Jeffrey Epstein: Filthy Rich: Limited Series",
+    "titleZh": "傑佛瑞·艾普斯坦：上流濁水",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "纪录"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Bridgerton: Season 3",
+    "views": 3000000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Bridgerton: Season 3",
+    "titleZh": "柏捷頓家族：名門韻事",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Sullivan's Crossing: Season 1",
+    "views": 2800000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Sullivan's Crossing: Season 1",
+    "titleZh": "蘇利文的十字路口",
+    "country": "CA",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Animal Kingdom: Season 1",
+    "views": 2800000,
+    "week": "2/2/26 - 2/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Animal Kingdom: Season 1",
+    "titleZh": "野獸家族",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
   }
 ]
