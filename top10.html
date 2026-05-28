@@ -787,7 +787,7 @@ function renderDashboard() {
   const maxW  = sortW[0]?.[1]?.weeks || 1;
   document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) => {
     const disp = v.titleZh || t;
-    const sub  = '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + (v.titleZh ? t : '&nbsp;') + '</div>';
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);">' + t + '</div>' : '';
     const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
     // 找出這部片所有上榜週次（依日期新→舊）
     const weekEntries = filtered.filter(e => e.title === t)
@@ -802,7 +802,7 @@ function renderDashboard() {
   const maxV  = sortV[0]?.[1]?.views || 1;
   document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) => {
     const disp = v.titleZh || t;
-    const sub  = '<div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:1px;">' + (v.titleZh ? t : '&nbsp;') + '</div>';
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);">' + t + '</div>' : '';
     const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
     const weekEntries = filtered.filter(e => e.title === t)
       .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
@@ -822,7 +822,7 @@ function renderDashboard() {
   const onesSorted = Object.values(onesMap).sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
   document.getElementById('ones-list').innerHTML = onesSorted.length ? onesSorted.map(e => {
     const disp = e.titleZh || e.title;
-    const sub  = '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + (e.titleZh ? e.title : '&nbsp;') + '</div>';
+    const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
       '<div class="ones-title" style="flex:1;min-width:0">' +
