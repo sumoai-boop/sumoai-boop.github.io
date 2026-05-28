@@ -9853,5 +9853,139 @@
     "titleZh": "",
     "country": "US",
     "genres": []
+  },
+  {
+    "rank": 1,
+    "title": "Bridgerton: Season 4",
+    "views": 13100000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Bridgerton: Season 4",
+    "titleZh": "柏捷頓家族：名門韻事",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "The Dinosaurs: Season 1",
+    "views": 10400000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "The Dinosaurs: Season 1",
+    "titleZh": "恐龍時代：你不知道的故事",
+    "country": "GB,US",
+    "genres": [
+      "纪录",
+      "动画"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "The Night Agent: Season 3",
+    "views": 5200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "The Night Agent: Season 3",
+    "titleZh": "暗夜情報員",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Vladimir: Limited Series",
+    "views": 4200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Vladimir: Limited Series",
+    "titleZh": "高等教慾",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Formula 1: Drive to Survive: Season 8",
+    "views": 3000000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Formula 1: Drive to Survive: Season 8",
+    "titleZh": "Formula 1：飆速求生",
+    "country": "GB",
+    "genres": [
+      "纪录"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Raw: 2026 - March 2, 2026",
+    "views": 3000000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - March 2, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 7,
+    "title": "Gabby's Dollhouse: Season 13",
+    "views": 2500000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Gabby's Dollhouse: Season 13",
+    "titleZh": "蓋比的娃娃屋",
+    "country": "US",
+    "genres": [
+      "儿童",
+      "喜剧",
+      "动画",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Bridgerton: Season 1",
+    "views": 2200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Bridgerton: Season 1",
+    "titleZh": "柏捷頓家族：名門韻事",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "The Mentalist: Season 1",
+    "views": 2200000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "The Mentalist: Season 1",
+    "titleZh": "超感應神探",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Love Is Blind: S10: Ohio",
+    "views": 2000000,
+    "week": "3/2/26 - 3/8/26",
+    "cat": "Shows|English",
+    "titleEn": "Love Is Blind: S10: Ohio",
+    "titleZh": "盲婚試愛：俄亥俄",
+    "country": "US",
+    "genres": []
   }
 ]
