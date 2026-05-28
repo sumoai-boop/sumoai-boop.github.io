@@ -10717,7 +10717,7 @@
     "cat": "Shows|English",
     "titleEn": "Run Away: Limited Series",
     "titleZh": "危險追逃",
-    "country": "GB",
+    "country": "GB,US",
     "genres": [
       "剧情",
       "悬疑"
@@ -10807,7 +10807,7 @@
     "cat": "Shows|English",
     "titleEn": "Run Away: Limited Series",
     "titleZh": "危險追逃",
-    "country": "GB",
+    "country": "GB,US",
     "genres": [
       "剧情",
       "悬疑"
@@ -10894,6 +10894,132 @@
     "cat": "Shows|English",
     "titleEn": "Marcello Hernández: American Boy",
     "titleZh": "馬塞洛赫南德茲：美國小子",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 1,
+    "title": "HIS & HERS: Limited Series",
+    "views": 19900000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "HIS & HERS: Limited Series",
+    "titleZh": "他和她的，謊",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Run Away: Limited Series",
+    "views": 15600000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Run Away: Limited Series",
+    "titleZh": "危險追逃",
+    "country": "GB,US",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Stranger Things 5",
+    "views": 9300000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 5",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 4,
+    "title": "Stranger Things: Season 1",
+    "views": 5000000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things: Season 1",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "悬疑",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Emily in Paris: Season 5",
+    "views": 4500000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Emily in Paris: Season 5",
+    "titleZh": "艾蜜莉在巴黎",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Stranger Things 2",
+    "views": 4500000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 2",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 7,
+    "title": "Stranger Things 3",
+    "views": 4400000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 3",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Stranger Things 4",
+    "views": 4100000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Stranger Things 4",
+    "titleZh": "怪奇物語",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 9,
+    "title": "The Good Doctor: Season 1",
+    "views": 3400000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "The Good Doctor: Season 1",
+    "titleZh": "良醫墨非",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Raw: 2026 - January 5, 2026",
+    "views": 3200000,
+    "week": "1/5/26 - 1/11/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - January 5, 2026",
+    "titleZh": "",
     "country": "US",
     "genres": []
   }
