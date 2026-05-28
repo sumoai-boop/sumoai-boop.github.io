@@ -8035,7 +8035,7 @@
     "week": "5/11/26 - 5/17/26",
     "cat": "Movies|English",
     "titleEn": "Stolen Baby: The Murder of Heidi Broussard",
-    "titleZh": "",
+    "titleZh": "被盜的女孩：海蒂·布魯薩德的謀殺案",
     "country": "US",
     "genres": [
       "惊悚",
@@ -8073,6 +8073,154 @@
       "剧情",
       "科幻",
       "惊悚"
+    ]
+  },
+  {
+    "rank": 1,
+    "title": "The Crash",
+    "views": 27600000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "The Crash",
+    "titleZh": "致命撞擊：青春情殺案",
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Swapped",
+    "views": 16100000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Ladies First",
+    "views": 11900000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "Ladies First",
+    "titleZh": "女士優先",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Goat",
+    "views": 10100000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "Goat",
+    "titleZh": "山羊巔峰",
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Remarkably Bright Creatures",
+    "views": 8200000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "Remarkably Bright Creatures",
+    "titleZh": "明亮燦爛的你",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Apex",
+    "views": 6700000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "Apex",
+    "titleZh": "巔峰獵殺",
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Stolen Baby: The Murder of Heidi Broussard",
+    "views": 5300000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "Stolen Baby: The Murder of Heidi Broussard",
+    "titleZh": "被盜的女孩：海蒂·布魯薩德的謀殺案",
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "剧情",
+      "电视电影"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "In Her Shoes",
+    "views": 5100000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "In Her Shoes",
+    "titleZh": "偷穿高跟鞋",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "爱情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "No Hard Feelings",
+    "views": 4700000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "No Hard Feelings",
+    "titleZh": "珍愛硬起來",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "KPop Demon Hunters",
+    "views": 3800000,
+    "week": "5/18/26 - 5/24/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
     ]
   }
 ]
