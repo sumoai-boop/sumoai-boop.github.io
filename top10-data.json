@@ -9183,5 +9183,142 @@
       "喜剧",
       "剧情"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Trust Me: The False Prophet: Season 1",
+    "views": 9800000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Trust Me: The False Prophet: Season 1",
+    "titleZh": "相信我：假先知真面目",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "XO, Kitty: Season 3",
+    "views": 7800000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "XO, Kitty: Season 3",
+    "titleZh": "愛你的凱蒂",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Danny Go!: Season 1",
+    "views": 5300000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Danny Go!: Season 1",
+    "titleZh": "",
+    "country": "US",
+    "genres": [
+      "儿童"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Love on the Spectrum: Season 4",
+    "views": 3500000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Love on the Spectrum: Season 4",
+    "titleZh": "光譜上發現愛",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "真人秀"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Something Very Bad Is Going to Happen: Season 1",
+    "views": 3100000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Something Very Bad Is Going to Happen: Season 1",
+    "titleZh": "命中婚劫",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Raw: 2026 - April 6, 2026",
+    "views": 2900000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - April 6, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 7,
+    "title": "The Cleaning Lady: Season 1",
+    "views": 2800000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "The Cleaning Lady: Season 1",
+    "titleZh": "黑幫清潔婦",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Big Mistakes: Season 1",
+    "views": 2700000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Big Mistakes: Season 1",
+    "titleZh": "失策兄妹幫",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "ONE PIECE: Season 2",
+    "views": 2200000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "ONE PIECE: Season 2",
+    "titleZh": "航海王",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Salish & Jordan Matter: Season 1",
+    "views": 2100000,
+    "week": "4/6/26 - 4/12/26",
+    "cat": "Shows|English",
+    "titleEn": "Salish & Jordan Matter: Season 1",
+    "titleZh": "麥特父女檔：高中初體驗",
+    "country": "US",
+    "genres": [
+      "真人秀",
+      "儿童"
+    ]
   }
 ]
