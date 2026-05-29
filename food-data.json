@@ -3546,7 +3546,7 @@
     "name": "炸牛元村 遠百信義A13店",
     "name1": "炸牛元村",
     "name2": "遠百信義A13店",
-    "type": "日式牛扒",
+    "type": "日本",
     "price": 1276,
     "visits": 1,
     "gscore": 4.8,
@@ -3558,7 +3558,9 @@
     "visitLog": [
       {
         "date": "2025-11-16",
-        "price": 1276
+        "meal": "",
+        "price": 1276,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -3566,8 +3568,8 @@
     ],
     "img": "https://i.ibb.co/ycV62GtG/d16bb8fbee1a.jpg",
     "createdAt": 1779335501326,
-    "meal": "晚餐",
-    "updatedAt": 1779341675026
+    "meal": "",
+    "updatedAt": 1780071851595
   },
   {
     "id": "1779333670292",
