@@ -1393,6 +1393,11 @@ render();
     function applyData(text){
       try{
         var arr = JSON.parse(text);
+        // 只在遠端資料筆數 >= 本機時才覆蓋（避免 CDN 快取舊資料蓋掉剛新增的資料）
+        if(arr.length < DATA.length){
+          console.log('dramas sync: remote(' + arr.length + ') < local(' + DATA.length + '), skipping overwrite');
+          return;
+        }
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
         try{ localStorage.setItem('_dramasData', JSON.stringify(arr)); }catch{}
