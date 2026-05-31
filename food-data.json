@@ -1,5 +1,34 @@
 [
   {
+    "id": "1780236191078",
+    "name": "越夜月美海邊咖啡廳",
+    "name1": "越夜月美海邊咖啡廳",
+    "name2": "",
+    "type": "咖啡廳",
+    "meal": "",
+    "price": 1300,
+    "visits": 1,
+    "gscore": 4.4,
+    "addr": "25154新北市淡水區沙崙里淡海路280巷33弄32號",
+    "note": "呂詩祺",
+    "maps": "https://www.google.com.tw/maps/place/%E8%B6%8A%E5%A4%9C%E6%9C%88%E7%BE%8E%E6%B5%B7%E9%82%8A%E5%92%96%E5%95%A1%E5%BB%B3/@25.1901084,121.417925,17z/data=!4m15!1m8!3m7!1s0x3442bb4fe2b8fe17:0x81bb7affbfc88099!2z6LaK5aSc5pyI576O5rW36YKK5ZKW5ZWh5buz!8m2!3d25.1900182!4d121.4180157!10e9!16s%2Fg%2F11k8jm4lrj!3m5!1s0x3442bb4fe2b8fe17:0x81bb7affbfc88099!8m2!3d25.1900182!4d121.4180157!16s%2Fg%2F11k8jm4lrj?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-05-31",
+    "score": 4.6,
+    "visitLog": [
+      {
+        "date": "2026-05-31",
+        "meal": "午餐",
+        "price": 1300,
+        "menu": "白醬野菇義大利麵+墨西哥辣腸披薩"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/hRxC3GM0/7bcf0ae13b55.jpg"
+    ],
+    "img": "https://i.ibb.co/hRxC3GM0/7bcf0ae13b55.jpg",
+    "createdAt": 1780236191078
+  },
+  {
     "id": "1780071816555",
     "name": "牛の鬼牛排館",
     "name1": "牛の鬼牛排館",
