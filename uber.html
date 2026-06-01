@@ -140,6 +140,8 @@ body{
 #s-fuel em,#s-total-exp em{color:#FF4444!important;}
 #s-hours em.num,#s-total-hours em.num{color:#FFD700!important;}
 #s-trips em.num,#s-total-trips em.num{color:#FF8C00!important;}
+#s-hourly em,#s-avg-month-income em{color:#C084FC!important;}
+#s-month-km em.num,#s-total-km em.num{color:#22D3EE!important;}
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
   .del-btn:hover{color:#ff6b6b;}
@@ -1178,8 +1180,8 @@ function updateStats(){
   var monthly=allMonthly.filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
   var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
 
-  // 平均時薪
-  var hourly=hours>0?(income/hours).toFixed(0):0;
+  // 平均時薪（總收入 / 總時數）
+  var hourly=totalHours>0?(totalIncome/totalHours).toFixed(0):0;
 
   // 總時數
   var totalAllMins=allWeekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
