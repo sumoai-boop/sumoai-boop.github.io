@@ -1180,8 +1180,7 @@ function updateStats(){
   var monthly=allMonthly.filter(function(m){return m.date&&m.date.startsWith(thisMonth);});
   var exp=monthly.reduce(function(s,m){return s+m.amount;},0);
 
-  // 平均時薪（總收入 / 總時數）
-  var hourly=totalHours>0?(totalIncome/totalHours).toFixed(0):0;
+  // 平均時薪（總收入 / 總時數）— 在 totalHours/totalIncome 算完後計算
 
   // 總時數
   var totalAllMins=allWeekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
@@ -1194,6 +1193,7 @@ function updateStats(){
   // 總收入、總支出
   var totalIncome=allWeekly.reduce(function(s,w){return s+w.income;},0);
   var totalExp=allMonthly.reduce(function(s,m){return s+m.amount;},0);
+  var hourly=totalHours>0?(totalIncome/totalHours).toFixed(0):0;
 
   // 總公里數
   var totalKm = allTrips.reduce(function(s,t){return s+(t.km||0);},0);
