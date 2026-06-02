@@ -1,5 +1,34 @@
 [
   {
+    "id": "1780371839993",
+    "name": "新壹號",
+    "name1": "新壹號",
+    "name2": "",
+    "type": "豬腳",
+    "meal": "",
+    "price": 175,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "236新北市土城區安和里金城路三段75號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%96%B0%E5%A3%B9%E8%99%9F+-+%E8%B1%AC%E8%85%B3+%7C+%E9%9B%9E%E8%82%89+%7C+%E7%B1%B3%E9%A3%9F+%7C+%E9%BA%B5%E9%A3%9F+%E5%B0%88%E8%B3%A3%E5%BA%97+-+%E4%BA%BA%E6%89%8B%E4%B8%8D%E8%B6%B3%EF%BC%8C%E7%84%A1%E5%A4%96%E9%80%81/@24.9872241,121.4638799,17z/data=!3m1!4b1!4m6!3m5!1s0x346803c2ebea3389:0x6d4b6d031ae9cac5!8m2!3d24.9872193!4d121.4664548!16s%2Fg%2F11h0vsp53t?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-14",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-04-14",
+        "meal": "晚餐",
+        "price": 175,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/s9MccB3d/e113a5600ad9.jpg"
+    ],
+    "img": "https://i.ibb.co/s9MccB3d/e113a5600ad9.jpg",
+    "createdAt": 1780371839993
+  },
+  {
     "id": "1780236276017",
     "name": "之藍じらん 抹茶販売店",
     "name1": "之藍じらん 抹茶販売店",
