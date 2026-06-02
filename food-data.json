@@ -6,8 +6,8 @@
     "name2": "",
     "type": "豬腳",
     "meal": "",
-    "price": 164,
-    "visits": 6,
+    "price": 162,
+    "visits": 7,
     "gscore": 4.3,
     "addr": "236新北市土城區安和里金城路三段75號",
     "note": "",
@@ -50,6 +50,12 @@
         "meal": "晚餐",
         "price": 140,
         "menu": ""
+      },
+      {
+        "date": "2025-09-09",
+        "meal": "晚餐",
+        "price": 150,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -57,7 +63,7 @@
     ],
     "img": "https://i.ibb.co/s9MccB3d/e113a5600ad9.jpg",
     "createdAt": 1780371839993,
-    "updatedAt": 1780372050000
+    "updatedAt": 1780372123351
   },
   {
     "id": "1780236276017",
