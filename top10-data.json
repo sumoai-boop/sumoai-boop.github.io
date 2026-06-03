@@ -11450,5 +11450,140 @@
       "喜剧",
       "犯罪"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "The Boroughs: Season 1",
+    "views": 9500000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "The Boroughs: Season 1",
+    "titleZh": "怪奇退休鎮",
+    "country": "US",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Nemesis: Season 1",
+    "views": 5900000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Nemesis: Season 1",
+    "titleZh": "宿敵交鋒",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "The Four Seasons: Season 2",
+    "views": 4400000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "The Four Seasons: Season 2",
+    "titleZh": "他們的春夏秋冬",
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Instadocs: Alex Murdaugh, Unconvicted",
+    "views": 3400000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Instadocs: Alex Murdaugh, Unconvicted",
+    "titleZh": "即錄時刻：艾力克斯默多：未定罪",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 5,
+    "title": "Man on Fire: Season 1",
+    "views": 2900000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Man on Fire: Season 1",
+    "titleZh": "火線救援",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Worst Ex Ever: Season 2",
+    "views": 2800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Worst Ex Ever: Season 2",
+    "titleZh": "恐怖前任全記錄",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "纪录"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Raw: 2026 - May 25, 2026",
+    "views": 2500000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - May 25, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Legends: Season 1",
+    "views": 2100000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Legends: Season 1",
+    "titleZh": "無名傳奇",
+    "country": "GB",
+    "genres": [
+      "动作冒险",
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "A Good Girl's Guide to Murder: Season 2",
+    "views": 1800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "A Good Girl's Guide to Murder: Season 2",
+    "titleZh": "好女孩的謀殺調查報告",
+    "country": "GB",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Danny Go!: Season 1",
+    "views": 1800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|English",
+    "titleEn": "Danny Go!: Season 1",
+    "titleZh": "",
+    "country": "US",
+    "genres": [
+      "儿童"
+    ]
   }
 ]
