@@ -11168,5 +11168,145 @@
       "喜剧",
       "爱情"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Kara",
+    "views": 3800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Kara",
+    "titleZh": "再入岐途",
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "音乐"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Emi Martínez: The Kid Who Stops Time",
+    "views": 1800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Emi Martínez: The Kid Who Stops Time",
+    "titleZh": "艾米里亞諾馬丁內斯：守住時間的男孩》",
+    "country": "AR",
+    "genres": []
+  },
+  {
+    "rank": 3,
+    "title": "Alas Roban",
+    "views": 1500000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Alas Roban",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "剧情",
+      "恐怖",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Agak Laen: Menyala Pantiku!",
+    "views": 1500000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Agak Laen: Menyala Pantiku!",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "犯罪",
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "KARTAVYA",
+    "views": 1400000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "KARTAVYA",
+    "titleZh": "執法交叉點",
+    "country": "IN",
+    "genres": [
+      "动作"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Carrossel, O Filme",
+    "views": 1000000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Carrossel, O Filme",
+    "titleZh": "",
+    "country": "BR",
+    "genres": [
+      "喜剧",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Qorin 2",
+    "views": 1000000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Qorin 2",
+    "titleZh": "鬼魅降臨 2",
+    "country": "ID",
+    "genres": [
+      "恐怖",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "A Foggy Tale",
+    "views": 900000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "A Foggy Tale",
+    "titleZh": "大濛",
+    "country": "TW",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "The Lotto Winner",
+    "views": 900000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Lotto Winner",
+    "titleZh": "",
+    "country": "PH",
+    "genres": [
+      "家庭",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Dhurandhar The Revenge (Raw & Undekha)",
+    "views": 900000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar The Revenge (Raw & Undekha)",
+    "titleZh": "黑境行者：復仇",
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   }
 ]
