@@ -11585,5 +11585,139 @@
     "genres": [
       "儿童"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Man on Fire: Season 1",
+    "views": 12600000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Man on Fire: Season 1",
+    "titleZh": "火線救援",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Should I Marry A Murderer?: Limited Series",
+    "views": 8000000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Should I Marry A Murderer?: Limited Series",
+    "titleZh": "兇手嫁不嫁：未婚妻搜證實錄",
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Worst Ex Ever: Season 2",
+    "views": 8000000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Worst Ex Ever: Season 2",
+    "titleZh": "恐怖前任全記錄",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "纪录"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Legends: Season 1",
+    "views": 3400000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Legends: Season 1",
+    "titleZh": "無名傳奇",
+    "country": "GB",
+    "genres": [
+      "动作冒险",
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Running Point: Season 2",
+    "views": 3300000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Running Point: Season 2",
+    "titleZh": "逆轉狂籃",
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Unchosen: Season 1",
+    "views": 3100000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Unchosen: Season 1",
+    "titleZh": "非選之人",
+    "country": "GB",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Raw: 2026 - May 4, 2026",
+    "views": 2700000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - May 4, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Lord of the Flies: Limited Series",
+    "views": 2500000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Lord of the Flies: Limited Series",
+    "titleZh": "蒼蠅王",
+    "country": "GB",
+    "genres": [
+      "剧情",
+      "动作冒险"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Funny AF with Kevin Hart: Season 1 - The Live Semifinals",
+    "views": 2200000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "Funny AF with Kevin Hart: Season 1 - The Live Semifinals",
+    "titleZh": "凱文哈特：全美笑匠大戰",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 10,
+    "title": "La Brea: Season 1",
+    "views": 2100000,
+    "week": "5/4/26 - 5/10/26",
+    "cat": "Shows|English",
+    "titleEn": "La Brea: Season 1",
+    "titleZh": "加州異世界",
+    "country": "US",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "剧情",
+      "动作冒险"
+    ]
   }
 ]
