@@ -11022,5 +11022,151 @@
     "titleZh": "",
     "country": "US",
     "genres": []
+  },
+  {
+    "rank": 1,
+    "title": "Ladies First",
+    "views": 18800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Ladies First",
+    "titleZh": "女士優先",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "The Crash",
+    "views": 14000000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "The Crash",
+    "titleZh": "致命撞擊：青春情殺案",
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Swapped",
+    "views": 10500000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Goat",
+    "views": 9400000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Goat",
+    "titleZh": "山羊巔峰",
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "A Perfect Getaway",
+    "views": 6700000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "A Perfect Getaway",
+    "titleZh": "蜜月變奏曲",
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "悬疑",
+      "冒险"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Apex",
+    "views": 6100000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Apex",
+    "titleZh": "巔峰獵殺",
+    "country": "US",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Cleaner",
+    "views": 5300000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Cleaner",
+    "titleZh": "罪惡清除工",
+    "country": "GB",
+    "genres": [
+      "动作",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Remarkably Bright Creatures",
+    "views": 4900000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Remarkably Bright Creatures",
+    "titleZh": "明亮燦爛的你",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "KPop Demon Hunters",
+    "views": 3800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Guess Who",
+    "views": 3300000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Movies|English",
+    "titleEn": "Guess Who",
+    "titleZh": "誰敢來晚餐",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "爱情"
+    ]
   }
 ]
