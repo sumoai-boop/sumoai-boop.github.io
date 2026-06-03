@@ -11308,5 +11308,147 @@
       "犯罪",
       "惊悚"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Berlin and the Lady with an Ermine: Limited Series",
+    "views": 4700000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Berlin and the Lady with an Ermine: Limited Series",
+    "titleZh": "柏林：抱銀貂的女子",
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "动作冒险",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "The WONDERfools: Limited Series",
+    "views": 4000000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "The WONDERfools: Limited Series",
+    "titleZh": "超能路人甲",
+    "country": "KR",
+    "genres": [
+      "动作冒险",
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "My Royal Nemesis: Limited Series",
+    "views": 3800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "My Royal Nemesis: Limited Series",
+    "titleZh": "我的王室死對頭",
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Sold Out on You: Limited Series",
+    "views": 2100000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Sold Out on You: Limited Series",
+    "titleZh": "秒殺愛情",
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Jae-seok's B&B Rules!: Season 1",
+    "views": 1800000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Jae-seok's B&B Rules!: Season 1",
+    "titleZh": "劉在錫的民宿法則！",
+    "country": "KR",
+    "genres": [
+      "真人秀",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Desi Bling: Season 1",
+    "views": 1700000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Desi Bling: Season 1",
+    "titleZh": "閃耀杜拜：印度名流",
+    "country": "IN",
+    "genres": [
+      "真人秀"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Rafa: Season 1",
+    "views": 1300000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Rafa: Season 1",
+    "titleZh": "納達爾",
+    "country": "ES",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Futuro desierto: Season 1",
+    "views": 1200000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Futuro desierto: Season 1",
+    "titleZh": "",
+    "country": "MX",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "The Chestnut Man: Hide and Seek",
+    "views": 1100000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "The Chestnut Man: Hide and Seek",
+    "titleZh": "栗子人殺手",
+    "country": "DK",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Murder Mindfully: Season 2",
+    "views": 1000000,
+    "week": "5/25/26 - 5/31/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Murder Mindfully: Season 2",
+    "titleZh": "正念殺機",
+    "country": "DE",
+    "genres": [
+      "剧情",
+      "喜剧",
+      "犯罪"
+    ]
   }
 ]
