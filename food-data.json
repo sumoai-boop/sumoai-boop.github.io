@@ -1,5 +1,34 @@
 [
   {
+    "id": "1780561260813",
+    "name": "晴光牛肉麵",
+    "name1": "晴光牛肉麵",
+    "name2": "",
+    "type": "牛肉麵",
+    "meal": "",
+    "price": 180,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "104臺北市中山區晴光里德惠街48號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%99%B4%E5%85%89%E7%89%9B%E8%82%89%E9%BA%B5/@25.0665417,121.5270387,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a99c178b8a19:0xdaf9cea0363d0a7f!8m2!3d25.0665417!4d121.5270387!16s%2Fg%2F11r_wst61t?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-04",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2026-06-04",
+        "meal": "午餐",
+        "price": 180,
+        "menu": "紅燒半筋半肉麵"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/gZn272Vn/13d433b9a60c.jpg"
+    ],
+    "img": "https://i.ibb.co/gZn272Vn/13d433b9a60c.jpg",
+    "createdAt": 1780561260813
+  },
+  {
     "id": "1780371839993",
     "name": "新壹號",
     "name1": "新壹號",
