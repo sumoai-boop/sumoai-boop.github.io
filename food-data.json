@@ -6,8 +6,8 @@
     "name2": "中和中山門市",
     "type": "快餐",
     "meal": "",
-    "price": 237,
-    "visits": 1,
+    "price": 226,
+    "visits": 2,
     "gscore": 4.1,
     "addr": "235新北市中和區員山里中山路三段52號1樓",
     "note": "",
@@ -20,13 +20,20 @@
         "meal": "晚餐",
         "price": 237,
         "menu": "21香草烤半雞"
+      },
+      {
+        "date": "2026-04-18",
+        "meal": "晚餐",
+        "price": 214,
+        "menu": "炸烤雙霸餐"
       }
     ],
     "imgs": [
       "https://i.ibb.co/nsg5gYf9/2e69c22d8c26.jpg"
     ],
     "img": "https://i.ibb.co/nsg5gYf9/2e69c22d8c26.jpg",
-    "createdAt": 1780578297340
+    "createdAt": 1780578297340,
+    "updatedAt": 1780578369872
   },
   {
     "id": "1780561260813",
