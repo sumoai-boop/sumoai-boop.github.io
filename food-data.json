@@ -1,5 +1,34 @@
 [
   {
+    "id": "1780578297340",
+    "name": "21Plus 21風味館 中和中山門市",
+    "name1": "21Plus 21風味館",
+    "name2": "中和中山門市",
+    "type": "快餐",
+    "meal": "",
+    "price": 237,
+    "visits": 1,
+    "gscore": 4.1,
+    "addr": "235新北市中和區員山里中山路三段52號1樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/21Plus+21%E9%A2%A8%E5%91%B3%E9%A4%A8+%E4%B8%AD%E5%92%8C%E4%B8%AD%E5%B1%B1%E9%96%80%E5%B8%82/@25.0064801,121.4783998,19z/data=!4m6!3m5!1s0x3442a9fc8ee04fdd:0xbb924257e85a7954!8m2!3d25.0059672!4d121.4784429!16s%2Fg%2F11stp0wph0?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-04",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-06-04",
+        "meal": "晚餐",
+        "price": 237,
+        "menu": "21香草烤半雞"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/nsg5gYf9/2e69c22d8c26.jpg"
+    ],
+    "img": "https://i.ibb.co/nsg5gYf9/2e69c22d8c26.jpg",
+    "createdAt": 1780578297340
+  },
+  {
     "id": "1780561260813",
     "name": "晴光牛肉麵",
     "name1": "晴光牛肉麵",
