@@ -1106,7 +1106,7 @@
     "name": "清燉牛肉牛雜",
     "name1": "清燉牛肉牛雜",
     "name2": "",
-    "type": "台式麵館",
+    "type": "牛肉麵",
     "meal": "",
     "price": 160,
     "visits": 5,
@@ -1153,7 +1153,7 @@
     ],
     "img": "https://i.ibb.co/Zz5KYmMP/a22d1dfd6db8.jpg",
     "createdAt": 1779803614979,
-    "updatedAt": 1779803697406
+    "updatedAt": 1780561156281
   },
   {
     "id": "1779803446173",
