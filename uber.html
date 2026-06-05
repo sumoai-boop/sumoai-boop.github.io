@@ -272,6 +272,7 @@ body{
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
         <button class="btn-add" id="tripAddBtn" onclick="addTrip()">新增行程</button>
+        <button id="tripDeleteBtn" onclick="deleteEditingTrip()" style="display:none;background:rgba(200,50,30,0.2);color:#FF6B6B;border:1px solid rgba(200,50,30,0.4);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:monospace;font-size:13px;font-weight:700;">🗑 刪除此行程</button>
         <button class="btn-add" onclick="importCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📂 匯入 CSV</button>
         <button class="btn-add" onclick="exportCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📤 匯出 CSV</button>
         <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">
@@ -714,6 +715,7 @@ function addTrip(){
     window._editTripId=null;
     document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
     document.getElementById('tripAddBtn').textContent='新增行程';
+    document.getElementById('tripDeleteBtn').style.display='none';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();
     ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('f-pax').value='1';
@@ -726,6 +728,20 @@ function addTrip(){
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
+}
+
+function deleteEditingTrip(){
+  if(!window._editTripId) return;
+  if(!confirm('確定要刪除這筆行程記錄？')) return;
+  var trips = getData('uberTrips').filter(function(t){ return t.id !== window._editTripId; });
+  window._editTripId = null;
+  document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
+  document.getElementById('tripAddBtn').textContent='新增行程';
+  document.getElementById('tripDeleteBtn').style.display='none';
+  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-pax').value='1';
+  ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value='';});
+  saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();
 }
 
 function editTrip(id){
@@ -752,6 +768,7 @@ function editTrip(id){
   window._editTripId = id;
   document.getElementById('tripFormTitle').textContent = '✎ 編輯行程明細';
   document.getElementById('tripAddBtn').textContent = '✔ 儲存變更';
+  document.getElementById('tripDeleteBtn').style.display = 'inline-block';
   // 滾到表單
   document.getElementById('tripFormTitle').scrollIntoView({behavior:'smooth'});
 }
