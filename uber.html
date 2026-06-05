@@ -136,19 +136,17 @@ body{
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .chart-grid{grid-template-columns:1fr;}
 }
-/* 統計格子列顏色：每列統一一色 */
-/* Row 1: 公里+薪資 → 青藍 */
-#s-avg-km2 em.num,#s-month-km em.num,#s-total-km em.num,
-#s-hourly em,#s-avg-month-income em{color:#22D3EE!important;}
-/* Row 2: 載客+費用 → 綠 */
-#s-avg-pax em.num,#s-month-pax em.num,#s-total-pax em.num,
-#s-avg-detail em,#s-avg-fare em{color:#00C853!important;}
-/* Row 3: 趟數+收入 → 橘 */
-#s-avg-day-trips em.num,#s-trips em.num,#s-total-trips em.num,
-#s-income em,#s-total-income em{color:#FF8C00!important;}
-/* Row 4: 時數+支出 → 黃 */
-#s-avg-day-hours em.num,#s-hours em.num,#s-total-hours em.num,
-#s-fuel em,#s-total-exp em{color:#FFD700!important;}
+/* 統計格子欄顏色：每欄統一一色 */
+/* Col 1: 平均 → 青藍 */
+#s-avg-km2 em.num,#s-avg-pax em.num,#s-avg-day-trips em.num,#s-avg-day-hours em.num{color:#22D3EE!important;}
+/* Col 2: 本月 → 綠 */
+#s-month-km em.num,#s-month-pax em.num,#s-trips em.num,#s-hours em.num{color:#00C853!important;}
+/* Col 3: 總計 → 橘 */
+#s-total-km em.num,#s-total-pax em.num,#s-total-trips em.num,#s-total-hours em.num{color:#FF8C00!important;}
+/* Col 4: 薪資/費用/收支(本月) → 紫 */
+#s-hourly em,#s-avg-detail em,#s-income em,#s-fuel em{color:#C084FC!important;}
+/* Col 5: 薪資/費用/收支(總) → 黃 */
+#s-avg-month-income em,#s-avg-fare em,#s-total-income em,#s-total-exp em{color:#FFD700!important;}
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
   .del-btn:hover{color:#ff6b6b;}
