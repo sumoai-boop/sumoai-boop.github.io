@@ -310,7 +310,7 @@ body{
           <tr>
             <th style="width:40px">#</th>
             <th onclick="sortTrips('d')" style="cursor:pointer">日期 ↕</th>
-            <th>時間</th>
+            <th onclick="sortTrips('tm')" style="cursor:pointer">時間 ↕</th>
             <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車地點</th>
             <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
             <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
@@ -848,7 +848,7 @@ function renderTrips(){
     return `<tr>
       <td style="color:rgba(240,220,160,0.5);font-size:11px">${seqMap[t.id]||''}</td>
       <td>${t.d||''}</td>
-      <td style="color:rgba(200,200,200,0.6);font-size:11px">${t.tm||''}</td>
+      <td style="color:rgba(200,200,200,0.85);font-size:12px">${t.tm||''}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.td||''}</td>
