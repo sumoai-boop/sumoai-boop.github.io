@@ -205,7 +205,7 @@ body{
         <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
       </div>
       <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均行程費用</div><div class="stat-val" id="s-avg-fare"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均行程時間</div><div class="stat-val" id="s-avg-fare"><em class="num">0</em> <em class="unit">秒</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
@@ -1241,8 +1241,11 @@ function updateStats(){
   // 總公里數
   var totalKm = allTrips.reduce(function(s,t){return s+(t.km||0);},0);
   var avgKm = totalTrips>0?(totalKm/totalTrips).toFixed(2):0;
-  // 平均行程費用（fare）
-  var avgFare = totalTrips>0?Math.round(allTrips.reduce(function(s,t){return s+(t.fare||0);},0)/totalTrips):0;
+  // 平均行程時間
+  var tripsWithTime=allTrips.filter(function(t){return t.tm&&t.tm.length>=5;});
+  var totalSecs=tripsWithTime.reduce(function(s,t){var p=t.tm.split(':');return s+(parseInt(p[0])||0)*3600+(parseInt(p[1])||0)*60+(parseInt(p[2])||0);},0);
+  var avgSecs=tripsWithTime.length>0?Math.round(totalSecs/tripsWithTime.length):0;
+  var avgTmStr=avgSecs>0?(Math.floor(avgSecs/3600)?Math.floor(avgSecs/3600)+'時':'')+(Math.floor((avgSecs%3600)/60)?Math.floor((avgSecs%3600)/60)+'分':'')+(avgSecs%60+'秒'):'—';
   // 總載客數
   var totalPax = allTrips.reduce(function(s,t){return s+(t.pax||1);},0);
   // 每月平均趟數（有記錄的月份）
@@ -1271,7 +1274,7 @@ function updateStats(){
 
   document.getElementById('s-avg-month-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgMonthIncome)+'</em>';
   document.getElementById('s-total-km').innerHTML='<em class="num">'+totalKm.toFixed(1)+'</em> <em class="unit">km</em>';
-  document.getElementById('s-avg-fare').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgFare)+'</em>';
+  document.getElementById('s-avg-fare').innerHTML='<em class="num" style="font-size:32px;">'+avgTmStr+'</em>';
   document.getElementById('s-total-pax').innerHTML='<em class="num">'+fmt(totalPax)+'</em> <em class="unit">人</em>';
   // 本月公里數
   var monthTrips = allTrips.filter(function(t){return t.d&&t.d.startsWith(thisMonth);});
