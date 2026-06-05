@@ -136,12 +136,19 @@ body{
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .chart-grid{grid-template-columns:1fr;}
 }
-#s-income em,#s-total-income em{color:#4A9EFF!important;}
-#s-fuel em,#s-total-exp em{color:#FF4444!important;}
-#s-hours em.num,#s-total-hours em.num{color:#FFD700!important;}
-#s-trips em.num,#s-total-trips em.num{color:#FF8C00!important;}
-#s-hourly em,#s-avg-month-income em{color:#C084FC!important;}
-#s-month-km em.num,#s-total-km em.num,#s-avg-km2 em.num{color:#22D3EE!important;}
+/* 統計格子列顏色：每列統一一色 */
+/* Row 1: 公里+薪資 → 青藍 */
+#s-avg-km2 em.num,#s-month-km em.num,#s-total-km em.num,
+#s-hourly em,#s-avg-month-income em{color:#22D3EE!important;}
+/* Row 2: 載客+費用 → 綠 */
+#s-avg-pax em.num,#s-month-pax em.num,#s-total-pax em.num,
+#s-avg-detail em,#s-avg-fare em{color:#00C853!important;}
+/* Row 3: 趟數+收入 → 橘 */
+#s-avg-day-trips em.num,#s-trips em.num,#s-total-trips em.num,
+#s-income em,#s-total-income em{color:#FF8C00!important;}
+/* Row 4: 時數+支出 → 黃 */
+#s-avg-day-hours em.num,#s-hours em.num,#s-total-hours em.num,
+#s-fuel em,#s-total-exp em{color:#FFD700!important;}
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;}
   .del-btn:hover{color:#ff6b6b;}
