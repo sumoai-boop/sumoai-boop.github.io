@@ -1279,20 +1279,21 @@ function updateStats(){
   var totalNet=totalIncome-totalExp;
   document.getElementById('s-total-net').textContent=fmt(totalNet);
   // 平均公里數
-  var avgKm2 = totalTrips>0?(totalKm/totalTrips).toFixed(2):0;
+  // 有收入的天數（作為所有平均的分母）
+  var incomeDaySet={};
+  allWeekly.forEach(function(w){ if(w.date&&w.income>0) incomeDaySet[w.date]=1; });
+  var incomeDays = Object.keys(incomeDaySet).length||1;
   // 本月載客數
   var monthPax = 0; // 計算後更新
-  // 平均日趟數（有出勤天數）
-  // 有出勤天數（從行程記錄的日期）
-  var workDaySet={};
-  allTrips.forEach(function(t){ if(t.d) workDaySet[t.d]=1; });
-  var workDays = Object.keys(workDaySet).length||1;
-  var avgDayTrips = workDays>0?(totalTrips/workDays).toFixed(1):0;
-  // 有出勤天數（從每日收入的時數）
-  var workHourDaySet={};
-  allWeekly.forEach(function(w){ if(w.date&&(w.hours||w.mins)) workHourDaySet[w.date]=1; });
-  var workHourDays = Object.keys(workHourDaySet).length||1;
-  var avgDayHours = totalHours>0?(totalHours/workHourDays).toFixed(1):0;
+  // 平均公里數（有收入天的行程）
+  var incomeDayTrips = allTrips.filter(function(t){ return t.d && incomeDaySet[t.d]; });
+  var avgKm2 = incomeDayTrips.length>0?(incomeDayTrips.reduce(function(s,t){return s+(t.km||0);},0)/incomeDayTrips.length).toFixed(2):0;
+  // 平均載客數（有收入天的行程）
+  var avgPax2 = incomeDayTrips.length>0?(incomeDayTrips.reduce(function(s,t){return s+(t.pax||1);},0)/incomeDayTrips.length).toFixed(1):0;
+  // 平均日趟數（總趟數 / 有收入天數）
+  var avgDayTrips = incomeDays>0?(totalTrips/incomeDays).toFixed(1):0;
+  // 平均日時數（總時數 / 有收入天數）
+  var avgDayHours = incomeDays>0?(totalHours/incomeDays).toFixed(1):0;
 
   if(document.getElementById('s-avg-km2')) document.getElementById('s-avg-km2').innerHTML='<em class="num">'+avgKm2+'</em> <em class="unit">km</em>';
   if(document.getElementById('s-avg-day-trips')) document.getElementById('s-avg-day-trips').innerHTML='<em class="num">'+avgDayTrips+'</em> <em class="unit">趟</em>';
@@ -1319,7 +1320,7 @@ function updateStats(){
   document.getElementById('s-avg-detail').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgDetail)+'</em>';
   document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
   document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalIncome)+'</em>';
-  document.getElementById('s-avg-pax').innerHTML='<em class="num">'+avgPax+'</em> <em class="unit">人</em>';
+  document.getElementById('s-avg-pax').innerHTML='<em class="num">'+avgPax2+'</em> <em class="unit">人</em>';
   document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
   document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
 }
