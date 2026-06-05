@@ -802,10 +802,15 @@ function renderTrips(){
 
   // 排序
   trips.sort((a,b)=>{
-    var va=a[tripSortKey]||0, vb=b[tripSortKey]||0;
+    var va=a[tripSortKey], vb=b[tripSortKey];
+    if(va==null) va=''; if(vb==null) vb='';
     var primary;
-    if(typeof va==='string') primary = tripSortAsc?va.localeCompare(vb):vb.localeCompare(va);
-    else primary = tripSortAsc?va-vb:vb-va;
+    if(typeof va==='string'||typeof vb==='string'){
+      va=String(va); vb=String(vb);
+      primary = tripSortAsc?va.localeCompare(vb):vb.localeCompare(va);
+    } else {
+      primary = tripSortAsc?va-vb:vb-va;
+    }
     if(primary !== 0) return primary;
     // 同值時依 id 降序（新增越晚排越前）
     return (b.id||0)-(a.id||0);
