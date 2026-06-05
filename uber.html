@@ -1276,16 +1276,20 @@ function updateStats(){
   // 平均公里數
   var avgKm2 = totalTrips>0?(totalKm/totalTrips).toFixed(2):0;
   // 本月載客數
-  var monthPax = 0; // 先設預設值，monthTrips 定義後更新
+  var monthPax = 0; // 計算後更新
   // 平均日趟數（有出勤天數）
-  var workDays = Object.keys(monthSet).length||1;
-  var avgDayTrips = totalTrips>0?(totalTrips/workDays).toFixed(1):0;
-  // 平均日時數
-  var workDayCount = Object.keys(monthSet).length||1;
-  var avgDayHours = totalHours>0?(totalHours/workDayCount).toFixed(1):0;
+  // 有出勤天數（從行程記錄的日期）
+  var workDaySet={};
+  allTrips.forEach(function(t){ if(t.d) workDaySet[t.d]=1; });
+  var workDays = Object.keys(workDaySet).length||1;
+  var avgDayTrips = workDays>0?(totalTrips/workDays).toFixed(1):0;
+  // 有出勤天數（從每日收入的時數）
+  var workHourDaySet={};
+  allWeekly.forEach(function(w){ if(w.date&&(w.hours||w.mins)) workHourDaySet[w.date]=1; });
+  var workHourDays = Object.keys(workHourDaySet).length||1;
+  var avgDayHours = totalHours>0?(totalHours/workHourDays).toFixed(1):0;
 
   if(document.getElementById('s-avg-km2')) document.getElementById('s-avg-km2').innerHTML='<em class="num">'+avgKm2+'</em> <em class="unit">km</em>';
-  if(document.getElementById('s-month-pax')) document.getElementById('s-month-pax').innerHTML='<em class="num">'+monthPax+'</em> <em class="unit">人</em>';
   if(document.getElementById('s-avg-day-trips')) document.getElementById('s-avg-day-trips').innerHTML='<em class="num">'+avgDayTrips+'</em> <em class="unit">趟</em>';
   if(document.getElementById('s-avg-day-hours')) document.getElementById('s-avg-day-hours').innerHTML='<em class="num">'+avgDayHours+'</em> <em class="unit">hr</em>';
   // 平均月薪（每月平均收入）
@@ -1302,6 +1306,7 @@ function updateStats(){
   var monthTrips = allTrips.filter(function(t){return t.d&&t.d.startsWith(thisMonth);});
   var monthKm = monthTrips.reduce(function(s,t){return s+(t.km||0);},0);
   monthPax = monthTrips.reduce(function(s,t){return s+(t.pax||1);},0);
+  if(document.getElementById('s-month-pax')) document.getElementById('s-month-pax').innerHTML='<em class="num">'+monthPax+'</em> <em class="unit">人</em>';
 
   document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-total-trips').innerHTML='<em class="num">'+fmt(totalTrips)+'</em> <em class="unit">趟</em>';
