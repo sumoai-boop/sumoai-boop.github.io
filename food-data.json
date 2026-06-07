@@ -1,5 +1,34 @@
 [
   {
+    "id": "1780833423445",
+    "name": "麥當勞 土城金城二店",
+    "name1": "麥當勞",
+    "name2": "土城金城二店",
+    "type": "快餐",
+    "meal": "",
+    "price": 196,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "236新北市土城區員信里金城路一段189-1號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E5%9C%9F%E5%9F%8E%E9%87%91%E5%9F%8E%E4%BA%8C%E9%A4%90%E5%BB%B3%EF%BC%8D%E8%A8%AD%E6%9C%89%E5%BE%97%E4%BE%86%E9%80%9F/@24.9812104,121.4453668,15z/data=!4m6!3m5!1s0x346803742225df19:0x4cdedaeb43236e41!8m2!3d24.9750504!4d121.4458301!16s%2Fg%2F11t3tyh12_?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-07",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-06-07",
+        "meal": "晚餐",
+        "price": 196,
+        "menu": "二原腿餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/0R9V9NW0/5a0749fd9cda.jpg"
+    ],
+    "img": "https://i.ibb.co/0R9V9NW0/5a0749fd9cda.jpg",
+    "createdAt": 1780833423445
+  },
+  {
     "id": "1780578297340",
     "name": "21Plus 21風味館 中和中山門市",
     "name1": "21Plus 21風味館",
