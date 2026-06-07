@@ -1,5 +1,34 @@
 [
   {
+    "id": "1780833575140",
+    "name": "一風堂 台北車站店",
+    "name1": "一風堂",
+    "name2": "台北車站店",
+    "type": "拉麵",
+    "meal": "",
+    "price": 390,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "100臺北市中正區北平西路3號2樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E4%B8%80%E9%A2%A8%E5%A0%82%E5%BE%AE%E9%A2%A8%E5%8F%B0%E5%8C%97%E8%BB%8A%E7%AB%99%E5%BA%97/@25.0477514,121.5157565,18z/data=!3m1!5s0x3442a97289db5ab3:0xf7da1d1670936582!4m15!1m8!3m7!1s0x3442a9727dbb21b9:0xdc63b0757a177184!2z5LiA6aKo5aCC5b6u6aKo5Y-w5YyX6LuK56uZ5bqX!8m2!3d25.047749!4d121.517044!10e9!16s%2Fg%2F1pzrmkynx!3m5!1s0x3442a9727dbb21b9:0xdc63b0757a177184!8m2!3d25.047749!4d121.517044!16s%2Fg%2F1pzrmkynx?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-07",
+    "score": 4.2,
+    "visitLog": [
+      {
+        "date": "2026-06-07",
+        "meal": "午餐",
+        "price": 390,
+        "menu": "大名家系豚骨套餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/GQ5VT3bt/60c344c82931.jpg"
+    ],
+    "img": "https://i.ibb.co/GQ5VT3bt/60c344c82931.jpg",
+    "createdAt": 1780833575140
+  },
+  {
     "id": "1780833423445",
     "name": "麥當勞 土城金城二店",
     "name1": "麥當勞",
