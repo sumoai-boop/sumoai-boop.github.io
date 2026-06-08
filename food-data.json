@@ -3019,7 +3019,7 @@
     "name2": "",
     "type": "豬腳",
     "meal": "",
-    "price": 130,
+    "price": 135,
     "visits": 4,
     "gscore": 3.9,
     "addr": "104臺北市中山區恆安里雙城街3-3號1樓",
@@ -3049,7 +3049,7 @@
       {
         "date": "2026-06-08",
         "meal": "午餐",
-        "price": 130,
+        "price": 150,
         "menu": "腿庫便當"
       }
     ],
@@ -3058,7 +3058,7 @@
     ],
     "img": "https://i.ibb.co/fYhH6BHL/58abe2be8d2f.jpg",
     "createdAt": 1779374603647,
-    "updatedAt": 1780898220522
+    "updatedAt": 1780908166665
   },
   {
     "id": "1779373162069",
