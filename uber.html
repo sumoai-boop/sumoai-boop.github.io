@@ -228,7 +228,7 @@ body{
     </div>
 
     <!-- TOP5 區域 -->
-    <div id="top5Section" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;"></div>
+    <div id="top5Section" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;"></div>
 
     <div class="chart-grid">
       <div class="chart-card">
@@ -493,8 +493,10 @@ function renderTop5(){
     return Object.entries(map).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
   }
 
-  var distData = top10(trips.map(function(t){return t.fd||'';}), trips.map(function(t){return t.td||'';}))
-  var roadData  = top10(trips.map(function(t){return t.fr||'';}), trips.map(function(t){return t.tr||'';}));
+  var fromDistData = top10(trips.map(function(t){return t.fd||'';}), []);
+  var toDistData   = top10(trips.map(function(t){return t.td||'';}), []);
+  var fromRoadData = top10(trips.map(function(t){return t.fr||'';}), []);
+  var toRoadData   = top10(trips.map(function(t){return t.tr||'';}), []);
 
   function makeCard(title, data){
     var rows = data.map(function(entry, i){
@@ -514,7 +516,11 @@ function renderTop5(){
     + '</div>';
   }
 
-  el.innerHTML = makeCard('區域 TOP10', distData) + makeCard('地點 TOP10', roadData);
+  el.style.gridTemplateColumns='repeat(4,1fr)';
+  el.innerHTML = makeCard('上車區域 TOP10', fromDistData)
+    + makeCard('下車區域 TOP10', toDistData)
+    + makeCard('上車地點 TOP10', fromRoadData)
+    + makeCard('下車地點 TOP10', toRoadData);
 }
 
 
