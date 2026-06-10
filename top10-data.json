@@ -11191,7 +11191,7 @@
     "week": "5/25/26 - 5/31/26",
     "cat": "Movies|Non-English",
     "titleEn": "Emi Martínez: The Kid Who Stops Time",
-    "titleZh": "艾米里亞諾馬丁內斯：守住時間的男孩》",
+    "titleZh": "艾米里亞諾馬丁內斯：守住時間的男孩",
     "country": "AR",
     "genres": []
   },
@@ -12139,6 +12139,152 @@
       "音乐",
       "喜剧",
       "动画"
+    ]
+  },
+  {
+    "rank": 1,
+    "title": "The Marked Woman",
+    "views": 6600000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Marked Woman",
+    "titleZh": "謎印女子",
+    "country": "ES",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Maa Behen",
+    "views": 4400000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Maa Behen",
+    "titleZh": "媽呀真亂來",
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Kara",
+    "views": 2900000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Kara",
+    "titleZh": "再入岐途",
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "爱情",
+      "音乐"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Mexico 86",
+    "views": 2000000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Mexico 86",
+    "titleZh": "墨西哥 1986：主辦大作戰",
+    "country": "MX",
+    "genres": [
+      "喜剧",
+      "历史",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Risa and the Wind Phone",
+    "views": 1700000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Risa and the Wind Phone",
+    "titleZh": "",
+    "country": "AR",
+    "genres": [
+      "剧情",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Alas Roban",
+    "views": 1100000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Alas Roban",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "剧情",
+      "恐怖",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Emi Martínez: The Kid Who Stops Time",
+    "views": 1100000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Emi Martínez: The Kid Who Stops Time",
+    "titleZh": "艾米里亞諾馬丁內斯：守住時間的男孩",
+    "country": "AR",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Agak Laen: Menyala Pantiku!",
+    "views": 1000000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Agak Laen: Menyala Pantiku!",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "喜剧",
+      "犯罪",
+      "剧情",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "D.I.S.C.O.",
+    "views": 900000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "D.I.S.C.O.",
+    "titleZh": "",
+    "country": "TR",
+    "genres": [
+      "动作",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Milky☆Subway: The Galactic Limited Express – the Movie",
+    "views": 900000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Milky☆Subway: The Galactic Limited Express – the Movie",
+    "titleZh": "劇場版 銀河特急 Milky☆Subway",
+    "country": "JP",
+    "genres": [
+      "动画",
+      "动作",
+      "冒险",
+      "喜剧",
+      "科幻"
     ]
   }
 ]
