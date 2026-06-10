@@ -11994,5 +11994,151 @@
     "genres": [
       "喜剧"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Office Romance",
+    "views": 20900000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "Office Romance",
+    "titleZh": "同事以上，戀人未滿",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Creed III",
+    "views": 7900000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "Creed III",
+    "titleZh": "金牌拳手3",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "动作"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Swapped",
+    "views": 7500000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "David",
+    "views": 6200000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "David",
+    "titleZh": "大衛：王者降臨",
+    "country": "US",
+    "genres": [
+      "动画",
+      "剧情",
+      "家庭",
+      "历史"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "The Murder of Rachel Nickell",
+    "views": 6100000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "The Murder of Rachel Nickell",
+    "titleZh": "慧秋尼克爾謀殺案",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "The Crash",
+    "views": 5700000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "The Crash",
+    "titleZh": "致命撞擊：青春情殺案",
+    "country": "GB",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Ladies First",
+    "views": 5300000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "Ladies First",
+    "titleZh": "女士優先",
+    "country": "US",
+    "genres": [
+      "喜剧",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Goat",
+    "views": 5200000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "Goat",
+    "titleZh": "山羊巔峰",
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Creed",
+    "views": 4500000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "Creed",
+    "titleZh": "金牌拳手",
+    "country": "US",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "KPop Demon Hunters",
+    "views": 3700000,
+    "week": "6/1/26 - 6/7/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
   }
 ]
