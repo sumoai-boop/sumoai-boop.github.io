@@ -967,12 +967,24 @@ function renderWeekdayAvg(){
   var ORDER=[1,2,3,4,5,6,0],DAY_NAMES=['一','二','三','四','五','六','日'];
   var sums=[0,0,0,0,0,0,0],counts=[0,0,0,0,0,0,0];
   var paxSums=[0,0,0,0,0,0,0],paxCounts=[0,0,0,0,0,0,0];
+  var dataMap={};
   all.forEach(function(w){
     if(!w.date) return;
+    dataMap[w.date]=w;
     var dow=new Date(w.date).getDay();
-    sums[dow]+=(w.income||0); counts[dow]++;
     if(w.tripCount){ paxSums[dow]+=(w.tripCount||0); paxCounts[dow]++; }
   });
+  // 找出資料的日期範圍
+  var dates=Object.keys(dataMap).sort();
+  var minD=new Date(dates[0]+'T00:00:00'), maxD=new Date(); maxD.setHours(0,0,0,0);
+  // 遍歷範圍內每一天，計算每個星期幾的總天數與收入加總（沒記錄的天視為0）
+  for(var d=new Date(minD); d<=maxD; d.setDate(d.getDate()+1)){
+    var dow=d.getDay();
+    var key=d.toISOString().slice(0,10);
+    var w=dataMap[key];
+    sums[dow]+=(w&&w.income)||0;
+    counts[dow]++;
+  }
   // 從行程記錄計算每星期幾的平均人數
   var tripPaxSums=[0,0,0,0,0,0,0],tripPaxCounts=[0,0,0,0,0,0,0];
   var tripKmSums=[0,0,0,0,0,0,0];
