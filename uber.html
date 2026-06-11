@@ -970,7 +970,7 @@ function renderWeekdayAvg(){
   all.forEach(function(w){
     if(!w.date) return;
     var dow=new Date(w.date).getDay();
-    if(w.income){ sums[dow]+=w.income; counts[dow]++; }
+    sums[dow]+=(w.income||0); counts[dow]++;
     if(w.tripCount){ paxSums[dow]+=(w.tripCount||0); paxCounts[dow]++; }
   });
   // 從行程記錄計算每星期幾的平均人數
