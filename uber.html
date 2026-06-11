@@ -980,7 +980,7 @@ function renderWeekdayAvg(){
   // 遍歷範圍內每一天，計算每個星期幾的總天數與收入加總（沒記錄的天視為0）
   for(var d=new Date(minD); d<=maxD; d.setDate(d.getDate()+1)){
     var dow=d.getDay();
-    var key=d.toISOString().slice(0,10);
+    var key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     var w=dataMap[key];
     sums[dow]+=(w&&w.income)||0;
     counts[dow]++;
