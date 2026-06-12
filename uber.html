@@ -114,7 +114,7 @@ body{
 /* 表格 */
 .trip-table-wrap{background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.45);border-radius:14px;overflow:hidden;}
 .trip-table{width:100%;border-collapse:collapse;}
-.trip-table th{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#00E860;padding:9px 8px;border-bottom:1px solid rgba(0,200,83,0.4);background:rgba(0,200,83,0.15);text-align:left;}
+.trip-table th{font-size:13px;letter-spacing:0.05em;color:#00E860;padding:10px 6px;border-bottom:1px solid rgba(0,200,83,0.4);background:rgba(0,200,83,0.15);text-align:center;line-height:1.3;font-weight:700;}
 .trip-table td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,0.12);font-size:12px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .trip-table tr:last-child td{border-bottom:none;}
 .trip-table tr:hover td{background:rgba(0,200,83,0.12);}
@@ -324,14 +324,14 @@ body{
             <th style="text-align:center">#</th>
             <th onclick="sortTrips('d')" style="cursor:pointer;text-align:center">日期 ↕</th>
             <th onclick="sortTrips('tm')" style="cursor:pointer;text-align:center">時間 ↕</th>
-            <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車區域</th>
-            <th style="text-align:center">上車地點</th>
-            <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車區域</th>
-            <th style="text-align:center">下車地點</th>
-            <th onclick="sortTrips('km')" style="cursor:pointer;text-align:center;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
-            <th onclick="sortTrips('fare')" style="cursor:pointer;text-align:center">行程費用 ↕</th>
-            <th onclick="sortTrips('service')" style="cursor:pointer;text-align:center">服務費 ↕</th>
-            <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">費用明細 ↕</th>
+            <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車<br>區域</th>
+            <th style="text-align:center">上車<br>地點</th>
+            <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車<br>區域</th>
+            <th style="text-align:center">下車<br>地點</th>
+            <th onclick="sortTrips('km')" style="cursor:pointer;text-align:center;border-left:1px solid rgba(0,200,83,0.2)">公里<br>數 ↕</th>
+            <th onclick="sortTrips('fare')" style="cursor:pointer;text-align:center">行程<br>費用 ↕</th>
+            <th onclick="sortTrips('service')" style="cursor:pointer;text-align:center">服務<br>費 ↕</th>
+            <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">費用<br>明細 ↕</th>
             <th style="text-align:center">人數</th>
             <th style="text-align:center">備註</th>
             <th style="text-align:center"></th>
