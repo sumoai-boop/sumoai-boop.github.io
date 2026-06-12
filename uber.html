@@ -312,35 +312,29 @@ body{
           <col style="width:70px">     <!-- 下車區域 -->
           <col style="width:140px">    <!-- 下車地點 -->
           <col style="width:72px">     <!-- 公里數 -->
-          <col style="width:72px">     <!-- 行程費用 -->
-          <col style="width:72px">     <!-- 服務費 -->
-          <col style="width:86px">     <!-- 費用明細 -->
+          <col style="width:60px">     <!-- 行程費用 -->
+          <col style="width:58px">     <!-- 服務費 -->
+          <col style="width:72px">     <!-- 費用明細 -->
           <col style="width:44px">     <!-- 人數 -->
-          <col style="width:190px">    <!-- 備註 -->
+          <col style="width:210px">    <!-- 備註 -->
           <col style="width:64px">     <!-- 操作 -->
         </colgroup>
         <thead>
           <tr>
-            <th style="width:40px">#</th>
-            <th onclick="sortTrips('d')" style="cursor:pointer">日期 ↕</th>
-            <th onclick="sortTrips('tm')" style="cursor:pointer">時間 ↕</th>
-            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車地點</th>
-            <th colspan="2" style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車地點</th>
-            <th onclick="sortTrips('km')" style="cursor:pointer;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
-            <th onclick="sortTrips('fare')" style="cursor:pointer">行程費用 ↕</th>
-            <th onclick="sortTrips('service')" style="cursor:pointer">服務費 ↕</th>
-            <th onclick="sortTrips('detail')" style="cursor:pointer">費用明細 ↕</th>
-            <th>人數</th>
-            <th>備註</th>
-            <th style="width:40px"></th>
-          </tr>
-          <tr style="background:rgba(0,200,83,0.03);">
-            <th></th><th></th>
-            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">區域</th>
-            <th style="font-size:8px">地點</th>
-            <th style="font-size:8px;border-left:1px solid rgba(0,200,83,0.15)">區域</th>
-            <th style="font-size:8px">地點</th>
-            <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+            <th style="text-align:center">#</th>
+            <th onclick="sortTrips('d')" style="cursor:pointer;text-align:center">日期 ↕</th>
+            <th onclick="sortTrips('tm')" style="cursor:pointer;text-align:center">時間 ↕</th>
+            <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車區域</th>
+            <th style="text-align:center">上車地點</th>
+            <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車區域</th>
+            <th style="text-align:center">下車地點</th>
+            <th onclick="sortTrips('km')" style="cursor:pointer;text-align:center;border-left:1px solid rgba(0,200,83,0.2)">公里數 ↕</th>
+            <th onclick="sortTrips('fare')" style="cursor:pointer;text-align:center">行程費用 ↕</th>
+            <th onclick="sortTrips('service')" style="cursor:pointer;text-align:center">服務費 ↕</th>
+            <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">費用明細 ↕</th>
+            <th style="text-align:center">人數</th>
+            <th style="text-align:center">備註</th>
+            <th style="text-align:center"></th>
           </tr>
         </thead>
         <tbody id="tripBody">
@@ -878,11 +872,11 @@ function renderTrips(){
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.td||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1);font-size:16px;font-weight:600">${(t.km||0).toFixed(2)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">${fmt(t.fare||0)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">${fmt(t.service||0)}</td>
-      <td style="color:#00E860;font-size:16px;font-weight:700">${fmt(t.detail||0)}</td>
+      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600;text-align:center">${fmt(t.fare||0)}</td>
+      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600;text-align:center">${fmt(t.service||0)}</td>
+      <td style="color:#00E860;font-size:16px;font-weight:700;text-align:center">${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
-      <td style="color:rgba(240,220,160,0.6);white-space:normal;word-break:break-all;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${t.note||'—'}</td>
+      <td style="color:rgba(240,220,160,0.6);white-space:normal;vertical-align:middle;"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-all;line-height:1.3;">${t.note||'—'}</div></td>
       <td style="white-space:nowrap;text-align:center;"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:14px;padding:2px 4px;border-radius:4px;margin-right:2px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:14px;padding:2px 4px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
