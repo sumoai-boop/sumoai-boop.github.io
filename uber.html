@@ -314,10 +314,10 @@ body{
           <col style="width:72px">     <!-- 公里數 -->
           <col style="width:72px">     <!-- 行程費用 -->
           <col style="width:72px">     <!-- 服務費 -->
-          <col style="width:100px">    <!-- 費用明細 -->
+          <col style="width:86px">     <!-- 費用明細 -->
           <col style="width:44px">     <!-- 人數 -->
-          <col style="width:200px">    <!-- 備註 -->
-          <col style="width:44px">     <!-- 操作 -->
+          <col style="width:190px">    <!-- 備註 -->
+          <col style="width:64px">     <!-- 操作 -->
         </colgroup>
         <thead>
           <tr>
@@ -878,12 +878,12 @@ function renderTrips(){
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.td||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1);font-size:16px;font-weight:600">${(t.km||0).toFixed(2)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">NT$${fmt(t.fare||0)}</td>
-      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">NT$${fmt(t.service||0)}</td>
-      <td style="color:#00E860;font-size:16px;font-weight:700">NT$${fmt(t.detail||0)}</td>
+      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">${fmt(t.fare||0)}</td>
+      <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600">${fmt(t.service||0)}</td>
+      <td style="color:#00E860;font-size:16px;font-weight:700">${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
       <td style="color:rgba(240,220,160,0.6);white-space:normal;word-break:break-all;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${t.note||'—'}</td>
-      <td style="white-space:nowrap"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:13px;padding:2px 6px;border-radius:4px;margin-right:4px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:13px;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
+      <td style="white-space:nowrap;text-align:center;"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:14px;padding:2px 4px;border-radius:4px;margin-right:2px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:14px;padding:2px 4px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
   }).join('');
 
