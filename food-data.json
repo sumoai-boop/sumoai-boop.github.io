@@ -2714,12 +2714,12 @@
     "type": "豬腳",
     "meal": "",
     "price": 200,
-    "visits": 7,
+    "visits": 8,
     "gscore": 4,
     "addr": "104臺北市中山區松江里錦州街253-1號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E9%87%91%E9%A6%99%E8%B1%AC%E8%85%B3%E2%80%A2%E6%B6%BC%E9%BA%B5/@25.0603235,121.5343735,17z/data=!4m15!1m8!3m7!1s0x3442a958d6e0b201:0x3e27737a051cfe29!2z6YeR6aaZ6LGs6IWz4oCi5ra86bq1!8m2!3d25.0603875!4d121.5343753!10e9!16s%2Fg%2F11dx93jznc!3m5!1s0x3442a958d6e0b201:0x3e27737a051cfe29!8m2!3d25.0603875!4d121.5343753!16s%2Fg%2F11dx93jznc?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-03-16",
+    "date": "2026-06-12",
     "score": 4.1,
     "visitLog": [
       {
@@ -2763,6 +2763,12 @@
         "meal": "午餐",
         "price": 200,
         "menu": "腿庫便當"
+      },
+      {
+        "date": "2026-06-12",
+        "meal": "午餐",
+        "price": 200,
+        "menu": "腿庫便當"
       }
     ],
     "imgs": [
@@ -2770,7 +2776,7 @@
     ],
     "img": "https://i.ibb.co/DHcY8vmQ/b00903a229a4.jpg",
     "createdAt": 1779461285231,
-    "updatedAt": 1779634296729
+    "updatedAt": 1781242476782
   },
   {
     "id": "1779443515244",
