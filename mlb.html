@@ -33,7 +33,7 @@
   /* ---------- Hero ---------- */
   .hero{
     position:relative;
-    padding:56px 0 36px;
+    padding:72px 0 36px;
     overflow:hidden;
     border-bottom:1px solid var(--card-edge);
   }
@@ -103,6 +103,17 @@
   .stat-card .k{margin-top:7px;font-size:12px;color:var(--muted);letter-spacing:.08em;}
   .stat-card.hot .v{color:var(--orange);}
 
+  /* ---------- Trend chart ---------- */
+  .chart-card{
+    background:var(--card);
+    border:1px solid var(--card-edge);
+    border-radius:14px;
+    padding:18px 14px 10px;
+  }
+  .chart-legend{margin-left:auto;display:flex;gap:14px;font-size:12px;color:var(--muted);}
+  .chart-legend .lg{display:flex;align-items:center;gap:6px;}
+  .chart-legend i{display:inline-block;width:14px;height:3px;border-radius:2px;}
+
   /* ---------- Tables ---------- */
   .tbl-wrap{
     background:var(--card);
@@ -171,9 +182,34 @@
 .ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
 .ic-mlb{background:linear-gradient(145deg,#FD5A1E,#C23A0A);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
+
+/* ── Global Menubar ── */
+.global-menubar{position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:rgba(255,255,255,0.92);font-family:'Space Mono','Noto Sans TC',monospace;}
+.gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
+.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;color:rgba(255,255,255,0.95);}
+.mb-menu:hover{background:rgba(255,255,255,0.2);}
 </style>
 </head>
 <body>
+<div class="global-menubar">
+  <div class="gm-left">
+    <span style="font-size:16px">🗿</span>
+    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
+    <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span>
+    <span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span>
+    <span class="mb-menu">視窗</span><span class="mb-menu">輔助說明</span>
+  </div>
+  <div class="gm-right">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></svg>
+    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M1 9l2 2c5.07-5.07 13.27-5.05 18.36 0l2-2C16.93 2.37 7.1 2.35 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.77 7.27-2.76 10.03 0l2-2C15.14 9.14 8.87 9.13 5 13z"/></svg>
+    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px">
+    <span id="gmbTime"></span>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+  </div>
+</div>
+
 <div class="wrap">
 
   <!-- Hero -->
@@ -250,19 +286,87 @@ async function init(){
     const latest = ybySplits.length ? ybySplits[ybySplits.length - 1] : null;
 
     // ---- Game log（最近 10 場，新到舊）----
-    let games = [];
+    let allGames = [];
     if (logRes && logRes.stats && logRes.stats[0] && logRes.stats[0].splits){
-      games = logRes.stats[0].splits.slice(-10).reverse();
+      allGames = logRes.stats[0].splits; // 整季逐場（時間正序）
     }
+    const games = allGames.slice(-10).reverse();
 
-    render(latest, ybySplits, careerStat, games);
+    render(latest, ybySplits, careerStat, games, allGames);
   }catch(e){
     console.error(e);
     app.innerHTML = `<div class="err">載入失敗（${e.message}）。<br>請確認網路連線後重新整理；MLB API 偶爾會短暫無回應。</div>`;
   }
 }
 
-function render(latest, yby, career, games){
+
+// ── 累積安打 / 全壘打 SVG 折線圖 ──
+function buildTrendChart(splits){
+  // 累積值
+  let ch = 0, chr = 0;
+  const pts = splits.map(g => {
+    const st = g.stat || {};
+    ch  += (st.hits|0);
+    chr += (st.homeRuns|0);
+    return { date: g.date || '', h: ch, hr: chr };
+  });
+
+  const W = 920, H = 300;
+  const padL = 46, padR = 42, padT = 16, padB = 34;
+  const iw = W - padL - padR, ih = H - padT - padB;
+  const n = pts.length;
+
+  const maxH  = Math.max(5,  Math.ceil(pts[n-1].h  / 10) * 10);
+  const maxHR = Math.max(2,  Math.ceil(pts[n-1].hr / 2)  * 2);
+
+  const x  = i => padL + (n === 1 ? iw/2 : i * iw / (n - 1));
+  const yH  = v => padT + ih - v / maxH  * ih;
+  const yHR = v => padT + ih - v / maxHR * ih;
+
+  // 格線 + 左右軸標籤（各 5 格）
+  let grid = '', axisL = '', axisR = '';
+  for (let i = 0; i <= 5; i++){
+    const gy = padT + ih - i * ih / 5;
+    grid  += `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="rgba(239,229,214,0.08)" stroke-width="1"/>`;
+    axisL += `<text x="${padL-8}" y="${gy+4}" text-anchor="end" font-size="11" fill="#FD5A1E" opacity="0.85">${Math.round(maxH*i/5)}</text>`;
+    axisR += `<text x="${W-padR+8}" y="${gy+4}" text-anchor="start" font-size="11" fill="#6FBF73" opacity="0.85">${Math.round(maxHR*i/5)}</text>`;
+  }
+
+  // X 軸日期標籤（約 6 個）
+  let xLabels = '';
+  const step = Math.max(1, Math.round((n - 1) / 5));
+  for (let i = 0; i < n; i += step){
+    xLabels += `<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="11" fill="#9A8F80">${pts[i].date.slice(5).replace('-','/')}</text>`;
+  }
+  if ((n - 1) % step !== 0){
+    xLabels += `<text x="${x(n-1)}" y="${H-10}" text-anchor="middle" font-size="11" fill="#9A8F80">${pts[n-1].date.slice(5).replace('-','/')}</text>`;
+  }
+
+  const lineH  = pts.map((p,i) => `${x(i)},${yH(p.h)}`).join(' ');
+  const lineHR = pts.map((p,i) => `${x(i)},${yHR(p.hr)}`).join(' ');
+
+  // 全壘打出現的場次標記點
+  let hrDots = '';
+  splits.forEach((g,i) => {
+    if (((g.stat||{}).homeRuns|0) > 0){
+      hrDots += `<circle cx="${x(i)}" cy="${yHR(pts[i].hr)}" r="3.5" fill="#6FBF73" stroke="#16130F" stroke-width="1.5"/>`;
+    }
+  });
+
+  const last = pts[n-1];
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" font-family="Archivo,sans-serif">
+    ${grid}${axisL}${axisR}${xLabels}
+    <polyline points="${lineH}" fill="none" stroke="#FD5A1E" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <polyline points="${lineHR}" fill="none" stroke="#6FBF73" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="1 0"/>
+    ${hrDots}
+    <circle cx="${x(n-1)}" cy="${yH(last.h)}" r="4" fill="#FD5A1E"/>
+    <text x="${x(n-1)-8}" y="${yH(last.h)-10}" text-anchor="end" font-size="13" font-weight="800" fill="#FD5A1E">${last.h}H</text>
+    <circle cx="${x(n-1)}" cy="${yHR(last.hr)}" r="4" fill="#6FBF73"/>
+    <text x="${x(n-1)-8}" y="${yHR(last.hr)+18}" text-anchor="end" font-size="13" font-weight="800" fill="#6FBF73">${last.hr}HR</text>
+  </svg>`;
+}
+
+function render(latest, yby, career, games, allGames){
   let html = '';
 
   // ===== 本季數據 =====
@@ -284,6 +388,21 @@ function render(latest, yby, career, games){
         <div class="stat-card"><div class="v">${fmt3(s.obp)}</div><div class="k">上壘率 OBP</div></div>
         <div class="stat-card hot"><div class="v">${fmt3(s.ops)}</div><div class="k">攻擊指數 OPS</div></div>
       </div>
+    </section>`;
+  }
+
+  // ===== 安打 / 全壘打走勢圖 =====
+  if (allGames && allGames.length > 1){
+    html += `
+    <section class="sec">
+      <div class="sec-head">
+        <h2>安打・全壘打走勢</h2><span class="en">CUMULATIVE H / HR</span>
+        <span class="chart-legend">
+          <span class="lg"><i style="background:var(--orange)"></i>累積安打</span>
+          <span class="lg"><i style="background:var(--green)"></i>累積全壘打</span>
+        </span>
+      </div>
+      <div class="chart-card">${buildTrendChart(allGames)}</div>
     </section>`;
   }
 
@@ -384,6 +503,16 @@ init();
   trigger.addEventListener('touchstart',function(){dock.classList.add('visible');},{passive:true});
   dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
   dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
+})();
+</script>
+<script>
+(function(){
+  function t(){
+    var el=document.getElementById('gmbTime');if(!el)return;
+    var now=new Date(),d=['日','一','二','三','四','五','六'][now.getDay()];
+    var h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0');
+    el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
+  }t();setInterval(t,10000);
 })();
 </script>
 </body>
