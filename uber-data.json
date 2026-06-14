@@ -4068,6 +4068,16 @@
   ],
   "uberWeekly": [
     {
+      "date": "2026-06-14",
+      "income": 3743,
+      "tripCount": 13,
+      "hours": 4,
+      "mins": 42,
+      "points": 39,
+      "note": "額外獎勵960元",
+      "id": 1781449319910
+    },
+    {
       "date": "2026-06-13",
       "income": 2030,
       "tripCount": 7,
