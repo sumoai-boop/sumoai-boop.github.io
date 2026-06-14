@@ -368,9 +368,8 @@ function buildTrendChart(splits){
   const iw = W - padL - padR, ih = H - padT - padB;
   const n = pts.length;
 
-  // 左軸打擊率：取資料最大值往上抓到 .050 的倍數，最低上限 .300
-  const maxAvgData = Math.max(...pts.map(p => p.avg), 0.25);
-  const maxAVG = Math.max(0.300, Math.ceil(maxAvgData / 0.05) * 0.05);
+  // 左軸打擊率固定 .000 ~ .500
+  const maxAVG = 0.500;
   const maxHR  = Math.max(2, Math.ceil(pts[n-1].hr / 2) * 2);
 
   const x   = i => padL + (n === 1 ? iw/2 : i * iw / (n - 1));
