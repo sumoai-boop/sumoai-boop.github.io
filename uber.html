@@ -64,7 +64,6 @@ body{
 .ic-uber   {background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
 .ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
 .ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
-.ic-mlb{background:linear-gradient(145deg,#FD5A1E,#C23A0A);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 
 /* 主內容 */
@@ -460,6 +459,7 @@ body{
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
+    <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
     <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
     <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
     <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
@@ -469,7 +469,6 @@ body{
     <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
     <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
     <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-size:34px;font-weight:900;font-family:Arial Black,sans-serif;color:#ffffff;line-height:1;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.8 5.8c2.6 3.4 2.6 9 0 12.4"/><path d="M18.2 5.8c-2.6 3.4-2.6 9 0 12.4"/><path d="M7 8.5l1.4.5M7 15.5l1.4-.5M17 8.5l-1.4.5M17 15.5l-1.4-.5"/></svg></div><span class="gd-label">MLB</span></a>
   </div>
 </div>
 
@@ -1023,21 +1022,21 @@ function renderWeekly(){
   var DN=['日','一','二','三','四','五','六'];
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
-    +'<colgroup><col style="width:58px"><col style="width:28px"><col><col style="width:88px"><col style="width:44px"><col style="width:100px"><col style="width:46px"><col style="width:90px"><col style="width:28px"></colgroup>'
+    +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:34%"><col style="width:13%"><col style="width:6%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
     +'<tbody>'+allDates.map(function(dt){
       var w=rmap[dt],dobj=new Date(dt+'T00:00:00'),dow=dobj.getDay(),isWE=(dow===0||dow===6);
       var dc=isWE?'#FF9999':'#f5edd8',has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
       var hStr=has?(w.hours||0)+'h'+(w.mins||0)+'m':'';
       return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(has?'':'opacity:0.4;')+'">'
-        +'<td style="padding:9px 6px 9px 14px;font-size:12px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
-        +'<td style="padding:9px 2px;font-size:11px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
-        +'<td style="padding:9px 8px;"><div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
-        +'<td style="padding:9px 6px;font-size:13px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:600;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
-        +'<td style="padding:9px 4px;font-size:12px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
-        +'<td style="padding:9px 4px;font-size:11px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
-        +'<td style="padding:9px 4px;font-size:12px;color:#FFD700;text-align:right;white-space:nowrap;">'+(has&&w.points?w.points+'分':'')+'</td>'
-        +'<td style="padding:9px 4px;font-size:11px;color:rgba(200,200,200,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
-        +'<td style="padding:9px 10px 9px 2px;text-align:center;">'+(has?'<span class="del-btn" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
+        +'<td style="padding:11px 6px 11px 14px;font-size:15px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
+        +'<td style="padding:11px 2px;font-size:14px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
+        +'<td style="padding:11px 8px;"><div style="height:9px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
+        +'<td style="padding:11px 6px;font-size:17px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:700;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
+        +'<td style="padding:11px 3px;font-size:15px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
+        +'<td style="padding:11px 3px;font-size:14px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
+        +'<td style="padding:11px 3px;font-size:15px;color:#FFD700;text-align:right;white-space:nowrap;">'+(has&&w.points?w.points+'分':'')+'</td>'
+        +'<td style="padding:11px 8px;font-size:14px;color:rgba(220,220,220,0.75);white-space:nowrap;text-align:center;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
+        +'<td style="padding:11px 10px 11px 2px;text-align:center;">'+(has?'<span class="del-btn" style="font-size:15px;" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
       +'</tr>';
     }).join('')+'</tbody></table></div>';
 }
