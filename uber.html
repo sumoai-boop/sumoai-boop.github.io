@@ -1024,6 +1024,17 @@ function renderWeekly(){
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
     +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:34%"><col style="width:13%"><col style="width:6%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
+    +'<thead><tr style="background:rgba(0,200,83,0.08);">'
+      +'<th style="padding:10px 6px 10px 14px;font-size:13px;color:#00E860;text-align:left;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">日期</th>'
+      +'<th style="padding:10px 2px;font-size:13px;color:#00E860;text-align:center;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">週</th>'
+      +'<th style="padding:10px 8px;font-size:13px;color:#00E860;text-align:left;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">收入比例</th>'
+      +'<th style="padding:10px 6px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">收入</th>'
+      +'<th style="padding:10px 3px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">行程數</th>'
+      +'<th style="padding:10px 3px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">時數</th>'
+      +'<th style="padding:10px 3px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">積分</th>'
+      +'<th style="padding:10px 8px;font-size:13px;color:#00E860;text-align:center;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">備註</th>'
+      +'<th style="padding:10px 2px;border-bottom:1px solid rgba(0,200,83,0.3);"></th>'
+    +'</tr></thead>'
     +'<tbody>'+allDates.map(function(dt){
       var w=rmap[dt],dobj=new Date(dt+'T00:00:00'),dow=dobj.getDay(),isWE=(dow===0||dow===6);
       var dc=isWE?'#FF9999':'#f5edd8',has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
