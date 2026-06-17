@@ -368,9 +368,9 @@ function buildTrendChart(splits){
   const iw = W - padL - padR, ih = H - padT - padB;
   const n = pts.length;
 
-  // 左軸打擊率固定 .000 ~ .500
+  // 左軸打擊率固定 .000 ~ .500、右軸全壘打固定 0 ~ 70
   const maxAVG = 0.500;
-  const maxHR  = Math.max(2, Math.ceil(pts[n-1].hr / 2) * 2);
+  const maxHR  = 70;
 
   const x   = i => padL + (n === 1 ? iw/2 : i * iw / (n - 1));
   const yA  = v => padT + ih - v / maxAVG * ih;
