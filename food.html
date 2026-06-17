@@ -748,9 +748,9 @@ function renderStatsPage(){
             ${d.names.slice(0,3).join('、')}${d.names.length>3?'…':''}
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:100px;">
-          <span style="font-size:15px;font-weight:900;color:#fff;font-family:'Noto Sans TC',sans-serif;">${d.count} <span style="font-size:10px;color:rgba(255,220,160,0.4);font-weight:400;">間</span></span>
-          <span style="font-size:10px;color:rgba(255,220,160,0.4);">⭐${avgScore} &nbsp; ${avgSpend}</span>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:90px;">
+          <span style="font-size:22px;font-weight:900;color:#fff;font-family:'Noto Sans TC',sans-serif;line-height:1;">${d.count} <span style="font-size:12px;color:rgba(255,220,160,0.5);font-weight:400;">間</span></span>
+          <span style="font-size:13px;color:rgba(255,220,160,0.65);">${avgSpend}</span>
         </div>
       </div>`;
   });
