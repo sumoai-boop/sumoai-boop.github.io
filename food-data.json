@@ -1,5 +1,40 @@
 [
   {
+    "id": "1781669899580",
+    "name": "松板平價牛排",
+    "name1": "松板平價牛排",
+    "name2": "",
+    "type": "牛排",
+    "meal": "",
+    "price": 250,
+    "visits": 2,
+    "gscore": 3.9,
+    "addr": "236新北市土城區平和里延平街39號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%9D%BE%E6%9D%BF%E5%B9%B3%E5%83%B9%E7%89%9B%E6%8E%92/@24.9919942,121.4680217,15z/data=!4m6!3m5!1s0x346802bdf2d4e6db:0x2674b3f7280503cc!8m2!3d24.9919775!4d121.4679303!16s%2Fg%2F11g_lgjbk?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-12-26",
+    "score": 3.1,
+    "visitLog": [
+      {
+        "date": "2025-12-26",
+        "meal": "晚餐",
+        "price": 250,
+        "menu": "雙拼"
+      },
+      {
+        "date": "2025-03-21",
+        "meal": "晚餐",
+        "price": 250,
+        "menu": "雙拼"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/Y7MysB8Q/d722857a6529.jpg"
+    ],
+    "img": "https://i.ibb.co/Y7MysB8Q/d722857a6529.jpg",
+    "createdAt": 1781669899580
+  },
+  {
     "id": "1781669282876",
     "name": "樂饕牛排",
     "name1": "樂饕牛排",
