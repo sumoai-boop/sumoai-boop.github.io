@@ -370,8 +370,8 @@ function buildTrendChart(splits){
   const iw = W - padL - padR, ih = H - padT - padB;
   const n = pts.length;
 
-  // 左軸上壘率固定 .000 ~ .500、右軸全壘打固定 0 ~ 70
-  const maxOBP = 0.500;
+  // 左軸上壘率固定 .000 ~ .600、右軸全壘打固定 0 ~ 70
+  const maxOBP = 0.600;
   const maxHR  = 70;
 
   const x   = i => padL + (n === 1 ? iw/2 : i * iw / (n - 1));
