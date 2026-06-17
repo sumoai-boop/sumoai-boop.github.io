@@ -382,8 +382,21 @@
     <button class="add-btn" id="addBtn" title="新增食記">＋</button>
   </div>
 
+  <!-- 分頁切換 -->
+  <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid rgba(255,180,80,0.12);padding-bottom:0;">
+    <button id="tabFood" onclick="switchTab('food')" style="background:none;border:none;color:#E8622A;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid #E8622A;letter-spacing:0.08em;">食記</button>
+    <button id="tabStats" onclick="switchTab('stats')" style="background:none;border:none;color:rgba(255,220,160,0.45);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">統計</button>
+  </div>
+
   <!-- Photo Grid -->
-  <div class="photo-grid" id="photoGrid"></div>
+  <div id="viewFood">
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+
+  <!-- 統計頁 -->
+  <div id="viewStats" style="display:none;">
+    <div id="statsPage"></div>
+  </div>
 </main>
 
 <!-- 詳情 Modal -->
@@ -668,6 +681,82 @@ function compressImage(dataUrl,maxW,maxH,quality){
 }
 
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set(), typeCountMap={};
+let currentTab='food';
+
+/* ───── 分頁切換 ───── */
+function switchTab(tab){
+  currentTab=tab;
+  document.getElementById('viewFood').style.display=tab==='food'?'':'none';
+  document.getElementById('viewStats').style.display=tab==='stats'?'':'none';
+  document.getElementById('tabFood').style.color=tab==='food'?'#E8622A':'rgba(255,220,160,0.45)';
+  document.getElementById('tabFood').style.borderBottomColor=tab==='food'?'#E8622A':'transparent';
+  document.getElementById('tabStats').style.color=tab==='stats'?'#E8622A':'rgba(255,220,160,0.45)';
+  document.getElementById('tabStats').style.borderBottomColor=tab==='stats'?'#E8622A':'transparent';
+  if(tab==='stats') renderStatsPage();
+}
+
+/* ───── 統計頁：區域分析 ───── */
+function extractDistrict(addr){
+  if(!addr) return null;
+  const m = addr.match(/([^\s市縣]+[區鄉鎮市])/);
+  return m ? m[1] : null;
+}
+
+function renderStatsPage(){
+  const container = document.getElementById('statsPage');
+
+  // 區域統計
+  const distMap={};
+  DATA.forEach(r=>{
+    const dist = extractDistrict(r.addr);
+    if(!dist) return;
+    if(!distMap[dist]) distMap[dist]={count:0,totalScore:0,scoredCount:0,totalSpend:0,spendCount:0,names:[]};
+    distMap[dist].count++;
+    distMap[dist].names.push(r.name1||r.name||'');
+    if(r.score>0){ distMap[dist].totalScore+=r.score; distMap[dist].scoredCount++; }
+    // 金額從 visitLog 加總
+    if(r.visitLog&&r.visitLog.length>0){
+      r.visitLog.forEach(v=>{ if(v.price!=null&&v.price!==''){distMap[dist].totalSpend+=Number(v.price);distMap[dist].spendCount++;} });
+    } else if(r.price!=null&&r.price!==''){
+      distMap[dist].totalSpend+=Number(r.price); distMap[dist].spendCount++;
+    }
+  });
+
+  const dists = Object.entries(distMap).sort((a,b)=>b[1].count-a[1].count);
+  const maxCount = dists[0]?.[1].count||1;
+
+  let html=`<div style="margin-bottom:24px;">
+    <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,160,0.4);margin-bottom:16px;">區域分布　${dists.length} 個區域</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">`;
+
+  dists.forEach(([dist,d])=>{
+    const pct = Math.round(d.count/maxCount*100);
+    const avgScore = d.scoredCount ? (d.totalScore/d.scoredCount).toFixed(1) : '—';
+    const avgSpend = d.spendCount ? 'NT$'+Math.round(d.totalSpend/d.spendCount).toLocaleString() : '—';
+    html+=`
+      <div style="display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;">
+        <div style="font-size:13px;color:#f0e6d6;font-weight:700;text-align:right;white-space:nowrap;">${dist}</div>
+        <div style="position:relative;height:28px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">
+          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(232,98,42,0.7),rgba(232,98,42,0.3));border-radius:6px;transition:width 0.4s;"></div>
+          <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:#f0e6d6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);">
+            ${d.names.slice(0,3).join('、')}${d.names.length>3?'…':''}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:100px;">
+          <span style="font-size:15px;font-weight:900;color:#fff;font-family:'Noto Sans TC',sans-serif;">${d.count} <span style="font-size:10px;color:rgba(255,220,160,0.4);font-weight:400;">間</span></span>
+          <span style="font-size:10px;color:rgba(255,220,160,0.4);">⭐${avgScore} &nbsp; ${avgSpend}</span>
+        </div>
+      </div>`;
+  });
+
+  html+=`</div></div>`;
+
+  if(dists.length===0){
+    html=`<div style="padding:60px 0;text-align:center;color:rgba(255,220,160,0.3);font-size:12px;letter-spacing:0.12em;">尚無地址資料可供統計</div>`;
+  }
+
+  container.innerHTML=html;
+}
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
 /* ───── 餐廳類型管理 ───── */
