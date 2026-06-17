@@ -1504,16 +1504,22 @@
     "type": "便當",
     "meal": "",
     "price": 140,
-    "visits": 1,
+    "visits": 2,
     "gscore": 4.1,
     "addr": "10491臺北市中山區行仁里龍江路342巷25號",
     "note": "",
     "maps": "https://www.google.com/maps/place/%E9%87%91%E4%BB%99%E9%AD%9A%E4%B8%B8%E5%BA%97/@25.0656693,121.5209561,15z/data=!4m15!1m8!3m7!1s0x3442abfd1eb24121:0xe4ded0f87452a974!2z6YeR5LuZ6a2a5Li45bqX!8m2!3d25.065651!4d121.53941!10e9!16s%2Fg%2F1tlml0ck!3m5!1s0x3442abfd1eb24121:0xe4ded0f87452a974!8m2!3d25.065651!4d121.53941!16s%2Fg%2F1tlml0ck?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-02-23",
+    "date": "2026-06-17",
     "score": 3.9,
     "visitLog": [
       {
         "date": "2026-02-23",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "雞腿飯"
+      },
+      {
+        "date": "2026-06-17",
         "meal": "午餐",
         "price": 140,
         "menu": "雞腿飯"
@@ -1523,7 +1529,8 @@
       "https://i.ibb.co/5XtFRsv3/262044fb415a.jpg"
     ],
     "img": "https://i.ibb.co/5XtFRsv3/262044fb415a.jpg",
-    "createdAt": 1779804418646
+    "createdAt": 1779804418646,
+    "updatedAt": 1781670509417
   },
   {
     "id": "1779804307222",
