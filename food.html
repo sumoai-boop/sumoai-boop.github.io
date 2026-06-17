@@ -698,8 +698,14 @@ function switchTab(tab){
 /* ───── 統計頁：區域分析 ───── */
 function extractDistrict(addr){
   if(!addr) return null;
-  const m = addr.match(/([^\s市縣]+[區鄉鎮市])/);
-  return m ? m[1] : null;
+  // 移除郵遞區號（3-6位數字開頭）
+  const clean = addr.replace(/^\d+/, '');
+  // 抓縣市後面的區/鄉/鎮
+  const m = clean.match(/[縣市]([^\s縣市]+?[區鄉鎮])/);
+  if(m) return m[1];
+  // 沒有縣市前綴，直接抓 XX區
+  const m2 = clean.match(/([^\s\d]{2,4}[區鄉鎮])/);
+  return m2 ? m2[1] : null;
 }
 
 function renderStatsPage(){
