@@ -351,16 +351,18 @@ async function init(){
 }
 
 
-// ── 打擊率 / 全壘打 SVG 折線圖 ──
+// ── 上壘率 / 全壘打 SVG 折線圖 ──
 function buildTrendChart(splits){
-  // 累積打數與安打 → 逐場「賽季累積打擊率」；全壘打為累積
-  let cAB = 0, cH = 0, chr = 0;
+  // 累積 OBP = (H+BB+HBP)/(AB+BB+HBP+SF)；全壘打為累積
+  let cOnBase = 0, cPA = 0, chr = 0;
   const pts = splits.map(g => {
     const st = g.stat || {};
-    cAB += (st.atBats|0);
-    cH  += (st.hits|0);
-    chr += (st.homeRuns|0);
-    return { date: g.date || '', avg: cAB > 0 ? cH / cAB : 0, hr: chr };
+    const h = st.hits|0, bb = st.baseOnBalls|0, hbp = st.hitByPitch|0;
+    const ab = st.atBats|0, sf = st.sacFlies|0;
+    cOnBase += h + bb + hbp;
+    cPA     += ab + bb + hbp + sf;
+    chr     += (st.homeRuns|0);
+    return { date: g.date || '', obp: cPA > 0 ? cOnBase / cPA : 0, hr: chr };
   });
 
   const W = 920, H = 300;
@@ -368,21 +370,21 @@ function buildTrendChart(splits){
   const iw = W - padL - padR, ih = H - padT - padB;
   const n = pts.length;
 
-  // 左軸打擊率固定 .000 ~ .500、右軸全壘打固定 0 ~ 70
-  const maxAVG = 0.500;
+  // 左軸上壘率固定 .000 ~ .500、右軸全壘打固定 0 ~ 70
+  const maxOBP = 0.500;
   const maxHR  = 70;
 
   const x   = i => padL + (n === 1 ? iw/2 : i * iw / (n - 1));
-  const yA  = v => padT + ih - v / maxAVG * ih;
+  const yA  = v => padT + ih - v / maxOBP * ih;
   const yHR = v => padT + ih - v / maxHR  * ih;
-  const fmtAvg = v => v.toFixed(3).replace(/^0/, '');
+  const fmtRate = v => v.toFixed(3).replace(/^0/, '');
 
   // 格線 + 左右軸標籤（各 5 格）
   let grid = '', axisL = '', axisR = '';
   for (let i = 0; i <= 5; i++){
     const gy = padT + ih - i * ih / 5;
     grid  += `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="rgba(239,229,214,0.08)" stroke-width="1"/>`;
-    axisL += `<text x="${padL-8}" y="${gy+4}" text-anchor="end" font-size="11" fill="#FD5A1E" opacity="0.85">${fmtAvg(maxAVG*i/5)}</text>`;
+    axisL += `<text x="${padL-8}" y="${gy+4}" text-anchor="end" font-size="11" fill="#FD5A1E" opacity="0.85">${fmtRate(maxOBP*i/5)}</text>`;
     axisR += `<text x="${W-padR+8}" y="${gy+4}" text-anchor="start" font-size="11" fill="#6FBF73" opacity="0.85">${Math.round(maxHR*i/5)}</text>`;
   }
 
@@ -396,7 +398,7 @@ function buildTrendChart(splits){
     xLabels += `<text x="${x(n-1)}" y="${H-10}" text-anchor="middle" font-size="11" fill="#9A8F80">${pts[n-1].date.slice(5).replace('-','/')}</text>`;
   }
 
-  const lineA  = pts.map((p,i) => `${x(i)},${yA(p.avg)}`).join(' ');
+  const lineA  = pts.map((p,i) => `${x(i)},${yA(p.obp)}`).join(' ');
   const lineHR = pts.map((p,i) => `${x(i)},${yHR(p.hr)}`).join(' ');
 
   // 全壘打出現的場次標記點
@@ -413,8 +415,8 @@ function buildTrendChart(splits){
     <polyline points="${lineA}" fill="none" stroke="#FD5A1E" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
     <polyline points="${lineHR}" fill="none" stroke="#6FBF73" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
     ${hrDots}
-    <circle cx="${x(n-1)}" cy="${yA(last.avg)}" r="4" fill="#FD5A1E"/>
-    <text x="${x(n-1)-8}" y="${yA(last.avg)-10}" text-anchor="end" font-size="13" font-weight="800" fill="#FD5A1E">${fmtAvg(last.avg)}</text>
+    <circle cx="${x(n-1)}" cy="${yA(last.obp)}" r="4" fill="#FD5A1E"/>
+    <text x="${x(n-1)-8}" y="${yA(last.obp)-10}" text-anchor="end" font-size="13" font-weight="800" fill="#FD5A1E">${fmtRate(last.obp)}</text>
     <circle cx="${x(n-1)}" cy="${yHR(last.hr)}" r="4" fill="#6FBF73"/>
     <text x="${x(n-1)-8}" y="${yHR(last.hr)+18}" text-anchor="end" font-size="13" font-weight="800" fill="#6FBF73">${last.hr}HR</text>
   </svg>`;
@@ -450,9 +452,9 @@ function render(latest, yby, career, games, allGames){
     html += `
     <section class="sec">
       <div class="sec-head">
-        <h2>打擊率・全壘打走勢</h2><span class="en">AVG / HR TREND</span>
+        <h2>上壘率・全壘打走勢</h2><span class="en">OBP / HR TREND</span>
         <span class="chart-legend">
-          <span class="lg"><i style="background:var(--orange)"></i>賽季打擊率</span>
+          <span class="lg"><i style="background:var(--orange)"></i>賽季上壘率</span>
           <span class="lg"><i style="background:var(--green)"></i>累積全壘打</span>
         </span>
       </div>
