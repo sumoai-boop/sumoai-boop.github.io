@@ -1,5 +1,40 @@
 [
   {
+    "id": "1781664810837",
+    "name": "上頂自助餐",
+    "name1": "上頂自助餐",
+    "name2": "",
+    "type": "自助餐",
+    "meal": "",
+    "price": 145,
+    "visits": 2,
+    "gscore": 2.9,
+    "addr": "104臺北市中山區新生里松江路362巷42號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E4%B8%8A%E9%A0%82%E8%87%AA%E5%8A%A9%E9%A4%90/@25.0619154,121.5291192,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a959675f42ad:0xf1be19bdba120465!8m2!3d25.0619106!4d121.5316941!16s%2Fg%2F11cmyv9rpc?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-11-27",
+    "score": 3.4,
+    "visitLog": [
+      {
+        "date": "2025-11-27",
+        "meal": "晚餐",
+        "price": 150,
+        "menu": ""
+      },
+      {
+        "date": "2025-11-11",
+        "meal": "晚餐",
+        "price": 140,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/kg7L1K8x/e6c8cab2d9ad.jpg"
+    ],
+    "img": "https://i.ibb.co/kg7L1K8x/e6c8cab2d9ad.jpg",
+    "createdAt": 1781664810837
+  },
+  {
     "id": "1781664573825",
     "name": "東鴻自助餐",
     "name1": "東鴻自助餐",
