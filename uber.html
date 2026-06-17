@@ -387,10 +387,10 @@ body{
     <!-- 左右並排：圓餅圖 + 新增表單 -->
     <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-bottom:20px;">
       <!-- 左：圓餅圖 -->
-      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:360px;display:flex;flex-direction:column;">
+      <div id="expenseChartWrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.2);border-radius:14px;padding:20px;flex:1;min-width:280px;display:flex;flex-direction:column;">
         <div style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:16px;text-align:left;">總支出</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:48px;flex:1;flex-wrap:wrap;">
-          <canvas id="monthlyPieChart" width="460" height="460" style="flex-shrink:0;max-width:460px;max-height:460px;"></canvas>
+        <div style="display:flex;align-items:center;justify-content:center;gap:48px;flex:1;">
+          <canvas id="monthlyPieChart" width="360" height="360" style="flex-shrink:0;"></canvas>
           <div id="pieLegend"></div>
         </div>
       </div>
@@ -1146,9 +1146,9 @@ function renderMonthly(){
     var canvas = document.getElementById('monthlyPieChart');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,300,300);
+    ctx.clearRect(0,0,360,360);
 
-    var cx=150, cy=150, r=132;
+    var cx=180, cy=180, r=160;
     var startAngle = -Math.PI/2;
     types.forEach(function(t, i){
       var slice = (typeMap[t]/grandTotal) * Math.PI * 2;
