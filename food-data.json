@@ -35,8 +35,8 @@
     "name2": "土城金城店",
     "type": "快餐",
     "meal": "",
-    "price": 210,
-    "visits": 1,
+    "price": 230,
+    "visits": 2,
     "gscore": 3.3,
     "addr": "236新北市土城區清溪里金城路二段269號",
     "note": "",
@@ -49,13 +49,20 @@
         "meal": "晚餐",
         "price": 210,
         "menu": "爆醬！是拉差咔啦雞腿堡XL餐"
+      },
+      {
+        "date": "2025-08-03",
+        "meal": "午餐",
+        "price": 250,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/sdNY2j6F/5f05dadff722.jpg"
     ],
     "img": "https://i.ibb.co/sdNY2j6F/5f05dadff722.jpg",
-    "createdAt": 1781700328601
+    "createdAt": 1781700328601,
+    "updatedAt": 1781700524150
   },
   {
     "id": "1781670168259",
