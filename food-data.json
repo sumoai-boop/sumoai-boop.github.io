@@ -2121,7 +2121,7 @@
     "name": "漢來海港 台北天母SOGO店",
     "name1": "漢來海港",
     "name2": "台北天母SOGO店",
-    "type": "自助餐",
+    "type": "buffet",
     "meal": "",
     "price": 2360,
     "visits": 1,
@@ -2144,7 +2144,8 @@
       "https://i.ibb.co/mrqKHpJG/d7925cb153a3.jpg"
     ],
     "img": "https://i.ibb.co/hJ3T8m7q/fae3e3858eae.jpg",
-    "createdAt": 1779714295918
+    "createdAt": 1779714295918,
+    "updatedAt": 1781664626829
   },
   {
     "id": "1779713991847",
