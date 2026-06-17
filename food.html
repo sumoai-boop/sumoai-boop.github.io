@@ -813,6 +813,8 @@ function renderStatsPage(){
   });
 
   html+=`</div></div>`;
+
+  container.innerHTML=html;
 }
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
