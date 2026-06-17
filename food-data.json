@@ -1,5 +1,34 @@
 [
   {
+    "id": "1781700665484",
+    "name": "肯德基 板橋忠孝店",
+    "name1": "肯德基",
+    "name2": "板橋忠孝店",
+    "type": "快餐",
+    "meal": "",
+    "price": 171,
+    "visits": 1,
+    "gscore": 3.2,
+    "addr": "220新北市板橋區福星里忠孝路21號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E8%82%AF%E5%BE%B7%E5%9F%BAKFC-%E6%9D%BF%E6%A9%8B%E5%BF%A0%E5%AD%9D%E9%A4%90%E5%BB%B3/@25.0020571,121.4603818,19z/data=!4m6!3m5!1s0x346803630757211f:0xdbf2cc1ea97fc708!8m2!3d25.0020571!4d121.4603818!16s%2Fg%2F11mw4pswnn?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-07-29",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2025-07-29",
+        "meal": "晚餐",
+        "price": 171,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/93vxzb3X/6fc1cbfef9b7.jpg"
+    ],
+    "img": "https://i.ibb.co/93vxzb3X/6fc1cbfef9b7.jpg",
+    "createdAt": 1781700665484
+  },
+  {
     "id": "1781700491738",
     "name": "肯德基 台北內湖店",
     "name1": "肯德基",
