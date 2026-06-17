@@ -1,5 +1,46 @@
 [
   {
+    "id": "1781670168259",
+    "name": "鴨福當歸鴨 民享店",
+    "name1": "鴨福當歸鴨",
+    "name2": "民享店",
+    "type": "便當",
+    "meal": "",
+    "price": 155,
+    "visits": 3,
+    "gscore": 4,
+    "addr": "235新北市中和區國光里民德路27號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%B4%A8%E7%A6%8F%E7%95%B6%E6%AD%B8%E9%B4%A8%E6%B0%91%E5%BE%B7%E5%BA%97/@25.0016798,121.4693272,18.75z/data=!4m6!3m5!1s0x3468036ad973f66d:0xbda9e02b449aeb14!8m2!3d25.0025921!4d121.4691234!16s%2Fg%2F11f5_jd52b?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-01-30",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2026-01-30",
+        "meal": "晚餐",
+        "price": 165,
+        "menu": ""
+      },
+      {
+        "date": "2025-12-02",
+        "meal": "晚餐",
+        "price": 150,
+        "menu": ""
+      },
+      {
+        "date": "2025-08-16",
+        "meal": "午餐",
+        "price": 150,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/4ZgW97MY/dba812aea83a.jpg"
+    ],
+    "img": "https://i.ibb.co/4ZgW97MY/dba812aea83a.jpg",
+    "createdAt": 1781670168260
+  },
+  {
     "id": "1781669899580",
     "name": "松板平價牛排",
     "name1": "松板平價牛排",
