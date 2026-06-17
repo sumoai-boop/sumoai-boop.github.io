@@ -4200,7 +4200,7 @@
     "name": "INPARADISE 饗饗 微風信義店",
     "name1": "INPARADISE 饗饗",
     "name2": "微風信義店",
-    "type": "自助餐",
+    "type": "buffet",
     "price": 4378,
     "visits": 1,
     "gscore": 4.2,
@@ -4225,7 +4225,7 @@
     "img": "https://i.ibb.co/RG6Sc31g/9cf781d4c6d1.jpg",
     "createdAt": 1779282062114,
     "meal": "",
-    "updatedAt": 1779463896407
+    "updatedAt": 1781664631065
   },
   {
     "id": "1779281849102",
