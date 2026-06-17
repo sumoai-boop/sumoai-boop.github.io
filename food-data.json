@@ -3863,7 +3863,7 @@
     "name": "旭集 和食集錦 中茂店",
     "name1": "旭集 和食集錦",
     "name2": "中茂店",
-    "type": "自助餐",
+    "type": "buffet",
     "meal": "",
     "price": 3407,
     "visits": 1,
@@ -3886,7 +3886,7 @@
     ],
     "img": "https://i.ibb.co/GfCYbJXT/aff0168a91b3.jpg",
     "createdAt": 1779342593578,
-    "updatedAt": 1779870463079
+    "updatedAt": 1781664617805
   },
   {
     "id": "1779342291692",
