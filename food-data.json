@@ -1,5 +1,34 @@
 [
   {
+    "id": "1781700491738",
+    "name": "肯德基 台北內湖店",
+    "name1": "肯德基",
+    "name2": "台北內湖店",
+    "type": "快餐",
+    "meal": "",
+    "price": 443,
+    "visits": 1,
+    "gscore": 3.7,
+    "addr": "114臺北市內湖區西康里內湖路一段230號",
+    "note": "蔡宇涵",
+    "maps": "https://www.google.com/maps/place/%E8%82%AF%E5%BE%B7%E5%9F%BAKFC-%E5%8F%B0%E5%8C%97%E5%85%A7%E6%B9%96%E9%A4%90%E5%BB%B3/@25.0822985,121.5648362,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ac6c2e5486a1:0x1f5b40ecc5ff9a73!8m2!3d25.0822985!4d121.5648362!16s%2Fg%2F1tdd2zfd?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2025-08-16",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2025-08-16",
+        "meal": "晚餐",
+        "price": 443,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/xKmMCMYy/b9ffc13d0746.jpg"
+    ],
+    "img": "https://i.ibb.co/xKmMCMYy/b9ffc13d0746.jpg",
+    "createdAt": 1781700491738
+  },
+  {
     "id": "1781700328601",
     "name": "肯德基 土城金城店",
     "name1": "肯德基",
