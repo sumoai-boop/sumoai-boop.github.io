@@ -748,7 +748,7 @@ function renderStatsPage(){
 
   dists.forEach(([dist,d])=>{
     const pct = Math.round(d.count/maxCount*100);
-    const avgSpend = d.spendCount ? 'NT$'+Math.round(d.totalSpend/d.spendCount).toLocaleString() : '—';
+    const avgSpend = d.spendCount ? '$'+Math.round(d.totalSpend/d.spendCount).toLocaleString() : '—';
     html+=`
       <div style="display:grid;grid-template-columns:80px 1fr 60px 120px;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <div style="font-size:18px;color:#f0e6d6;font-weight:700;text-align:right;white-space:nowrap;">${dist}</div>
@@ -826,7 +826,7 @@ function renderMonthlyPage(){
     data.forEach(m=>{
       const avg=m.count?Math.round(m.total/m.count):0;
       const pct=avg?Math.round(avg/maxAvg*100):0;
-      const label=avg?'NT$'+avg.toLocaleString():'—';
+      const label=avg?'$'+avg.toLocaleString():'—';
       chartHtml+=`
         <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
           <div style="font-size:12px;color:rgba(255,220,160,0.6);text-align:right;">${m.label}</div>
