@@ -761,7 +761,58 @@ function renderStatsPage(){
     html=`<div style="padding:60px 0;text-align:center;color:rgba(255,220,160,0.3);font-size:12px;letter-spacing:0.12em;">尚無地址資料可供統計</div>`;
   }
 
-  container.innerHTML=html;
+  // ── 每月平均消費 ──
+  const now = new Date();
+  const months = [];
+  const start = new Date(2025, 0, 1);
+  for(let d = new Date(start); d <= now; d.setMonth(d.getMonth()+1)){
+    months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+  }
+
+  const monthMap = {};
+  months.forEach(m => monthMap[m] = {total:0, count:0});
+
+  DATA.forEach(r=>{
+    if(r.visitLog && r.visitLog.length > 0){
+      r.visitLog.forEach(v=>{
+        if(!v.date || v.price == null || v.price === '') return;
+        const ym = v.date.slice(0,7);
+        if(monthMap[ym]){ monthMap[ym].total += Number(v.price); monthMap[ym].count++; }
+      });
+    } else if(r.date && r.price != null && r.price !== ''){
+      const ym = r.date.slice(0,7);
+      if(monthMap[ym]){ monthMap[ym].total += Number(r.price); monthMap[ym].count++; }
+    }
+  });
+
+  const monthAvgs = months.map(m => ({
+    label: m.slice(5)+'月',
+    fullLabel: m,
+    avg: monthMap[m].count ? Math.round(monthMap[m].total / monthMap[m].count) : 0,
+    count: monthMap[m].count
+  }));
+
+  const maxAvg = Math.max(...monthAvgs.map(m=>m.avg), 1);
+
+  html += `<div style="margin-top:32px;">
+    <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,160,0.4);margin-bottom:16px;">每月平均消費　2025年至今</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">`;
+
+  monthAvgs.forEach(m=>{
+    const pct = m.avg ? Math.round(m.avg/maxAvg*100) : 0;
+    const label = m.avg ? 'NT$'+m.avg.toLocaleString() : '—';
+    html+=`
+      <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
+        <div style="font-size:12px;color:rgba(255,220,160,0.6);text-align:right;">${m.label}</div>
+        <div style="position:relative;height:26px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">
+          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(100,180,255,0.6),rgba(100,180,255,0.25));border-radius:6px;"></div>
+          ${m.count?`<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,0.4);">${m.count} 筆</div>`:''}
+        </div>
+        <div style="font-size:15px;font-weight:900;color:${m.avg?'#6ab4ff':'rgba(255,255,255,0.15)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
+      </div>`;
+  });
+
+  html+=`</div></div>`;
 }
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
