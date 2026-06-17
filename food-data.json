@@ -1,5 +1,46 @@
 [
   {
+    "id": "1781664573825",
+    "name": "東鴻自助餐",
+    "name1": "東鴻自助餐",
+    "name2": "",
+    "type": "自助餐",
+    "meal": "",
+    "price": 102,
+    "visits": 3,
+    "gscore": 3.4,
+    "addr": "235新北市中和區國光里民德路23號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%9D%B1%E9%B4%BB%E8%87%AA%E5%8A%A9%E9%A4%90/@25.0025787,121.4680704,18z/data=!4m10!1m2!2m1!1z6Ieq5Yqp6aSQ!3m6!1s0x3468029f64496f93:0x142497fe8105b156!8m2!3d25.0027422!4d121.4689856!15sCgnoh6rliqnppJBaCyIJ6Ieq5Yqp6aSQkgEJY2FmZXRlcmlhmgFEQ2k5RFFVbFJRVU52WkVOb2RIbGpSamx2VDJ4b2MxVkZkM3BOTTFJMVdWaHdOR1ZXVW1sU1NFWm9aVmR6ZUdSSVl4QULgAQD6AQQIABAW!16s%2Fg%2F11c4b2yc6f?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-03-08",
+    "score": 3.2,
+    "visitLog": [
+      {
+        "date": "2026-01-11",
+        "meal": "午餐",
+        "price": 100,
+        "menu": ""
+      },
+      {
+        "date": "2026-03-08",
+        "meal": "晚餐",
+        "price": 95,
+        "menu": ""
+      },
+      {
+        "date": "2026-03-01",
+        "meal": "晚餐",
+        "price": 110,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/sdKP9Mx6/cf531e5dc6ab.jpg"
+    ],
+    "img": "https://i.ibb.co/sdKP9Mx6/cf531e5dc6ab.jpg",
+    "createdAt": 1781664573825
+  },
+  {
     "id": "1781664062652",
     "name": "九品當歸豬腳",
     "name1": "九品當歸豬腳",
