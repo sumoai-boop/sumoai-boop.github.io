@@ -6,8 +6,8 @@
     "name2": "",
     "type": "豬腳",
     "meal": "",
-    "price": 240,
-    "visits": 2,
+    "price": 205,
+    "visits": 6,
     "gscore": 4.1,
     "addr": "235新北市中和區清穗里民德路230號1樓",
     "note": "",
@@ -26,13 +26,38 @@
         "meal": "晚餐",
         "price": 240,
         "menu": ""
+      },
+      {
+        "date": "2025-12-09",
+        "meal": "晚餐",
+        "price": 240,
+        "menu": ""
+      },
+      {
+        "date": "2025-11-07",
+        "meal": "晚餐",
+        "price": 170,
+        "menu": ""
+      },
+      {
+        "date": "2025-10-28",
+        "meal": "晚餐",
+        "price": 140,
+        "menu": ""
+      },
+      {
+        "date": "2025-09-08",
+        "meal": "晚餐",
+        "price": 200,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/twd90qvF/f7dba6192454.jpg"
     ],
     "img": "https://i.ibb.co/twd90qvF/f7dba6192454.jpg",
-    "createdAt": 1781664062652
+    "createdAt": 1781664062652,
+    "updatedAt": 1781664160763
   },
   {
     "id": "1781537710921",
