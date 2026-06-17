@@ -1,5 +1,34 @@
 [
   {
+    "id": "1781700328601",
+    "name": "肯德基 土城金城店",
+    "name1": "肯德基",
+    "name2": "土城金城店",
+    "type": "快餐",
+    "meal": "",
+    "price": 210,
+    "visits": 1,
+    "gscore": 3.3,
+    "addr": "236新北市土城區清溪里金城路二段269號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E8%82%AF%E5%BE%B7%E5%9F%BAKFC-%E5%9C%9F%E5%9F%8E%E9%87%91%E5%9F%8E%E9%A4%90%E5%BB%B3/@24.9860111,121.4638,20z/data=!4m6!3m5!1s0x346802c96c99d999:0x50d08d34e1ac9c3c!8m2!3d24.986053!4d121.4639711!16s%2Fg%2F1w4vgnkl?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-17",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-06-17",
+        "meal": "晚餐",
+        "price": 210,
+        "menu": "爆醬！是拉差咔啦雞腿堡XL餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/sdNY2j6F/5f05dadff722.jpg"
+    ],
+    "img": "https://i.ibb.co/sdNY2j6F/5f05dadff722.jpg",
+    "createdAt": 1781700328601
+  },
+  {
     "id": "1781670168259",
     "name": "鴨福當歸鴨 民享店",
     "name1": "鴨福當歸鴨",
