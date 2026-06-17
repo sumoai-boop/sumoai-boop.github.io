@@ -386,6 +386,7 @@
   <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid rgba(255,180,80,0.12);padding-bottom:0;">
     <button id="tabFood" onclick="switchTab('food')" style="background:none;border:none;color:#E8622A;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid #E8622A;letter-spacing:0.08em;">食記</button>
     <button id="tabStats" onclick="switchTab('stats')" style="background:none;border:none;color:rgba(255,220,160,0.45);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">統計</button>
+    <button id="tabMonthly" onclick="switchTab('monthly')" style="background:none;border:none;color:rgba(255,220,160,0.45);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">月報</button>
   </div>
 
   <!-- Photo Grid -->
@@ -396,6 +397,11 @@
   <!-- 統計頁 -->
   <div id="viewStats" style="display:none;">
     <div id="statsPage"></div>
+  </div>
+
+  <!-- 月報頁 -->
+  <div id="viewMonthly" style="display:none;">
+    <div id="monthlyPage"></div>
   </div>
 </main>
 
@@ -688,11 +694,16 @@ function switchTab(tab){
   currentTab=tab;
   document.getElementById('viewFood').style.display=tab==='food'?'':'none';
   document.getElementById('viewStats').style.display=tab==='stats'?'':'none';
-  document.getElementById('tabFood').style.color=tab==='food'?'#E8622A':'rgba(255,220,160,0.45)';
-  document.getElementById('tabFood').style.borderBottomColor=tab==='food'?'#E8622A':'transparent';
-  document.getElementById('tabStats').style.color=tab==='stats'?'#E8622A':'rgba(255,220,160,0.45)';
-  document.getElementById('tabStats').style.borderBottomColor=tab==='stats'?'#E8622A':'transparent';
+  document.getElementById('viewMonthly').style.display=tab==='monthly'?'':'none';
+  ['food','stats','monthly'].forEach(t=>{
+    const id='tab'+t.charAt(0).toUpperCase()+t.slice(1);
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.color=t===tab?'#E8622A':'rgba(255,220,160,0.45)';
+    el.style.borderBottomColor=t===tab?'#E8622A':'transparent';
+  });
   if(tab==='stats') renderStatsPage();
+  if(tab==='monthly') renderMonthlyPage();
 }
 
 /* ───── 統計頁：區域分析 ───── */
@@ -761,60 +772,78 @@ function renderStatsPage(){
     html=`<div style="padding:60px 0;text-align:center;color:rgba(255,220,160,0.3);font-size:12px;letter-spacing:0.12em;">尚無地址資料可供統計</div>`;
   }
 
-  // ── 每月平均消費 ──
-  const now = new Date();
-  const months = [];
-  const start = new Date(2025, 0, 1);
-  for(let d = new Date(start); d <= now; d.setMonth(d.getMonth()+1)){
-    months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
-  }
+  html+=`</div></div>`;
+  container.innerHTML=html;
+}
 
-  const monthMap = {};
-  months.forEach(m => monthMap[m] = {total:0, count:0});
+/* ───── 月報頁 ───── */
+function renderMonthlyPage(){
+  const container=document.getElementById('monthlyPage');
+  const now=new Date();
+  const currentYear=now.getFullYear();
+  const startYear=2025;
+  const years=[];
+  for(let y=startYear;y<=currentYear;y++) years.push(y);
 
-  DATA.forEach(r=>{
-    if(r.visitLog && r.visitLog.length > 0){
-      r.visitLog.forEach(v=>{
-        if(!v.date || v.price == null || v.price === '') return;
-        const ym = v.date.slice(0,7);
-        if(monthMap[ym]){ monthMap[ym].total += Number(v.price); monthMap[ym].count++; }
-      });
-    } else if(r.date && r.price != null && r.price !== ''){
-      const ym = r.date.slice(0,7);
-      if(monthMap[ym]){ monthMap[ym].total += Number(r.price); monthMap[ym].count++; }
+  const allMonthData={};
+  years.forEach(y=>{
+    allMonthData[y]=[];
+    for(let m=1;m<=12;m++){
+      allMonthData[y].push({label:m+'月',total:0,count:0});
     }
   });
 
-  const monthAvgs = months.map(m => ({
-    label: m.slice(5)+'月',
-    fullLabel: m,
-    avg: monthMap[m].count ? Math.round(monthMap[m].total / monthMap[m].count) : 0,
-    count: monthMap[m].count
-  }));
-
-  const maxAvg = Math.max(...monthAvgs.map(m=>m.avg), 1);
-
-  html += `<div style="margin-top:32px;">
-    <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,160,0.4);margin-bottom:16px;">每月平均消費　2025年至今</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">`;
-
-  monthAvgs.forEach(m=>{
-    const pct = m.avg ? Math.round(m.avg/maxAvg*100) : 0;
-    const label = m.avg ? 'NT$'+m.avg.toLocaleString() : '—';
-    html+=`
-      <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
-        <div style="font-size:12px;color:rgba(255,220,160,0.6);text-align:right;">${m.label}</div>
-        <div style="position:relative;height:26px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">
-          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(100,180,255,0.6),rgba(100,180,255,0.25));border-radius:6px;"></div>
-          ${m.count?`<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,0.4);">${m.count} 筆</div>`:''}
-        </div>
-        <div style="font-size:15px;font-weight:900;color:${m.avg?'#6ab4ff':'rgba(255,255,255,0.15)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
-      </div>`;
+  DATA.forEach(r=>{
+    if(r.visitLog&&r.visitLog.length>0){
+      r.visitLog.forEach(v=>{
+        if(!v.date||v.price==null||v.price==='') return;
+        const y=parseInt(v.date.slice(0,4)),m=parseInt(v.date.slice(5,7));
+        if(allMonthData[y]&&allMonthData[y][m-1]){allMonthData[y][m-1].total+=Number(v.price);allMonthData[y][m-1].count++;}
+      });
+    } else if(r.date&&r.price!=null&&r.price!==''){
+      const y=parseInt(r.date.slice(0,4)),m=parseInt(r.date.slice(5,7));
+      if(allMonthData[y]&&allMonthData[y][m-1]){allMonthData[y][m-1].total+=Number(r.price);allMonthData[y][m-1].count++;}
+    }
   });
 
-  html+=`</div></div>`;
+  let html=`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,160,0.4);">每月平均消費</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        ${years.map(y=>`<button onclick="switchMonthYear(${y})" id="yearBtn${y}" style="background:${y===currentYear?'rgba(232,98,42,0.25)':'none'};border:none;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:4px 12px;border-radius:6px;color:${y===currentYear?'#fff':'rgba(255,220,160,0.4)'};">${y}</button>`).join('')}
+      </div>
+    </div>
+    <div id="monthlyChart"></div>
+  </div>`;
 
   container.innerHTML=html;
+
+  window.switchMonthYear=function(year){
+    years.forEach(y=>{
+      const b=document.getElementById('yearBtn'+y);
+      if(b){b.style.color=y===year?'#fff':'rgba(255,220,160,0.4)';b.style.background=y===year?'rgba(232,98,42,0.25)':'none';}
+    });
+    const data=allMonthData[year]||[];
+    const maxAvg=Math.max(...data.map(m=>m.count?Math.round(m.total/m.count):0),1);
+    let chartHtml='<div style="display:flex;flex-direction:column;gap:8px;">';
+    data.forEach(m=>{
+      const avg=m.count?Math.round(m.total/m.count):0;
+      const pct=avg?Math.round(avg/maxAvg*100):0;
+      const label=avg?'NT$'+avg.toLocaleString():'—';
+      chartHtml+=`
+        <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
+          <div style="font-size:12px;color:rgba(255,220,160,0.6);text-align:right;">${m.label}</div>
+          <div style="position:relative;height:26px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(100,180,255,0.6),rgba(100,180,255,0.25));border-radius:6px;"></div>
+            ${m.count?`<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,0.4);">${m.count} 筆</div>`:''}
+          </div>
+          <div style="font-size:15px;font-weight:900;color:${avg?'#6ab4ff':'rgba(255,255,255,0.15)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
+        </div>`;
+    });
+    chartHtml+='</div>';
+    document.getElementById('monthlyChart').innerHTML=chartHtml;
+  };
+  window.switchMonthYear(currentYear);
 }
 window.addEventListener('DOMContentLoaded', function(){ requireToken(function(){ loadFromGitHub(); }); });
 
