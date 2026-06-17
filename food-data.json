@@ -1,5 +1,34 @@
 [
   {
+    "id": "1781669282876",
+    "name": "樂饕牛排",
+    "name1": "樂饕牛排",
+    "name2": "",
+    "type": "牛排",
+    "meal": "",
+    "price": 250,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "10361臺北市大同區隆和里延平北路三段76號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%A8%82%E9%A5%95%E7%89%9B%E6%8E%92/@25.0656912,121.5110258,17z/data=!4m15!1m8!3m7!1s0x3442a94186051ce1:0x12cb29bb14638565!2z5qiC6aWV54mb5o6S!8m2!3d25.0656656!4d121.510942!10e9!16s%2Fg%2F11j4t8725k!3m5!1s0x3442a94186051ce1:0x12cb29bb14638565!8m2!3d25.0656656!4d121.510942!16s%2Fg%2F11j4t8725k?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-04-15",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2026-04-15",
+        "meal": "晚餐",
+        "price": 250,
+        "menu": "沙朗牛排"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/F4c0MPv7/22a57dc8b4d1.jpg"
+    ],
+    "img": "https://i.ibb.co/F4c0MPv7/22a57dc8b4d1.jpg",
+    "createdAt": 1781669282876
+  },
+  {
     "id": "1781668792241",
     "name": "吉仔冬瓜肉飯",
     "name1": "吉仔冬瓜肉飯",
