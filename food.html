@@ -748,22 +748,20 @@ function renderStatsPage(){
 
   dists.forEach(([dist,d])=>{
     const pct = Math.round(d.count/maxCount*100);
-    const avgScore = d.scoredCount ? (d.totalScore/d.scoredCount).toFixed(1) : '—';
     const avgSpend = d.spendCount ? 'NT$'+Math.round(d.totalSpend/d.spendCount).toLocaleString() : '—';
     html+=`
-      <div style="display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;">
+      <div style="display:grid;grid-template-columns:80px 1fr 60px 120px;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <div style="font-size:13px;color:#f0e6d6;font-weight:700;text-align:right;white-space:nowrap;">${dist}</div>
         <div style="position:relative;height:28px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">
-          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(232,98,42,0.7),rgba(232,98,42,0.3));border-radius:6px;transition:width 0.4s;"></div>
-          <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:#f0e6d6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);">
+          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(232,98,42,0.7),rgba(232,98,42,0.25));border-radius:6px;"></div>
+          <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:rgba(255,255,255,0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);">
             ${d.names.slice(0,3).join('、')}${d.names.length>3?'…':''}
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:12px;min-width:160px;justify-content:flex-end;">
-          <span style="font-size:22px;font-weight:900;color:#fff;font-family:'Noto Sans TC',sans-serif;line-height:1;">${d.count} <span style="font-size:12px;color:rgba(255,220,160,0.5);font-weight:400;">間</span></span>
-          <span style="font-size:13px;color:rgba(255,220,160,0.65);">${avgSpend}</span>
-        </div>
+        <div style="font-size:20px;font-weight:900;color:#fff;font-family:'Noto Sans TC',sans-serif;text-align:right;white-space:nowrap;">${d.count}<span style="font-size:11px;color:rgba(255,220,160,0.4);font-weight:400;margin-left:2px;">間</span></div>
+        <div style="font-size:13px;color:rgba(255,220,160,0.65);text-align:right;white-space:nowrap;">${avgSpend}</div>
       </div>`;
+  });
   });
 
   html+=`</div></div>`;
