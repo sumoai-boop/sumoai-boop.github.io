@@ -1,5 +1,34 @@
 [
   {
+    "id": "1781792313054",
+    "name": "麥當勞 板橋文化店",
+    "name1": "麥當勞",
+    "name2": "板橋文化店",
+    "type": "快餐",
+    "meal": "",
+    "price": 265,
+    "visits": 1,
+    "gscore": 3.9,
+    "addr": "220新北市板橋區文化里文化路二段173號",
+    "note": "",
+    "maps": "https://www.google.com/maps/search/%E9%BA%A5%E7%95%B6%E5%8B%9E/@25.027702,121.4523447,15z?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-18",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-06-18",
+        "meal": "晚餐",
+        "price": 265,
+        "menu": "二辣腿排餐"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/3YPfgXpz/84393b214202.jpg"
+    ],
+    "img": "https://i.ibb.co/3YPfgXpz/84393b214202.jpg",
+    "createdAt": 1781792313054
+  },
+  {
     "id": "1781700665484",
     "name": "肯德基 板橋忠孝店",
     "name1": "肯德基",
