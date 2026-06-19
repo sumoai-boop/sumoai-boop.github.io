@@ -12286,5 +12286,156 @@
       "喜剧",
       "科幻"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Office Romance",
+    "views": 24600000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Office Romance",
+    "titleZh": "同事以上，戀人未滿",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Maternal Instinct",
+    "views": 15000000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Maternal Instinct",
+    "titleZh": "母性本能：德州奪胎案",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Swapped",
+    "views": 5700000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "The Murder of Rachel Nickell",
+    "views": 5400000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "The Murder of Rachel Nickell",
+    "titleZh": "慧秋尼克爾謀殺案",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Fast Charlie",
+    "views": 3900000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Fast Charlie",
+    "titleZh": "血色追殺令",
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "KPop Demon Hunters",
+    "views": 3600000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "David",
+    "views": 3200000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "David",
+    "titleZh": "大衛：王者降臨",
+    "country": "US",
+    "genres": [
+      "动画",
+      "剧情",
+      "家庭",
+      "历史"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Goat",
+    "views": 3200000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Goat",
+    "titleZh": "山羊巔峰",
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Ticket to Paradise",
+    "views": 2600000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Ticket to Paradise",
+    "titleZh": "幸福入場券",
+    "country": "AU",
+    "genres": [
+      "剧情",
+      "喜剧",
+      "爱情"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Bee Movie",
+    "views": 2500000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|English",
+    "titleEn": "Bee Movie",
+    "titleZh": "蜂電影",
+    "country": "US",
+    "genres": [
+      "家庭",
+      "动画",
+      "冒险",
+      "喜剧"
+    ]
   }
 ]
