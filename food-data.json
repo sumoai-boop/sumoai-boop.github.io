@@ -2610,12 +2610,12 @@
     "type": "快餐",
     "meal": "",
     "price": 244,
-    "visits": 11,
+    "visits": 12,
     "gscore": 3.7,
     "addr": "236新北市土城區學府里裕民路190號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E9%A0%82%E5%91%B1%E5%91%B1(%E5%9C%9F%E5%9F%8E%E8%A3%95%E6%B0%91%E5%BA%97)/@24.9850559,121.4530393,19z/data=!4m9!1m2!2m1!1z6Z-T5byP!3m5!1s0x346802c915a464ed:0x5d60b3cbac4032bb!8m2!3d24.9849564!4d121.4528868!16s%2Fg%2F1q62k_tlk?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-06-06",
+    "date": "2026-06-19",
     "score": 3.5,
     "visitLog": [
       {
@@ -2683,6 +2683,12 @@
         "meal": "晚餐",
         "price": 243,
         "menu": ""
+      },
+      {
+        "date": "2026-06-19",
+        "meal": "晚餐",
+        "price": 244,
+        "menu": "經典炸雞餐"
       }
     ],
     "imgs": [
@@ -2690,7 +2696,7 @@
     ],
     "img": "https://i.ibb.co/jk9JwpJm/df3bd8cc81f5.jpg",
     "createdAt": 1779702124809,
-    "updatedAt": 1780740986331
+    "updatedAt": 1781873575205
   },
   {
     "id": "1779701983020",
