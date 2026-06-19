@@ -12437,5 +12437,146 @@
       "冒险",
       "喜剧"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Teach You a Lesson: Limited Series",
+    "views": 21100000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Teach You a Lesson: Limited Series",
+    "titleZh": "鐵拳教育",
+    "country": "KR",
+    "genres": [
+      "动作冒险",
+      "剧情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "My Royal Nemesis: Limited Series",
+    "views": 2700000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "My Royal Nemesis: Limited Series",
+    "titleZh": "我的王室死對頭",
+    "country": "KR",
+    "genres": [
+      "剧情",
+      "喜剧",
+      "Sci-Fi & Fantasy"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Rosario Tijeras (Mexico): Season 5",
+    "views": 2500000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Rosario Tijeras (Mexico): Season 5",
+    "titleZh": "",
+    "country": "MX",
+    "genres": [
+      "剧情",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "The Polygamist: Season 1",
+    "views": 2000000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "The Polygamist: Season 1",
+    "titleZh": "眾妻之夫",
+    "country": "ZA",
+    "genres": [
+      "剧情",
+      "肥皂剧"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "The Evil Lawyer: Season 1",
+    "views": 1700000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "The Evil Lawyer: Season 1",
+    "titleZh": "邪惡律師",
+    "country": "TH",
+    "genres": [
+      "犯罪",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Berlin and the Lady with an Ermine: Limited Series",
+    "views": 1700000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Berlin and the Lady with an Ermine: Limited Series",
+    "titleZh": "柏林：抱銀貂的女子",
+    "country": "ES",
+    "genres": [
+      "剧情",
+      "犯罪",
+      "动作冒险"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Viral Hit: Season 1",
+    "views": 1700000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Viral Hit: Season 1",
+    "titleZh": "格鬥實況",
+    "country": "JP",
+    "genres": [
+      "剧情",
+      "动作冒险"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "The WONDERfools: Limited Series",
+    "views": 1300000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "The WONDERfools: Limited Series",
+    "titleZh": "超能路人甲",
+    "country": "KR",
+    "genres": [
+      "动作冒险",
+      "喜剧",
+      "Sci-Fi & Fantasy",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Rafa: Season 1",
+    "views": 1000000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Rafa: Season 1",
+    "titleZh": "納達爾",
+    "country": "ES",
+    "genres": []
+  },
+  {
+    "rank": 10,
+    "title": "Losing Judgment: Season 1",
+    "views": 900000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Shows|Non-English",
+    "titleEn": "Losing Judgment: Season 1",
+    "titleZh": "",
+    "country": "ES",
+    "genres": [
+      "剧情"
+    ]
   }
 ]
