@@ -12708,5 +12708,149 @@
     "genres": [
       "儿童"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Colors Of Evil: Black",
+    "views": 14100000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Colors Of Evil: Black",
+    "titleZh": "極惡原色：闇黑謎鎮",
+    "country": "PL",
+    "genres": [
+      "惊悚",
+      "悬疑",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "The Marked Woman",
+    "views": 13800000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Marked Woman",
+    "titleZh": "謎印女子",
+    "country": "ES",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Bhooth Bangla",
+    "views": 4900000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Bhooth Bangla",
+    "titleZh": "鬼叫你要嫁",
+    "country": "IN",
+    "genres": [
+      "恐怖",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Maa Behen",
+    "views": 3300000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Maa Behen",
+    "titleZh": "媽呀真亂來",
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Mexico 86",
+    "views": 2400000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Mexico 86",
+    "titleZh": "墨西哥 1986：主辦大作戰",
+    "country": "MX",
+    "genres": [
+      "喜剧",
+      "历史",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Colors of Evil: Red",
+    "views": 1400000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Colors of Evil: Red",
+    "titleZh": "極惡原色：腥紅血岸",
+    "country": "PL",
+    "genres": [
+      "犯罪",
+      "惊悚",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "29",
+    "views": 1300000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "29",
+    "titleZh": "",
+    "country": "IN",
+    "genres": [
+      "爱情",
+      "喜剧",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "USA 94: Brazil's Return to Glory",
+    "views": 1200000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "USA 94: Brazil's Return to Glory",
+    "titleZh": "1994 美國世界盃：巴西隊榮耀再臨",
+    "country": "BR",
+    "genres": [
+      "纪录"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Run to the West",
+    "views": 1100000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Run to the West",
+    "titleZh": "",
+    "country": "KR",
+    "genres": [
+      "动作",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Risa and the Wind Phone",
+    "views": 900000,
+    "week": "6/8/26 - 6/14/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Risa and the Wind Phone",
+    "titleZh": "",
+    "country": "AR",
+    "genres": [
+      "剧情",
+      "奇幻"
+    ]
   }
 ]
