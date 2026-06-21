@@ -1,12 +1,4 @@
 <!DOCTYPE html>
-<!--
-  ⚠️⚠️⚠️ 重要提醒 ⚠️⚠️⚠️
-  上傳此 dramas.html 到 GitHub 時，請「只上傳這一個檔案」。
-  絕對不要連同 dramas-data.json 一起上傳/覆蓋！
-  資料永遠透過網站本身的「新增記錄／編輯／刪除」按鈕寫入 GitHub，
-  手動覆蓋 dramas-data.json 會把最新新增的記錄蓋掉、造成資料遺失。
-  若不確定，上傳前先到 GitHub 網頁確認 dramas-data.json 的最後修改時間。
--->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -1400,13 +1392,18 @@ render();
 
     function applyData(text){
       try{
+        // ⚠️ 若正在推送（新增/編輯/刪除進行中），代表 DATA 已超前，跳過這次 sync 避免時序競爭誤判
+        if(typeof _dramaPushing !== 'undefined' && _dramaPushing){
+          console.log('dramas sync: push 進行中，跳過本次 sync');
+          return;
+        }
         var arr = JSON.parse(text);
         var localCount = DATA.length;
-        // ⚠️ 安全網：若遠端筆數比本機少，代表可能被誤覆蓋，明確跳警告而非靜默接受
+        // ⚠️ 安全網：若遠端筆數比本機少，代表可能被誤覆蓋或時序競爭，跳過套用而非靜默覆蓋
         if(localCount > 0 && arr.length < localCount){
-          console.warn('dramas sync: remote(' + arr.length + ') < local(' + localCount + ')，疑似資料被覆蓋，跳過自動更新');
+          console.warn('dramas sync: remote(' + arr.length + ') < local(' + localCount + ')，跳過自動更新');
           setTimeout(function(){
-            showToast('⚠️ 偵測到 GitHub 資料筆數變少（' + arr.length + ' < ' + localCount + '），可能被誤上傳覆蓋！已保留本機資料，請檢查 dramas-data.json', true, true);
+            showToast('⚠️ GitHub 資料筆數較少（' + arr.length + ' < ' + localCount + '），已保留本機資料', true, true);
           }, 800);
           return;
         }
