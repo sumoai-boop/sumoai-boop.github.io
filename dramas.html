@@ -52,6 +52,10 @@
   .table-wrap{background:rgba(30,50,90,0.75);border:1px solid rgba(50,80,140,0.6);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
   .movie-table th{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,230,255,0.95);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:center;background:rgba(20,40,80,0.5);white-space:nowrap;font-weight:600;}
+  .th-sortable{cursor:pointer;user-select:none;transition:color 0.15s,background 0.15s;}
+  .th-sortable:hover{color:#FFB432;background:rgba(232,98,42,0.18);}
+  .th-sortable.active{color:#FFB432;}
+  .sort-arrow{display:inline-block;width:10px;margin-left:3px;font-size:10px;opacity:0.85;}
   .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#4A2A08;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
   .movie-table tr:hover td{background:rgba(255,255,255,0.08);}
@@ -345,8 +349,12 @@ body::before { background: transparent !important; }
   <div class="table-wrap">
     <table class="movie-table">
       <thead><tr>
-        <th>日期</th><th>國家</th><th>種類</th><th>片名</th><th>年份</th>
-        <th>IMDB</th><th>豆瓣</th><th>評分</th><th>發行</th><th>觀看地點</th>
+        <th>日期</th><th>國家</th><th>種類</th><th>片名</th>
+        <th id="thYear" class="th-sortable">年份<span class="sort-arrow"></span></th>
+        <th id="thImdb" class="th-sortable">IMDB<span class="sort-arrow"></span></th>
+        <th id="thDouban" class="th-sortable">豆瓣<span class="sort-arrow"></span></th>
+        <th id="thScore" class="th-sortable">評分<span class="sort-arrow"></span></th>
+        <th>發行</th><th>觀看地點</th>
       </tr></thead>
       <tbody id="movieBody"></tbody>
     </table>
@@ -596,7 +604,21 @@ function render(){
     if(q&&!m.title.includes(q)&&!m.orig.toLowerCase().includes(q.toLowerCase()))return false;
     return true;
   });
-  data.sort((a,b)=>sort==='date-desc'?b.date.localeCompare(a.date):sort==='score-desc'?b.score-a.score:sort==='personal-desc'?b.personal-a.personal:sort==='imdb-desc'?b.imdb-a.imdb:sort==='douban-desc'?b.douban-a.douban:b.year-a.year);
+  data.sort((a,b)=>{
+    switch(sort){
+      case 'date-desc': return b.date.localeCompare(a.date);
+      case 'score-desc': return b.score-a.score;
+      case 'personal-desc': return b.personal-a.personal;
+      case 'personal-asc': return a.personal-b.personal;
+      case 'imdb-desc': return b.imdb-a.imdb;
+      case 'imdb-asc': return a.imdb-b.imdb;
+      case 'douban-desc': return b.douban-a.douban;
+      case 'douban-asc': return a.douban-b.douban;
+      case 'year-asc': return a.year-b.year;
+      case 'year-desc':
+      default: return b.year-a.year;
+    }
+  });
   const totalPages = Math.ceil(data.length/PAGE_SIZE)||1;
   if(currentPage>totalPages) currentPage=1;
   const pageData = data.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
@@ -723,10 +745,16 @@ function buildFilters(){
   // 發行商
   const distSel = document.getElementById('distSelect');
   const curDist = distSel.value;
+  const distSorted = Object.entries(dists).sort((a,b)=>b[1]-a[1]);
   distSel.innerHTML = '<option value="">全部發行商</option>' +
-    Object.entries(dists).sort((a,b)=>b[1]-a[1])
-      .map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
+    distSorted.map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
   distSel.value = curDist;
+
+  // 新增表單的發行商 datalist（依數量排序，單欄顯示）
+  const distListEl = document.getElementById('ar_dist_list');
+  if(distListEl){
+    distListEl.innerHTML = distSorted.map(([k,v])=>`<option value="${k} (${v})"></option>`).join('');
+  }
 
   // 觀看地點
   const venueSel = document.getElementById('venueSelect');
@@ -885,7 +913,36 @@ document.getElementById('typeSelect').addEventListener('change',e=>{fType=e.targ
 document.getElementById('yearSelect').addEventListener('change',e=>{fYear=e.target.value;render();});
 document.getElementById('venueSelect').addEventListener('change',e=>{fVenue=e.target.value;render();});
 document.getElementById('distSelect').addEventListener('change',e=>{fDist=e.target.value;render();});
-document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.target.value;render();});
+document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.target.value;updateSortArrows();render();});
+
+// ── 表頭點擊排序（年份/IMDB/豆瓣/評分）──
+const SORT_COLS = {
+  thYear:  {asc:'year-asc',  desc:'year-desc'},
+  thImdb:  {asc:'imdb-asc',  desc:'imdb-desc'},
+  thDouban:{asc:'douban-asc',desc:'douban-desc'},
+  thScore: {asc:'personal-asc',desc:'personal-desc'}
+};
+function updateSortArrows(){
+  Object.keys(SORT_COLS).forEach(id=>{
+    const th=document.getElementById(id);
+    const arrow=th.querySelector('.sort-arrow');
+    const cfg=SORT_COLS[id];
+    if(sort===cfg.asc){ th.classList.add('active'); arrow.textContent='▲'; }
+    else if(sort===cfg.desc){ th.classList.add('active'); arrow.textContent='▼'; }
+    else{ th.classList.remove('active'); arrow.textContent=''; }
+  });
+}
+Object.keys(SORT_COLS).forEach(id=>{
+  document.getElementById(id).addEventListener('click', ()=>{
+    const cfg=SORT_COLS[id];
+    sort = (sort===cfg.desc) ? cfg.asc : cfg.desc;
+    const opts = Array.from(document.getElementById('sortSelect').options);
+    document.getElementById('sortSelect').value = opts.some(o=>o.value===sort) ? sort : '';
+    updateSortArrows();
+    render();
+  });
+});
+updateSortArrows();
 
 buildTop5();
 render();
@@ -1326,17 +1383,6 @@ render();
         <label class="ar-label">發行商</label>
         <input class="ar-input" id="ar_dist" type="text" list="ar_dist_list" placeholder="選擇或手動輸入">
         <datalist id="ar_dist_list">
-          <option value="Netflix"><option value="Disney"><option value="Disney+">
-          <option value="Warner"><option value="Universal"><option value="SONY">
-          <option value="Paramount"><option value="Lions Gate"><option value="A24">
-          <option value="HBO Max"><option value="Amazon"><option value="Apple">
-          <option value="Fox"><option value="20th Century"><option value="NEW">
-          <option value="MGM"><option value="New Line"><option value="東寶">
-          <option value="樂天"><option value="CJ ENM"><option value="KBS">
-          <option value="日本電視"><option value="朝日"><option value="東映">
-          <option value="Showbox"><option value="天津貓眼"><option value="光線動畫">
-          <option value="英皇"><option value="Europa"><option value="BY4M">
-          <option value="哥倫比亞"><option value="tvN"><option value="其他">
         </datalist>
       </div>
       <div class="ar-field">
@@ -1550,7 +1596,7 @@ render();
     var imdbV  = document.getElementById('ar_imdb').value;
     var doubV  = document.getElementById('ar_douban').value;
     var persV  = document.getElementById('ar_personal').value;
-    var dist   = document.getElementById('ar_dist').value;
+    var dist   = document.getElementById('ar_dist').value.trim().replace(/\s*\(\d+\)\s*$/, '');
     var venue  = document.getElementById('ar_venue').value;
 
     var missing = [];
