@@ -1452,6 +1452,8 @@ render();
           setTimeout(function(){
             showToast('⚠️ GitHub 資料筆數較少（' + arr.length + ' < ' + localCount + '），已保留本機資料', true, true);
           }, 800);
+          // 即使跳過覆蓋，仍用本機現有 DATA 重新渲染，確保篩選器/發行商清單等用最新本機資料填充
+          render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
           return;
         }
         DATA.length = 0;
