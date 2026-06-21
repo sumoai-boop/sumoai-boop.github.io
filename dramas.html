@@ -728,7 +728,7 @@ function buildFilters(){
     distSorted.map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
   distSel.value = curDist;
 
-  // 新增表單的發行商 datalist（依數量排序，單欄顯示「名稱 (次數)」）
+  // 新增表單的發行商 datalist（依數量排序，單欄顯示）
   const distListEl = document.getElementById('ar_dist_list');
   if(distListEl){
     distListEl.innerHTML = distSorted.map(([k,v])=>`<option value="${k} (${v})"></option>`).join('');
@@ -1388,6 +1388,11 @@ render();
     function applyData(text){
       try{
         var arr = JSON.parse(text);
+        // 防護：遠端資料筆數若少於本機，代表 CDN 快取尚未更新，跳過覆蓋
+        if(DATA.length && arr.length < DATA.length){
+          console.log('dramas sync: remote(' + arr.length + ') < local(' + DATA.length + '), skip overwrite');
+          return;
+        }
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
         try{ localStorage.setItem('_dramasData', JSON.stringify(arr)); }catch{}
