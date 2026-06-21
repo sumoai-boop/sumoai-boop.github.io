@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+  ⚠️⚠️⚠️ 重要提醒 ⚠️⚠️⚠️
+  上傳此 dramas.html 到 GitHub 時，請「只上傳這一個檔案」。
+  絕對不要連同 dramas-data.json 一起上傳/覆蓋！
+  資料永遠透過網站本身的「新增記錄／編輯／刪除」按鈕寫入 GitHub，
+  手動覆蓋 dramas-data.json 會把最新新增的記錄蓋掉、造成資料遺失。
+  若不確定，上傳前先到 GitHub 網頁確認 dramas-data.json 的最後修改時間。
+-->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -52,10 +60,6 @@
   .table-wrap{background:rgba(30,50,90,0.75);border:1px solid rgba(50,80,140,0.6);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
   .movie-table th{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,230,255,0.95);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:center;background:rgba(20,40,80,0.5);white-space:nowrap;font-weight:600;}
-  .th-sortable{cursor:pointer;user-select:none;transition:color 0.15s,background 0.15s;}
-  .th-sortable:hover{color:#FFB432;background:rgba(232,98,42,0.18);}
-  .th-sortable.active{color:#FFB432;}
-  .sort-arrow{display:inline-block;width:10px;margin-left:3px;font-size:10px;opacity:0.85;}
   .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#4A2A08;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
   .movie-table tr:hover td{background:rgba(255,255,255,0.08);}
@@ -349,12 +353,8 @@ body::before { background: transparent !important; }
   <div class="table-wrap">
     <table class="movie-table">
       <thead><tr>
-        <th>日期</th><th>國家</th><th>種類</th><th>片名</th>
-        <th id="thYear" class="th-sortable">年份<span class="sort-arrow"></span></th>
-        <th id="thImdb" class="th-sortable">IMDB<span class="sort-arrow"></span></th>
-        <th id="thDouban" class="th-sortable">豆瓣<span class="sort-arrow"></span></th>
-        <th id="thScore" class="th-sortable">評分<span class="sort-arrow"></span></th>
-        <th>發行</th><th>觀看地點</th>
+        <th>日期</th><th>國家</th><th>種類</th><th>片名</th><th>年份</th>
+        <th>IMDB</th><th>豆瓣</th><th>評分</th><th>發行</th><th>觀看地點</th>
       </tr></thead>
       <tbody id="movieBody"></tbody>
     </table>
@@ -604,21 +604,7 @@ function render(){
     if(q&&!m.title.includes(q)&&!m.orig.toLowerCase().includes(q.toLowerCase()))return false;
     return true;
   });
-  data.sort((a,b)=>{
-    switch(sort){
-      case 'date-desc': return b.date.localeCompare(a.date);
-      case 'score-desc': return b.score-a.score;
-      case 'personal-desc': return b.personal-a.personal;
-      case 'personal-asc': return a.personal-b.personal;
-      case 'imdb-desc': return b.imdb-a.imdb;
-      case 'imdb-asc': return a.imdb-b.imdb;
-      case 'douban-desc': return b.douban-a.douban;
-      case 'douban-asc': return a.douban-b.douban;
-      case 'year-asc': return a.year-b.year;
-      case 'year-desc':
-      default: return b.year-a.year;
-    }
-  });
+  data.sort((a,b)=>sort==='date-desc'?b.date.localeCompare(a.date):sort==='score-desc'?b.score-a.score:sort==='personal-desc'?b.personal-a.personal:sort==='imdb-desc'?b.imdb-a.imdb:sort==='douban-desc'?b.douban-a.douban:b.year-a.year);
   const totalPages = Math.ceil(data.length/PAGE_SIZE)||1;
   if(currentPage>totalPages) currentPage=1;
   const pageData = data.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
@@ -907,36 +893,7 @@ document.getElementById('typeSelect').addEventListener('change',e=>{fType=e.targ
 document.getElementById('yearSelect').addEventListener('change',e=>{fYear=e.target.value;render();});
 document.getElementById('venueSelect').addEventListener('change',e=>{fVenue=e.target.value;render();});
 document.getElementById('distSelect').addEventListener('change',e=>{fDist=e.target.value;render();});
-document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.target.value;updateSortArrows();render();});
-
-// ── 表頭點擊排序（年份/IMDB/豆瓣/評分）──
-const SORT_COLS = {
-  thYear:  {asc:'year-asc',  desc:'year-desc'},
-  thImdb:  {asc:'imdb-asc',  desc:'imdb-desc'},
-  thDouban:{asc:'douban-asc',desc:'douban-desc'},
-  thScore: {asc:'personal-asc',desc:'personal-desc'}
-};
-function updateSortArrows(){
-  Object.keys(SORT_COLS).forEach(id=>{
-    const th=document.getElementById(id);
-    const arrow=th.querySelector('.sort-arrow');
-    const cfg=SORT_COLS[id];
-    if(sort===cfg.asc){ th.classList.add('active'); arrow.textContent='▲'; }
-    else if(sort===cfg.desc){ th.classList.add('active'); arrow.textContent='▼'; }
-    else{ th.classList.remove('active'); arrow.textContent=''; }
-  });
-}
-Object.keys(SORT_COLS).forEach(id=>{
-  document.getElementById(id).addEventListener('click', ()=>{
-    const cfg=SORT_COLS[id];
-    sort = (sort===cfg.desc) ? cfg.asc : cfg.desc; // 預設先降冪，再點切換升冪
-    document.getElementById('sortSelect').value =
-      (sort==='year-desc') ? 'year-desc' : (Array.from(document.getElementById('sortSelect').options).some(o=>o.value===sort) ? sort : '');
-    updateSortArrows();
-    render();
-  });
-});
-updateSortArrows();
+document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.target.value;render();});
 
 buildTop5();
 render();
@@ -1444,6 +1401,15 @@ render();
     function applyData(text){
       try{
         var arr = JSON.parse(text);
+        var localCount = DATA.length;
+        // ⚠️ 安全網：若遠端筆數比本機少，代表可能被誤覆蓋，明確跳警告而非靜默接受
+        if(localCount > 0 && arr.length < localCount){
+          console.warn('dramas sync: remote(' + arr.length + ') < local(' + localCount + ')，疑似資料被覆蓋，跳過自動更新');
+          setTimeout(function(){
+            showToast('⚠️ 偵測到 GitHub 資料筆數變少（' + arr.length + ' < ' + localCount + '），可能被誤上傳覆蓋！已保留本機資料，請檢查 dramas-data.json', true, true);
+          }, 800);
+          return;
+        }
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
         try{ localStorage.setItem('_dramasData', JSON.stringify(arr)); }catch{}
@@ -1500,7 +1466,7 @@ render();
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
   // ── Toast 工具 ──
-  function showToast(msg, isError){
+  function showToast(msg, isError, isCritical){
     var toast = document.getElementById('arToast');
     if(!toast){
       toast = document.createElement('div');
@@ -1513,7 +1479,7 @@ render();
       : 'linear-gradient(135deg,#e8622a,#ffb432)';
     toast.textContent = msg;
     requestAnimationFrame(function(){ toast.style.opacity='1'; toast.style.transform='translateY(0)'; });
-    setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, isError ? 5000 : 3000);
+    setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, isCritical ? 12000 : (isError ? 5000 : 3000));
   }
 
   // ── GitHub API：取得檔案 SHA 並推送更新 ──
