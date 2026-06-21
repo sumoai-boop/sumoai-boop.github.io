@@ -52,10 +52,6 @@
   .table-wrap{background:rgba(30,50,90,0.75);border:1px solid rgba(50,80,140,0.6);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(232,98,42,0.12),0 0 40px rgba(232,98,42,0.05);}
   .movie-table{width:100%;border-collapse:collapse;}
   .movie-table th{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,230,255,0.95);padding:12px 14px;border-bottom:1px solid rgba(232,98,42,0.3);text-align:center;background:rgba(20,40,80,0.5);white-space:nowrap;font-weight:600;}
-  .th-sortable{cursor:pointer;user-select:none;transition:color 0.15s,background 0.15s;}
-  .th-sortable:hover{color:#FFB432;background:rgba(232,98,42,0.18);}
-  .th-sortable.active{color:#FFB432;}
-  .sort-arrow{display:inline-block;width:10px;margin-left:3px;font-size:10px;opacity:0.85;}
   .movie-table td{padding:11px 14px;border-bottom:1px solid rgba(232,98,42,0.12);font-size:12px;color:#4A2A08;vertical-align:middle;}
   .movie-table tr:last-child td{border-bottom:none;}
   .movie-table tr:hover td{background:rgba(255,255,255,0.08);}
@@ -349,12 +345,8 @@ body::before { background: transparent !important; }
   <div class="table-wrap">
     <table class="movie-table">
       <thead><tr>
-        <th>日期</th><th>國家</th><th>種類</th><th>片名</th>
-        <th id="thYear" class="th-sortable">年份<span class="sort-arrow"></span></th>
-        <th id="thImdb" class="th-sortable">IMDB<span class="sort-arrow"></span></th>
-        <th id="thDouban" class="th-sortable">豆瓣<span class="sort-arrow"></span></th>
-        <th id="thScore" class="th-sortable">評分<span class="sort-arrow"></span></th>
-        <th>發行</th><th>觀看地點</th>
+        <th>日期</th><th>國家</th><th>種類</th><th>片名</th><th>年份</th>
+        <th>IMDB</th><th>豆瓣</th><th>評分</th><th>發行</th><th>觀看地點</th>
       </tr></thead>
       <tbody id="movieBody"></tbody>
     </table>
@@ -604,21 +596,7 @@ function render(){
     if(q&&!m.title.includes(q)&&!m.orig.toLowerCase().includes(q.toLowerCase()))return false;
     return true;
   });
-  data.sort((a,b)=>{
-    switch(sort){
-      case 'date-desc': return b.date.localeCompare(a.date);
-      case 'score-desc': return b.score-a.score;
-      case 'personal-desc': return b.personal-a.personal;
-      case 'personal-asc': return a.personal-b.personal;
-      case 'imdb-desc': return b.imdb-a.imdb;
-      case 'imdb-asc': return a.imdb-b.imdb;
-      case 'douban-desc': return b.douban-a.douban;
-      case 'douban-asc': return a.douban-b.douban;
-      case 'year-asc': return a.year-b.year;
-      case 'year-desc':
-      default: return b.year-a.year;
-    }
-  });
+  data.sort((a,b)=>sort==='date-desc'?b.date.localeCompare(a.date):sort==='score-desc'?b.score-a.score:sort==='personal-desc'?b.personal-a.personal:sort==='imdb-desc'?b.imdb-a.imdb:sort==='douban-desc'?b.douban-a.douban:b.year-a.year);
   const totalPages = Math.ceil(data.length/PAGE_SIZE)||1;
   if(currentPage>totalPages) currentPage=1;
   const pageData = data.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
@@ -745,16 +723,10 @@ function buildFilters(){
   // 發行商
   const distSel = document.getElementById('distSelect');
   const curDist = distSel.value;
-  const distSorted = Object.entries(dists).sort((a,b)=>b[1]-a[1]);
   distSel.innerHTML = '<option value="">全部發行商</option>' +
-    distSorted.map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
+    Object.entries(dists).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
   distSel.value = curDist;
-
-  // 新增表單的發行商 datalist（依數量排序，單欄顯示）
-  const distListEl = document.getElementById('ar_dist_list');
-  if(distListEl){
-    distListEl.innerHTML = distSorted.map(([k,v])=>`<option value="${k} (${v})"></option>`).join('');
-  }
 
   // 觀看地點
   const venueSel = document.getElementById('venueSelect');
@@ -913,36 +885,7 @@ document.getElementById('typeSelect').addEventListener('change',e=>{fType=e.targ
 document.getElementById('yearSelect').addEventListener('change',e=>{fYear=e.target.value;render();});
 document.getElementById('venueSelect').addEventListener('change',e=>{fVenue=e.target.value;render();});
 document.getElementById('distSelect').addEventListener('change',e=>{fDist=e.target.value;render();});
-document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.target.value;updateSortArrows();render();});
-
-// ── 表頭點擊排序（年份/IMDB/豆瓣/評分）──
-const SORT_COLS = {
-  thYear:  {asc:'year-asc',  desc:'year-desc'},
-  thImdb:  {asc:'imdb-asc',  desc:'imdb-desc'},
-  thDouban:{asc:'douban-asc',desc:'douban-desc'},
-  thScore: {asc:'personal-asc',desc:'personal-desc'}
-};
-function updateSortArrows(){
-  Object.keys(SORT_COLS).forEach(id=>{
-    const th=document.getElementById(id);
-    const arrow=th.querySelector('.sort-arrow');
-    const cfg=SORT_COLS[id];
-    if(sort===cfg.asc){ th.classList.add('active'); arrow.textContent='▲'; }
-    else if(sort===cfg.desc){ th.classList.add('active'); arrow.textContent='▼'; }
-    else{ th.classList.remove('active'); arrow.textContent=''; }
-  });
-}
-Object.keys(SORT_COLS).forEach(id=>{
-  document.getElementById(id).addEventListener('click', ()=>{
-    const cfg=SORT_COLS[id];
-    sort = (sort===cfg.desc) ? cfg.asc : cfg.desc;
-    const opts = Array.from(document.getElementById('sortSelect').options);
-    document.getElementById('sortSelect').value = opts.some(o=>o.value===sort) ? sort : '';
-    updateSortArrows();
-    render();
-  });
-});
-updateSortArrows();
+document.getElementById('sortSelect').addEventListener('change',e=>{sort=e.target.value;render();});
 
 buildTop5();
 render();
@@ -1383,6 +1326,17 @@ render();
         <label class="ar-label">發行商</label>
         <input class="ar-input" id="ar_dist" type="text" list="ar_dist_list" placeholder="選擇或手動輸入">
         <datalist id="ar_dist_list">
+          <option value="Netflix"><option value="Disney"><option value="Disney+">
+          <option value="Warner"><option value="Universal"><option value="SONY">
+          <option value="Paramount"><option value="Lions Gate"><option value="A24">
+          <option value="HBO Max"><option value="Amazon"><option value="Apple">
+          <option value="Fox"><option value="20th Century"><option value="NEW">
+          <option value="MGM"><option value="New Line"><option value="東寶">
+          <option value="樂天"><option value="CJ ENM"><option value="KBS">
+          <option value="日本電視"><option value="朝日"><option value="東映">
+          <option value="Showbox"><option value="天津貓眼"><option value="光線動畫">
+          <option value="英皇"><option value="Europa"><option value="BY4M">
+          <option value="哥倫比亞"><option value="tvN"><option value="其他">
         </datalist>
       </div>
       <div class="ar-field">
@@ -1438,21 +1392,7 @@ render();
 
     function applyData(text){
       try{
-        // ⚠️ 若正在推送（新增/編輯/刪除進行中），代表 DATA 已超前，跳過這次 sync 避免時序競爭誤判
-        if(typeof _dramaPushing !== 'undefined' && _dramaPushing){
-          console.log('dramas sync: push 進行中，跳過本次 sync');
-          return;
-        }
         var arr = JSON.parse(text);
-        var localCount = DATA.length;
-        // ⚠️ 安全網：若遠端筆數比本機少，代表可能被誤覆蓋或時序競爭，跳過套用而非靜默覆蓋
-        if(localCount > 0 && arr.length < localCount){
-          console.warn('dramas sync: remote(' + arr.length + ') < local(' + localCount + ')，跳過自動更新');
-          setTimeout(function(){
-            showToast('⚠️ GitHub 資料筆數較少（' + arr.length + ' < ' + localCount + '），已保留本機資料', true, true);
-          }, 800);
-          return;
-        }
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
         try{ localStorage.setItem('_dramasData', JSON.stringify(arr)); }catch{}
@@ -1509,7 +1449,7 @@ render();
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
   // ── Toast 工具 ──
-  function showToast(msg, isError, isCritical){
+  function showToast(msg, isError){
     var toast = document.getElementById('arToast');
     if(!toast){
       toast = document.createElement('div');
@@ -1522,7 +1462,7 @@ render();
       : 'linear-gradient(135deg,#e8622a,#ffb432)';
     toast.textContent = msg;
     requestAnimationFrame(function(){ toast.style.opacity='1'; toast.style.transform='translateY(0)'; });
-    setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, isCritical ? 12000 : (isError ? 5000 : 3000));
+    setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, isError ? 5000 : 3000);
   }
 
   // ── GitHub API：取得檔案 SHA 並推送更新 ──
@@ -1596,7 +1536,7 @@ render();
     var imdbV  = document.getElementById('ar_imdb').value;
     var doubV  = document.getElementById('ar_douban').value;
     var persV  = document.getElementById('ar_personal').value;
-    var dist   = document.getElementById('ar_dist').value.trim().replace(/\s*\(\d+\)\s*$/, '');
+    var dist   = document.getElementById('ar_dist').value;
     var venue  = document.getElementById('ar_venue').value;
 
     var missing = [];
@@ -1726,7 +1666,6 @@ render();
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
-    <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
     <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
     <a href="dramas.html" class="gd-item"><div class="gd-dot" style="position:absolute;bottom:-8px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);"></div><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
     <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
@@ -1736,6 +1675,7 @@ render();
     <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
     <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
     <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
+    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5 8c3 1.5 11 1.5 14 0M5 16c3-1.5 11-1.5 14 0"/></svg></div><span class="gd-label">MLB</span></a>
   </div>
 </div>
 <script>
