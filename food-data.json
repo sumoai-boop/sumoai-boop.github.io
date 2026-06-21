@@ -1,5 +1,34 @@
 [
   {
+    "id": "1782041436217",
+    "name": "桶神滷味 土城延和總店",
+    "name1": "桶神滷味",
+    "name2": "土城延和總店",
+    "type": "滷味",
+    "meal": "",
+    "price": 310,
+    "visits": 1,
+    "gscore": 2.4,
+    "addr": "236新北市土城區安和里延和路53號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%A1%B6%E7%A5%9E%E6%BB%B7%E5%91%B3%E5%9C%9F%E5%9F%8E%E5%BB%B6%E5%92%8C%E7%B8%BD%E5%BA%97/@24.9897648,121.4665122,20z/data=!4m6!3m5!1s0x34680300214db747:0x8b6e7cb713f23728!8m2!3d24.9896823!4d121.4664809!16s%2Fg%2F11xkvdgz41?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-21",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2026-06-21",
+        "meal": "晚餐",
+        "price": 310,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/4gdjQztS/ebe79528fda2.jpg"
+    ],
+    "img": "https://i.ibb.co/4gdjQztS/ebe79528fda2.jpg",
+    "createdAt": 1782041436217
+  },
+  {
     "id": "1781792313054",
     "name": "麥當勞 板橋文化店",
     "name1": "麥當勞",
