@@ -1393,7 +1393,21 @@ render();
 
     function applyData(text){
       try{
+        // ⚠️ 若正在推送（新增/編輯/刪除進行中），代表 DATA 已超前，跳過這次 sync 避免時序競爭誤判
+        if(typeof _dramaPushing !== 'undefined' && _dramaPushing){
+          console.log('dramas sync: push 進行中，跳過本次 sync');
+          return;
+        }
         var arr = JSON.parse(text);
+        var localCount = DATA.length;
+        // ⚠️ 安全網：若遠端筆數比本機少，代表可能被誤覆蓋或 CDN 快取未更新，跳過套用而非靜默覆蓋
+        if(localCount > 0 && arr.length < localCount){
+          console.warn('dramas sync: remote(' + arr.length + ') < local(' + localCount + ')，跳過自動更新');
+          setTimeout(function(){
+            showToast('⚠️ GitHub 資料筆數較少（' + arr.length + ' < ' + localCount + '），已保留本機資料', true, true);
+          }, 800);
+          return;
+        }
         DATA.length = 0;
         arr.forEach(function(d){ DATA.push(d); });
         try{ localStorage.setItem('_dramasData', JSON.stringify(arr)); }catch{}
@@ -1450,7 +1464,7 @@ render();
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
   // ── Toast 工具 ──
-  function showToast(msg, isError){
+  function showToast(msg, isError, isCritical){
     var toast = document.getElementById('arToast');
     if(!toast){
       toast = document.createElement('div');
@@ -1463,7 +1477,7 @@ render();
       : 'linear-gradient(135deg,#e8622a,#ffb432)';
     toast.textContent = msg;
     requestAnimationFrame(function(){ toast.style.opacity='1'; toast.style.transform='translateY(0)'; });
-    setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, isError ? 5000 : 3000);
+    setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, isCritical ? 12000 : (isError ? 5000 : 3000));
   }
 
   // ── GitHub API：取得檔案 SHA 並推送更新 ──
