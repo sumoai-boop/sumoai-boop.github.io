@@ -728,10 +728,10 @@ function buildFilters(){
     distSorted.map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
   distSel.value = curDist;
 
-  // 新增表單的發行商 datalist（依數量排序，顯示數量）
+  // 新增表單的發行商 datalist（依數量排序，單欄顯示「名稱 (次數)」）
   const distListEl = document.getElementById('ar_dist_list');
   if(distListEl){
-    distListEl.innerHTML = distSorted.map(([k,v])=>`<option value="${k}">${k} (${v})</option>`).join('');
+    distListEl.innerHTML = distSorted.map(([k,v])=>`<option value="${k} (${v})"></option>`).join('');
   }
 
   // 觀看地點
@@ -1531,7 +1531,7 @@ render();
     var imdbV  = document.getElementById('ar_imdb').value;
     var doubV  = document.getElementById('ar_douban').value;
     var persV  = document.getElementById('ar_personal').value;
-    var dist   = document.getElementById('ar_dist').value;
+    var dist   = document.getElementById('ar_dist').value.trim().replace(/\s*\(\d+\)\s*$/, '');
     var venue  = document.getElementById('ar_venue').value;
 
     var missing = [];
