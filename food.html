@@ -242,7 +242,7 @@
   .ic-threads{background:linear-gradient(145deg,#3F3F46,#71717A);}
   .ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
   .ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
-.ic-mlb{background:linear-gradient(145deg,#041E42,#0C2340);border:1px solid rgba(255,255,255,0.15);}
+.ic-mlb{background:linear-gradient(145deg,#FD5A1E,#C23A0A);}
 
   @media(max-width:600px){
     
@@ -1484,6 +1484,13 @@ function render(){
       visitBadge.style.cssText = 'position:absolute;top:7px;right:7px;z-index:4;background:rgba(0,0,0,0.6);color:#FF6B6B;font-size:20px;font-weight:700;border-radius:99px;padding:2px 10px;';
       if(visitCount <= 1) visitBadge.style.display='none';
 
+      // 評分角標（左上角）
+      const scoreBadge = document.createElement('span');
+      if(item.score>0){
+        scoreBadge.textContent = '⭐ '+(+item.score).toFixed(1);
+        scoreBadge.style.cssText = 'position:absolute;top:7px;left:7px;z-index:4;background:rgba(0,0,0,0.6);color:#FFD200;font-size:13px;font-weight:700;border-radius:99px;padding:2px 10px;';
+      }
+
       if(coverImg){
         const imgs = item.imgs && item.imgs.length > 0 ? item.imgs : [coverImg];
         let idx = 0;
@@ -1495,6 +1502,7 @@ function render(){
         img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;';
         card.appendChild(img);
         card.appendChild(visitBadge);
+        if(item.score>0) card.appendChild(scoreBadge);
 
         if(imgs.length > 1){
           // 左右按鈕
@@ -1558,6 +1566,7 @@ function render(){
             </div>
           </div>`;
         card.appendChild(visitBadge);
+        if(item.score>0) card.appendChild(scoreBadge);
       }
       card.addEventListener('click',()=>openDetail(item));
       grid.appendChild(card);
@@ -1649,7 +1658,7 @@ setInterval(updateTime, 10000);</script>
     <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
     <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
     <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><span style="font-size:15px;font-weight:900;font-family:Arial,sans-serif;color:#fff;line-height:1;letter-spacing:-0.5px;">MLB</span></div><span class="gd-label">MLB</span></a>
+    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.8 5.8c2.6 3.4 2.6 9 0 12.4"/><path d="M18.2 5.8c-2.6 3.4-2.6 9 0 12.4"/><path d="M7 8.5l1.4.5M7 15.5l1.4-.5M17 8.5l-1.4.5M17 15.5l-1.4-.5"/></svg></div><span class="gd-label">MLB</span></a>
   </div>
 </div>
 <script>
