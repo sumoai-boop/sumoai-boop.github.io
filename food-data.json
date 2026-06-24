@@ -1,5 +1,34 @@
 [
   {
+    "id": "1782295320262",
+    "name": "覺丸拉麵",
+    "name1": "覺丸拉麵",
+    "name2": "",
+    "type": "拉麵",
+    "meal": "",
+    "price": 350,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "701臺南市東區小東里東興路275號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E8%A6%BA%E4%B8%B8%E6%8B%89%E9%BA%B5/@22.9960078,120.2271653,17z/data=!3m1!4b1!4m6!3m5!1s0x346e76c075aa3a33:0x6399402cf32a429c!8m2!3d22.9960029!4d120.2297402!16s%2Fg%2F11cmnp6r5x?entry=ttu&g_ep=EgoyMDI2MDYyMS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-24",
+    "score": 5,
+    "visitLog": [
+      {
+        "date": "2026-06-24",
+        "meal": "午餐",
+        "price": 350,
+        "menu": "濃白牛骨拉麵"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/C542c8Vw/94a7be905518.jpg"
+    ],
+    "img": "https://i.ibb.co/C542c8Vw/94a7be905518.jpg",
+    "createdAt": 1782295320262
+  },
+  {
     "id": "1782295247110",
     "name": "らーめん赤楽猿",
     "name1": "らーめん赤楽猿",
