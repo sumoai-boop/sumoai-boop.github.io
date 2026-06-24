@@ -42,7 +42,7 @@
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E3%82%89%E3%83%BC%E3%82%81%E3%82%93%E8%B5%A4%E6%A5%BD%E7%8C%BF+%7C+Ramen+Sekirakuen/@24.1560779,120.6528341,17z/data=!3m1!4b1!4m6!3m5!1s0x34693d8816411b89:0x11a20a991f9d1ed7!8m2!3d24.156073!4d120.655409!16s%2Fg%2F11y36wxl04?entry=ttu&g_ep=EgoyMDI2MDYyMS4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-06-23",
-    "score": 4,
+    "score": 3.8,
     "visitLog": [
       {
         "date": "2026-06-23",
@@ -55,7 +55,8 @@
       "https://i.ibb.co/xqjxRrbk/a6e8ad0a10a4.jpg"
     ],
     "img": "https://i.ibb.co/xqjxRrbk/a6e8ad0a10a4.jpg",
-    "createdAt": 1782295247110
+    "createdAt": 1782295247110,
+    "updatedAt": 1782295407135
   },
   {
     "id": "1782041436217",
