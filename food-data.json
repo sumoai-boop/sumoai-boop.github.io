@@ -1,5 +1,34 @@
 [
   {
+    "id": "1782295446413",
+    "name": "焦糖楓串燒 台南中正直營店",
+    "name1": "焦糖楓串燒",
+    "name2": "台南中正直營店",
+    "type": "串燒",
+    "meal": "",
+    "price": 400,
+    "visits": 1,
+    "gscore": 4.7,
+    "addr": "700臺南市中西區淺草里中正路182號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E7%84%A6%E7%B3%96%E6%A5%93%E4%B8%B2%E7%87%92+%2F%E5%8F%B0%E5%8D%97%E4%B8%AD%E6%AD%A3%E7%9B%B4%E7%87%9F%E5%BA%97/@22.9938544,120.1942178,17z/data=!4m14!1m7!3m6!1s0x346e7707d40becdf:0x1a472cd74acbd854!2z54Sm57OW5qWT5Liy54eSIC_lj7DljZfkuK3mraPnm7Tnh5_lupc!8m2!3d22.9930001!4d120.198166!16s%2Fg%2F11nnvtzsjs!3m5!1s0x346e7707d40becdf:0x1a472cd74acbd854!8m2!3d22.9930001!4d120.198166!16s%2Fg%2F11nnvtzsjs?entry=ttu&g_ep=EgoyMDI2MDYyMS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-23",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-06-23",
+        "meal": "晚餐",
+        "price": 400,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/4R3DqPrJ/f1938bb03040.jpg"
+    ],
+    "img": "https://i.ibb.co/4R3DqPrJ/f1938bb03040.jpg",
+    "createdAt": 1782295446413
+  },
+  {
     "id": "1782295320262",
     "name": "覺丸拉麵",
     "name1": "覺丸拉麵",
