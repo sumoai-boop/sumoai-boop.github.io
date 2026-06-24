@@ -102,6 +102,11 @@
   .pm-score-lbl{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(100,70,10,0.8);}
   .pm-score-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#B8860B;}
   .pm-overview{font-size:13px;color:#3D2800;line-height:1.9;width:100%;border-top:1px solid rgba(232,98,42,0.2);padding-top:14px;}
+  .pm-review-wrap{width:100%;margin-top:14px;border-top:1px solid rgba(232,98,42,0.2);padding-top:14px;display:none;}
+  .pm-review-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(232,98,42,0.7);margin-bottom:6px;}
+  .pm-review-text{font-size:13px;color:#3D2800;line-height:1.9;white-space:pre-wrap;}
+  .ar-textarea{width:100%;padding:10px 12px;background:rgba(255,255,255,0.55);border:1px solid rgba(232,98,42,0.25);border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;color:#2a1800;resize:vertical;min-height:80px;outline:none;transition:border 0.2s;}
+  .ar-textarea:focus{border-color:rgba(232,98,42,0.6);background:rgba(255,255,255,0.75);}
 
   @media(max-width:700px){
     .topnav{padding:12px 20px;}
@@ -381,6 +386,10 @@ body::before { background: transparent !important; }
         <div class="pm-score-item"><div class="pm-score-lbl">豆瓣</div><div class="pm-score-val" id="pmDouban">—</div></div>
       </div>
       <div class="pm-overview" id="pmOverview"></div>
+      <div class="pm-review-wrap" id="pmReviewWrap">
+        <div class="pm-review-label">✦ 我的影評</div>
+        <div class="pm-review-text" id="pmReview"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -802,6 +811,16 @@ async function openPoster(m){
   document.getElementById('pmPersonal').textContent=m.personal>0?m.personal.toFixed(1):'—';
   document.getElementById('pmIMDB').textContent=m.imdb>0?m.imdb:'—';
   document.getElementById('pmDouban').textContent=m.douban>0?m.douban:'—';
+  // 影評
+  var reviewWrap = document.getElementById('pmReviewWrap');
+  var reviewEl = document.getElementById('pmReview');
+  if(m.review && m.review.trim()){
+    reviewEl.textContent = m.review;
+    reviewWrap.style.display = 'block';
+  } else {
+    reviewEl.textContent = '';
+    reviewWrap.style.display = 'none';
+  }
   try{
     // 年份+語言比對函數
     const LANG_MAP2={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
@@ -1412,6 +1431,13 @@ render();
 
       <div class="ar-divider"></div>
 
+      <div class="ar-field ar-full">
+        <label class="ar-label">影評</label>
+        <textarea class="ar-textarea" id="ar_review" placeholder="輸入你的影評（選填）"></textarea>
+      </div>
+
+      <div class="ar-divider"></div>
+
       <div class="ar-actions">
         <button class="ar-btn-cancel" id="arCancelBtn">取消</button>
         <button class="ar-btn-submit" id="arSubmitBtn">✦ 新增到列表</button>
@@ -1601,6 +1627,7 @@ render();
     var persV  = document.getElementById('ar_personal').value;
     var dist   = document.getElementById('ar_dist').value.trim().replace(/\s*\(\d+\)\s*$/, '');
     var venue  = document.getElementById('ar_venue').value;
+    var review = document.getElementById('ar_review').value.trim();
 
     var missing = [];
     if(!date)  missing.push('觀看日期');
@@ -1615,6 +1642,7 @@ render();
     r.personal = parseFloat(persV);
     r.dist    = dist || '';
     r.venue   = venue;
+    r.review  = review || '';
 
     // 立即更新頁面 UI
     if(window._editTarget){
@@ -1651,6 +1679,7 @@ render();
     document.getElementById('ar_dist').value    = '';
     document.getElementById('ar_date').value    = new Date().toISOString().split('T')[0];
     document.getElementById('ar_year').value    = new Date().getFullYear();
+    document.getElementById('ar_review').value  = '';
 
     // 推送到 GitHub（背景執行，不阻塞頁面）
     pushToGitHub(r).then(function(ok){
@@ -1680,6 +1709,7 @@ render();
     document.getElementById('ar_personal').value= m.personal || '';
     document.getElementById('ar_dist').value    = m.dist || '';
     document.getElementById('ar_venue').value   = m.venue || '🏠 家庭劇院';
+    document.getElementById('ar_review').value  = m.review || '';
 
     // 標記為編輯模式，記錄原始資料
     window._editTarget = m;
