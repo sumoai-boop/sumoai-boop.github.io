@@ -1487,8 +1487,9 @@ function render(){
       // 評分角標（左上角）
       const scoreBadge = document.createElement('span');
       if(item.score>0){
-        scoreBadge.textContent = '⭐ '+(+item.score).toFixed(1);
-        scoreBadge.style.cssText = 'position:absolute;top:7px;left:7px;z-index:4;background:rgba(0,0,0,0.6);color:#FFD200;font-size:13px;font-weight:700;border-radius:99px;padding:2px 10px;';
+        const scoreColor = item.score>=5 ? '#FFD200' : '#ffffff';
+        scoreBadge.textContent = (+(item.score)).toFixed(1);
+        scoreBadge.style.cssText = `position:absolute;top:7px;left:7px;z-index:4;background:rgba(0,0,0,0.6);color:${scoreColor};font-size:14px;font-weight:700;border-radius:99px;padding:2px 10px;`;
       }
 
       if(coverImg){
