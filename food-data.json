@@ -3937,19 +3937,21 @@
     "note": "公主",
     "maps": "https://www.google.com/maps/place/%E6%96%B0%E6%9D%91%E5%A5%B6%E6%B2%B9%E7%87%89%E6%8E%92%E9%AA%A8/@37.5578689,126.9345999,16z/data=!4m6!3m5!1s0x357c989459a703ef:0xcf6b740f1ea9aa98!8m2!3d37.5571996!4d126.9355326!16s%2Fg%2F11bymw1sjd?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-04-09",
-    "score": 4.2,
+    "score": 4,
     "visitLog": [
       {
         "date": "2026-04-09",
         "meal": "午餐",
-        "price": 830
+        "price": 830,
+        "menu": ""
       }
     ],
     "imgs": [
       "https://i.ibb.co/8DY2gP5Q/c18cfd2ffcab.jpg"
     ],
     "img": "https://i.ibb.co/8DY2gP5Q/c18cfd2ffcab.jpg",
-    "createdAt": 1779371099222
+    "createdAt": 1779371099222,
+    "updatedAt": 1782395502715
   },
   {
     "id": "1779370791637",
