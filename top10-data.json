@@ -12994,5 +12994,156 @@
       "剧情",
       "犯罪"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Maternal Instinct",
+    "views": 25500000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Maternal Instinct",
+    "titleZh": "母性本能：德州奪胎案",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Voicemails for Isabelle",
+    "views": 17500000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Voicemails for Isabelle",
+    "titleZh": "真愛留聲",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Office Romance",
+    "views": 7800000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Office Romance",
+    "titleZh": "同事以上，戀人未滿",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Street Kings",
+    "views": 6200000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Street Kings",
+    "titleZh": "正義悍將",
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "剧情",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Swapped",
+    "views": 4900000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "KPop Demon Hunters",
+    "views": 3600000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Flowers in the Attic",
+    "views": 3400000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Flowers in the Attic",
+    "titleZh": "閣樓裡的小花",
+    "country": "CA",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "惊悚",
+      "电视电影"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Percy Jackson & the Olympians: The Lightning Thief",
+    "views": 3200000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Percy Jackson & the Olympians: The Lightning Thief",
+    "titleZh": "波西傑克森：神火之賊",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "奇幻",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "No Time to Die",
+    "views": 3100000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "No Time to Die",
+    "titleZh": "007：生死交戰",
+    "country": "GB",
+    "genres": [
+      "动作",
+      "惊悚",
+      "冒险"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Goat",
+    "views": 2600000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|English",
+    "titleEn": "Goat",
+    "titleZh": "山羊巔峰",
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
+    ]
   }
 ]
