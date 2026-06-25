@@ -13145,5 +13145,148 @@
       "喜剧",
       "家庭"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Colors Of Evil: Black",
+    "views": 7500000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Colors Of Evil: Black",
+    "titleZh": "極惡原色：闇黑謎鎮",
+    "country": "PL",
+    "genres": [
+      "惊悚",
+      "悬疑",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Husbands in Action",
+    "views": 5700000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Husbands in Action",
+    "titleZh": "人夫總動員",
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "动作"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Bhooth Bangla",
+    "views": 4700000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Bhooth Bangla",
+    "titleZh": "鬼叫你要嫁",
+    "country": "IN",
+    "genres": [
+      "恐怖",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "The Marked Woman",
+    "views": 3400000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Marked Woman",
+    "titleZh": "謎印女子",
+    "country": "ES",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Colors of Evil: Red",
+    "views": 1900000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Colors of Evil: Red",
+    "titleZh": "極惡原色：腥紅血岸",
+    "country": "PL",
+    "genres": [
+      "犯罪",
+      "惊悚",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Daddy's in Trouble",
+    "views": 1500000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Daddy's in Trouble",
+    "titleZh": "",
+    "country": "BR",
+    "genres": []
+  },
+  {
+    "rank": 7,
+    "title": "Manitou's Canoe",
+    "views": 1200000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Manitou's Canoe",
+    "titleZh": "瑪尼圖之舟",
+    "country": "DE",
+    "genres": [
+      "喜剧",
+      "西部"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Maa Behen",
+    "views": 1200000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Maa Behen",
+    "titleZh": "媽呀真亂來",
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Kafir: The Spirit Gate",
+    "views": 1100000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Kafir: The Spirit Gate",
+    "titleZh": "",
+    "country": "ID",
+    "genres": [
+      "恐怖",
+      "剧情",
+      "悬疑",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Dhurandhar The Revenge (Raw & Undekha)",
+    "views": 1100000,
+    "week": "6/15/26 - 6/21/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Dhurandhar The Revenge (Raw & Undekha)",
+    "titleZh": "黑境行者：復仇",
+    "country": "IN",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
   }
 ]
