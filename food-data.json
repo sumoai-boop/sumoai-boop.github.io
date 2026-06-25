@@ -4030,17 +4030,19 @@
     "note": "公主出錢",
     "maps": "https://www.google.com/maps/place/Ggupdang+Seongsu/@37.5432243,127.057537,17z/data=!3m1!4b1!4m6!3m5!1s0x357ca55613346689:0xe0e21f5e02b1a231!8m2!3d37.5432243!4d127.057537!16s%2Fg%2F11k95prw4c?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-04-07",
-    "score": 4.6,
+    "score": 5,
     "visitLog": [
       {
         "date": "2026-04-07",
         "meal": "晚餐",
-        "price": 1
+        "price": 1,
+        "menu": ""
       },
       {
         "date": "2025-07-11",
         "meal": "晚餐",
-        "price": 667
+        "price": 667,
+        "menu": ""
       }
     ],
     "imgs": [
@@ -4050,7 +4052,7 @@
     ],
     "img": "https://i.ibb.co/7xZMQWL4/0d215fd68a35.jpg",
     "createdAt": 1779370376795,
-    "updatedAt": 1779371154414
+    "updatedAt": 1782395480579
   },
   {
     "id": "1779369964857",
