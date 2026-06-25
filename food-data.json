@@ -596,7 +596,7 @@
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E9%80%99%E5%91%B3%E6%B3%B0%E6%B3%B0-%E5%8D%97%E6%B8%AF%E7%92%B0%E7%90%83/@25.0341624,121.5669085,13z/data=!3m1!5s0x3442ab5dddc18773:0x485a20470ad030c8!4m10!1m2!2m1!1z6YCZ5ZGz5rOw5rOw!3m6!1s0x3442ab65ac93ac8d:0x582b7353dd1be718!8m2!3d25.0528955!4d121.6072597!15sCgzpgJnlkbPms7Dms7AiA4gBAVoRIg_pgJkg5ZGzIOazsCDms7CSAQpyZXN0YXVyYW504AEA!16s%2Fg%2F11ygzm82tg?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-06-14",
-    "score": 3.4,
+    "score": 3.2,
     "visitLog": [
       {
         "date": "2026-06-14",
@@ -609,7 +609,8 @@
       "https://i.ibb.co/yFjVcZyL/cb671fb23269.jpg"
     ],
     "img": "https://i.ibb.co/yFjVcZyL/cb671fb23269.jpg",
-    "createdAt": 1781451861752
+    "createdAt": 1781451861752,
+    "updatedAt": 1782395573324
   },
   {
     "id": "1781403154313",
