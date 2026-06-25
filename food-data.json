@@ -625,7 +625,7 @@
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E9%BA%B5%E5%B1%8B%E4%B8%80%E7%87%88+%E4%BF%A1%E7%BE%A9%E6%96%B0%E5%85%89A11%E5%BA%97/@25.0370961,121.5669865,19z/data=!3m1!5s0x3442abba122d5721:0x4e009547ae0f297c!4m6!3m5!1s0x3442ab002aced1ed:0x9122c0fa750e79ea!8m2!3d25.0367465!4d121.5673196!16s%2Fg%2F11ltwy27k1?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-06-13",
-    "score": 3,
+    "score": 3.1,
     "visitLog": [
       {
         "date": "2026-06-13",
@@ -639,7 +639,8 @@
       "https://i.ibb.co/9HJ967Bp/1582d1c5fe64.jpg"
     ],
     "img": "https://i.ibb.co/G4pNVZyF/9bac593ebf6b.jpg",
-    "createdAt": 1781403154313
+    "createdAt": 1781403154313,
+    "updatedAt": 1782373648611
   },
   {
     "id": "1781065103608",
