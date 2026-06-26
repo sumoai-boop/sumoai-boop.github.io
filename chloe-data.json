@@ -62,11 +62,17 @@
     "小母狗",
     "水梨"
   ],
-  "relationship": "戀愛經歷：3任，曾單身 6 年\n前任男友：台塑業務，南亞纖維部\n家人：出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的",
+  "relHistory": "3任，曾單身 6 年",
+  "relCurrent": "台塑業務，南亞纖維部",
+  "relSuitor": "",
+  "relFamily": "出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的",
+  "jobdesc": "",
   "notes": "",
   "photos": [
     "https://i.ibb.co/r2ySrPFC/cafcfb87a70a.jpg"
   ],
+  "avatar": "https://i.ibb.co/wt6D1g1/71827aacd357.jpg",
+  "relationship": "戀愛經歷：3任，曾單身 6 年\n前任男友：台塑業務，南亞纖維部\n家人：出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的",
   "job": "樂天招商",
   "dept": "海運部門"
 }
