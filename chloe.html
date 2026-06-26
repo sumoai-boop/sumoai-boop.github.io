@@ -203,7 +203,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr>
       <td class="td-label">現職</td>
       <td class="td-val" id="disp-job-curr">樂天招商 · 海運部門</td>
-      <td class="td-val" id="disp-jobdesc">—</td>
+      <td class="td-val" id="disp-job-prev2">—</td>
     </tr>
 
   </table>
@@ -467,25 +467,27 @@ function mkTags(arr,cls){
 
 function applyData(d){
   data=d;
-  document.getElementById('disp-birthday').textContent=d.birthday||'';
-  document.getElementById('disp-height').textContent=d.height||'';
-  document.getElementById('disp-zodiac').textContent=(d.zodiac||'')+(d.zodiac?'':'')+' ♑';
-  document.getElementById('disp-location').textContent=d.location||'';
-  document.getElementById('disp-met').textContent=d.met||'';
-  document.getElementById('disp-cup').textContent=d.cup||'—';
-  document.getElementById('disp-phone').textContent=d.phone||'—';
-  document.getElementById('disp-idol').textContent=d.idol||'—';
-  document.getElementById('disp-movie').textContent=d.movie||'—';
+  function setText(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
+  function setHTML(id,val){var el=document.getElementById(id);if(el)el.innerHTML=val;}
+  setText('disp-birthday',d.birthday||'');
+  setText('disp-height',d.height||'');
+  setText('disp-zodiac',(d.zodiac||'')+(d.zodiac?'':'')+' ♑');
+  setText('disp-location',d.location||'');
+  setText('disp-met',d.met||'');
+  setText('disp-cup',d.cup||'—');
+  setText('disp-phone',d.phone||'—');
+  setText('disp-idol',d.idol||'—');
+  setText('disp-movie',d.movie||'—');
   // 學歷：相容兩種格式
   var ep=(d.edu||'').split('｜');
   var s1='',d1='',s2='',d2='';
   if(ep.length>=4){s1=ep[0];d1=ep[1];s2=ep[2];d2=ep[3];}
   else if(ep.length===2){s1=ep[0];d1='';s2=ep[1];d2='';}
   else if(ep.length===1){s1=ep[0];d1='';s2='';d2='';}
-  document.getElementById('disp-edu-school').textContent=s1;
-  document.getElementById('disp-edu-dept').textContent=d1;
-  document.getElementById('disp-edu-school2').textContent=s2;
-  document.getElementById('disp-edu-dept2').textContent=d2;
+  setText('disp-edu-school',s1);
+  setText('disp-edu-dept',d1);
+  setText('disp-edu-school2',s2);
+  setText('disp-edu-dept2',d2);
   // 職涯
   var jobs=(d.jobs&&d.jobs.length)?d.jobs:(d.job?[d.job]:['樂天招商']);
   var depts=(d.depts&&d.depts.length)?d.depts:(d.dept?[d.dept]:['海運部門']);
@@ -493,22 +495,22 @@ function applyData(d){
   var prev1=d.jobPrev1||(d.jobs&&d.jobs[0]?d.jobs[0]+(d.depts&&d.depts[0]?' · '+d.depts[0]:''):'—');
   var prev2=d.jobPrev2||(d.jobs&&d.jobs[1]?d.jobs[1]+(d.depts&&d.depts[1]?' · '+d.depts[1]:''):'—');
   var currJob=d.jobCurr||'—';
-  document.getElementById('disp-job-curr').textContent=currJob;
-  document.getElementById('disp-job-prev').textContent=prev1;
-  document.getElementById('disp-job-prev2').textContent=prev2;
+  setText('disp-job-curr',currJob);
+  setText('disp-job-prev',prev1);
+  setText('disp-job-prev2',prev2);
   // 感情
-  document.getElementById('disp-rel-history').textContent=d.relHistory||'—';
-  document.getElementById('disp-rel-current').textContent=d.relCurrent||'—';
-  document.getElementById('disp-rel-suitor').textContent=d.relSuitor||'—';
-  document.getElementById('disp-rel-family').textContent=d.relFamily||'—';
+  setText('disp-rel-history',d.relHistory||'—');
+  setText('disp-rel-current',d.relCurrent||'—');
+  setText('disp-rel-suitor',d.relSuitor||'—');
+  setText('disp-rel-family',d.relFamily||'—');
   // tags
-  document.getElementById('disp-visited').innerHTML=mkTags(d.visited,'tag-default');
-  document.getElementById('disp-wishlist').innerHTML=mkTags(d.wishlist,'tag-teal');
-  document.getElementById('disp-likes').innerHTML=mkTags(d.likes,'tag');
-  document.getElementById('disp-dislikes').innerHTML=mkTags(d.dislikes,'tag-red');
-  document.getElementById('disp-picky').innerHTML=mkTags(d.picky,'tag-red');
-  document.getElementById('disp-foods').innerHTML=mkTags(d.foods,'tag');
-  document.getElementById('disp-nicknames').innerHTML=mkTags(d.nicknames,'tag-gold');
+  setHTML('disp-visited',mkTags(d.visited,'tag-default'));
+  setHTML('disp-wishlist',mkTags(d.wishlist,'tag-teal'));
+  setHTML('disp-likes',mkTags(d.likes,'tag'));
+  setHTML('disp-dislikes',mkTags(d.dislikes,'tag-red'));
+  setHTML('disp-picky',mkTags(d.picky,'tag-red'));
+  setHTML('disp-foods',mkTags(d.foods,'tag'));
+  setHTML('disp-nicknames',mkTags(d.nicknames,'tag-gold'));
   // notes
   var ne=document.getElementById('disp-notes');
   if(d.notes&&d.notes.trim()){ne.style.fontStyle='normal';ne.style.color='#1a1a1a';ne.textContent=d.notes;}
