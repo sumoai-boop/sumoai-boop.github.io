@@ -461,7 +461,8 @@ function showToast(msg){
   setTimeout(function(){t.classList.remove('show');},3000);
 }
 function mkTags(arr,cls){
-  return (arr||[]).map(function(t){return '<span class="'+cls+'">'+t+'</span>';}).join('');
+  if(!arr||!arr.length)return '';
+  return arr.map(function(t){return '<span class="'+cls+'">'+t+'</span>';}).join(' ');
 }
 
 function applyData(d){
@@ -475,12 +476,16 @@ function applyData(d){
   document.getElementById('disp-phone').textContent=d.phone||'—';
   document.getElementById('disp-idol').textContent=d.idol||'—';
   document.getElementById('disp-movie').textContent=d.movie||'—';
-  // 學歷
+  // 學歷：相容兩種格式
   var ep=(d.edu||'').split('｜');
-  document.getElementById('disp-edu-school').textContent=ep[0]||'';
-  document.getElementById('disp-edu-dept').textContent=ep[1]||'';
-  document.getElementById('disp-edu-school2').textContent=ep[2]||'';
-  document.getElementById('disp-edu-dept2').textContent=ep[3]||'';
+  var s1='',d1='',s2='',d2='';
+  if(ep.length>=4){s1=ep[0];d1=ep[1];s2=ep[2];d2=ep[3];}
+  else if(ep.length===2){s1=ep[0];d1='';s2=ep[1];d2='';}
+  else if(ep.length===1){s1=ep[0];d1='';s2='';d2='';}
+  document.getElementById('disp-edu-school').textContent=s1;
+  document.getElementById('disp-edu-dept').textContent=d1;
+  document.getElementById('disp-edu-school2').textContent=s2;
+  document.getElementById('disp-edu-dept2').textContent=d2;
   // 職涯
   var jobs=(d.jobs&&d.jobs.length)?d.jobs:(d.job?[d.job]:['樂天招商']);
   var depts=(d.depts&&d.depts.length)?d.depts:(d.dept?[d.dept]:['海運部門']);
@@ -601,7 +606,7 @@ async function saveData(msg){
 async function loadData(){
   try{
     var r=await fetch(GH_API+'?t='+Date.now());
-    if(r.ok){var j=await r.json();ghSha=j.sha;var d=JSON.parse(fromBase64UTF8(j.content));applyData(Object.assign({},DEFAULT,d));}
+    if(r.ok){var j=await r.json();ghSha=j.sha;var d=JSON.parse(fromBase64UTF8(j.content));applyData(Object.assign({},DEFAULT,d,{photos:d.photos||[],avatar:d.avatar||''}));}
     else{applyData(JSON.parse(JSON.stringify(DEFAULT)));}
   }catch(e){applyData(JSON.parse(JSON.stringify(DEFAULT)));}
 }
@@ -612,7 +617,14 @@ function fillForm(){
   document.getElementById('f-birthday').value=d.birthday||'';
   document.getElementById('f-height').value=d.height||'';
   document.getElementById('f-zodiac').value=d.zodiac||'';
-  document.getElementById('f-edu').value=d.edu||'';
+  // fillForm edu：若是舊格式（2段），轉成新格式（4段）
+  var eduVal=d.edu||'';
+  var eduParts=eduVal.split('｜');
+  if(eduParts.length===2){
+    // 嘗試拆第一段（如「文化大學新聞系」）
+    eduVal=eduParts[0]+'｜｜'+eduParts[1]+'｜';
+  }
+  document.getElementById('f-edu').value=eduVal;
   document.getElementById('f-job-prev1').value=d.jobPrev1||(d.jobs&&d.jobs[0]?d.jobs[0]+(d.depts&&d.depts[0]?' · '+d.depts[0]:''):'');
   document.getElementById('f-job-prev2').value=d.jobPrev2||(d.jobs&&d.jobs[1]?d.jobs[1]+(d.depts&&d.depts[1]?' · '+d.depts[1]:''):'');
   document.getElementById('f-job-curr').value=d.jobCurr||'';
