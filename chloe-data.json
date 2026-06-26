@@ -3,17 +3,13 @@
   "birthday": "1989/12/25",
   "height": "157 cm",
   "zodiac": "魔羯座",
-  "edu": "文化大學新聞系｜文藻外語大學",
-  "jobs": [
-    "樂天招商"
-  ],
-  "depts": [
-    "海運部門"
-  ],
+  "edu": "文化大學新聞系｜｜文藻外語大學｜",
+  "jobPrev1": "樂天招商",
+  "jobPrev2": "海運部門",
+  "jobCurr": "",
   "location": "高雄（楠梓）· 東湖",
   "cup": "G",
   "phone": "0927136706",
-  "pet": "",
   "idol": "趙露思",
   "movie": "佈局",
   "visited": [
@@ -64,14 +60,22 @@
   ],
   "relHistory": "3任，曾單身 6 年",
   "relCurrent": "台塑業務，南亞纖維部",
-  "relSuitor": "",
+  "relSuitor": "高中同學，住高雄家裡很有錢，做機械工程的",
   "relFamily": "出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的",
   "jobdesc": "",
+  "jobPrevDesc": "",
   "notes": "",
   "photos": [
     "https://i.ibb.co/r2ySrPFC/cafcfb87a70a.jpg"
   ],
   "avatar": "https://i.ibb.co/wt6D1g1/71827aacd357.jpg",
+  "jobs": [
+    "樂天招商"
+  ],
+  "depts": [
+    "海運部門"
+  ],
+  "pet": "",
   "relationship": "戀愛經歷：3任，曾單身 6 年\n前任男友：台塑業務，南亞纖維部\n家人：出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的",
   "job": "樂天招商",
   "dept": "海運部門"
