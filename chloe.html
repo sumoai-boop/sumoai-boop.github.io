@@ -216,12 +216,12 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td class="td-val" colspan="2" id="disp-rel-history">3任，曾單身 6 年</td>
     </tr>
     <tr>
-      <td class="td-label">現任男友</td>
+      <td class="td-label">前任男友</td>
       <td class="td-val" colspan="2" id="disp-rel-current">台塑業務，南亞纖維部</td>
     </tr>
     <tr>
-      <td class="td-label">追求者</td>
-      <td class="td-val" colspan="2" id="disp-rel-suitor">—</td>
+      <td class="td-label" style="vertical-align:top;padding-top:10px">追求者</td>
+      <td class="td-val" colspan="2" id="disp-rel-suitor-list">—</td>
     </tr>
     <tr>
       <td class="td-label">家人</td>
@@ -339,8 +339,12 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group"><label class="form-label">喜歡的藝人</label><input class="form-input" id="f-idol" placeholder="趙露思"></div>
       <div class="form-group"><label class="form-label">喜歡的電影</label><input class="form-input" id="f-movie" placeholder="佈局"></div>
       <div class="form-group full"><label class="form-label">戀愛經歷</label><input class="form-input" id="f-rel-history" placeholder="3任，曾單身 6 年"></div>
-      <div class="form-group full"><label class="form-label">現任男友</label><input class="form-input" id="f-rel-current" placeholder="台塑業務，南亞纖維部"></div>
-      <div class="form-group full"><label class="form-label">追求者</label><input class="form-input" id="f-rel-suitor" placeholder="..."></div>
+      <div class="form-group full"><label class="form-label">前任男友</label><input class="form-input" id="f-rel-current" placeholder="台塑業務，南亞纖維部"></div>
+      <div class="form-group full">
+        <label class="form-label">追求者（可新增多筆）</label>
+        <div id="suitor-list-edit" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+        <button type="button" onclick="addSuitorField('')" style="background:#f0ebff;border:1px dashed #c084b8;color:#7c3aed;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:12px;width:100%">＋ 新增追求者</button>
+      </div>
       <div class="form-group full"><label class="form-label">家人背景</label><input class="form-input" id="f-rel-family" placeholder="出生三個月後爸媽離婚..."></div>
       <div class="form-group full"><label class="form-label">去過的國家（逗號分隔）</label><input class="form-input" id="f-visited" placeholder="新加坡,泰國,柬埔寨,香港,澳門,杜拜"></div>
       <div class="form-group full"><label class="form-label">想去的國家（逗號分隔）</label><input class="form-input" id="f-wishlist" placeholder="夏威夷,阿拉伯"></div>
@@ -436,7 +440,7 @@ var DEFAULT={
   nicknames:['高雄俟佩芩','仙女','小可愛','小騷貨','小母狗','水梨'],
   relHistory:'3任，曾單身 6 年',
   relCurrent:'台塑業務，南亞纖維部',
-  relSuitor:'',
+  relSuitor:'',relSuitors:[],
   relFamily:'出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
   jobdesc:'',
   jobPrevDesc:'',
@@ -501,7 +505,13 @@ function applyData(d){
   // 感情
   setText('disp-rel-history',d.relHistory||'—');
   setText('disp-rel-current',d.relCurrent||'—');
-  setText('disp-rel-suitor',d.relSuitor||'—');
+  // 追求者：支援陣列或字串
+  var suitors=Array.isArray(d.relSuitors)?d.relSuitors:(d.relSuitor&&d.relSuitor.trim()?[d.relSuitor]:[]);
+  var suitorEl=document.getElementById('disp-rel-suitor-list');
+  if(suitorEl){
+    if(suitors.length===0){suitorEl.textContent='—';}
+    else{suitorEl.innerHTML=suitors.map(function(s,i){return '<div style="padding:2px 0;border-bottom:1px dashed #eee;display:flex;align-items:center;justify-content:space-between"><span>'+s+'</span></div>';}).join('');}
+  }
   setText('disp-rel-family',d.relFamily||'—');
   // tags
   setHTML('disp-visited',mkTags(d.visited,'tag-default'));
@@ -623,6 +633,29 @@ async function loadData(){
   }catch(e){console.error('loadData error:',e);applyData(JSON.parse(JSON.stringify(DEFAULT)));}
 }
 
+
+// ── 追求者動態欄位 ──
+function addSuitorField(val){
+  var wrap=document.getElementById('suitor-list-edit');
+  var row=document.createElement('div');
+  row.style.cssText='display:flex;gap:6px;align-items:center';
+  var inp=document.createElement('input');
+  inp.className='form-input suitor-input';
+  inp.placeholder='姓名或描述';
+  inp.value=val||'';
+  inp.style.flex='1';
+  var btn=document.createElement('button');
+  btn.type='button';
+  btn.textContent='✕';
+  btn.style.cssText='background:#fff0f0;border:1px solid #fcc;color:#dc2626;border-radius:6px;padding:6px 10px;cursor:pointer;flex-shrink:0';
+  btn.onclick=function(){wrap.removeChild(row);};
+  row.appendChild(inp);row.appendChild(btn);
+  wrap.appendChild(row);
+}
+function getSuitors(){
+  return Array.from(document.querySelectorAll('.suitor-input')).map(function(i){return i.value.trim();}).filter(Boolean);
+}
+
 function fillForm(){
   var d=data;
   document.getElementById('f-met').value=d.met||'';
@@ -647,7 +680,11 @@ function fillForm(){
   document.getElementById('f-movie').value=d.movie||'';
   document.getElementById('f-rel-history').value=d.relHistory||'';
   document.getElementById('f-rel-current').value=d.relCurrent||'';
-  document.getElementById('f-rel-suitor').value=d.relSuitor||'';
+  // 追求者
+  var sw=document.getElementById('suitor-list-edit');
+  if(sw){sw.innerHTML='';}
+  var suitorArr=Array.isArray(d.relSuitors)?d.relSuitors:(d.relSuitor&&d.relSuitor.trim()?[d.relSuitor]:[]);
+  suitorArr.forEach(function(s){addSuitorField(s);});
   document.getElementById('f-rel-family').value=d.relFamily||'';
   document.getElementById('f-visited').value=(d.visited||[]).join(',');
   document.getElementById('f-wishlist').value=(d.wishlist||[]).join(',');
@@ -676,7 +713,8 @@ function readForm(){
     movie:document.getElementById('f-movie').value.trim(),
     relHistory:document.getElementById('f-rel-history').value.trim(),
     relCurrent:document.getElementById('f-rel-current').value.trim(),
-    relSuitor:document.getElementById('f-rel-suitor').value.trim(),
+    relSuitors:getSuitors(),
+    relSuitor:getSuitors()[0]||'',
     relFamily:document.getElementById('f-rel-family').value.trim(),
     visited:csv('f-visited'),wishlist:csv('f-wishlist'),
     likes:csv('f-likes'),dislikes:csv('f-dislikes'),
