@@ -44,7 +44,7 @@ body{background:#f0f0f0;color:#1a1a1a;font-family:'Noto Sans TC',sans-serif;min-
 /* PHOTO HEADER */
 .header-row{display:flex;gap:0;border:1px solid #222;margin-bottom:-1px;}
 .header-main{flex:1;display:grid;grid-template-columns:auto 1fr;border-right:1px solid #222;}
-.header-photo{width:120px;border-right:1px solid #222;display:flex;align-items:center;justify-content:center;min-height:150px;background:#f9f9f9;position:relative;overflow:hidden;cursor:pointer;}
+.header-photo{width:50px;height:50px;border-right:1px solid #222;display:flex;align-items:center;justify-content:center;background:#f9f9f9;position:relative;overflow:hidden;cursor:pointer;}
 .header-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;}
 .header-photo .photo-placeholder{font-size:11px;color:#aaa;text-align:center;line-height:1.6;}
 .header-photo .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;font-size:11px;color:#fff;text-align:center;}
@@ -190,25 +190,25 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   <table style="margin-top:-1px">
     <tr><td colspan="4" class="section-head">學歷 &amp; 職涯</td></tr>
     <tr>
-      <td class="td-group" rowspan="3">學歷</td>
+      <td class="td-group" rowspan="2">學歷</td>
       <td class="td-label">學校 1</td>
-      <td class="td-val" id="disp-edu-school">文化大學</td>
-      <td class="td-val" id="disp-edu-dept">新聞系</td>
+      <td class="td-val" colspan="2"><span id="disp-edu-school">文化大學</span>　<span id="disp-edu-dept" style="color:#555;font-size:12px">新聞系</span></td>
     </tr>
     <tr>
       <td class="td-label">學校 2</td>
-      <td class="td-val" id="disp-edu-school2">文藻外語大學</td>
-      <td class="td-val" id="disp-edu-dept2"></td>
+      <td class="td-val" colspan="2"><span id="disp-edu-school2">文藻外語大學</span>　<span id="disp-edu-dept2" style="color:#555;font-size:12px"></span></td>
     </tr>
     <tr>
       <td class="td-group" rowspan="2">職涯</td>
-      <td class="td-label">公司／部門</td>
-      <td class="td-val" colspan="2" id="disp-jobs">樂天招商 · 海運部門</td>
+      <td class="td-label">前職</td>
+      <td class="td-val" id="disp-job-prev">—</td>
     </tr>
     <tr>
-      <td class="td-label">工作內容</td>
-      <td class="td-val" colspan="2" id="disp-jobdesc">—</td>
+      <td class="td-label">現職</td>
+      <td class="td-val" id="disp-job-curr">樂天招商 · 海運部門</td>
+      <td class="td-val" id="disp-jobdesc">—</td>
     </tr>
+
   </table>
 
   <!-- 感情背景 -->
@@ -333,7 +333,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group"><label class="form-label">身高</label><input class="form-input" id="f-height" placeholder="157 cm"></div>
       <div class="form-group"><label class="form-label">星座</label><input class="form-input" id="f-zodiac" placeholder="魔羯座"></div>
       <div class="form-group full"><label class="form-label">學歷（格式：學校1｜科系1｜學校2｜科系2）</label><input class="form-input" id="f-edu" placeholder="文化大學｜新聞系｜文藻外語大學｜"></div>
-      <div class="form-group full"><label class="form-label">公司（逗號分隔多筆）</label><input class="form-input" id="f-job" placeholder="樂天招商,台塑"></div>
+      <div class="form-group full"><label class="form-label">公司（第1筆=現職，第2筆起=前職，逗號分隔）</label><input class="form-input" id="f-job" placeholder="樂天招商,前公司"></div>
       <div class="form-group full"><label class="form-label">部門（逗號分隔多筆）</label><input class="form-input" id="f-dept" placeholder="海運部門,南亞纖維部"></div>
       <div class="form-group full"><label class="form-label">住址</label><input class="form-input" id="f-location" placeholder="高雄（楠梓）· 東湖"></div>
       <div class="form-group"><label class="form-label">罩杯</label><input class="form-input" id="f-cup" placeholder="G"></div>
@@ -341,7 +341,6 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group"><label class="form-label">寵物</label><input class="form-input" id="f-pet" placeholder="沒有"></div>
       <div class="form-group"><label class="form-label">喜歡的藝人</label><input class="form-input" id="f-idol" placeholder="趙露思"></div>
       <div class="form-group"><label class="form-label">喜歡的電影</label><input class="form-input" id="f-movie" placeholder="佈局"></div>
-      <div class="form-group full"><label class="form-label">工作內容</label><input class="form-input" id="f-jobdesc" placeholder="採購、供應商管理…"></div>
       <div class="form-group full"><label class="form-label">戀愛經歷</label><input class="form-input" id="f-rel-history" placeholder="3任，曾單身 6 年"></div>
       <div class="form-group full"><label class="form-label">現任男友</label><input class="form-input" id="f-rel-current" placeholder="台塑業務，南亞纖維部"></div>
       <div class="form-group full"><label class="form-label">追求者</label><input class="form-input" id="f-rel-suitor" placeholder="..."></div>
@@ -443,6 +442,7 @@ var DEFAULT={
   relSuitor:'',
   relFamily:'出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
   jobdesc:'',
+  jobPrevDesc:'',
   notes:'',photos:[],avatar:''
 };
 var data=JSON.parse(JSON.stringify(DEFAULT));
@@ -488,9 +488,12 @@ function applyData(d){
   // 職涯
   var jobs=(d.jobs&&d.jobs.length)?d.jobs:(d.job?[d.job]:['樂天招商']);
   var depts=(d.depts&&d.depts.length)?d.depts:(d.dept?[d.dept]:['海運部門']);
-  document.getElementById('disp-jobs').textContent=jobs.map(function(j,i){return j+(depts[i]?' · '+depts[i]:'');}).join('　|　');
+  // 前職：第2筆起，現職：第1筆
+  var currJob=(jobs[0]||'')+(depts[0]?' · '+depts[0]:'');
+  var prevJob=jobs.length>1?jobs.slice(1).map(function(j,i){return j+(depts[i+1]?' · '+depts[i+1]:'');}).join('、'):'—';
+  document.getElementById('disp-job-curr').textContent=currJob||'—';
+  document.getElementById('disp-job-prev').textContent=prevJob;
   // 感情
-  document.getElementById('disp-jobdesc').textContent=d.jobdesc||'—';
   document.getElementById('disp-rel-history').textContent=d.relHistory||'—';
   document.getElementById('disp-rel-current').textContent=d.relCurrent||'—';
   document.getElementById('disp-rel-suitor').textContent=d.relSuitor||'—';
@@ -634,7 +637,6 @@ function fillForm(){
   document.getElementById('f-foods').value=(d.foods||[]).join(',');
   document.getElementById('f-nicknames').value=(d.nicknames||[]).join(',');
   document.getElementById('f-notes').value=d.notes||'';
-  document.getElementById('f-jobdesc').value=d.jobdesc||'';
 }
 function readForm(){
   function csv(id){return document.getElementById(id).value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
@@ -661,7 +663,6 @@ function readForm(){
     picky:csv('f-picky'),foods:csv('f-foods'),
     nicknames:csv('f-nicknames'),
     notes:document.getElementById('f-notes').value,
-    jobdesc:document.getElementById('f-jobdesc').value.trim()
   });
 }
 
