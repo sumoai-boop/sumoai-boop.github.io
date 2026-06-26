@@ -491,7 +491,7 @@ async function savePhotos() {
   const newData = {...data};
   const body = {
     message: 'Update chloe-data.json (photos)',
-    content: btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2)))),
+    content: btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(newData,null,2)))),
     ...(ghSha ? {sha: ghSha} : {})
   };
   try {
@@ -701,7 +701,7 @@ async function saveData(){
   const newData = readForm();
   const body = {
     message: 'Update chloe-data.json',
-    content: btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2)))),
+    content: btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(newData,null,2)))),
     ...(ghSha ? {sha: ghSha} : {})
   };
   try {
@@ -729,6 +729,22 @@ document.getElementById('saveToken').addEventListener('click',()=>{
   if(t){ localStorage.setItem(LS_TOKEN,t); closeTokenModal(); saveData(); }
 });
 document.getElementById('cancelToken').addEventListener('click',closeTokenModal);
+
+// ── IMGBB ──
+const LS_IMGBB = 'sumoai_imgbb_key';
+
+async function uploadToImgBB(dataUrl) {
+  const key = localStorage.getItem(LS_IMGBB);
+  if(!key) { openImgBBModal(); throw new Error('需要輸入 ImgBB Key'); }
+  const base64 = dataUrl.split(',')[1];
+  const form = new FormData();
+  form.append('image', base64);
+  const res = await fetch('https://api.imgbb.com/1/upload?key=' + key, {method:'POST', body:form});
+  const json = await res.json();
+  if(json.success) return json.data.url;
+  if(res.status === 400 || res.status === 403) { localStorage.removeItem(LS_IMGBB); openImgBBModal(); }
+  throw new Error((json.error && json.error.message) || '上傳失敗');
+}
 
 // ── IMGBB KEY MODAL ──
 function openImgBBModal(){ document.getElementById('imgbbModal').classList.add('open'); document.getElementById('imgbbKeyInput').focus(); }
