@@ -1,3 +1,15 @@
+const IMGBB_KEY = '16a2f30e62f60a1a802412b56c208cb0';
+
+async function uploadToImgBB(dataUrl) {
+  const base64 = dataUrl.split(',')[1];
+  const form = new FormData();
+  form.append('image', base64);
+  const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, {method:'POST', body:form});
+  const json = await res.json();
+  if(json.success) return json.data.url;
+  throw new Error(json.error?.message || '上傳失敗');
+}
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -152,6 +164,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .modal-body{grid-template-columns:1fr;}
   .cards-grid{grid-template-columns:1fr 1fr;}
 }
+
+/* ── PHOTO WALL ── */
+.photo-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.photo-item{position:relative;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#1c2030;cursor:pointer;border:1px solid #252a3a;transition:transform 0.2s,border-color 0.2s;}
+.photo-item:hover{transform:scale(1.02);border-color:rgba(168,155,196,0.5);}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-item .photo-del{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.7);border:none;color:#f87171;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;}
+.photo-item:hover .photo-del{display:flex;}
+.photo-add{aspect-ratio:1/1;border-radius:10px;border:2px dashed #252a3a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:#a8b8d0;font-size:11px;transition:border-color 0.2s,color 0.2s;background:transparent;}
+.photo-add:hover{border-color:rgba(168,155,196,0.5);color:#a89bc4;}
+.photo-add svg{opacity:0.5;}
+.photo-add:hover svg{opacity:1;}
+.photo-lightbox{position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.photo-lightbox.open{display:flex;}
+.photo-lightbox img{max-width:90vw;max-height:90vh;border-radius:12px;object-fit:contain;}
+.photo-lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;opacity:0.7;}
+.photo-lightbox-close:hover{opacity:1;}
+.upload-progress{font-size:11px;color:#a89bc4;text-align:center;padding:8px 0;display:none;}
 </style>
 </head>
 <body>
@@ -291,6 +321,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </div>
 
+
+  <!-- 照片牆 -->
+  <div class="section">
+    <div class="section-header"><span class="section-label">Photos · 照片牆</span><div class="section-line"></div></div>
+    <div class="photo-wall" id="photoWall">
+      <!-- photos rendered here -->
+    </div>
+    <div class="upload-progress" id="uploadProgress">上傳中…</div>
+    <input type="file" id="photoInput" accept="image/*" multiple style="display:none">
+  </div>
+
   <!-- 備忘錄 -->
   <div class="section">
     <div class="section-header"><span class="section-label">Notes · 備忘筆記</span><div class="section-line"></div></div>
@@ -319,10 +360,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="form-group"><label class="form-label">身高</label><input class="form-input" id="f-height" placeholder="157 cm"></div>
       <div class="form-group"><label class="form-label">星座</label><input class="form-input" id="f-zodiac" placeholder="魔羯座"></div>
       <div class="form-group full"><label class="form-label">學歷</label><input class="form-input" id="f-edu" placeholder="文化大學新聞系｜文藻外語大學"></div>
-      <div class="form-group"><label class="form-label">現職</label><input class="form-input" id="f-job" placeholder="樂天招商"></div>
-      <div class="form-group"><label class="form-label">部門</label><input class="form-input" id="f-dept" placeholder="海運部門"></div>
+      <div class="form-group full"><label class="form-label">公司（逗號分隔多筆）</label><input class="form-input" id="f-job" placeholder="樂天招商,台塑"></div>
+      <div class="form-group full"><label class="form-label">部門（逗號分隔多筆，對應公司）</label><input class="form-input" id="f-dept" placeholder="海運部門,南亞纖維部"></div>
       <div class="form-group full"><label class="form-label">住家</label><input class="form-input" id="f-location" placeholder="高雄（楠梓）· 東湖"></div>
       <div class="form-group"><label class="form-label">罩杯</label><input class="form-input" id="f-cup" placeholder="G"></div>
+      <div class="form-group"><label class="form-label">手機</label><input class="form-input" id="f-phone" placeholder="0912-345-678"></div>
+      <div class="form-group"><label class="form-label">寵物</label><input class="form-input" id="f-pet" placeholder="沒有"></div>
       <div class="form-group"><label class="form-label">喜歡的藝人</label><input class="form-input" id="f-idol" placeholder="趙露思"></div>
       <div class="form-group"><label class="form-label">喜歡的電影</label><input class="form-input" id="f-movie" placeholder="佈局"></div>
       <div class="form-group full"><label class="form-label">去過的國家（逗號分隔）</label><input class="form-input" id="f-visited" placeholder="新加坡,泰國,柬埔寨,香港,澳門,杜拜"></div>
@@ -363,6 +406,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
+
+<!-- Lightbox -->
+<div class="photo-lightbox" id="photoLightbox">
+  <button class="photo-lightbox-close" id="lightboxClose">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -386,6 +436,91 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <script>
+
+// ── PHOTOS ──
+function renderPhotos(photos) {
+  const wall = document.getElementById('photoWall');
+  wall.innerHTML = '';
+  photos.forEach((url, i) => {
+    const div = document.createElement('div');
+    div.className = 'photo-item';
+    div.innerHTML = `<img src="${url}" loading="lazy"><button class="photo-del" data-i="${i}">✕</button>`;
+    div.querySelector('img').addEventListener('click', () => openLightbox(url));
+    div.querySelector('.photo-del').addEventListener('click', e => { e.stopPropagation(); deletePhoto(i); });
+    wall.appendChild(div);
+  });
+  // Add button
+  const add = document.createElement('div');
+  add.className = 'photo-add';
+  add.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>新增照片</span>`;
+  add.addEventListener('click', () => document.getElementById('photoInput').click());
+  wall.appendChild(add);
+}
+
+function openLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('photoLightbox').classList.add('open');
+}
+document.getElementById('lightboxClose').addEventListener('click', () => {
+  document.getElementById('photoLightbox').classList.remove('open');
+});
+document.getElementById('photoLightbox').addEventListener('click', e => {
+  if(e.target === e.currentTarget) document.getElementById('photoLightbox').classList.remove('open');
+});
+
+async function deletePhoto(idx) {
+  if(!confirm('確定刪除這張照片？')) return;
+  data.photos = (data.photos||[]).filter((_,i) => i !== idx);
+  renderPhotos(data.photos);
+  await savePhotos();
+}
+
+async function savePhotos() {
+  const token = localStorage.getItem(LS_TOKEN);
+  if(!token) { openTokenModal(); return; }
+  const newData = {...data};
+  const body = {
+    message: 'Update chloe-data.json (photos)',
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2)))),
+    ...(ghSha ? {sha: ghSha} : {})
+  };
+  try {
+    const r = await fetch(GH_API, {method:'PUT', headers:{'Authorization':'token '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    if(r.ok) { const j = await r.json(); ghSha = j.content.sha; showToast('✅ 照片已儲存！'); }
+    else showToast('❌ 儲存失敗');
+  } catch(e) { showToast('❌ 網路錯誤'); }
+}
+
+// Photo upload
+document.getElementById('photoInput').addEventListener('change', async e => {
+  const files = [...e.target.files];
+  if(!files.length) return;
+  const progress = document.getElementById('uploadProgress');
+  progress.style.display = 'block';
+  progress.textContent = `上傳中… 0 / ${files.length}`;
+  let done = 0;
+  for(const file of files) {
+    try {
+      const dataUrl = await new Promise(res => {
+        const reader = new FileReader();
+        reader.onload = e => res(e.target.result);
+        reader.readAsDataURL(file);
+      });
+      const url = await uploadToImgBB(dataUrl);
+      if(!data.photos) data.photos = [];
+      data.photos.push(url);
+      done++;
+      progress.textContent = `上傳中… ${done} / ${files.length}`;
+    } catch(err) {
+      showToast('❌ 上傳失敗：' + err.message);
+    }
+  }
+  progress.style.display = 'none';
+  renderPhotos(data.photos);
+  await savePhotos();
+  e.target.value = '';
+});
+
 // ── DATA ──
 const REPO = 'sumoai-boop/sumoai-boop.github.io';
 const FILE = 'chloe-data.json';
@@ -415,7 +550,8 @@ const DEFAULT_DATA = {
   foods: ['海苔','肉乾','巧克力（不喜歡苦的）','藥燉排骨','鍋燒意麵','義美泡芙'],
   nicknames: ['高雄俟佩芩','仙女','小可愛','小騷貨','小母狗','水梨'],
   relationship: '戀愛經歷：3任，曾單身 6 年\n現任男友：台塑業務，南亞纖維部\n家人：出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
-  notes: ''
+  notes: '',
+  photos: []
 };
 
 let data = {...DEFAULT_DATA};
@@ -433,7 +569,9 @@ function applyData(d){
   document.getElementById('disp-zodiac').textContent = d.zodiac||'';
   document.getElementById('disp-zodiac2').textContent = d.zodiac||'';
   document.getElementById('disp-edu').textContent = d.edu||'';
-  document.getElementById('disp-job').textContent = (d.job||'')+(d.dept?' · '+d.dept:'');
+  const jobList = Array.isArray(d.jobs) && d.jobs.length ? d.jobs : (d.job ? [d.job] : []);
+  const deptList = Array.isArray(d.depts) && d.depts.length ? d.depts : (d.dept ? [d.dept] : []);
+  document.getElementById('disp-job').textContent = jobList.map((j,i)=>j+(deptList[i]?' · '+deptList[i]:'')).join('　｜　');
   document.getElementById('disp-location').textContent = d.location||'';
   document.getElementById('disp-met').textContent = d.met||'';
   document.getElementById('disp-cup').textContent = d.cup||'—';
@@ -441,8 +579,12 @@ function applyData(d){
   document.getElementById('disp-movie').textContent = d.movie||'—';
   document.getElementById('disp-pet').textContent = d.pet||'—';
   document.getElementById('disp-phone').textContent = d.phone||'—';
-  document.getElementById('disp-job2').textContent = d.job||'—';
-  document.getElementById('disp-dept').textContent = d.dept||'—';
+  const _jobs = Array.isArray(d.jobs) && d.jobs.length ? d.jobs : (d.job ? [d.job] : ['—']);
+  const _depts = Array.isArray(d.depts) && d.depts.length ? d.depts : (d.dept ? [d.dept] : []);
+  const jobEl = document.getElementById('disp-job2');
+  const deptEl = document.getElementById('disp-dept');
+  jobEl.innerHTML = _jobs.map(j=>`<span class="tag rose">${j}</span>`).join(' ');
+  deptEl.innerHTML = _depts.map(d=>`<span class="tag rose">${d}</span>`).join(' ');
   document.getElementById('disp-visited').innerHTML = renderTags(d.visited||[],'');
   document.getElementById('disp-wishlist').innerHTML = renderTags(d.wishlist||[],'lav');
   document.getElementById('disp-likes').innerHTML = renderTags(d.likes||[],'rose');
@@ -456,6 +598,7 @@ function applyData(d){
     const m = l.match(/^(.+?)：(.+)$/);
     return m ? `<strong>${m[1]}：</strong>${m[2]}` : l;
   }).join('<br>');
+  renderPhotos(d.photos||[]);
   // notes
   const notes = document.getElementById('disp-notes');
   if(d.notes && d.notes.trim()){
@@ -487,9 +630,13 @@ function fillForm(){
   document.getElementById('f-height').value = data.height||'';
   document.getElementById('f-zodiac').value = data.zodiac||'';
   document.getElementById('f-edu').value = data.edu||'';
-  document.getElementById('f-job').value = data.job||'';
-  document.getElementById('f-dept').value = data.dept||'';
+  const jobs = Array.isArray(data.jobs) ? data.jobs : (data.job ? [data.job] : []);
+  const depts = Array.isArray(data.depts) ? data.depts : (data.dept ? [data.dept] : []);
+  document.getElementById('f-job').value = jobs.join(',');
+  document.getElementById('f-dept').value = depts.join(',');
   document.getElementById('f-location').value = data.location||'';
+  document.getElementById('f-phone').value = data.phone||'';
+  document.getElementById('f-pet').value = data.pet||'';
   document.getElementById('f-cup').value = data.cup||'';
   document.getElementById('f-idol').value = data.idol||'';
   document.getElementById('f-movie').value = data.movie||'';
@@ -512,14 +659,17 @@ function readForm(){
     height: document.getElementById('f-height').value.trim(),
     zodiac: document.getElementById('f-zodiac').value.trim(),
     edu: document.getElementById('f-edu').value.trim(),
-    job: document.getElementById('f-job').value.trim(),
-    dept: document.getElementById('f-dept').value.trim(),
+    jobs: csv('f-job'),
+    depts: csv('f-dept'),
+    job: csv('f-job')[0]||'',
+    dept: csv('f-dept')[0]||'',
     location: document.getElementById('f-location').value.trim(),
     cup: document.getElementById('f-cup').value.trim(),
     idol: document.getElementById('f-idol').value.trim(),
     movie: document.getElementById('f-movie').value.trim(),
     tagline: data.tagline,
-    pet: data.pet, phone: data.phone,
+    pet: document.getElementById('f-pet').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
     visited: csv('f-visited'),
     wishlist: csv('f-wishlist'),
     likes: csv('f-likes'),
