@@ -4,26 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chloe 蔡宇涵｜個人檔案</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0d0f14;color:#e8eaf0;font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 60% at 30% 10%,rgba(168,155,196,0.07) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 90%,rgba(232,165,152,0.06) 0%,transparent 60%);pointer-events:none;z-index:0;}
-.global-menubar{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(13,15,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;padding:0 16px;height:28px;font-size:12px;color:rgba(255,255,255,0.9);}
+body{background:#f0f0f0;color:#1a1a1a;font-family:'Noto Sans TC',sans-serif;min-height:100vh;padding-top:36px;}
+/* MENUBAR */
+.global-menubar{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;padding:0 20px;height:32px;font-size:12px;color:#444;}
 .gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
-.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
-.mb-menu{padding:0 6px;border-radius:4px;cursor:default;}
-.mb-menu:hover{background:rgba(255,255,255,0.2);}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;color:#666;}
+.mb-menu{padding:2px 8px;border-radius:4px;cursor:default;}
+.mb-menu:hover{background:rgba(0,0,0,0.07);}
+/* DOCK */
 .global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
 .global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
-.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
+.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.88);backdrop-filter:blur(28px);border:1px solid rgba(0,0,0,0.1);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.1);}
 .gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
-.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
+.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.15);}
 .gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
-.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;}
+.gd-label{font-size:9px;letter-spacing:0.05em;color:#fff;text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.7);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;}
 .gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
-.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
+.gd-sep{width:1px;height:40px;background:rgba(0,0,0,0.12);margin:0 3px;align-self:center;}
+.gd-dot{width:4px;height:4px;border-radius:50%;background:#888;margin-top:2px;}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 .ic-photos{background:linear-gradient(145deg,#FF6B9D,#C8365A);}
 .ic-dramas{background:linear-gradient(145deg,#2D1B69,#7C3AED);}
@@ -35,102 +36,97 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
 .ic-mlb{background:linear-gradient(145deg,#FD5A1E,#C23A0A);}
 .ic-chloe{background:linear-gradient(145deg,#c084b8,#8b5cf6);}
-.page-content{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:60px 20px 100px;}
-.hero{text-align:center;padding:32px 0 40px;}
-.hero-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#e8a598;border:1px solid rgba(232,165,152,0.3);border-radius:20px;padding:4px 14px;margin-bottom:18px;}
-.hero-name{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:700;background:linear-gradient(135deg,#e8eaf0 30%,#a89bc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
-.hero-en{font-family:'Playfair Display',serif;font-size:clamp(1rem,2.5vw,1.4rem);color:#a89bc4;letter-spacing:0.25em;margin-top:6px;}
-.hero-tagline{margin-top:14px;color:#a8b8d0;font-size:12px;font-style:italic;}
-.hero-div{width:50px;height:2px;background:linear-gradient(to right,#e8a598,#a89bc4);margin:24px auto 0;border-radius:2px;}
-.meta-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 20px;padding:16px 24px;border-top:1px solid #1c2030;border-bottom:1px solid #1c2030;background:#111318;margin-bottom:36px;}
-.meta-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#a8b8d0;}
-.meta-item strong{color:#e8eaf0;font-weight:500;}
-.section{margin-bottom:32px;}
-.section-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.section-label{font-size:9.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#e8a598;white-space:nowrap;}
-.section-line{flex:1;height:1px;background:#1c2030;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
-.card{background:#151820;border:1px solid #1c2030;border-radius:10px;padding:14px 16px;transition:border-color 0.2s;}
-.card:hover{border-color:rgba(168,155,196,0.35);}
-.card-label{font-size:9.5px;font-weight:700;letter-spacing:0.1em;color:#a8b8d0;text-transform:uppercase;margin-bottom:5px;}
-.card-value{font-size:14px;color:#e8eaf0;font-weight:500;line-height:1.5;}
-.card-value.rose{color:#e8a598;}
-.card-value.lav{color:#a89bc4;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.card-wide{background:#151820;border:1px solid #1c2030;border-radius:10px;padding:14px 16px;display:flex;flex-wrap:wrap;gap:7px;}
-.card-wide .card-label{width:100%;margin-bottom:2px;}
-.tag{display:inline-block;background:#1c2030;border:1px solid #252a3a;border-radius:20px;padding:3px 11px;font-size:11.5px;color:#a8b8d0;}
-.tag.rose{border-color:rgba(232,165,152,0.3);color:#e8a598;background:rgba(232,165,152,0.06);}
-.tag.lav{border-color:rgba(168,155,196,0.3);color:#a89bc4;background:rgba(168,155,196,0.06);}
-.tag.gold{border-color:rgba(201,169,110,0.3);color:#c9a96e;background:rgba(201,169,110,0.06);}
-.tag.red{border-color:rgba(248,113,113,0.3);color:#f87171;background:rgba(248,113,113,0.06);}
-.story-card{background:#151820;border:1px solid #1c2030;border-left:3px solid #a89bc4;border-radius:0 10px 10px 0;padding:14px 18px;font-size:13.5px;color:#a8b8d0;line-height:1.85;}
-.story-card strong{color:#e8eaf0;font-weight:500;}
-.met-date{background:#151820;border:1px solid #1c2030;border-radius:10px;padding:22px;text-align:center;}
-.met-date .ml{font-size:10px;color:#a8b8d0;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;}
-.met-date .md{font-family:'Playfair Display',serif;font-size:2.4rem;color:#e8a598;font-weight:700;}
-.met-date .ms{font-size:11px;color:#a8b8d0;margin-top:5px;}
-.zodiac-card{background:#151820;border:1px solid #1c2030;border-radius:10px;padding:18px;display:flex;align-items:center;gap:14px;}
-.zodiac-sym{font-size:38px;}
-.zodiac-info h3{font-size:15px;color:#a89bc4;margin-bottom:4px;font-family:'Playfair Display',serif;}
-.zodiac-info p{font-size:11.5px;color:#a8b8d0;line-height:1.7;}
-.trait-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
-.trait-name{width:72px;font-size:11px;color:#a8b8d0;flex-shrink:0;text-align:right;}
-.trait-bg{flex:1;height:4px;background:#1c2030;border-radius:3px;overflow:hidden;}
-.trait-fill{height:100%;border-radius:3px;background:linear-gradient(to right,#a89bc4,#e8a598);}
-.trait-note{font-size:10px;color:#a8b8d0;width:56px;text-align:right;}
-.photo-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
-.photo-item{position:relative;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#1c2030;cursor:pointer;border:1px solid #252a3a;transition:transform 0.2s,border-color 0.2s;}
-.photo-item:hover{transform:scale(1.02);border-color:rgba(168,155,196,0.5);}
-.photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
-.photo-del{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.75);border:none;color:#f87171;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;}
+/* PAGE */
+.page-wrap{max-width:820px;margin:0 auto;padding:24px 20px 120px;}
+/* RESUME */
+.resume{background:#fff;border:2px solid #222;padding:32px 36px;}
+.resume-title{text-align:center;font-size:2.2rem;font-weight:700;letter-spacing:0.15em;margin-bottom:28px;border-bottom:2px solid #222;padding-bottom:16px;}
+/* PHOTO HEADER */
+.header-row{display:flex;gap:0;border:1px solid #222;margin-bottom:-1px;}
+.header-main{flex:1;display:grid;grid-template-columns:auto 1fr;border-right:1px solid #222;}
+.header-photo{width:120px;border-right:1px solid #222;display:flex;align-items:center;justify-content:center;min-height:150px;background:#f9f9f9;position:relative;overflow:hidden;cursor:pointer;}
+.header-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.header-photo .photo-placeholder{font-size:11px;color:#aaa;text-align:center;line-height:1.6;}
+.header-photo .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;font-size:11px;color:#fff;text-align:center;}
+.header-photo:hover .photo-overlay{display:flex;}
+/* TABLE */
+table{width:100%;border-collapse:collapse;}
+td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middle;}
+.td-label{background:#f5f5f5;font-weight:600;text-align:center;white-space:nowrap;width:80px;font-size:12px;}
+.td-group{background:#f5f5f5;font-weight:700;writing-mode:vertical-rl;text-align:center;letter-spacing:0.2em;white-space:nowrap;width:28px;padding:8px 4px;}
+.td-val{color:#1a1a1a;font-size:13px;}
+.td-val .tag{display:inline-block;background:#f0ebff;border:1px solid #c084b8;border-radius:20px;padding:2px 10px;font-size:11.5px;color:#7c3aed;margin:2px 3px;}
+.td-val .tag-default{background:#f5f5f5;border:1px solid #ccc;color:#333;border-radius:20px;padding:2px 10px;font-size:11.5px;display:inline-block;margin:2px 3px;}
+.td-val .tag-red{background:#fff5f5;border:1px solid #fcc;border-radius:20px;padding:2px 10px;font-size:11.5px;color:#dc2626;display:inline-block;margin:2px 3px;}
+.td-val .tag-teal{background:#f0fdf9;border:1px solid #b2e8dc;border-radius:20px;padding:2px 10px;font-size:11.5px;color:#0d7e6d;display:inline-block;margin:2px 3px;}
+.td-val .tag-gold{background:#fffbf0;border:1px solid #f5dfa0;border-radius:20px;padding:2px 10px;font-size:11.5px;color:#92660a;display:inline-block;margin:2px 3px;}
+.section-head td{background:#2c2c2c;color:#fff;font-weight:700;text-align:center;font-size:13px;letter-spacing:0.1em;padding:6px;}
+/* TRAITS */
+.trait-row-inline{display:flex;align-items:center;gap:8px;margin:3px 0;}
+.trait-label{font-size:11px;color:#555;width:64px;flex-shrink:0;}
+.trait-bg{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden;}
+.trait-fill{height:100%;border-radius:3px;background:linear-gradient(to right,#c084b8,#7c3aed);}
+.trait-val{font-size:10px;color:#888;width:48px;text-align:right;}
+/* PHOTO WALL */
+.photo-wall{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;}
+.photo-item{position:relative;width:90px;height:90px;border-radius:6px;overflow:hidden;border:1px solid #ddd;cursor:pointer;}
+.photo-item:hover{border-color:#c084b8;}
+.photo-item img{width:100%;height:100%;object-fit:cover;}
+.photo-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);border:none;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;}
 .photo-item:hover .photo-del{display:flex;}
-.photo-add{aspect-ratio:1/1;border-radius:10px;border:2px dashed #252a3a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:#a8b8d0;font-size:11px;transition:border-color 0.2s,color 0.2s;}
-.photo-add:hover{border-color:rgba(168,155,196,0.5);color:#a89bc4;}
-.upload-progress{font-size:12px;color:#a89bc4;text-align:center;padding:10px 0;display:none;}
-.lightbox{position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.93);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.photo-add{width:90px;height:90px;border:2px dashed #ccc;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#aaa;font-size:10px;gap:4px;}
+.photo-add:hover{border-color:#c084b8;color:#7c3aed;}
+.upload-progress{font-size:12px;color:#7c3aed;padding:6px 0;display:none;}
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;}
 .lightbox.open{display:flex;}
-.lightbox img{max-width:90vw;max-height:90vh;border-radius:12px;object-fit:contain;}
-.lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;opacity:0.7;line-height:1;}
+.lightbox img{max-width:90vw;max-height:90vh;border-radius:8px;}
+.lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;opacity:0.7;}
 .lightbox-close:hover{opacity:1;}
-.edit-fab{position:fixed;bottom:90px;right:24px;z-index:9990;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#c084b8,#8b5cf6);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(139,92,246,0.45);transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);}
+/* FAB */
+.edit-fab{position:fixed;bottom:90px;right:24px;z-index:9990;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#c084b8,#7c3aed);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,58,237,0.4);transition:transform 0.2s;}
 .edit-fab:hover{transform:scale(1.12);}
-.modal-mask{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;backdrop-filter:blur(6px);overflow-y:auto;}
+/* MODAL */
+.modal-mask{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
 .modal-mask.open{display:flex;}
-.modal{background:#151820;border:1px solid #252a3a;border-radius:16px;width:100%;max-width:660px;box-shadow:0 24px 80px rgba(0,0,0,0.9);animation:mIn 0.28s cubic-bezier(0.34,1.2,0.64,1);}
-.small-modal{background:#151820;border:1px solid #252a3a;border-radius:16px;width:100%;max-width:420px;box-shadow:0 24px 80px rgba(0,0,0,0.9);animation:mIn 0.28s cubic-bezier(0.34,1.2,0.64,1);}
-@keyframes mIn{from{opacity:0;transform:scale(0.93) translateY(16px)}to{opacity:1;transform:none}}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #1c2030;}
-.modal-head h2{font-family:'Playfair Display',serif;font-size:18px;color:#e8eaf0;}
-.modal-close{background:none;border:none;color:#a8b8d0;cursor:pointer;font-size:22px;line-height:1;padding:2px 6px;border-radius:6px;}
-.modal-close:hover{color:#e8eaf0;background:#1c2030;}
-.modal-body{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.modal{background:#fff;border-radius:12px;width:100%;max-width:660px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mIn 0.25s ease;}
+.small-modal{background:#fff;border-radius:12px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mIn 0.25s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid #eee;}
+.modal-head h2{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;color:#aaa;cursor:pointer;font-size:20px;line-height:1;}
+.modal-close:hover{color:#333;}
+.modal-body{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .modal-body.single{grid-template-columns:1fr;}
-.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
 .form-group.full{grid-column:1/-1;}
-.form-label{font-size:10px;font-weight:700;letter-spacing:0.12em;color:#a8b8d0;text-transform:uppercase;}
-.form-input,.form-textarea{background:#0d0f14;border:1px solid #252a3a;border-radius:8px;padding:9px 12px;color:#e8eaf0;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;width:100%;}
-.form-input:focus,.form-textarea:focus{border-color:rgba(168,155,196,0.5);}
-.form-textarea{resize:vertical;min-height:60px;}
-.modal-foot{padding:16px 22px;border-top:1px solid #1c2030;display:flex;gap:10px;justify-content:flex-end;}
-.btn{padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;transition:opacity 0.15s,transform 0.15s;}
-.btn:hover{opacity:0.85;transform:translateY(-1px);}
-.btn-cancel{background:#1c2030;color:#a8b8d0;}
-.btn-save{background:linear-gradient(135deg,#c084b8,#8b5cf6);color:#fff;}
-.btn-save:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.toast{position:fixed;bottom:160px;right:24px;z-index:10001;background:#1c2030;border:1px solid rgba(168,155,196,0.3);border-radius:10px;padding:12px 18px;font-size:12px;color:#a89bc4;opacity:0;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s;pointer-events:none;}
+.form-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:#888;text-transform:uppercase;}
+.form-input,.form-textarea{background:#fafafa;border:1px solid #ddd;border-radius:6px;padding:8px 11px;color:#1a1a1a;font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
+.form-input:focus,.form-textarea:focus{border-color:#c084b8;background:#fff;}
+.form-textarea{resize:vertical;min-height:56px;}
+.modal-foot{padding:14px 22px;border-top:1px solid #eee;display:flex;gap:8px;justify-content:flex-end;}
+.btn{padding:8px 20px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans TC',sans-serif;transition:opacity 0.15s;}
+.btn:hover{opacity:0.85;}
+.btn-cancel{background:#f0f0f0;color:#555;}
+.btn-save{background:linear-gradient(135deg,#c084b8,#7c3aed);color:#fff;}
+.btn-save:disabled{opacity:0.5;cursor:not-allowed;}
+.toast{position:fixed;bottom:160px;right:24px;z-index:10001;background:#222;border-radius:8px;padding:10px 16px;font-size:12px;color:#fff;opacity:0;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s;pointer-events:none;}
 .toast.show{opacity:1;transform:none;}
 @media(max-width:600px){
-  .two-col,.modal-body{grid-template-columns:1fr;}
-  .cards-grid,.photo-wall{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}
+  .resume{padding:16px 10px;}
+  .resume-title{font-size:1.5rem;}
+  .modal-body{grid-template-columns:1fr;}
+  .td-group{display:none;}
+  .header-photo{width:80px;min-height:100px;}
 }
 </style>
 </head>
 <body>
+
 <div class="global-menubar">
   <div class="gm-left">
     <span style="font-size:16px">🗿</span>
-    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
+    <a href="index.html" style="font-weight:700;color:#1a1a1a;text-decoration:none;">Sumoai's Reel</a>
     <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span><span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span><span class="mb-menu">視窗</span>
   </div>
   <div class="gm-right">
@@ -139,98 +135,195 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
-<div class="page-content">
-  <div class="hero">
-    <div class="hero-badge">Private Profile · 個人檔案</div>
-    <div class="hero-name">蔡宇涵</div>
-    <div class="hero-en">C H L O E</div>
-    <div class="hero-tagline" id="disp-tagline">覺得有氣質＋字母少</div>
-    <div class="hero-div"></div>
-  </div>
-  <div class="meta-strip">
-    <div class="meta-item">📅 <span id="disp-birthday">1989/12/25</span> <strong>聖誕節寶寶</strong></div>
-    <div class="meta-item">📏 身高 <strong id="disp-height">157 cm</strong></div>
-    <div class="meta-item">🌟 <strong id="disp-zodiac">魔羯座</strong></div>
-    <div class="meta-item">🎓 <span id="disp-edu">文化大學新聞系｜文藻外語大學</span></div>
-    <div class="meta-item">💼 <span id="disp-job">樂天招商 · 海運</span></div>
-    <div class="meta-item">📍 <span id="disp-location">高雄（楠梓）</span></div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">First Contact · 認識紀錄</span><div class="section-line"></div></div>
-    <div class="two-col">
-      <div class="met-date"><div class="ml">認識日期</div><div class="md" id="disp-met">8 / 30</div><div class="ms">初次相識</div></div>
-      <div class="zodiac-card"><div class="zodiac-sym">♑</div><div class="zodiac-info"><h3 id="disp-zodiac2">魔羯座</h3><p>務實、有責任感<br>外冷內熱，忠誠可靠<br>喜歡穩定與有計劃的生活</p></div></div>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Basic Info · 基本資料</span><div class="section-line"></div></div>
-    <div class="cards-grid">
-      <div class="card"><div class="card-label">住家</div><div class="card-value" id="disp-home">高雄（楠梓）</div></div>
-      <div class="card"><div class="card-label">大學</div><div class="card-value lav" id="disp-edu2">文化大學新聞系</div></div>
-      <div class="card"><div class="card-label">罩杯</div><div class="card-value rose" style="font-size:2rem;font-family:'Playfair Display',serif" id="disp-cup">G</div></div>
-      <div class="card"><div class="card-label">喜歡的顏色</div><div class="card-value" style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;background:#8b5cf6;border-radius:50%;display:inline-block"></span>紫色</div></div>
-      <div class="card"><div class="card-label">手機</div><div class="card-value" id="disp-phone">—</div></div>
-      <div class="card"><div class="card-label">寵物</div><div class="card-value" id="disp-pet">—</div></div>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Career · 職涯</span><div class="section-line"></div></div>
-    <div class="card-wide"><div class="card-label">現職</div><div id="disp-jobs"></div></div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Relationship · 感情背景</span><div class="section-line"></div></div>
-    <div class="story-card" id="disp-relationship">載入中…</div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Travel · 旅遊足跡</span><div class="section-line"></div></div>
-    <div class="two-col">
-      <div class="card-wide"><div class="card-label">✈️ 去過的國家</div><div id="disp-visited"></div></div>
-      <div class="card-wide"><div class="card-label">🌍 想去的國家</div><div id="disp-wishlist"></div></div>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Personality · 個性喜好</span><div class="section-line"></div></div>
-    <div class="two-col" style="margin-bottom:10px">
-      <div class="card-wide"><div class="card-label">💚 喜歡的</div><div id="disp-likes"></div></div>
-      <div class="card-wide"><div class="card-label">🚫 討厭的</div><div id="disp-dislikes"></div></div>
-    </div>
-    <div class="card-wide" style="margin-bottom:10px"><div class="card-label">🚫 挑食（不吃）</div><div id="disp-picky"></div></div>
-    <div class="card-wide" style="margin-bottom:10px"><div class="card-label">😋 愛吃的</div><div id="disp-foods"></div></div>
-    <div class="two-col">
-      <div class="card"><div class="card-label">🎬 喜歡的電影</div><div class="card-value lav" id="disp-movie">佈局</div></div>
-      <div class="card"><div class="card-label">🎤 喜歡的藝人</div><div class="card-value rose" id="disp-idol">趙露思</div></div>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Nicknames · 外號</span><div class="section-line"></div></div>
-    <div class="card-wide"><div class="card-label">她的外號們</div><div id="disp-nicknames"></div></div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Traits · 個性分析</span><div class="section-line"></div></div>
-    <div class="card" style="padding:18px 22px">
-      <div class="trait-row"><span class="trait-name">氣質感</span><div class="trait-bg"><div class="trait-fill" style="width:90%"></div></div><span class="trait-note">★★★★★</span></div>
-      <div class="trait-row"><span class="trait-name">務實理性</span><div class="trait-bg"><div class="trait-fill" style="width:82%"></div></div><span class="trait-note">魔羯特質</span></div>
-      <div class="trait-row"><span class="trait-name">獨立性格</span><div class="trait-bg"><div class="trait-fill" style="width:88%"></div></div><span class="trait-note">單身6年</span></div>
-      <div class="trait-row"><span class="trait-name">旅遊慾</span><div class="trait-bg"><div class="trait-fill" style="width:76%"></div></div><span class="trait-note">6國+</span></div>
-      <div class="trait-row"><span class="trait-name">美食鑑賞</span><div class="trait-bg"><div class="trait-fill" style="width:70%"></div></div><span class="trait-note">有挑食</span></div>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Photos · 照片牆</span><div class="section-line"></div></div>
-    <div class="photo-wall" id="photoWall"></div>
-    <div class="upload-progress" id="uploadProgress">上傳中…</div>
-    <input type="file" id="photoInput" accept="image/*" multiple style="display:none">
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-label">Notes · 備忘筆記</span><div class="section-line"></div></div>
-    <div class="story-card" id="disp-notes" style="border-left-color:#c9a96e;min-height:60px;color:#a8b8d0;font-style:italic">（點右下角編輯按鈕加入備忘…）</div>
-  </div>
+<div class="page-wrap">
+<div class="resume">
+
+  <div class="resume-title">個人檔案</div>
+
+  <!-- 基本資料 + 照片 -->
+  <table>
+    <tr>
+      <td rowspan="8" style="width:120px;padding:0;border:1px solid #222;vertical-align:top;">
+        <div class="header-photo" id="avatarBox" onclick="document.getElementById('avatarInput').click()">
+          <img id="avatarImg" src="" alt="" style="display:none">
+          <div class="photo-placeholder" id="avatarPlaceholder">點擊<br>上傳大頭貼</div>
+          <div class="photo-overlay">🖼️ 更換照片</div>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none">
+      </td>
+      <td class="td-group" rowspan="7">基本資料</td>
+      <td class="td-label">姓名</td>
+      <td class="td-val" colspan="2"><strong style="font-size:15px">蔡宇涵（Chloe）</strong></td>
+    </tr>
+    <tr>
+      <td class="td-label">生日</td>
+      <td class="td-val" colspan="2" id="disp-birthday">1989/12/25</td>
+    </tr>
+    <tr>
+      <td class="td-label">身高</td>
+      <td class="td-val" id="disp-height">157 cm</td>
+      <td class="td-val"><span style="font-size:11px;color:#888">罩杯：</span><strong id="disp-cup" style="color:#7c3aed">G</strong></td>
+    </tr>
+    <tr>
+      <td class="td-label">星座</td>
+      <td class="td-val" colspan="2" id="disp-zodiac">魔羯座 ♑</td>
+    </tr>
+    <tr>
+      <td class="td-label">住址</td>
+      <td class="td-val" colspan="2" id="disp-location">高雄（楠梓）· 東湖</td>
+    </tr>
+    <tr>
+      <td class="td-label">手機</td>
+      <td class="td-val" colspan="2" id="disp-phone">—</td>
+    </tr>
+    <tr>
+      <td class="td-label">寵物</td>
+      <td class="td-val" colspan="2" id="disp-pet">—</td>
+    </tr>
+    <tr>
+      <td class="td-label">認識日期</td>
+      <td class="td-val" colspan="2" id="disp-met">8/30</td>
+    </tr>
+  </table>
+
+  <!-- 學歷職涯 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="4" class="section-head">學歷 &amp; 職涯</td></tr>
+    <tr>
+      <td class="td-group" rowspan="3">學歷</td>
+      <td class="td-label">學校 1</td>
+      <td class="td-val" id="disp-edu-school">文化大學</td>
+      <td class="td-val" id="disp-edu-dept">新聞系</td>
+    </tr>
+    <tr>
+      <td class="td-label">學校 2</td>
+      <td class="td-val" id="disp-edu-school2">文藻外語大學</td>
+      <td class="td-val" id="disp-edu-dept2"></td>
+    </tr>
+    <tr>
+      <td class="td-group" rowspan="2">職涯</td>
+      <td class="td-label">公司／部門</td>
+      <td class="td-val" colspan="2" id="disp-jobs">樂天招商 · 海運部門</td>
+    </tr>
+    <tr>
+      <td class="td-label">工作內容</td>
+      <td class="td-val" colspan="2" id="disp-jobdesc">—</td>
+    </tr>
+  </table>
+
+  <!-- 感情背景 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="3" class="section-head">感情背景</td></tr>
+    <tr>
+      <td class="td-label">戀愛經歷</td>
+      <td class="td-val" colspan="2" id="disp-rel-history">3任，曾單身 6 年</td>
+    </tr>
+    <tr>
+      <td class="td-label">現任男友</td>
+      <td class="td-val" colspan="2" id="disp-rel-current">台塑業務，南亞纖維部</td>
+    </tr>
+    <tr>
+      <td class="td-label">追求者</td>
+      <td class="td-val" colspan="2" id="disp-rel-suitor">—</td>
+    </tr>
+    <tr>
+      <td class="td-label">家人</td>
+      <td class="td-val" colspan="2" id="disp-rel-family">出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的</td>
+    </tr>
+  </table>
+
+  <!-- 旅遊 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="3" class="section-head">旅遊足跡</td></tr>
+    <tr>
+      <td class="td-label">去過的國家</td>
+      <td class="td-val" colspan="2" id="disp-visited"></td>
+    </tr>
+    <tr>
+      <td class="td-label">想去的國家</td>
+      <td class="td-val" colspan="2" id="disp-wishlist"></td>
+    </tr>
+  </table>
+
+  <!-- 個性喜好 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="3" class="section-head">個性喜好</td></tr>
+    <tr>
+      <td class="td-label">喜歡的</td>
+      <td class="td-val" id="disp-likes" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="td-label">討厭的</td>
+      <td class="td-val" id="disp-dislikes" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="td-label">挑食（不吃）</td>
+      <td class="td-val" id="disp-picky" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="td-label">愛吃的</td>
+      <td class="td-val" id="disp-foods" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="td-label">喜歡的電影</td>
+      <td class="td-val" id="disp-movie">佈局</td>
+      <td class="td-val"><span style="font-size:11px;color:#888">藝人：</span><span id="disp-idol">趙露思</span></td>
+    </tr>
+  </table>
+
+  <!-- 外號 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="2" class="section-head">外號</td></tr>
+    <tr>
+      <td class="td-label">她的外號們</td>
+      <td class="td-val" id="disp-nicknames"></td>
+    </tr>
+  </table>
+
+  <!-- 個性分析 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="2" class="section-head">個性分析</td></tr>
+    <tr>
+      <td class="td-label">特質評分</td>
+      <td class="td-val">
+        <div class="trait-row-inline"><span class="trait-label">氣質感</span><div class="trait-bg"><div class="trait-fill" style="width:90%"></div></div><span class="trait-val">★★★★★</span></div>
+        <div class="trait-row-inline"><span class="trait-label">務實理性</span><div class="trait-bg"><div class="trait-fill" style="width:82%"></div></div><span class="trait-val">魔羯特質</span></div>
+        <div class="trait-row-inline"><span class="trait-label">獨立性格</span><div class="trait-bg"><div class="trait-fill" style="width:88%"></div></div><span class="trait-val">單身6年</span></div>
+        <div class="trait-row-inline"><span class="trait-label">旅遊慾</span><div class="trait-bg"><div class="trait-fill" style="width:76%"></div></div><span class="trait-val">6國+</span></div>
+        <div class="trait-row-inline"><span class="trait-label">美食鑑賞</span><div class="trait-bg"><div class="trait-fill" style="width:70%"></div></div><span class="trait-val">有挑食</span></div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 照片牆 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="2" class="section-head">照片牆</td></tr>
+    <tr>
+      <td colspan="2" class="td-val" style="padding:10px 12px">
+        <div class="photo-wall" id="photoWall"></div>
+        <div class="upload-progress" id="uploadProgress">上傳中…</div>
+        <input type="file" id="photoInput" accept="image/*" multiple style="display:none">
+      </td>
+    </tr>
+  </table>
+
+  <!-- 備忘 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="2" class="section-head">備忘筆記</td></tr>
+    <tr>
+      <td colspan="2" class="td-val" style="min-height:60px;font-style:italic;color:#888" id="disp-notes">（點右下角編輯按鈕加入備忘…）</td>
+    </tr>
+  </table>
+
+</div>
 </div>
 
+<!-- FAB -->
 <button class="edit-fab" id="editBtn">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
 </button>
 
+<!-- Edit Modal -->
 <div class="modal-mask" id="editModal">
   <div class="modal">
     <div class="modal-head"><h2>✏️ 編輯 Chloe 的資料</h2><button class="modal-close" id="closeModal">✕</button></div>
@@ -239,15 +332,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="form-group"><label class="form-label">生日</label><input class="form-input" id="f-birthday" placeholder="1989/12/25"></div>
       <div class="form-group"><label class="form-label">身高</label><input class="form-input" id="f-height" placeholder="157 cm"></div>
       <div class="form-group"><label class="form-label">星座</label><input class="form-input" id="f-zodiac" placeholder="魔羯座"></div>
-      <div class="form-group full"><label class="form-label">學歷</label><input class="form-input" id="f-edu" placeholder="文化大學新聞系｜文藻外語大學"></div>
+      <div class="form-group full"><label class="form-label">學歷（格式：學校1｜科系1｜學校2｜科系2）</label><input class="form-input" id="f-edu" placeholder="文化大學｜新聞系｜文藻外語大學｜"></div>
       <div class="form-group full"><label class="form-label">公司（逗號分隔多筆）</label><input class="form-input" id="f-job" placeholder="樂天招商,台塑"></div>
       <div class="form-group full"><label class="form-label">部門（逗號分隔多筆）</label><input class="form-input" id="f-dept" placeholder="海運部門,南亞纖維部"></div>
-      <div class="form-group full"><label class="form-label">住家</label><input class="form-input" id="f-location" placeholder="高雄（楠梓）· 東湖"></div>
+      <div class="form-group full"><label class="form-label">住址</label><input class="form-input" id="f-location" placeholder="高雄（楠梓）· 東湖"></div>
       <div class="form-group"><label class="form-label">罩杯</label><input class="form-input" id="f-cup" placeholder="G"></div>
       <div class="form-group"><label class="form-label">手機</label><input class="form-input" id="f-phone" placeholder="0912-345-678"></div>
       <div class="form-group"><label class="form-label">寵物</label><input class="form-input" id="f-pet" placeholder="沒有"></div>
       <div class="form-group"><label class="form-label">喜歡的藝人</label><input class="form-input" id="f-idol" placeholder="趙露思"></div>
       <div class="form-group"><label class="form-label">喜歡的電影</label><input class="form-input" id="f-movie" placeholder="佈局"></div>
+      <div class="form-group full"><label class="form-label">工作內容</label><input class="form-input" id="f-jobdesc" placeholder="採購、供應商管理…"></div>
+      <div class="form-group full"><label class="form-label">戀愛經歷</label><input class="form-input" id="f-rel-history" placeholder="3任，曾單身 6 年"></div>
+      <div class="form-group full"><label class="form-label">現任男友</label><input class="form-input" id="f-rel-current" placeholder="台塑業務，南亞纖維部"></div>
+      <div class="form-group full"><label class="form-label">追求者</label><input class="form-input" id="f-rel-suitor" placeholder="..."></div>
+      <div class="form-group full"><label class="form-label">家人背景</label><input class="form-input" id="f-rel-family" placeholder="出生三個月後爸媽離婚..."></div>
       <div class="form-group full"><label class="form-label">去過的國家（逗號分隔）</label><input class="form-input" id="f-visited" placeholder="新加坡,泰國,柬埔寨,香港,澳門,杜拜"></div>
       <div class="form-group full"><label class="form-label">想去的國家（逗號分隔）</label><input class="form-input" id="f-wishlist" placeholder="夏威夷,阿拉伯"></div>
       <div class="form-group full"><label class="form-label">喜歡的（逗號分隔）</label><input class="form-input" id="f-likes" placeholder="泰國奶油小熊,袋子"></div>
@@ -255,7 +353,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="form-group full"><label class="form-label">挑食不吃（逗號分隔）</label><input class="form-input" id="f-picky" placeholder="豬腳,大埔"></div>
       <div class="form-group full"><label class="form-label">愛吃的（逗號分隔）</label><input class="form-input" id="f-foods" placeholder="海苔,肉乾,巧克力"></div>
       <div class="form-group full"><label class="form-label">外號（逗號分隔）</label><input class="form-input" id="f-nicknames" placeholder="仙女,小可愛,水梨"></div>
-      <div class="form-group full"><label class="form-label">感情背景</label><textarea class="form-textarea" id="f-relationship" rows="3"></textarea></div>
       <div class="form-group full"><label class="form-label">備忘筆記</label><textarea class="form-textarea" id="f-notes" rows="3"></textarea></div>
     </div>
     <div class="modal-foot">
@@ -265,12 +362,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
+<!-- Token Modal -->
 <div class="modal-mask" id="tokenModal">
   <div class="small-modal">
     <div class="modal-head"><h2>🔑 GitHub Token</h2><button class="modal-close" id="closeToken">✕</button></div>
     <div class="modal-body single">
       <div class="form-group full"><label class="form-label">Personal Access Token</label><input class="form-input" id="tokenInput" type="password" placeholder="ghp_xxxxxxxxxxxx"></div>
-      <p style="font-size:11px;color:#a8b8d0;grid-column:1/-1">Token 僅存於本機 localStorage</p>
+      <p style="font-size:11px;color:#888">Token 僅存於本機 localStorage</p>
     </div>
     <div class="modal-foot">
       <button class="btn btn-cancel" id="cancelToken">取消</button>
@@ -279,12 +377,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
+<!-- ImgBB Modal -->
 <div class="modal-mask" id="imgbbModal">
   <div class="small-modal">
     <div class="modal-head"><h2>🖼️ ImgBB API Key</h2><button class="modal-close" id="closeImgBB">✕</button></div>
     <div class="modal-body single">
       <div class="form-group full"><label class="form-label">ImgBB API Key</label><input class="form-input" id="imgbbInput" type="password" placeholder="xxxxxxxxxxxxxxxx"></div>
-      <p style="font-size:11px;color:#a8b8d0;grid-column:1/-1">至 api.imgbb.com 免費取得。Key 僅存於本機。</p>
+      <p style="font-size:11px;color:#888">至 api.imgbb.com 免費取得。Key 僅存於本機。</p>
     </div>
     <div class="modal-foot">
       <button class="btn btn-cancel" id="cancelImgBB">取消</button>
@@ -297,9 +396,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="lightbox-close" id="lightboxClose">✕</button>
   <img id="lightboxImg" src="" alt="">
 </div>
-
 <div class="toast" id="toast"></div>
 
+<!-- Dock -->
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
@@ -319,19 +418,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <script>
-var REPO = 'sumoai-boop/sumoai-boop.github.io';
-var FILE = 'chloe-data.json';
-var GH_API = 'https://api.github.com/repos/' + REPO + '/contents/' + FILE;
-var LS_TOKEN = 'sumoai_gh_token';
-var LS_IMGBB = 'sumoai_imgbb_key';
-var ghSha = null;
+var REPO='sumoai-boop/sumoai-boop.github.io';
+var FILE='chloe-data.json';
+var GH_API='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
+var LS_TOKEN='sumoai_gh_token';
+var LS_IMGBB='sumoai_imgbb_key';
+var ghSha=null;
 
-var DEFAULT = {
-  met:'8 / 30', birthday:'1989/12/25', height:'157 cm', zodiac:'魔羯座',
-  edu:'文化大學新聞系｜文藻外語大學',
-  jobs:['樂天招商'], depts:['海運部門'],
-  location:'高雄（楠梓）· 東湖', cup:'G', phone:'', pet:'',
-  idol:'趙露思', movie:'佈局',
+var DEFAULT={
+  met:'8/30',birthday:'1989/12/25',height:'157 cm',zodiac:'魔羯座',
+  edu:'文化大學｜新聞系｜文藻外語大學｜',
+  jobs:['樂天招商'],depts:['海運部門'],
+  location:'高雄（楠梓）· 東湖',cup:'G',phone:'',pet:'',
+  idol:'趙露思',movie:'佈局',
   visited:['新加坡','泰國','柬埔寨','香港','澳門','杜拜'],
   wishlist:['夏威夷','阿拉伯'],
   likes:['泰國奶油小熊','袋子','看懸案命案','馬臉姐'],
@@ -339,135 +438,145 @@ var DEFAULT = {
   picky:['豬腳','大埔'],
   foods:['海苔','肉乾','巧克力','藥燉排骨','鍋燒意麵','義美泡芙'],
   nicknames:['高雄俟佩芩','仙女','小可愛','小騷貨','小母狗','水梨'],
-  relationship:'戀愛經歷：3任，曾單身 6 年\n現任男友：台塑業務，南亞纖維部\n家人：出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
-  notes:'', photos:[]
+  relHistory:'3任，曾單身 6 年',
+  relCurrent:'台塑業務，南亞纖維部',
+  relSuitor:'',
+  relFamily:'出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
+  jobdesc:'',
+  notes:'',photos:[],avatar:''
 };
+var data=JSON.parse(JSON.stringify(DEFAULT));
 
-var data = JSON.parse(JSON.stringify(DEFAULT));
-
-function toBase64UTF8(str) {
-  var bytes = new TextEncoder().encode(str);
-  var bin = '';
-  bytes.forEach(function(b){ bin += String.fromCharCode(b); });
+function toBase64UTF8(str){
+  var bytes=new TextEncoder().encode(str);
+  var bin='';bytes.forEach(function(b){bin+=String.fromCharCode(b);});
   return btoa(bin);
 }
-
-function fromBase64UTF8(b64) {
-  var raw = atob(b64.replace(/\n/g,''));
-  var bytes = new Uint8Array(raw.length);
-  for (var i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
+function fromBase64UTF8(b64){
+  var raw=atob(b64.replace(/\n/g,''));
+  var bytes=new Uint8Array(raw.length);
+  for(var i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
   return new TextDecoder().decode(bytes);
 }
-
-function showToast(msg) {
+function showToast(msg){
   var t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
+  t.textContent=msg;t.classList.add('show');
   setTimeout(function(){t.classList.remove('show');},3000);
 }
-
-function tags(arr,cls) {
-  return (arr||[]).map(function(t){return '<span class="tag '+cls+'">'+t+'</span>';}).join(' ');
+function mkTags(arr,cls){
+  return (arr||[]).map(function(t){return '<span class="'+cls+'">'+t+'</span>';}).join('');
 }
 
-function applyData(d) {
-  data = d;
-  document.getElementById('disp-birthday').textContent = d.birthday||'';
-  document.getElementById('disp-height').textContent = d.height||'';
-  document.getElementById('disp-zodiac').textContent = d.zodiac||'';
-  document.getElementById('disp-zodiac2').textContent = d.zodiac||'';
-  document.getElementById('disp-edu').textContent = d.edu||'';
-  document.getElementById('disp-edu2').textContent = (d.edu||'').split('｜')[0];
-  document.getElementById('disp-location').textContent = d.location||'';
-  document.getElementById('disp-met').textContent = d.met||'';
-  document.getElementById('disp-cup').textContent = d.cup||'—';
-  document.getElementById('disp-phone').textContent = d.phone||'—';
-  document.getElementById('disp-pet').textContent = d.pet||'—';
-  document.getElementById('disp-idol').textContent = d.idol||'—';
-  document.getElementById('disp-movie').textContent = d.movie||'—';
-  document.getElementById('disp-home').textContent = d.location||'';
-  var jobs = (d.jobs&&d.jobs.length)?d.jobs:(d.job?[d.job]:['樂天招商']);
-  var depts = (d.depts&&d.depts.length)?d.depts:(d.dept?[d.dept]:['海運部門']);
-  document.getElementById('disp-job').textContent = jobs.map(function(j,i){return j+(depts[i]?' · '+depts[i]:'');}).join(' | ');
-  document.getElementById('disp-jobs').innerHTML = jobs.map(function(j,i){return '<span class="tag rose">'+j+'</span>'+(depts[i]?' <span class="tag rose">'+depts[i]+'</span>':'');}).join(' ');
-  document.getElementById('disp-visited').innerHTML = tags(d.visited,'');
-  document.getElementById('disp-wishlist').innerHTML = tags(d.wishlist,'lav');
-  document.getElementById('disp-likes').innerHTML = tags(d.likes,'rose');
-  document.getElementById('disp-dislikes').innerHTML = tags(d.dislikes,'red');
-  document.getElementById('disp-picky').innerHTML = tags(d.picky,'red');
-  document.getElementById('disp-foods').innerHTML = tags(d.foods,'rose');
-  document.getElementById('disp-nicknames').innerHTML = tags(d.nicknames,'gold');
-  var relEl = document.getElementById('disp-relationship');
-  relEl.innerHTML = (d.relationship||'').split('\n').map(function(l){
-    var m=l.match(/^(.+?)：(.+)$/);
-    return m?'<strong>'+m[1]+'：</strong>'+m[2]:l;
-  }).join('<br>');
-  var notesEl = document.getElementById('disp-notes');
-  if (d.notes&&d.notes.trim()){
-    notesEl.style.fontStyle='normal'; notesEl.textContent=d.notes;
-  } else {
-    notesEl.style.fontStyle='italic'; notesEl.textContent='（點右下角編輯按鈕加入備忘…）';
+function applyData(d){
+  data=d;
+  document.getElementById('disp-birthday').textContent=d.birthday||'';
+  document.getElementById('disp-height').textContent=d.height||'';
+  document.getElementById('disp-zodiac').textContent=(d.zodiac||'')+(d.zodiac?'':'')+' ♑';
+  document.getElementById('disp-location').textContent=d.location||'';
+  document.getElementById('disp-met').textContent=d.met||'';
+  document.getElementById('disp-cup').textContent=d.cup||'—';
+  document.getElementById('disp-phone').textContent=d.phone||'—';
+  document.getElementById('disp-pet').textContent=d.pet||'—';
+  document.getElementById('disp-idol').textContent=d.idol||'—';
+  document.getElementById('disp-movie').textContent=d.movie||'—';
+  // 學歷
+  var ep=(d.edu||'').split('｜');
+  document.getElementById('disp-edu-school').textContent=ep[0]||'';
+  document.getElementById('disp-edu-dept').textContent=ep[1]||'';
+  document.getElementById('disp-edu-school2').textContent=ep[2]||'';
+  document.getElementById('disp-edu-dept2').textContent=ep[3]||'';
+  // 職涯
+  var jobs=(d.jobs&&d.jobs.length)?d.jobs:(d.job?[d.job]:['樂天招商']);
+  var depts=(d.depts&&d.depts.length)?d.depts:(d.dept?[d.dept]:['海運部門']);
+  document.getElementById('disp-jobs').textContent=jobs.map(function(j,i){return j+(depts[i]?' · '+depts[i]:'');}).join('　|　');
+  // 感情
+  document.getElementById('disp-jobdesc').textContent=d.jobdesc||'—';
+  document.getElementById('disp-rel-history').textContent=d.relHistory||'—';
+  document.getElementById('disp-rel-current').textContent=d.relCurrent||'—';
+  document.getElementById('disp-rel-suitor').textContent=d.relSuitor||'—';
+  document.getElementById('disp-rel-family').textContent=d.relFamily||'—';
+  // tags
+  document.getElementById('disp-visited').innerHTML=mkTags(d.visited,'tag-default');
+  document.getElementById('disp-wishlist').innerHTML=mkTags(d.wishlist,'tag-teal');
+  document.getElementById('disp-likes').innerHTML=mkTags(d.likes,'tag');
+  document.getElementById('disp-dislikes').innerHTML=mkTags(d.dislikes,'tag-red');
+  document.getElementById('disp-picky').innerHTML=mkTags(d.picky,'tag-red');
+  document.getElementById('disp-foods').innerHTML=mkTags(d.foods,'tag');
+  document.getElementById('disp-nicknames').innerHTML=mkTags(d.nicknames,'tag-gold');
+  // notes
+  var ne=document.getElementById('disp-notes');
+  if(d.notes&&d.notes.trim()){ne.style.fontStyle='normal';ne.style.color='#1a1a1a';ne.textContent=d.notes;}
+  else{ne.style.fontStyle='italic';ne.style.color='#aaa';ne.textContent='（點右下角編輯按鈕加入備忘…）';}
+  // avatar
+  if(d.avatar){
+    document.getElementById('avatarImg').src=d.avatar;
+    document.getElementById('avatarImg').style.display='block';
+    document.getElementById('avatarPlaceholder').style.display='none';
   }
   renderPhotos(d.photos||[]);
 }
 
-function renderPhotos(photos) {
-  var wall = document.getElementById('photoWall');
-  wall.innerHTML = '';
+// AVATAR UPLOAD
+document.getElementById('avatarInput').addEventListener('change',async function(e){
+  var file=e.target.files[0];if(!file)return;
+  var dataUrl=await new Promise(function(res){var r=new FileReader();r.onload=function(ev){res(ev.target.result);};r.readAsDataURL(file);});
+  try{
+    var url=await uploadToImgBB(dataUrl);
+    data.avatar=url;
+    document.getElementById('avatarImg').src=url;
+    document.getElementById('avatarImg').style.display='block';
+    document.getElementById('avatarPlaceholder').style.display='none';
+    await saveData('✅ 大頭貼已更新！');
+  }catch(err){showToast('❌ '+err.message);}
+  e.target.value='';
+});
+
+function renderPhotos(photos){
+  var wall=document.getElementById('photoWall');wall.innerHTML='';
   photos.forEach(function(url,i){
-    var div=document.createElement('div'); div.className='photo-item';
-    var img=document.createElement('img'); img.src=url; img.loading='lazy';
+    var div=document.createElement('div');div.className='photo-item';
+    var img=document.createElement('img');img.src=url;img.loading='lazy';
     img.addEventListener('click',function(){openLightbox(url);});
-    var btn=document.createElement('button'); btn.className='photo-del'; btn.textContent='✕';
+    var btn=document.createElement('button');btn.className='photo-del';btn.textContent='✕';
     btn.addEventListener('click',function(e){e.stopPropagation();deletePhoto(i);});
-    div.appendChild(img); div.appendChild(btn); wall.appendChild(div);
+    div.appendChild(img);div.appendChild(btn);wall.appendChild(div);
   });
-  var add=document.createElement('div'); add.className='photo-add';
-  add.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>新增照片</span>';
+  var add=document.createElement('div');add.className='photo-add';
+  add.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>新增</span>';
   add.addEventListener('click',function(){document.getElementById('photoInput').click();});
   wall.appendChild(add);
 }
-
-function openLightbox(url){
-  document.getElementById('lightboxImg').src=url;
-  document.getElementById('lightbox').classList.add('open');
-}
+function openLightbox(url){document.getElementById('lightboxImg').src=url;document.getElementById('lightbox').classList.add('open');}
 document.getElementById('lightboxClose').addEventListener('click',function(){document.getElementById('lightbox').classList.remove('open');});
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('lightbox').classList.remove('open');});
-
 function deletePhoto(idx){
-  if(!confirm('確定刪除這張照片？'))return;
+  if(!confirm('確定刪除？'))return;
   data.photos=(data.photos||[]).filter(function(_,i){return i!==idx;});
-  renderPhotos(data.photos); saveData('✅ 照片已刪除');
+  renderPhotos(data.photos);saveData('✅ 照片已刪除');
 }
 
 async function uploadToImgBB(dataUrl){
   var key=localStorage.getItem(LS_IMGBB);
   if(!key){openImgBBModal();throw new Error('需要輸入 ImgBB Key');}
   var base64=dataUrl.split(',')[1];
-  var form=new FormData(); form.append('image',base64);
+  var form=new FormData();form.append('image',base64);
   var res=await fetch('https://api.imgbb.com/1/upload?key='+key,{method:'POST',body:form});
   var json=await res.json();
   if(json.success)return json.data.url;
   if(res.status===400||res.status===403){localStorage.removeItem(LS_IMGBB);openImgBBModal();}
   throw new Error((json.error&&json.error.message)||'上傳失敗');
 }
-
 document.getElementById('photoInput').addEventListener('change',async function(e){
-  var files=Array.from(e.target.files);
-  if(!files.length)return;
+  var files=Array.from(e.target.files);if(!files.length)return;
   var prog=document.getElementById('uploadProgress');
-  prog.style.display='block'; prog.textContent='上傳中… 0 / '+files.length;
+  prog.style.display='block';prog.textContent='上傳中… 0 / '+files.length;
   var done=0;
   for(var i=0;i<files.length;i++){
     try{
-      var dataUrl=await new Promise(function(resolve){
-        var reader=new FileReader();
-        reader.onload=function(ev){resolve(ev.target.result);};
-        reader.readAsDataURL(files[i]);
-      });
+      var dataUrl=await new Promise(function(resolve){var reader=new FileReader();reader.onload=function(ev){resolve(ev.target.result);};reader.readAsDataURL(files[i]);});
       var url=await uploadToImgBB(dataUrl);
       if(!data.photos)data.photos=[];
-      data.photos.push(url); done++;
+      data.photos.push(url);done++;
       prog.textContent='上傳中… '+done+' / '+files.length;
     }catch(err){showToast('❌ '+err.message);}
   }
@@ -488,15 +597,11 @@ async function saveData(msg){
     else{var err=await r.json();if(r.status===401){localStorage.removeItem(LS_TOKEN);openTokenModal();}else showToast('❌ '+(err.message||r.status));}
   }catch(e){showToast('❌ 網路錯誤');}
 }
-
 async function loadData(){
   try{
     var r=await fetch(GH_API+'?t='+Date.now());
-    if(r.ok){
-      var j=await r.json(); ghSha=j.sha;
-      var d=JSON.parse(fromBase64UTF8(j.content));
-      applyData(Object.assign({},DEFAULT,d));
-    }else{applyData(JSON.parse(JSON.stringify(DEFAULT)));}
+    if(r.ok){var j=await r.json();ghSha=j.sha;var d=JSON.parse(fromBase64UTF8(j.content));applyData(Object.assign({},DEFAULT,d));}
+    else{applyData(JSON.parse(JSON.stringify(DEFAULT)));}
   }catch(e){applyData(JSON.parse(JSON.stringify(DEFAULT)));}
 }
 
@@ -517,6 +622,10 @@ function fillForm(){
   document.getElementById('f-pet').value=d.pet||'';
   document.getElementById('f-idol').value=d.idol||'';
   document.getElementById('f-movie').value=d.movie||'';
+  document.getElementById('f-rel-history').value=d.relHistory||'';
+  document.getElementById('f-rel-current').value=d.relCurrent||'';
+  document.getElementById('f-rel-suitor').value=d.relSuitor||'';
+  document.getElementById('f-rel-family').value=d.relFamily||'';
   document.getElementById('f-visited').value=(d.visited||[]).join(',');
   document.getElementById('f-wishlist').value=(d.wishlist||[]).join(',');
   document.getElementById('f-likes').value=(d.likes||[]).join(',');
@@ -524,32 +633,35 @@ function fillForm(){
   document.getElementById('f-picky').value=(d.picky||[]).join(',');
   document.getElementById('f-foods').value=(d.foods||[]).join(',');
   document.getElementById('f-nicknames').value=(d.nicknames||[]).join(',');
-  document.getElementById('f-relationship').value=d.relationship||'';
   document.getElementById('f-notes').value=d.notes||'';
+  document.getElementById('f-jobdesc').value=d.jobdesc||'';
 }
-
 function readForm(){
   function csv(id){return document.getElementById(id).value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
-  var jobs=csv('f-job'); var depts=csv('f-dept');
+  var jobs=csv('f-job');var depts=csv('f-dept');
   return Object.assign({},data,{
     met:document.getElementById('f-met').value.trim(),
     birthday:document.getElementById('f-birthday').value.trim(),
     height:document.getElementById('f-height').value.trim(),
     zodiac:document.getElementById('f-zodiac').value.trim(),
     edu:document.getElementById('f-edu').value.trim(),
-    jobs:jobs, depts:depts, job:jobs[0]||'', dept:depts[0]||'',
+    jobs:jobs,depts:depts,job:jobs[0]||'',dept:depts[0]||'',
     location:document.getElementById('f-location').value.trim(),
     cup:document.getElementById('f-cup').value.trim(),
     phone:document.getElementById('f-phone').value.trim(),
     pet:document.getElementById('f-pet').value.trim(),
     idol:document.getElementById('f-idol').value.trim(),
     movie:document.getElementById('f-movie').value.trim(),
-    visited:csv('f-visited'), wishlist:csv('f-wishlist'),
-    likes:csv('f-likes'), dislikes:csv('f-dislikes'),
-    picky:csv('f-picky'), foods:csv('f-foods'),
+    relHistory:document.getElementById('f-rel-history').value.trim(),
+    relCurrent:document.getElementById('f-rel-current').value.trim(),
+    relSuitor:document.getElementById('f-rel-suitor').value.trim(),
+    relFamily:document.getElementById('f-rel-family').value.trim(),
+    visited:csv('f-visited'),wishlist:csv('f-wishlist'),
+    likes:csv('f-likes'),dislikes:csv('f-dislikes'),
+    picky:csv('f-picky'),foods:csv('f-foods'),
     nicknames:csv('f-nicknames'),
-    relationship:document.getElementById('f-relationship').value,
-    notes:document.getElementById('f-notes').value
+    notes:document.getElementById('f-notes').value,
+    jobdesc:document.getElementById('f-jobdesc').value.trim()
   });
 }
 
@@ -558,12 +670,9 @@ document.getElementById('closeModal').addEventListener('click',function(){docume
 document.getElementById('cancelModal').addEventListener('click',function(){document.getElementById('editModal').classList.remove('open');});
 document.getElementById('editModal').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('editModal').classList.remove('open');});
 document.getElementById('saveBtn').addEventListener('click',async function(){
-  var btn=document.getElementById('saveBtn');
-  btn.disabled=true; btn.textContent='儲存中…';
-  var newData=readForm(); applyData(newData);
-  document.getElementById('editModal').classList.remove('open');
-  await saveData('✅ 已儲存！');
-  btn.disabled=false; btn.textContent='💾 儲存到 GitHub';
+  var btn=document.getElementById('saveBtn');btn.disabled=true;btn.textContent='儲存中…';
+  applyData(readForm());document.getElementById('editModal').classList.remove('open');
+  await saveData('✅ 已儲存！');btn.disabled=false;btn.textContent='💾 儲存到 GitHub';
 });
 
 function openTokenModal(){document.getElementById('tokenModal').classList.add('open');}
@@ -584,13 +693,11 @@ document.getElementById('closeImgBB').addEventListener('click',function(){docume
 
 (function(){
   var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
-  if(!dock||!trigger)return;
-  var timer;
+  if(!dock||!trigger)return;var timer;
   trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
   dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
   dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
 })();
-
 (function(){
   function tick(){
     var el=document.getElementById('gmbTime');if(!el)return;
