@@ -424,8 +424,8 @@ var ghSha=null;
 var DEFAULT={
   met:'8/30',birthday:'1989/12/25',height:'157 cm',zodiac:'魔羯座',
   edu:'文化大學｜新聞系｜文藻外語大學｜',
-  jobs:['','樂天招商','海運部門'],depts:['','',''],jobPrev1:'樂天招商',jobPrev2:'海運部門',jobCurr:'',
-  location:'高雄（楠梓）· 東湖',cup:'G',phone:'',
+  jobPrev1:'樂天招商',jobPrev2:'海運部門',jobCurr:'',
+  location:'高雄（楠梓）· 東湖',cup:'G',phone:'0927136706',
   idol:'趙露思',movie:'佈局',
   visited:['新加坡','泰國','柬埔寨','香港','澳門','杜拜'],
   wishlist:['夏威夷','阿拉伯'],
@@ -484,9 +484,10 @@ function applyData(d){
   // 職涯
   var jobs=(d.jobs&&d.jobs.length)?d.jobs:(d.job?[d.job]:['樂天招商']);
   var depts=(d.depts&&d.depts.length)?d.depts:(d.dept?[d.dept]:['海運部門']);
+  // 相容舊格式：若有 jobs[] 則從中取值
+  var prev1=d.jobPrev1||(d.jobs&&d.jobs[0]?d.jobs[0]+(d.depts&&d.depts[0]?' · '+d.depts[0]:''):'—');
+  var prev2=d.jobPrev2||(d.jobs&&d.jobs[1]?d.jobs[1]+(d.depts&&d.depts[1]?' · '+d.depts[1]:''):'—');
   var currJob=d.jobCurr||'—';
-  var prev1=d.jobPrev1||'—';
-  var prev2=d.jobPrev2||'—';
   document.getElementById('disp-job-curr').textContent=currJob;
   document.getElementById('disp-job-prev').textContent=prev1;
   document.getElementById('disp-job-prev2').textContent=prev2;
@@ -612,8 +613,8 @@ function fillForm(){
   document.getElementById('f-height').value=d.height||'';
   document.getElementById('f-zodiac').value=d.zodiac||'';
   document.getElementById('f-edu').value=d.edu||'';
-  document.getElementById('f-job-prev1').value=d.jobPrev1||'';
-  document.getElementById('f-job-prev2').value=d.jobPrev2||'';
+  document.getElementById('f-job-prev1').value=d.jobPrev1||(d.jobs&&d.jobs[0]?d.jobs[0]+(d.depts&&d.depts[0]?' · '+d.depts[0]:''):'');
+  document.getElementById('f-job-prev2').value=d.jobPrev2||(d.jobs&&d.jobs[1]?d.jobs[1]+(d.depts&&d.depts[1]?' · '+d.depts[1]:''):'');
   document.getElementById('f-job-curr').value=d.jobCurr||'';
   document.getElementById('f-location').value=d.location||'';
   document.getElementById('f-cup').value=d.cup||'';
