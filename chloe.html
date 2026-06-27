@@ -240,6 +240,14 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td class="td-label">想去的國家</td>
       <td class="td-val" colspan="2" id="disp-wishlist"></td>
     </tr>
+    <tr>
+      <td class="td-label">最愛的地方</td>
+      <td class="td-val" colspan="2" id="disp-fav-place">杜拜（阿布達比羅浮宮）、首爾</td>
+    </tr>
+    <tr>
+      <td class="td-label">旅遊風格</td>
+      <td class="td-val" colspan="2">愛博物館、討厭曬太陽和排隊、偏好好一點的航空</td>
+    </tr>
   </table>
 
   <!-- 個性喜好 -->
@@ -265,6 +273,43 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td class="td-label">喜歡的電影</td>
       <td class="td-val" id="disp-movie">佈局</td>
       <td class="td-val"><span style="font-size:11px;color:#888">藝人：</span><span id="disp-idol">趙露思</span></td>
+    </tr>
+    <tr>
+      <td class="td-label">喜歡的節目</td>
+      <td class="td-val" colspan="2" id="disp-shows">懸案命案類</td>
+    </tr>
+    <tr>
+      <td class="td-label">不喜歡</td>
+      <td class="td-val" colspan="2" id="disp-dontlike">漫才、韓劇、綜藝搞笑</td>
+    </tr>
+  </table>
+
+  <!-- 個性觀察 -->
+  <table style="margin-top:-1px">
+    <tr><td colspan="2" class="section-head">個性觀察</td></tr>
+    <tr>
+      <td class="td-label">感情觀</td>
+      <td class="td-val">極度獨立，不喜歡被管或問行蹤；「我是我自己的，不是你一個人的」；被前任甩後容貌焦慮加重；對感情有防衛心</td>
+    </tr>
+    <tr>
+      <td class="td-label">價值觀</td>
+      <td class="td-val">很重視隱私；篩選朋友很嚴，讓她累的人會慢慢淡出；鮮少跟人吵架；討厭形式感（不喜歡每天早安晚安）</td>
+    </tr>
+    <tr>
+      <td class="td-label">生涯規劃</td>
+      <td class="td-val">打算撐到明年五月領年終再換工作；同時進修英文、西文、法文；希望住台北市內湖</td>
+    </tr>
+    <tr>
+      <td class="td-label">消費習慣</td>
+      <td class="td-val">誠品黑卡會員；愛買泰國奶油小熊、袋子、可愛小物；分分鐘有購物慾；理性但衝動並存</td>
+    </tr>
+    <tr>
+      <td class="td-label">雷區</td>
+      <td class="td-val">過度依賴、問行蹤、每天早安晚安、被逼、不尊重她的意願；惹毛就說封鎖/消失</td>
+    </tr>
+    <tr>
+      <td class="td-label">追求者觀察</td>
+      <td class="td-val">杜拜富二代（開保時捷+Defender）、英國同行（花35萬帶她出國）、上海學弟、公司分析師；她說「沒有可以對我負責的，都把我當玩伴」</td>
     </tr>
   </table>
 
@@ -353,6 +398,9 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group full"><label class="form-label">挑食不吃（逗號分隔）</label><input class="form-input" id="f-picky" placeholder="豬腳,大埔"></div>
       <div class="form-group full"><label class="form-label">愛吃的（逗號分隔）</label><input class="form-input" id="f-foods" placeholder="海苔,肉乾,巧克力"></div>
       <div class="form-group full"><label class="form-label">外號（逗號分隔）</label><input class="form-input" id="f-nicknames" placeholder="仙女,小可愛,水梨"></div>
+      <div class="form-group full"><label class="form-label">喜歡的節目</label><input class="form-input" id="f-shows" placeholder="懸案命案類"></div>
+      <div class="form-group full"><label class="form-label">不喜歡的娛樂</label><input class="form-input" id="f-dontlike" placeholder="漫才、韓劇"></div>
+      <div class="form-group full"><label class="form-label">最愛的地方</label><input class="form-input" id="f-favplace" placeholder="杜拜、首爾"></div>
       <div class="form-group full"><label class="form-label">備忘筆記</label><textarea class="form-textarea" id="f-notes" rows="3"></textarea></div>
     </div>
     <div class="modal-foot">
@@ -444,6 +492,7 @@ var DEFAULT={
   relFamily:'出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
   jobdesc:'',
   jobPrevDesc:'',
+  shows:'懸案命案類',dontlike:'漫才、韓劇、綜藝搞笑',favplace:'杜拜（阿布達比羅浮宮）、首爾',
   notes:'',photos:[],avatar:''
 };
 var data=JSON.parse(JSON.stringify(DEFAULT));
@@ -503,6 +552,9 @@ function applyData(d){
   setText('disp-job-prev',prev1);
   setText('disp-job-prev2',prev2);
   // 感情
+  setText('disp-shows',d.shows||'懸案命案類');
+  setText('disp-dontlike',d.dontlike||'漫才、韓劇、綜藝搞笑');
+  setText('disp-fav-place',d.favplace||'杜拜（阿布達比羅浮宮）、首爾');
   setText('disp-rel-history',d.relHistory||'—');
   setText('disp-rel-current',d.relCurrent||'—');
   // 追求者：支援陣列或字串
@@ -693,6 +745,9 @@ function fillForm(){
   document.getElementById('f-picky').value=(d.picky||[]).join(',');
   document.getElementById('f-foods').value=(d.foods||[]).join(',');
   document.getElementById('f-nicknames').value=(d.nicknames||[]).join(',');
+  document.getElementById('f-shows').value=d.shows||'';
+  document.getElementById('f-dontlike').value=d.dontlike||'';
+  document.getElementById('f-favplace').value=d.favplace||'';
   document.getElementById('f-notes').value=d.notes||'';
 }
 function readForm(){
@@ -720,6 +775,9 @@ function readForm(){
     likes:csv('f-likes'),dislikes:csv('f-dislikes'),
     picky:csv('f-picky'),foods:csv('f-foods'),
     nicknames:csv('f-nicknames'),
+    shows:document.getElementById('f-shows').value.trim(),
+    dontlike:document.getElementById('f-dontlike').value.trim(),
+    favplace:document.getElementById('f-favplace').value.trim(),
     notes:document.getElementById('f-notes').value,
   });
 }
