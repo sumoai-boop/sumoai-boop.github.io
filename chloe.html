@@ -275,8 +275,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     </tr>
     <tr>
       <td class="td-label">喜歡的電影</td>
-      <td class="td-val" id="disp-movie">—</td>
-      <td class="td-val"><span class="td-label" style="display:block;margin-bottom:5px">明星</span><span id="disp-idol">meovv的Anna</span></td>
+      <td class="td-val" colspan="2" id="disp-movie">—</td>
+    </tr>
+    <tr>
+      <td class="td-label">喜歡的明星</td>
+      <td class="td-val" colspan="2" id="disp-idol">meovv的Anna（覺得超美）</td>
     </tr>
     <tr>
       <td class="td-label">喜歡的節目</td>
@@ -320,16 +323,6 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td class="td-val">幾乎不會自慰（「我就是可以沒有性的女生」）；幽默感強、接梗快；不常生氣但一旦觸底線非常兇（冷戰專業戶）；很享受單身、在家的生活；居家派（可以整天在家）</td>
     </tr>
 
-  </table>
-
-  <!-- 追求者名冊 -->
-  <table style="margin-top:-1px">
-    <tr><td colspan="2" class="section-head">追求者名冊</td></tr>
-    <tr>
-      <td colspan="2" class="td-val" style="padding:10px 12px">
-        <div id="disp-suitors-table"></div>
-      </td>
-    </tr>
   </table>
 
   <!-- 外號 -->
@@ -559,8 +552,7 @@ function applyData(d){
   setText('disp-cup',d.cup||'—');
   setText('disp-phone',d.phone||'—');
   setText('disp-idol',d.idol||'—');
-  setText('disp-movie',d.movie||'—');
-  // 學歷：相容兩種格式
+  setText('disp-movie',d.movie||'—');  // 學歷：相容兩種格式
   var ep=(d.edu||'').split('｜');
   var s1='',d1='',s2='',d2='';
   if(ep.length>=4){s1=ep[0];d1=ep[1];s2=ep[2];d2=ep[3];}
