@@ -196,10 +196,14 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td class="td-val" colspan="2"><span id="disp-edu-school2">文藻外語大學</span>　<span id="disp-edu-dept2" style="color:#555;font-size:12px"></span></td>
     </tr>
     <tr>
-      <td class="td-group" rowspan="2">職涯</td>
-      <td class="td-label">前職</td>
+      <td class="td-group" rowspan="3">職涯</td>
+      <td class="td-label">前職 1</td>
       <td class="td-val" id="disp-job-prev">—</td>
       <td class="td-val" id="disp-job-prev2">—</td>
+    </tr>
+    <tr>
+      <td class="td-label">前職 2</td>
+      <td class="td-val" colspan="2" id="disp-job-prev3">夏威夷鐵板燒外場</td>
     </tr>
     <tr>
       <td class="td-label">現職</td>
@@ -272,7 +276,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr>
       <td class="td-label">喜歡的電影</td>
       <td class="td-val" id="disp-movie">佈局</td>
-      <td class="td-val"><span style="font-size:11px;color:#888">藝人：</span><span id="disp-idol">趙露思</span></td>
+      <td class="td-val"><span class="td-label" style="display:block;margin-bottom:5px">明星</span><span id="disp-idol">趙露思</span></td>
     </tr>
     <tr>
       <td class="td-label">喜歡的節目</td>
@@ -307,10 +311,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td class="td-label">雷區</td>
       <td class="td-val">過度依賴、問行蹤、每天早安晚安、被逼、不尊重她的意願；惹毛就說封鎖/消失</td>
     </tr>
-    <tr>
-      <td class="td-label">追求者觀察</td>
-      <td class="td-val">杜拜富二代（開保時捷+Defender）、英國同行（花35萬帶她出國）、上海學弟、公司分析師；她說「沒有可以對我負責的，都把我當玩伴」</td>
-    </tr>
+
   </table>
 
   <!-- 外號 -->
@@ -377,6 +378,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group full"><label class="form-label">學歷（格式：學校1｜科系1｜學校2｜科系2）</label><input class="form-input" id="f-edu" placeholder="文化大學｜新聞系｜文藻外語大學｜"></div>
       <div class="form-group full"><label class="form-label">前職 1</label><input class="form-input" id="f-job-prev1" placeholder="樂天招商"></div>
       <div class="form-group full"><label class="form-label">前職 2</label><input class="form-input" id="f-job-prev2" placeholder="海運部門"></div>
+      <div class="form-group full"><label class="form-label">前職 3</label><input class="form-input" id="f-job-prev3" placeholder="夏威夷鐵板燒外場"></div>
       <div class="form-group full"><label class="form-label">現職</label><input class="form-input" id="f-job-curr" placeholder="現在的公司"></div>
       <div class="form-group full"><label class="form-label">住址</label><input class="form-input" id="f-location" placeholder="高雄（楠梓）· 東湖"></div>
       <div class="form-group"><label class="form-label">罩杯</label><input class="form-input" id="f-cup" placeholder="G"></div>
@@ -476,7 +478,7 @@ var ghSha=null;
 var DEFAULT={
   met:'8/30',birthday:'1989/12/25',height:'157 cm',zodiac:'魔羯座',
   edu:'文化大學｜新聞系｜文藻外語大學｜',
-  jobPrev1:'樂天招商',jobPrev2:'海運部門',jobCurr:'',
+  jobPrev1:'樂天招商',jobPrev2:'海運部門',jobPrev3:'夏威夷鐵板燒外場',jobCurr:'',
   location:'高雄（楠梓）· 東湖',cup:'G',phone:'0927136706',
   idol:'趙露思',movie:'佈局',
   visited:['新加坡','泰國','柬埔寨','香港','澳門','杜拜'],
@@ -549,6 +551,7 @@ function applyData(d){
   var prev2=d.jobPrev2||(d.jobs&&d.jobs[1]?d.jobs[1]+(d.depts&&d.depts[1]?' · '+d.depts[1]:''):'—');
   var currJob=d.jobCurr||'—';
   setText('disp-job-curr',currJob);
+  setText('disp-job-prev3',d.jobPrev3||'夏威夷鐵板燒外場');
   setText('disp-job-prev',prev1);
   setText('disp-job-prev2',prev2);
   // 感情
@@ -724,6 +727,7 @@ function fillForm(){
   document.getElementById('f-edu').value=eduVal;
   document.getElementById('f-job-prev1').value=d.jobPrev1||(d.jobs&&d.jobs[0]?d.jobs[0]+(d.depts&&d.depts[0]?' · '+d.depts[0]:''):'');
   document.getElementById('f-job-prev2').value=d.jobPrev2||(d.jobs&&d.jobs[1]?d.jobs[1]+(d.depts&&d.depts[1]?' · '+d.depts[1]:''):'');
+  document.getElementById('f-job-prev3').value=d.jobPrev3||'';
   document.getElementById('f-job-curr').value=d.jobCurr||'';
   document.getElementById('f-location').value=d.location||'';
   document.getElementById('f-cup').value=d.cup||'';
@@ -755,6 +759,7 @@ function readForm(){
   return Object.assign({},data,{
     jobPrev1:document.getElementById('f-job-prev1').value.trim(),
     jobPrev2:document.getElementById('f-job-prev2').value.trim(),
+    jobPrev3:document.getElementById('f-job-prev3').value.trim(),
     jobCurr:document.getElementById('f-job-curr').value.trim(),
     met:document.getElementById('f-met').value.trim(),
     birthday:document.getElementById('f-birthday').value.trim(),
