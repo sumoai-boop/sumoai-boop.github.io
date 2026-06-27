@@ -460,6 +460,9 @@ const TMDB_TV_OVERRIDE={
   '劉在錫的民宿法則！': 318167,
   '怪奇退休鎮': 224941,
   '我會找到你': 278178,
+  'Oasis：綠洲謎蹤': 296285,
+  '鐵拳教育': 276161,
+  '稻草人': 292121,
 };
 
 const DIST_LOGO={
@@ -904,6 +907,20 @@ async function openPoster(m){
         pmImg.onerror=()=>{pmPlaceholder.textContent='無海報圖';};
         pmImg.src=`https://image.tmdb.org/t/p/w500${movie.poster_path}`;
       }else{pmPlaceholder.textContent='無海報圖';}
+      // 顯示 TMDB 搜到的名稱（方便比對是否正確）
+      const tmdbName = movie.title||movie.name||'';
+      const tmdbOrig = movie.original_title||movie.original_name||'';
+      const tmdbYear = parseInt((movie.release_date||movie.first_air_date||'0').substring(0,4))||0;
+      const tmdbId = movie.id;
+      if(tmdbName || tmdbOrig){
+        const existingNote = document.getElementById('pmTmdbNote');
+        if(existingNote) existingNote.remove();
+        const note = document.createElement('div');
+        note.id = 'pmTmdbNote';
+        note.style.cssText = 'font-size:10px;color:rgba(80,50,10,0.45);text-align:center;margin-top:4px;letter-spacing:0.03em;';
+        note.textContent = `TMDB: ${tmdbName}${tmdbOrig&&tmdbOrig!==tmdbName?' / '+tmdbOrig:''} (${tmdbYear}) #${tmdbId}`;
+        document.getElementById('pmTitleEN').insertAdjacentElement('afterend', note);
+      }
       if(movie.genre_ids&&movie.genre_ids.length){
         document.getElementById('pmTags').innerHTML=movie.genre_ids.slice(0,5).map(id=>GENRE[id]?`<span class="pm-tag">${GENRE[id]}</span>`:'').join('');
       }
