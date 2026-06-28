@@ -1328,8 +1328,8 @@ function renderWeekIncomeChart(){
 function renderMonthIncomeChart(){
   var el=document.getElementById('monthIncomeChart'),lbl=document.getElementById('monthChartYearLabel');
   if(!el)return;if(lbl)lbl.textContent=monthChartYear;
-  var allD=getData('uberWeekly'),mmap={};
-  allD.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!mmap[ym])mmap[ym]=0;mmap[ym]+=w.income||0;});
+  var allD=getData('uberWeekly'),mmap={},hmap={};
+  allD.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!mmap[ym])mmap[ym]=0;mmap[ym]+=w.income||0;if(!hmap[ym])hmap[ym]=0;hmap[ym]+=(w.hours||0)*60+(w.mins||0);});
   var now=new Date(),tYM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   var months=[];for(var m=1;m<=12;m++)months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
   var values=months.map(function(ym){return mmap[ym]||0;}),maxVal=Math.max.apply(null,values.concat([1])),chartH=200,bw=50;
@@ -1337,8 +1337,11 @@ function renderMonthIncomeChart(){
     var iC=(ym===tYM),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
     var bg=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
     var lc=iC?'#FFD700':'rgba(240,220,160,0.8)',nc=iC?'#7A5800':'#004D20',label=(i+1)+'月';
-    var mfs=Math.min(Math.floor((bw-10)*0.55),Math.floor(barH*0.22),22);
-    var inner=values[i]>0&&barH>=36?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
+    var mfs=Math.min(Math.floor((bw-10)*0.55),Math.floor(barH*0.22),20);
+    var hrs=(hmap[ym]||0)/60;
+    var hrStr=hrs>0?hrs.toFixed(1)+'hr':'';
+    var barText=values[i].toLocaleString()+(hrStr?' / '+hrStr:'');
+    var inner=values[i]>0&&barH>=36?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+barText+'</div></div>':'';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+bw+'px;">'
       +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
         +'<div style="position:relative;width:'+(bw-6)+'px;height:'+barH+'px;background:'+bg+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
