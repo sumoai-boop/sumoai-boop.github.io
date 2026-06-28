@@ -1339,7 +1339,7 @@ function renderMonthIncomeChart(){
     var lc=iC?'#FFD700':'rgba(240,220,160,0.8)',nc=iC?'#7A5800':'#004D20',label=(i+1)+'月';
     var mfs=Math.min(Math.floor((bw-10)*0.55),Math.floor(barH*0.22),20);
     var hrs=(hmap[ym]||0)/60;
-    var hrStr=hrs>0?hrs.toFixed(1)+'hr':'';
+    var hrStr=hrs>0?hrs.toFixed(1)+'h':'';
     var barText=values[i].toLocaleString()+(hrStr?' / '+hrStr:'');
     var inner=values[i]>0&&barH>=36?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+barText+'</div></div>':'';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+bw+'px;">'
