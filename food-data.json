@@ -1,5 +1,40 @@
 [
   {
+    "id": "1782663900462",
+    "name": "雞湯桑 南港lalaport店",
+    "name1": "雞湯桑",
+    "name2": "南港lalaport店",
+    "type": "拉麵",
+    "meal": "",
+    "price": 293,
+    "visits": 2,
+    "gscore": 4.6,
+    "addr": "115臺北市南港區環河里經貿二路131號B1",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%9B%9E%E6%B9%AF%E6%A1%91+%E5%8D%97%E6%B8%AFlalaport/@25.0593497,121.6150076,17z/data=!3m1!5s0x3442aca884ffd615:0xdd8a0c46972e5ffa!4m15!1m8!3m7!1s0x3442ad002e5e146f:0xc8f5650f162f6e6f!2z6Zue5rmv5qGRIOWNl-a4r2xhbGFwb3J0!8m2!3d25.0593449!4d121.6175825!10e9!16s%2Fg%2F11xg6ys88n!3m5!1s0x3442ad002e5e146f:0xc8f5650f162f6e6f!8m2!3d25.0593449!4d121.6175825!16s%2Fg%2F11xg6ys88n?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-06-28",
+    "score": 4.3,
+    "visitLog": [
+      {
+        "date": "2026-06-28",
+        "meal": "晚餐",
+        "price": 337,
+        "menu": "東京雞白湯+B套餐"
+      },
+      {
+        "date": "2025-08-10",
+        "meal": "晚餐",
+        "price": 248,
+        "menu": "東京雞白湯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/xKkb08cb/15a636a14ec3.jpg"
+    ],
+    "img": "https://i.ibb.co/xKkb08cb/15a636a14ec3.jpg",
+    "createdAt": 1782663900462
+  },
+  {
     "id": "1782579427595",
     "name": "韓美膳",
     "name1": "韓美膳",
