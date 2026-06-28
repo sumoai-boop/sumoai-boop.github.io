@@ -242,8 +242,7 @@
   .ic-threads{background:linear-gradient(145deg,#3F3F46,#71717A);}
   .ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
   .ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
-.ic-mlb{background:linear-gradient(145deg,#041E42,#0C2340);border:1px solid rgba(255,255,255,0.15);}
-.ic-chloe{background:linear-gradient(145deg,#c084b8,#8b5cf6);}
+.ic-mlb{background:linear-gradient(145deg,#FD5A1E,#C23A0A);}
 
   @media(max-width:600px){
     
@@ -806,7 +805,7 @@ function renderMonthlyPage(){
 
   let html=`<div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,160,0.4);">每月平均消費</div>
+      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,160,0.4);">每月總消費</div>
       <div style="display:flex;align-items:center;gap:6px;">
         ${years.map(y=>`<button onclick="switchMonthYear(${y})" id="yearBtn${y}" style="background:${y===currentYear?'rgba(232,98,42,0.25)':'none'};border:none;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:4px 12px;border-radius:6px;color:${y===currentYear?'#fff':'rgba(255,220,160,0.4)'};">${y}</button>`).join('')}
       </div>
@@ -822,12 +821,11 @@ function renderMonthlyPage(){
       if(b){b.style.color=y===year?'#fff':'rgba(255,220,160,0.4)';b.style.background=y===year?'rgba(232,98,42,0.25)':'none';}
     });
     const data=allMonthData[year]||[];
-    const maxAvg=Math.max(...data.map(m=>m.count?Math.round(m.total/m.count):0),1);
+    const maxTotal=Math.max(...data.map(m=>m.total),1);
     let chartHtml='<div style="display:flex;flex-direction:column;gap:8px;">';
     data.forEach(m=>{
-      const avg=m.count?Math.round(m.total/m.count):0;
-      const pct=avg?Math.round(avg/maxAvg*100):0;
-      const label=avg?'$'+avg.toLocaleString():'—';
+      const pct=m.total?Math.round(m.total/maxTotal*100):0;
+      const label=m.total?'$'+m.total.toLocaleString():'—';
       chartHtml+=`
         <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
           <div style="font-size:12px;color:rgba(255,220,160,0.6);text-align:right;">${m.label}</div>
@@ -835,7 +833,7 @@ function renderMonthlyPage(){
             <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(100,180,255,0.6),rgba(100,180,255,0.25));border-radius:6px;"></div>
             ${m.count?`<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,0.4);">${m.count} 筆</div>`:''}
           </div>
-          <div style="font-size:18px;font-weight:900;color:${avg?'#ffffff':'rgba(255,255,255,0.15)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
+          <div style="font-size:18px;font-weight:900;color:${m.total?'#ffffff':'rgba(255,255,255,0.15)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
         </div>`;
     });
     chartHtml+='</div>';
@@ -1488,9 +1486,11 @@ function render(){
       // 評分角標（左上角）
       const scoreBadge = document.createElement('span');
       if(item.score>0){
-        const scoreColor = item.score>=5 ? '#FFD200' : '#ffffff';
-        scoreBadge.textContent = (+(item.score)).toFixed(1);
-        scoreBadge.style.cssText = `position:absolute;top:7px;left:7px;z-index:4;background:rgba(0,0,0,0.6);color:${scoreColor};font-size:14px;font-weight:700;border-radius:99px;padding:2px 10px;`;
+        const s = +item.score;
+        const scoreColor = s>=5 ? '#FFD200' : s>=4 ? '#FF6B6B' : '#ffffff';
+        const scoreSize  = s>=5 ? '18px' : '14px';
+        scoreBadge.textContent = s.toFixed(1);
+        scoreBadge.style.cssText = `position:absolute;top:7px;left:7px;z-index:4;background:rgba(0,0,0,0.6);color:${scoreColor};font-size:${scoreSize};font-weight:700;border-radius:99px;padding:2px 10px;`;
       }
 
       if(coverImg){
@@ -1660,9 +1660,7 @@ setInterval(updateTime, 10000);</script>
     <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
     <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
     <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><span style="font-size:15px;font-weight:900;font-family:Arial,sans-serif;color:#fff;line-height:1;letter-spacing:-0.5px;">MLB</span></div><span class="gd-label">MLB</span></a>
-    <div class="gd-sep"></div>
-    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="gd-label">Chloe ♥</span></a>
+    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.8 5.8c2.6 3.4 2.6 9 0 12.4"/><path d="M18.2 5.8c-2.6 3.4-2.6 9 0 12.4"/><path d="M7 8.5l1.4.5M7 15.5l1.4-.5M17 8.5l-1.4.5M17 15.5l-1.4-.5"/></svg></div><span class="gd-label">MLB</span></a>
   </div>
 </div>
 <script>
