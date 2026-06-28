@@ -31,9 +31,23 @@ body{
 .mb-menu:hover{background:rgba(255,255,255,0.2);}
 
 /* Dock */
-.global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
+.global-dock-wrap{
+  position:fixed;bottom:0;left:50%;
+  transform:translateX(-50%) translateY(calc(100% - 2px));
+  z-index:9998;
+  transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;
+  opacity:0;
+}
 .global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
-.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
+.global-dock{
+  display:flex;align-items:flex-end;gap:8px;
+  background:rgba(255,255,255,0.16);
+  backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:20px 20px 0 0;
+  padding:10px 14px 14px;
+  box-shadow:0 -4px 30px rgba(0,0,0,0.25);
+}
 .gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
 .gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
 .gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
@@ -41,17 +55,15 @@ body{
 .gd-item:hover .gd-label{opacity:1;}
 .gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
 .gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about{background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-.ic-photos{background:linear-gradient(145deg,#FF6B9D,#C8365A);}
-.ic-dramas{background:linear-gradient(145deg,#2D1B69,#7C3AED);}
-.ic-food{background:linear-gradient(145deg,#0EA5E9,#0369A1);}
-.ic-travel{background:linear-gradient(145deg,#FF6B35,#D93A00);}
-.ic-threads{background:linear-gradient(145deg,#3F3F46,#71717A);}
-.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-mlb{background:linear-gradient(145deg,#041E42,#0C2340);border:1px solid rgba(255,255,255,0.15);}
-.ic-chloe{background:linear-gradient(145deg,#c084b8,#8b5cf6);}
-.ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
-.ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
+.ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
+.ic-photos {background:linear-gradient(145deg,#FF6B9D,#C8365A);}
+.ic-dramas {background:linear-gradient(145deg,#2D1B69,#7C3AED);}
+.ic-food   {background:linear-gradient(145deg,#0EA5E9,#0369A1);}
+.ic-travel {background:linear-gradient(145deg,#FF6B35,#D93A00);}
+.ic-threads{background:linear-gradient(145deg,#18181B,#3F3F46);border:1px solid rgba(255,255,255,0.15);}
+.ic-uber   {background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+.ic-reminder{background:linear-gradient(145deg,#059669,#065F46);}
+.ic-netflix{background:linear-gradient(135deg,#141414,#E50914);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 
 /* 主內容 */
@@ -191,7 +203,7 @@ body{
       <div class="stat-card"><div class="stat-label">本月公里數</div><div class="stat-val" id="s-month-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">總公里數</div><div class="stat-val" id="s-total-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均月薪</div><div class="stat-val" id="s-avg-month-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均週薪</div><div class="stat-val" id="s-avg-month-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <!-- Row 2: 載客 + 費用 -->
       <div class="stat-card"><div class="stat-label">平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">本月載客數</div><div class="stat-val" id="s-month-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
@@ -450,18 +462,16 @@ body{
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
+    <a href="about.html" class="gd-item"><div class="gd-icon ic-about"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><span class="gd-label">關於</span></a>
     <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
-    <a href="dramas.html" class="gd-item"><div class="gd-dot" style="position:absolute;bottom:-8px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);"></div><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
     <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
     <div class="gd-sep"></div>
     <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><span class="gd-label">旅遊足跡</span></a>
     <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div><span class="gd-label">Threads</span></a>
-    <a href="uber.html" class="gd-item"><div class="gd-dot" style="position:absolute;bottom:-8px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);"></div><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
     <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
-    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:'Bebas Neue',Arial,sans-serif;font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><span style="font-size:15px;font-weight:900;font-family:Arial,sans-serif;color:#fff;line-height:1;letter-spacing:-0.5px;">MLB</span></div><span class="gd-label">MLB</span></a>
-    <div class="gd-sep"></div>
-    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="gd-label">Chloe ♥</span></a>
+    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-size:34px;font-weight:900;font-family:Arial Black,sans-serif;color:#ffffff;line-height:1;">N</span></div><span class="gd-label">Netflix Top10</span></a>
   </div>
 </div>
 
@@ -1413,11 +1423,19 @@ function updateStats(){
   if(document.getElementById('s-avg-km2')) document.getElementById('s-avg-km2').innerHTML='<em class="num">'+avgKm2+'</em> <em class="unit">km</em>';
   if(document.getElementById('s-avg-day-trips')) document.getElementById('s-avg-day-trips').innerHTML='<em class="num">'+avgDayTrips+'</em> <em class="unit">趟</em>';
   if(document.getElementById('s-avg-day-hours')) document.getElementById('s-avg-day-hours').innerHTML='<em class="num">'+avgDayHours+'</em> <em class="unit">hr</em>';
-  // 平均月薪（每月平均收入）
-  var incomeMonthSet={};
-  allWeekly.forEach(function(w){ if(w.date) incomeMonthSet[w.date.slice(0,7)]=(incomeMonthSet[w.date.slice(0,7)]||0)+w.income; });
-  var incomeMonths=Object.keys(incomeMonthSet);
-  var avgMonthIncome=incomeMonths.length>0?Math.round(incomeMonths.reduce(function(s,m){return s+incomeMonthSet[m];},0)/incomeMonths.length):0;
+  // 平均週薪（每週平均收入，以週一為週起始）
+  var incomeWeekSet={};
+  allWeekly.forEach(function(w){
+    if(!w.date) return;
+    var d=new Date(w.date+'T00:00:00');
+    var dow=d.getDay();
+    var daysToMon=dow===0?6:dow-1;
+    var mon=new Date(d); mon.setDate(d.getDate()-daysToMon);
+    var key=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+    incomeWeekSet[key]=(incomeWeekSet[key]||0)+(w.income||0);
+  });
+  var incomeWeeks=Object.keys(incomeWeekSet);
+  var avgMonthIncome=incomeWeeks.length>0?Math.round(incomeWeeks.reduce(function(s,k){return s+incomeWeekSet[k];},0)/incomeWeeks.length):0;
 
   document.getElementById('s-avg-month-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgMonthIncome)+'</em>';
   document.getElementById('s-total-km').innerHTML='<em class="num">'+totalKm.toFixed(1)+'</em> <em class="unit">km</em>';
