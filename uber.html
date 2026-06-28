@@ -40,20 +40,21 @@ body{
 }
 .global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
 .global-dock{
-  display:flex;align-items:flex-end;gap:8px;
+  display:flex;align-items:flex-end;gap:10px;
   background:rgba(255,255,255,0.16);
-  backdrop-filter:blur(28px);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
   border:1px solid rgba(255,255,255,0.25);
-  border-radius:20px 20px 0 0;
-  padding:10px 14px 14px;
-  box-shadow:0 -4px 30px rgba(0,0,0,0.25);
+  border-radius:22px;
+  padding:10px 16px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);
 }
-.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
-.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
-.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
-.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;font-family:'Space Mono',monospace;}
+.gd-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;position:relative;}
+.gd-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+.gd-item:hover .gd-icon{transform:translateY(-14px) scale(1.28);}
+.gd-label{font-size:9px;letter-spacing:0.06em;color:rgba(255,255,255,0.85);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 7px;border-radius:4px;position:absolute;bottom:-22px;font-family:'Space Mono',monospace;}
 .gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
+.gd-sep{width:1px;height:48px;background:rgba(255,255,255,0.22);margin:0 4px;align-self:center;}
 .gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
 .ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
 .ic-photos {background:linear-gradient(145deg,#FF6B9D,#C8365A);}
