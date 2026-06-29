@@ -296,33 +296,32 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr><td colspan="2" class="section-head">個性觀察</td></tr>
     <tr>
       <td class="td-label">感情觀</td>
-      <td class="td-val">「我缺的是幸福，不是性福」；不接受說說哥；不接受有約砲習慣的男生；希望男友覺得自己最漂亮最可愛；若交男友，自己也不跟其他男生私下聊天；對感情防衛心強，覺得累的關係就淡出</td>
+      <td class="td-val" id="disp-obs-romance">「我缺的是幸福，不是性福」；不接受說說哥；不接受有約砲習慣的男生；希望男友覺得自己最漂亮最可愛；若交男友，自己也不跟其他男生私下聊天；對感情防衛心強，覺得累的關係就淡出</td>
     </tr>
     <tr>
       <td class="td-label">價值觀</td>
-      <td class="td-val">極度重視隱私和自由；不喜歡被問行蹤；篩選朋友很嚴，讓她覺得麻煩的人慢慢淡出；不喜歡形式感（不需要每天早安晚安）；有潔癖；愛記仇；記性極好（帳算很清楚）</td>
+      <td class="td-val" id="disp-obs-values">極度重視隱私和自由；不喜歡被問行蹤；篩選朋友很嚴，讓她覺得麻煩的人慢慢淡出；不喜歡形式感（不需要每天早安晚安）；有潔癖；愛記仇；記性極好（帳算很清楚）</td>
     </tr>
     <tr>
       <td class="td-label">生涯規劃</td>
-      <td class="td-val">進修英文、西文、法文；有在申請社宅（北流那邊）；想去首爾打醫美（明洞PPEUM）；希望住台北市區</td>
+      <td class="td-val" id="disp-obs-career">進修英文、西文、法文；有在申請社宅（北流那邊）；想去首爾打醫美（明洞PPEUM）；希望住台北市區</td>
     </tr>
     <tr>
       <td class="td-label">消費習慣</td>
-      <td class="td-val">精打細算（找最便宜美甲$588）；愛買衣服偏白色素色；護髮保養極在意；有做美甲（白色系，指甲軟才開始做手甲）；有做去角質、清粉刺、敷面膜</td>
+      <td class="td-val" id="disp-obs-spending">精打細算（找最便宜美甲$588）；愛買衣服偏白色素色；護髮保養極在意；有做美甲（白色系，指甲軟才開始做手甲）；有做去角質、清粉刺、敷面膜</td>
     </tr>
     <tr>
       <td class="td-label">雷區</td>
-      <td class="td-val">說說哥（只說不做）；男生只站在自己角度思考；過度依賴、問行蹤；被逼、不尊重意願；惹毛就說封鎖/消失</td>
+      <td class="td-val" id="disp-obs-redzone">說說哥（只說不做）；男生只站在自己角度思考；過度依賴、問行蹤；被逼、不尊重意願；惹毛就說封鎖/消失</td>
     </tr>
     <tr>
       <td class="td-label">身體特質</td>
-      <td class="td-val">體質燥熱不怕冷；不管多冷用冰水洗臉、穿短袖短褲睡覺；一年只感冒一次但生病要命；不會經痛；腿從小被稱讚（男女都說美）；21歲在中山站被蘋果日報拍「今日我最美」登報</td>
+      <td class="td-val" id="disp-obs-body">體質燥熱不怕冷；不管多冷用冰水洗臉、穿短袖短褲睡覺；一年只感冒一次但生病要命；不會經痛；腿從小被稱讚（男女都說美）；21歲在中山站被蘋果日報拍「今日我最美」登報</td>
     </tr>
     <tr>
       <td class="td-label">其他特質</td>
-      <td class="td-val">幾乎不會自慰（「我就是可以沒有性的女生」）；幽默感強、接梗快；不常生氣但一旦觸底線非常兇（冷戰專業戶）；很享受單身、在家的生活；居家派（可以整天在家）</td>
+      <td class="td-val" id="disp-obs-misc">幾乎不會自慰（「我就是可以沒有性的女生」）；幽默感強、接梗快；不常生氣但一旦觸底線非常兇（冷戰專業戶）；很享受單身、在家的生活；居家派（可以整天在家）</td>
     </tr>
-
   </table>
 
   <!-- 外號 -->
@@ -416,6 +415,16 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group full"><label class="form-label">不喜歡的娛樂</label><input class="form-input" id="f-dontlike" placeholder="漫才、韓劇"></div>
       <div class="form-group full"><label class="form-label">最愛的地方</label><input class="form-input" id="f-favplace" placeholder="杜拜、首爾"></div>
       <div class="form-group full"><label class="form-label">備忘筆記</label><textarea class="form-textarea" id="f-notes" rows="3"></textarea></div>
+      <div class="form-group full" style="grid-column:1/-1;border-top:1px dashed #ddd;padding-top:12px;margin-top:4px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#7c3aed;margin-bottom:10px">── 個性觀察 ──</div>
+      </div>
+      <div class="form-group full"><label class="form-label">感情觀</label><textarea class="form-textarea" id="f-obs-romance" rows="3"></textarea></div>
+      <div class="form-group full"><label class="form-label">價值觀</label><textarea class="form-textarea" id="f-obs-values" rows="3"></textarea></div>
+      <div class="form-group full"><label class="form-label">生涯規劃</label><textarea class="form-textarea" id="f-obs-career" rows="2"></textarea></div>
+      <div class="form-group full"><label class="form-label">消費習慣</label><textarea class="form-textarea" id="f-obs-spending" rows="2"></textarea></div>
+      <div class="form-group full"><label class="form-label">雷區</label><textarea class="form-textarea" id="f-obs-redzone" rows="2"></textarea></div>
+      <div class="form-group full"><label class="form-label">身體特質</label><textarea class="form-textarea" id="f-obs-body" rows="3"></textarea></div>
+      <div class="form-group full"><label class="form-label">其他特質</label><textarea class="form-textarea" id="f-obs-misc" rows="3"></textarea></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-cancel" id="cancelModal">取消</button>
@@ -515,7 +524,14 @@ var DEFAULT={
   shows:'《三流之路》（朋友說她很像劇中愛羅）',
   dontlike:'男韓團、大陸口水歌、泡溫泉、排隊、人擠人',
   favplace:'英國倫敦・大英博物館、杜拜・阿布達比羅浮宮',
-  notes:'',photos:[],avatar:''
+  notes:'',photos:[],avatar:'',
+  obsRomance:'「我缺的是幸福，不是性福」；不接受說說哥；不接受有約砲習慣的男生；希望男友覺得自己最漂亮最可愛；若交男友，自己也不跟其他男生私下聊天；對感情防衛心強，覺得累的關係就淡出',
+  obsValues:'極度重視隱私和自由；不喜歡被問行蹤；篩選朋友很嚴，讓她覺得麻煩的人慢慢淡出；不喜歡形式感（不需要每天早安晚安）；有潔癖；愛記仇；記性極好（帳算很清楚）',
+  obsCareer:'進修英文、西文、法文；有在申請社宅（北流那邊）；想去首爾打醫美（明洞PPEUM）；希望住台北市區',
+  obsSpending:'精打細算（找最便宜美甲$588）；愛買衣服偏白色素色；護髮保養極在意；有做美甲（白色系，指甲軟才開始做手甲）；有做去角質、清粉刺、敷面膜',
+  obsRedzone:'說說哥（只說不做）；男生只站在自己角度思考；過度依賴、問行蹤；被逼、不尊重意願；惹毛就說封鎖/消失',
+  obsBody:'體質燥熱不怕冷；不管多冷用冰水洗臉、穿短袖短褲睡覺；一年只感冒一次但生病要命；不會經痛；腿從小被稱讚（男女都說美）；21歲在中山站被蘋果日報拍「今日我最美」登報',
+  obsMisc:'幾乎不會自慰（「我就是可以沒有性的女生」）；幽默感強、接梗快；不常生氣但一旦觸底線非常兇（冷戰專業戶）；很享受單身、在家的生活；居家派（可以整天在家）'
 };
 var data=JSON.parse(JSON.stringify(DEFAULT));
 
@@ -587,6 +603,14 @@ function applyData(d){
     else{suitorEl.innerHTML=suitors.map(function(s,i){return '<div style="padding:2px 0;border-bottom:1px dashed #eee;display:flex;align-items:center;justify-content:space-between"><span>'+s+'</span></div>';}).join('');}
   }
   setText('disp-rel-family',d.relFamily||'—');
+  // 個性觀察
+  setText('disp-obs-romance',d.obsRomance||'');
+  setText('disp-obs-values',d.obsValues||'');
+  setText('disp-obs-career',d.obsCareer||'');
+  setText('disp-obs-spending',d.obsSpending||'');
+  setText('disp-obs-redzone',d.obsRedzone||'');
+  setText('disp-obs-body',d.obsBody||'');
+  setText('disp-obs-misc',d.obsMisc||'');
   // 追求者名冊表格（disp-suitors-table）
   var suitorTableEl=document.getElementById('disp-suitors-table');
   if(suitorTableEl){
@@ -786,6 +810,13 @@ function fillForm(){
   document.getElementById('f-dontlike').value=d.dontlike||'';
   document.getElementById('f-favplace').value=d.favplace||'';
   document.getElementById('f-notes').value=d.notes||'';
+  document.getElementById('f-obs-romance').value=d.obsRomance||'';
+  document.getElementById('f-obs-values').value=d.obsValues||'';
+  document.getElementById('f-obs-career').value=d.obsCareer||'';
+  document.getElementById('f-obs-spending').value=d.obsSpending||'';
+  document.getElementById('f-obs-redzone').value=d.obsRedzone||'';
+  document.getElementById('f-obs-body').value=d.obsBody||'';
+  document.getElementById('f-obs-misc').value=d.obsMisc||'';
 }
 function readForm(){
   function csv(id){return document.getElementById(id).value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
@@ -817,6 +848,13 @@ function readForm(){
     dontlike:document.getElementById('f-dontlike').value.trim(),
     favplace:document.getElementById('f-favplace').value.trim(),
     notes:document.getElementById('f-notes').value,
+    obsRomance:document.getElementById('f-obs-romance').value.trim(),
+    obsValues:document.getElementById('f-obs-values').value.trim(),
+    obsCareer:document.getElementById('f-obs-career').value.trim(),
+    obsSpending:document.getElementById('f-obs-spending').value.trim(),
+    obsRedzone:document.getElementById('f-obs-redzone').value.trim(),
+    obsBody:document.getElementById('f-obs-body').value.trim(),
+    obsMisc:document.getElementById('f-obs-misc').value.trim(),
   });
 }
 
