@@ -1,0 +1,37 @@
+name: LINE 提醒通知
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # 每 5 分鐘（GitHub 排程的最小間隔，且常有延遲，故腳本內設了補發窗）
+  workflow_dispatch:         # 可在 Actions 分頁手動觸發測試
+
+permissions:
+  contents: write            # 讓 bot 能把更新後的 reminders.json 推回 repo（很重要，否則旗標存不住會重複發）
+
+concurrency:
+  group: line-reminder
+  cancel-in-progress: false
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 檢查並發送 LINE 提醒
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: node scripts/send-reminders.js
+
+      - name: 推送更新後的 reminders.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reminders.json
+          if ! git diff --staged --quiet; then
+            git commit -m "更新提醒狀態 [skip ci]"
+            git pull --rebase
+            git push
+          fi
