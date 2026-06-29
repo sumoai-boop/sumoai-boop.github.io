@@ -2,8 +2,8 @@ name: LINE 提醒通知
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # 每 5 分鐘（GitHub 排程常延遲，故腳本內設了 60 分鐘補發窗）
-  workflow_dispatch:         # 可在 Actions 分頁手動觸發測試
+    - cron: '*/5 * * * *'   # 每 5 分鐘自動跑（不用手動）。GitHub 排程常延遲，故腳本內設了補發窗
+  workflow_dispatch:         # 也可在 Actions 分頁手動觸發測試
 
 permissions:
   contents: write            # 讓 bot 能把更新後的 reminders.json 推回（重要，否則旗標存不住會重複發）
@@ -30,8 +30,11 @@ jobs:
           const TOKEN = process.env.LINE_TOKEN;
           const USER  = process.env.LINE_USER_ID;
           const FILE  = 'reminders.json';
-          const GRACE_MIN = 60;   // 到期後 N 分鐘內仍補發（吸收排程延遲）
-          const EARLY_MIN = 15;   // 到期前 N 分鐘內送預告
+
+          // ── 你的需求設定 ──
+          const EARLY_MIN  = 10;   // 到期前幾分鐘送「預告」
+          const EARLY_WIN  = 12;   // 預告補抓窗：到期前 10~22 分鐘內任一次跑到都會發（吸收排程延遲）
+          const GRACE_MIN  = 60;   // 到期後幾分鐘內仍補發正式提醒（吸收排程延遲）
 
           if (!TOKEN || !USER) {
             console.error('❌ 缺少 LINE_TOKEN 或 LINE_USER_ID');
@@ -91,21 +94,26 @@ jobs:
 
             for (const r of reminders) {
               if (r.done) continue;
-              const diff = (twNow - dueAt(r))/60000;
+              const diff = (twNow - dueAt(r))/60000;   // 正=已過、負=未到（分鐘）
               console.log('· '+r.title+' | '+r.date+' '+r.time+' | diff '+diff.toFixed(1)+'分');
 
-              if (diff < 0 && diff >= -EARLY_MIN && !r.notifiedEarly) {
-                const code = await sendLine('⏰ 即將到了（約 '+Math.round(-diff)+' 分鐘後）\n\n'+fmt(r));
-                if (code>=200&&code<300){ r.notifiedEarly=true; changed=true; }
+              // ① 提前預告：到期前 EARLY_MIN ~ (EARLY_MIN+EARLY_WIN) 分鐘內，只發一次
+              if (diff < -EARLY_MIN && diff >= -(EARLY_MIN+EARLY_WIN) && !r.notifiedEarly) {
+                const code = await sendLine('⏰ 提前提醒（約 '+EARLY_MIN+' 分鐘後）\n\n'+fmt(r));
+                if (code>=200&&code<300){ r.notifiedEarly=true; changed=true; console.log('  ✓ 已發預告：'+r.title); }
               }
+
+              // ② 到期提醒：含 60 分鐘補發窗，只發一次
               if (diff >= 0 && diff <= GRACE_MIN && !r.notified) {
                 const code = await sendLine('🔔 提醒通知\n\n'+fmt(r));
                 if (code>=200&&code<300){
                   r.notified=true; changed=true;
                   if (!r.repeat || r.repeat==='none') r.done=true; else advance(r, twNow);
-                  console.log('  ✓ 已發送：'+r.title);
+                  console.log('  ✓ 已發到期：'+r.title);
                 }
               }
+
+              // ③ 逾期超過補發窗仍沒發到：重複類靜默滾到下一個時點（不洗版）
               if (diff > GRACE_MIN && !r.notified && r.repeat && r.repeat!=='none') {
                 advance(r, twNow); changed=true;
                 console.log('  ↻ 逾期滾動：'+r.title+' → '+r.date+' '+r.time);
