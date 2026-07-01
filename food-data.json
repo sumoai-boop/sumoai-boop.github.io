@@ -1,5 +1,34 @@
 [
   {
+    "id": "1782915501739",
+    "name": "阿孟滷味",
+    "name1": "阿孟滷味",
+    "name2": "",
+    "type": "滷味",
+    "meal": "",
+    "price": 180,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "220新北市板橋區五權里五權街32巷1號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%98%BF%E5%AD%9F%E6%BB%B7%E5%91%B3/@24.9932419,121.464798,21z/data=!4m6!3m5!1s0x346802bc4f8a05bb:0x87cd149880e79e57!8m2!3d24.9931167!4d121.4648801!16s%2Fg%2F11g0ldh2x7?entry=ttu&g_ep=EgoyMDI2MDYyOC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-07-01",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2026-07-01",
+        "meal": "晚餐",
+        "price": 180,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/35D2BTmN/f7f7d03d231e.jpg"
+    ],
+    "img": "https://i.ibb.co/35D2BTmN/f7f7d03d231e.jpg",
+    "createdAt": 1782915501739
+  },
+  {
     "id": "1782896994017",
     "name": "秦記排骨 板橋四維店",
     "name1": "秦記排骨",
