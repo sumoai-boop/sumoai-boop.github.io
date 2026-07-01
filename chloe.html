@@ -85,13 +85,16 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .cal-title{font-weight:700;font-size:14px;letter-spacing:0.05em;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .cal-dow{text-align:center;font-size:10px;color:#999;padding:2px 0 6px;}
-.cal-day{position:relative;aspect-ratio:1;border-radius:6px;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:#555;border:1px solid transparent;}
-.cal-day.has-evt{cursor:pointer;background:#f6f0ff;border-color:#e4d4f5;font-weight:700;color:#1a1a1a;}
-.cal-day.has-evt:hover{background:#ecdcff;}
+.cal-day{position:relative;aspect-ratio:1;border-radius:8px;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:5px 3px 4px;font-size:11px;color:#555;border:1px solid transparent;}
+.cal-day.has-evt{cursor:pointer;background:#fff;border-color:#e4d4f5;font-weight:700;color:#1a1a1a;}
+.cal-day.has-evt:hover{background:#f6f0ff;}
 .cal-day.empty{visibility:hidden;}
 .cal-day.today{border-color:#7c3aed;border-width:2px;}
-.cal-dots{display:flex;gap:2px;margin-top:2px;}
-.cal-dot{width:5px;height:5px;border-radius:50%;}
+.cal-day-num{line-height:1;}
+.cal-day-count{font-size:9px;color:#999;font-weight:400;margin-top:1px;}
+.cal-day.has-evt .cal-day-count{color:#7c3aed;font-weight:700;}
+.cal-bars{display:flex;width:100%;gap:1px;border-radius:3px;overflow:hidden;height:4px;margin-top:2px;}
+.cal-bar-seg{flex:1;}
 .cal-stats{display:flex;gap:14px;flex-wrap:wrap;margin:10px 2px 4px;font-size:11px;color:#666;}
 .cal-stats b{color:#7c3aed;}
 .cal-legend-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;}
@@ -1135,14 +1138,19 @@ function renderCalendar(){
     var dateStr=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
     var cell=document.createElement('div');
     cell.className='cal-day'+(byDay[day]?' has-evt':'')+(dateStr===todayStr?' today':'');
-    var num=document.createElement('div');num.textContent=day;cell.appendChild(num);
+    var num=document.createElement('div');num.className='cal-day-num';num.textContent=day;cell.appendChild(num);
     if(byDay[day]){
-      var dots=document.createElement('div');dots.className='cal-dots';
-      Array.from(new Set(byDay[day].map(function(x){return x.c;}))).slice(0,4).forEach(function(c){
-        var dot=document.createElement('div');dot.className='cal-dot';dot.style.background=CAL_COLORS[c]||'#999';dots.appendChild(dot);
+      var evts=byDay[day];
+      var count=document.createElement('div');count.className='cal-day-count';count.textContent=evts.length+'則';cell.appendChild(count);
+      var bars=document.createElement('div');bars.className='cal-bars';
+      evts.forEach(function(e){
+        var seg=document.createElement('div');seg.className='cal-bar-seg';seg.style.background=CAL_COLORS[e.c]||'#999';bars.appendChild(seg);
       });
-      cell.appendChild(dots);
-      cell.addEventListener('click',(function(ds,evts){return function(){showDayEvents(ds,evts);};})(dateStr,byDay[day]));
+      cell.appendChild(bars);
+      cell.addEventListener('click',(function(ds,evts){return function(){showDayEvents(ds,evts);};})(dateStr,evts));
+    } else {
+      var spacer=document.createElement('div');spacer.style.height='9px';cell.appendChild(spacer);
+      var barSpacer=document.createElement('div');barSpacer.style.height='4px';barSpacer.style.width='100%';cell.appendChild(barSpacer);
     }
     grid.appendChild(cell);
   }
