@@ -1,5 +1,34 @@
 [
   {
+    "id": "1782896994017",
+    "name": "秦記排骨 板橋四維店",
+    "name1": "秦記排骨",
+    "name2": "板橋四維店",
+    "type": "便當",
+    "meal": "",
+    "price": 115,
+    "visits": 1,
+    "gscore": 3.9,
+    "addr": "220新北市板橋區四維路314號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E7%A7%A6%E8%A8%98%E6%8E%92%E9%AA%A8%EF%BC%88%E6%9D%BF%E6%A9%8B%E5%9B%9B%E7%B6%AD%E5%BA%97%EF%BC%89/@25.0259126,121.4609316,14.75z/data=!4m10!1m2!2m1!1z56em6KiY5o6S6aqo!3m6!1s0x3442a9d6225682fd:0x818b8e32fc0e6a5b!8m2!3d25.0298784!4d121.4625042!15sCgznp6boqJjmjpLpqqhaECIO56emIOiomCDmjpLpqqiSARJjaGluZXNlX3Jlc3RhdXJhbnTgAQA!16s%2Fg%2F11nn36ct8g?entry=ttu&g_ep=EgoyMDI2MDYyOC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-07-01",
+    "score": 3.3,
+    "visitLog": [
+      {
+        "date": "2026-07-01",
+        "meal": "午餐",
+        "price": 115,
+        "menu": "炸雞腿飯"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/chk6xxvD/7b39940c9cd0.jpg"
+    ],
+    "img": "https://i.ibb.co/chk6xxvD/7b39940c9cd0.jpg",
+    "createdAt": 1782896994017
+  },
+  {
     "id": "1782663900462",
     "name": "雞湯桑 南港lalaport店",
     "name1": "雞湯桑",
