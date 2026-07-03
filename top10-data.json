@@ -13850,5 +13850,153 @@
     "genres": [
       "动画"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Voicemails for Isabelle",
+    "views": 31000000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "Voicemails for Isabelle",
+    "titleZh": "真愛留聲",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Little Brother",
+    "views": 14000000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "Little Brother",
+    "titleZh": "人生大弟震",
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Maternal Instinct",
+    "views": 8500000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "Maternal Instinct",
+    "titleZh": "母性本能：德州奪胎案",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Swapped",
+    "views": 4600000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Office Romance",
+    "views": 4300000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "Office Romance",
+    "titleZh": "同事以上，戀人未滿",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "KPop Demon Hunters",
+    "views": 3800000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "The Contractor",
+    "views": 3600000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "The Contractor",
+    "titleZh": "致命契約",
+    "country": "BG",
+    "genres": [
+      "动作",
+      "冒险",
+      "剧情",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Turbo",
+    "views": 3400000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "Turbo",
+    "titleZh": "渦輪方程式",
+    "country": "US",
+    "genres": [
+      "动画",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "The Creator",
+    "views": 3200000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "The Creator",
+    "titleZh": "A.I.創世者",
+    "country": "US",
+    "genres": [
+      "科幻",
+      "动作",
+      "冒险"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "5lbs of Pressure",
+    "views": 2700000,
+    "week": "6/22/26 - 6/28/26",
+    "cat": "Movies|English",
+    "titleEn": "5lbs of Pressure",
+    "titleZh": "5磅壓力",
+    "country": "GB",
+    "genres": [
+      "惊悚",
+      "犯罪",
+      "爱情",
+      "电视电影"
+    ]
   }
 ]
