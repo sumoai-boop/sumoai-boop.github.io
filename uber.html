@@ -737,7 +737,7 @@ function addTrip(){
     document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
     document.getElementById('tripAddBtn').textContent='新增行程';
     document.getElementById('tripDeleteBtn').style.display='none';
-    saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();
+    saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
     ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('f-pax').value='1';
     ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
@@ -762,7 +762,7 @@ function deleteEditingTrip(){
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value='';});
-  saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();
+  saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
 }
 
 function editTrip(id){
@@ -932,7 +932,7 @@ function handleCSV(e){
       });
       added++;
     }
-    saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();
+    saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
     alert('已匯入 '+added+' 筆行程');
   };
   reader.readAsText(file,'UTF-8');
@@ -1472,6 +1472,39 @@ const DISTRICTS = {
   '桃園市': ['桃園區','中壢區','大溪區','楊梅區','蘆竹區','大園區','龜山區','八德區','龍潭區','平鎮區','新屋區','觀音區','復興區'],
   '宜蘭縣': ['宜蘭市','羅東鎮','蘇澳鎮','頭城鎮','礁溪鄉','壯圍鄉','員山鄉','冬山鄉','五結鄉','三星鄉','大同鄉','南澳鄉']
 };
+function sortDistrictDropdowns(){
+  var trips=getData('uberTrips');
+  var fromCount={}, toCount={};
+  trips.forEach(function(t){
+    if(t.fd) fromCount[t.fd]=(fromCount[t.fd]||0)+1;
+    if(t.td) toCount[t.td]=(toCount[t.td]||0)+1;
+  });
+  ['f-from-dist','f-to-dist'].forEach(function(id){
+    var sel=document.getElementById(id);
+    if(!sel) return;
+    var cur=sel.value;
+    var counts=(id==='f-from-dist')?fromCount:toCount;
+    // 收集所有 option（排除空值的「請選擇區域」）
+    var opts=[];
+    Array.from(sel.options).forEach(function(o){
+      if(o.value==='') return;
+      opts.push(o.value);
+    });
+    // 依使用次數排序（多到少），次數相同維持原順序
+    opts.sort(function(a,b){ return (counts[b]||0)-(counts[a]||0); });
+    // 重建
+    sel.innerHTML='<option value="">請選擇區域</option>';
+    opts.forEach(function(v){
+      var o=document.createElement('option');
+      o.value=v;
+      var c=counts[v]||0;
+      o.textContent=c>0? v+' ('+c+')' : v;
+      sel.appendChild(o);
+    });
+    sel.value=cur;
+  });
+}
+
 function updateDistricts(type){
   var cityId = type==='from' ? 'f-from-city' : 'f-to-city';
   var distId = type==='from' ? 'f-from-dist' : 'f-to-dist';
@@ -1491,7 +1524,7 @@ function updateDistricts(type){
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   document.getElementById('f55-date').value=new Date().toISOString().slice(0,10);
-renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();render55688();
+renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();render55688();sortDistrictDropdowns();
 </script>
 </body>
 </html>
