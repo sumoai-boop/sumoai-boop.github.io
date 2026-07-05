@@ -1,5 +1,35 @@
 [
   {
+    "id": "1783262165159",
+    "name": "旭集 和食集錦 信義店",
+    "name1": "旭集 和食集錦",
+    "name2": "信義店",
+    "type": "buffet",
+    "meal": "",
+    "price": 4598,
+    "visits": 1,
+    "gscore": 4.1,
+    "addr": "110臺北市信義區西村里松仁路58號遠東百貨 信義A13 9F",
+    "note": "公主",
+    "maps": "https://www.google.com.tw/maps/place/%E6%97%AD%E9%9B%86+%E5%92%8C%E9%A3%9F%E9%9B%86%E9%8C%A6+%E4%BF%A1%E7%BE%A9%E5%BA%97/@25.0368458,121.5680754,19z/data=!4m6!3m5!1s0x34429fa77fff67a3:0x2e0586ed07ea419!8m2!3d25.0368737!4d121.5679503!16s%2Fg%2F11j1hjktyh?entry=ttu&g_ep=EgoyMDI2MDYyOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-07-05",
+    "score": 4.5,
+    "visitLog": [
+      {
+        "date": "2026-07-05",
+        "meal": "晚餐",
+        "price": 4598,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/chHQXtNZ/e541ddce653c.jpg",
+      "https://i.ibb.co/h1cNtKSL/fc67199a2ebe.jpg"
+    ],
+    "img": "https://i.ibb.co/chHQXtNZ/e541ddce653c.jpg",
+    "createdAt": 1783262165159
+  },
+  {
     "id": "1782915501739",
     "name": "阿孟滷味",
     "name1": "阿孟滷味",
