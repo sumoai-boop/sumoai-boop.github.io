@@ -990,12 +990,18 @@ function renderWeekdayAvg(){
   // 從行程記錄計算每星期幾的平均人數
   var tripPaxSums=[0,0,0,0,0,0,0],tripPaxCounts=[0,0,0,0,0,0,0];
   var tripKmSums=[0,0,0,0,0,0,0];
+  var tripSecSums=[0,0,0,0,0,0,0],tripSecCounts=[0,0,0,0,0,0,0];
   getData('uberTrips').forEach(function(t){
     if(!t.d) return;
     var dow=new Date(t.d).getDay();
     tripPaxSums[dow]+=(t.pax||1);
     tripPaxCounts[dow]++;
     tripKmSums[dow]+=(t.km||0);
+    if(t.tm && t.tm.length>=5){
+      var p=t.tm.split(':');
+      tripSecSums[dow]+=(parseInt(p[0])||0)*3600+(parseInt(p[1])||0)*60+(parseInt(p[2])||0);
+      tripSecCounts[dow]++;
+    }
   });
   var cells=ORDER.map(function(dow,i){
     var avg=counts[dow]>0?Math.round(sums[dow]/counts[dow]):null;
@@ -1011,6 +1017,9 @@ function renderWeekdayAvg(){
       +'</div>'
       +'<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px;">'
         +(tripPaxCounts[dow]>0?(tripKmSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+' km'
+      +'</div>'
+      +'<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px;">'
+        +(function(){if(tripSecCounts[dow]===0)return '—';var avgS=Math.round(tripSecSums[dow]/tripSecCounts[dow]);var h=Math.floor(avgS/3600),m=Math.floor((avgS%3600)/60),s=avgS%60;return (h>0?h+'時':'')+m+'分'+s+'秒';})()
       +'</div>'
     +'</div>';
   }).join('');
