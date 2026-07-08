@@ -281,6 +281,7 @@ body{
         <div class="form-group"><label>下車地點</label><input class="form-input" type="text" id="f-to-road" placeholder="板橋遠百"></div>
         <div class="form-group"><label>公里數</label><input class="form-input" type="number" id="f-km" placeholder="0.00" step="0.01"></div>
         <div class="form-group"><label>行程費用</label><input class="form-input" type="number" id="f-fare" placeholder="0"></div>
+        <div class="form-group"><label>加成費用</label><input class="form-input" type="number" id="f-bonus" placeholder="0"></div>
         <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
@@ -316,6 +317,7 @@ body{
           <col style="width:140px">    <!-- 下車地點 -->
           <col style="width:72px">     <!-- 公里數 -->
           <col style="width:60px">     <!-- 行程費用 -->
+          <col style="width:60px">     <!-- 加成費用 -->
           <col style="width:58px">     <!-- 服務費 -->
           <col style="width:72px">     <!-- 費用明細 -->
           <col style="width:44px">     <!-- 人數 -->
@@ -333,6 +335,7 @@ body{
             <th style="text-align:center">下車<br>地點</th>
             <th onclick="sortTrips('km')" style="cursor:pointer;text-align:center;border-left:1px solid rgba(0,200,83,0.2)">公里<br>數 ↕</th>
             <th onclick="sortTrips('fare')" style="cursor:pointer;text-align:center">行程<br>費用 ↕</th>
+            <th onclick="sortTrips('bonus')" style="cursor:pointer;text-align:center">加成<br>費用 ↕</th>
             <th onclick="sortTrips('service')" style="cursor:pointer;text-align:center">服務<br>費 ↕</th>
             <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">費用<br>明細 ↕</th>
             <th style="text-align:center">人數</th>
@@ -724,6 +727,7 @@ function addTrip(){
   var tr2=document.getElementById('f-to-road').value.trim();
   var km=parseFloat(document.getElementById('f-km').value)||0;
   var fare=parseFloat(document.getElementById('f-fare').value)||0;
+  var bonus=parseFloat(document.getElementById('f-bonus').value)||0;
   var service=parseFloat(document.getElementById('f-service').value)||0;
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
@@ -732,21 +736,21 @@ function addTrip(){
   var trips=getData('uberTrips');
   if(window._editTripId){
     var idx=trips.findIndex(t=>t.id===window._editTripId);
-    if(idx!==-1) trips.splice(idx,1,{d,tm,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:window._editTripId});
+    if(idx!==-1) trips.splice(idx,1,{d,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,service,detail,pax,note,id:window._editTripId});
     window._editTripId=null;
     document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
     document.getElementById('tripAddBtn').textContent='新增行程';
     document.getElementById('tripDeleteBtn').style.display='none';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
-    ['f-from-road','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
+    ['f-from-road','f-to-road','f-km','f-fare','f-bonus','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('f-pax').value='1';
     ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
     return;
   }
-  trips.push({d,tm,fd,fr,td:td2,tr:tr2,km,fare,service,detail,pax,note,id:Date.now()});
+  trips.push({d,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,service,detail,pax,note,id:Date.now()});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
-  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
 }
@@ -759,7 +763,7 @@ function deleteEditingTrip(){
   document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
   document.getElementById('tripAddBtn').textContent='新增行程';
   document.getElementById('tripDeleteBtn').style.display='none';
-  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value='';});
   saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
@@ -781,6 +785,7 @@ function editTrip(id){
   document.getElementById('f-to-road').value   = t.tr||'';
   document.getElementById('f-km').value        = t.km||'';
   document.getElementById('f-fare').value      = t.fare||'';
+  document.getElementById('f-bonus').value     = t.bonus||'';
   document.getElementById('f-service').value   = t.service||'';
   document.getElementById('f-detail').value    = t.detail||'';
   document.getElementById('f-pax').value       = t.pax||1;
@@ -881,6 +886,7 @@ function renderTrips(){
       <td style="color:#fff;font-size:15px;font-weight:600">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1);font-size:16px;font-weight:600">${(t.km||0).toFixed(2)}</td>
       <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600;text-align:center">${fmt(t.fare||0)}</td>
+      <td style="color:rgba(255,180,100,0.9);font-size:12px;font-weight:600;text-align:center">${fmt(t.bonus||0)}</td>
       <td style="color:rgba(240,220,160,0.9);font-size:12px;font-weight:600;text-align:center">${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-size:16px;font-weight:700;text-align:center">${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:16px;font-weight:600">${t.pax||1}</td>
@@ -901,8 +907,8 @@ function renderTrips(){
 function exportCSV(){
   var trips=getData('uberTrips');
   if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,服務費,費用明細,人數,備註';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
+  var header='筆數,日期,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,加成費用,服務費,費用明細,人數,備註';
+  var rows=trips.map((t,i)=>[i+1,t.d,t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.bonus||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
