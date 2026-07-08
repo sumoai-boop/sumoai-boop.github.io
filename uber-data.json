@@ -6403,9 +6403,9 @@
       "tr": "辛亥路四段",
       "km": 5.44,
       "fare": 252,
-      "bonus": 63,
-      "service": 189,
-      "detail": 1,
+      "bonus": 0,
+      "service": 63,
+      "detail": 189,
       "pax": 1,
       "note": "愛眉山莊",
       "id": 1783517231458
