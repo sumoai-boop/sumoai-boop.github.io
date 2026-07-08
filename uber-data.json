@@ -2593,8 +2593,11 @@
       "tr": "松江路",
       "km": 1.31,
       "fare": 103,
+      "bonus": 0,
+      "toll": 0,
+      "tip": 50,
       "service": 26,
-      "detail": 77,
+      "detail": 127,
       "pax": 1,
       "note": "",
       "id": 1780071058843
