@@ -190,7 +190,6 @@ body{
       <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
       <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
       <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
-      <button class="tab-btn" onclick="switchTab('t55688',this)">55688</button>
     </div>
     <div id="total-net-display" style="text-align:right;line-height:1.2;">
       <div style="font-size:20px;color:#ffffff;letter-spacing:0.05em;font-weight:600;">總淨利</div>
@@ -266,6 +265,7 @@ body{
       <div class="form-title" id="tripFormTitle">＋ 新增行程明細</div>
       <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
         <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
+        <div class="form-group"><label>分類</label><select class="form-input" id="f-category"><option value="uber">uber</option><option value="56688">56688</option></select></div>
         <div class="form-group"><label>時間</label>
           <div style="display:flex;gap:3px;align-items:center;">
             <input class="form-input" type="number" id="f-time-h" placeholder="時" min="0" style="width:44px;text-align:center;padding:8px 4px;">
@@ -312,6 +312,7 @@ body{
         <colgroup>
           <col style="width:50px">     <!-- # -->
           <col style="width:100px">    <!-- 日期 -->
+          <col style="width:62px">     <!-- 分類 -->
           <col style="width:72px">     <!-- 時間 -->
           <col style="width:70px">     <!-- 上車區域 -->
           <col style="width:140px">    <!-- 上車地點 -->
@@ -332,6 +333,7 @@ body{
           <tr>
             <th style="text-align:center">#</th>
             <th onclick="sortTrips('d')" style="cursor:pointer;text-align:center">日期 ↕</th>
+            <th onclick="sortTrips('cat')" style="cursor:pointer;text-align:center">分類 ↕</th>
             <th onclick="sortTrips('tm')" style="cursor:pointer;text-align:center">時間 ↕</th>
             <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車<br>區域</th>
             <th style="text-align:center">上車<br>地點</th>
@@ -447,29 +449,6 @@ body{
   </div>
 </div>
 
-<!-- 55688 -->
-<div class="tab-panel" id="tab-t55688">
-  <div class="form-section">
-    <div class="form-title">＋ 新增 55688 收入</div>
-    <div class="form-grid">
-      <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="f55-date"></div>
-      <div class="form-group"><label style="font-size:12px">總收入 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="f55-income" placeholder="0"></div>
-      <div class="form-group"><label style="font-size:12px">行程數</label><input class="form-input" style="font-size:15px" type="number" id="f55-trips" placeholder="0" min="0"></div>
-      <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="f55-note" placeholder="備註說明"></div>
-    </div>
-    <button class="btn-add" onclick="add55688()">新增記錄</button>
-  </div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;flex-wrap:wrap;gap:8px;">
-    <div style="font-size:11px;letter-spacing:0.1em;color:rgba(0,200,83,0.7);text-transform:uppercase;">每日記錄</div>
-    <div style="display:flex;align-items:center;gap:6px;">
-      <button onclick="t55688PageMonth--;render55688();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">‹</button>
-      <span id="t55688PageLabel" style="font-size:13px;color:#f0dca8;min-width:60px;text-align:center;font-family:monospace;"></span>
-      <button onclick="t55688PageMonth++;render55688();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">›</button>
-    </div>
-  </div>
-  <div id="t55688List"><div class="empty-state"><span class="empty-icon">📊</span>尚無記錄</div></div>
-</div>
-
 <!-- Dock -->
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
@@ -532,63 +511,6 @@ function renderTop5(){
     + makeCard('下車區域 TOP10', toDistData)
     + makeCard('上車地點 TOP10', fromRoadData)
     + makeCard('下車地點 TOP10', toRoadData);
-}
-
-
-// ── 55688 ──
-var t55688PageMonth = 0;
-
-function add55688(){
-  var date  = document.getElementById('f55-date').value;
-  var income= parseFloat(document.getElementById('f55-income').value)||0;
-  var trips = parseInt(document.getElementById('f55-trips').value)||0;
-  var note  = document.getElementById('f55-note').value.trim();
-  if(!date){ alert('請選擇日期'); return; }
-  var all = getData('uber55688');
-  all.push({id:Date.now(), date, income, tripCount:trips, note});
-  saveAndPush('uber55688', all);
-  render55688();
-  ['f55-income','f55-trips','f55-note'].forEach(function(id){ document.getElementById(id).value=''; });
-}
-
-function delete55688(id){
-  var all = getData('uber55688').filter(function(r){ return r.id!==id; });
-  saveAndPush('uber55688', all);
-  render55688();
-}
-
-function render55688(){
-  var el  = document.getElementById('t55688List');
-  var lbl = document.getElementById('t55688PageLabel');
-  if(!el) return;
-  var now = new Date();
-  var td  = new Date(now.getFullYear(), now.getMonth()+t55688PageMonth, 1);
-  var yr  = td.getFullYear(), mo = td.getMonth();
-  var targetYM = yr+'-'+String(mo+1).padStart(2,'0');
-  if(lbl) lbl.textContent = yr+'/'+(mo+1)+'月';
-  var dim = new Date(yr, mo+1, 0).getDate(), allDates=[];
-  for(var d=1; d<=dim; d++) allDates.push(targetYM+'-'+String(d).padStart(2,'0'));
-  var rmap={};
-  getData('uber55688').forEach(function(w){ if(w.date) rmap[w.date]=w; });
-  var max=1;
-  allDates.forEach(function(dt){ if(rmap[dt]&&rmap[dt].income>max) max=rmap[dt].income; });
-  var DN=['日','一','二','三','四','五','六'];
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
-    +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
-    +'<colgroup><col style="width:58px"><col style="width:28px"><col><col style="width:88px"><col style="width:54px"><col><col style="width:28px"></colgroup>'
-    +'<tbody>'+allDates.map(function(dt){
-      var w=rmap[dt], dobj=new Date(dt+'T00:00:00'), dow=dobj.getDay(), isWE=(dow===0||dow===6);
-      var dc=isWE?'#FF9999':'#f5edd8', has=!!w, inc=has?(w.income||0):0, pct=inc>0?inc/max*100:0;
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(has?'':'opacity:0.4;')+'">'
-        +'<td style="padding:9px 6px 9px 14px;font-size:12px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
-        +'<td style="padding:9px 2px;font-size:11px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
-        +'<td style="padding:9px 8px;"><div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
-        +'<td style="padding:9px 6px;font-size:13px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:600;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
-        +'<td style="padding:9px 4px;font-size:12px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
-        +'<td style="padding:9px 4px;font-size:11px;color:rgba(200,200,200,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(has&&w.note?w.note:'')+'</td>'
-        +'<td style="padding:9px 10px 9px 2px;text-align:center;">'+(has?'<span class="del-btn" onclick="delete55688('+w.id+')">✕</span>':'')+'</td>'
-      +'</tr>';
-    }).join('')+'</tbody></table></div>';
 }
 
 
@@ -723,6 +645,7 @@ var TRIP_PAGE_SIZE=25;
 
 function addTrip(){
   var d=document.getElementById('f-date').value;
+  var cat=document.getElementById('f-category').value||'uber';
   var th=parseInt(document.getElementById('f-time-h').value)||0;
   var tmin=parseInt(document.getElementById('f-time-m').value)||0;
   var ts=parseInt(document.getElementById('f-time-s').value)||0;
@@ -744,21 +667,23 @@ function addTrip(){
   var trips=getData('uberTrips');
   if(window._editTripId){
     var idx=trips.findIndex(t=>t.id===window._editTripId);
-    if(idx!==-1) trips.splice(idx,1,{d,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,note,id:window._editTripId});
+    if(idx!==-1) trips.splice(idx,1,{d,cat,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,note,id:window._editTripId});
     window._editTripId=null;
     document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
     document.getElementById('tripAddBtn').textContent='新增行程';
     document.getElementById('tripDeleteBtn').style.display='none';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
     ['f-from-road','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('f-category').value='uber';
     document.getElementById('f-pax').value='1';
     ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
     return;
   }
-  trips.push({d,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,note,id:Date.now()});
+  trips.push({d,cat,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,note,id:Date.now()});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-category').value='uber';
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
 }
@@ -772,6 +697,7 @@ function deleteEditingTrip(){
   document.getElementById('tripAddBtn').textContent='新增行程';
   document.getElementById('tripDeleteBtn').style.display='none';
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-category').value='uber';
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value='';});
   saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
@@ -783,6 +709,7 @@ function editTrip(id){
   if(!t) return;
   // 填入現有資料
   document.getElementById('f-date').value      = t.d||'';
+  document.getElementById('f-category').value  = t.cat||'uber';
   var tmParts=(t.tm||'').split(':');
   document.getElementById('f-time-h').value = parseInt(tmParts[0])||'';
   document.getElementById('f-time-m').value = parseInt(tmParts[1])||'';
@@ -889,6 +816,7 @@ function renderTrips(){
     return `<tr>
       <td style="color:rgba(240,220,160,0.5);font-size:11px">${seqMap[t.id]||''}</td>
       <td>${t.d||''}</td>
+      <td style="text-align:center"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;${(t.cat||'uber')==='56688'?'background:rgba(100,160,255,0.18);color:#7AB8FF;':'background:rgba(0,200,83,0.18);color:#00E860;'}">${t.cat||'uber'}</span></td>
       <td style="color:rgba(200,200,200,0.85);font-size:12px;white-space:nowrap;text-align:center">${(function(){if(!t.tm)return '';var p=t.tm.split(':');var h=parseInt(p[0])||0;var m=p[1]||'00';var s=p[2]||'00';return h>0?h+':'+m+':'+s:m+':'+s;})()}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
@@ -919,8 +847,8 @@ function renderTrips(){
 function exportCSV(){
   var trips=getData('uberTrips');
   if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,加成費用,過路費,小費,服務費,費用明細,人數,備註';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.bonus||0,t.toll||0,t.tip||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
+  var header='筆數,日期,分類,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,加成費用,過路費,小費,服務費,費用明細,人數,備註';
+  var rows=trips.map((t,i)=>[i+1,t.d,t.cat||'uber',t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.bonus||0,t.toll||0,t.tip||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
@@ -1545,8 +1473,7 @@ function updateDistricts(type){
 }
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('f55-date').value=new Date().toISOString().slice(0,10);
-renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();render55688();sortDistrictDropdowns();
+renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 </script>
 </body>
 </html>
