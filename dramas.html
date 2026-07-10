@@ -454,6 +454,7 @@ const TMDB_ID_OVERRIDE={
   '逆行人生': 1274925,
   '誰偷了垃圾桶？': 1118224,
   '完美陌生人': 381341,
+  'SMILE2': 1100782,
 };
 const TMDB_TV_OVERRIDE={
   '新聞急先鋒': 15621,
@@ -873,29 +874,64 @@ async function openPoster(m){
       }
     }
     let movie=null;
-    // 1. 英文原名（拉丁）
-    if(cleanOrig2&&cleanOrig2!=='nan'&&isLatin(cleanOrig2)){
-      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
-      let json=await res.json();
-      movie=pickBest(json.results,year);
+    const isTV2 = m.type==='影集'||m.type==='綜藝';
+
+    function pickBestTV(results, year){
+      if(!results||!results.length) return null;
+      let pool = results;
+      if(origLang2){
+        const lm=results.filter(r=>r.original_language===origLang2);
+        if(lm.length) pool=lm;
+      }
+      if(year&&year>0){
+        const exact=pool.find(r=>{const d=r.first_air_date||r.release_date||'';return parseInt(d.substring(0,4))===year;});
+        if(exact) return exact;
+        const near=pool.find(r=>{const d=r.first_air_date||r.release_date||'';return Math.abs(parseInt(d.substring(0,4))-year)<=1;});
+        if(near) return near;
+      }
+      return pool[0];
     }
-    // 2. 中文片名
-    if(!movie||!movie.poster_path){
-      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
-      let json=await res.json();
-      movie=pickBest(json.results,year)||movie;
-    }
-    // 3. 非拉丁原名（韓文/日文）
-    if((!movie||!movie.poster_path)&&cleanOrig2&&cleanOrig2!=='nan'&&!isLatin(cleanOrig2)){
-      let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
-      let json=await res.json();
-      movie=pickBest(json.results,year)||movie;
-    }
-    // 4. TV 備援
-    if(!movie||!movie.poster_path){
-      let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
-      let json=await res.json();
-      if(json.results&&json.results[0]) movie=json.results[0];
+
+    if(isTV2){
+      // 影集/綜藝：直接搜 TV
+      // 1. 原文名
+      if(cleanOrig2&&cleanOrig2!=='nan'){
+        let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
+        let json=await res.json();
+        movie=pickBestTV(json.results,year);
+      }
+      // 2. 中文名
+      if(!movie||!movie.poster_path){
+        let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
+        let json=await res.json();
+        movie=pickBestTV(json.results,year)||movie;
+      }
+    } else {
+      // 電影：搜 movie
+      // 1. 英文原名（拉丁）
+      if(cleanOrig2&&cleanOrig2!=='nan'&&isLatin(cleanOrig2)){
+        let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
+        let json=await res.json();
+        movie=pickBest(json.results,year);
+      }
+      // 2. 中文片名
+      if(!movie||!movie.poster_path){
+        let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
+        let json=await res.json();
+        movie=pickBest(json.results,year)||movie;
+      }
+      // 3. 非拉丁原名（韓文/日文）
+      if((!movie||!movie.poster_path)&&cleanOrig2&&cleanOrig2!=='nan'&&!isLatin(cleanOrig2)){
+        let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
+        let json=await res.json();
+        movie=pickBest(json.results,year)||movie;
+      }
+      // 4. 電影也用 TV 備援（有些記錄類型標錯）
+      if(!movie||!movie.poster_path){
+        let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
+        let json=await res.json();
+        movie=pickBestTV(json.results,year)||movie;
+      }
     }
     if(movie){
       if(movie.poster_path){
