@@ -14427,5 +14427,144 @@
       "喜剧",
       "恐怖"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "I Will Find You: Limited Series",
+    "views": 16000000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "I Will Find You: Limited Series",
+    "titleZh": "我會找到你",
+    "country": "US",
+    "genres": [
+      "剧情",
+      "悬疑",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Worst Neighbor Ever: Season 1",
+    "views": 10000000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Worst Neighbor Ever: Season 1",
+    "titleZh": "恐怖鄰居全記錄",
+    "country": "US",
+    "genres": [
+      "犯罪",
+      "纪录"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Avatar: The Last Airbender: Season 2",
+    "views": 9600000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Avatar: The Last Airbender: Season 2",
+    "titleZh": "降世神通：最後的氣宗",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "Sci-Fi & Fantasy",
+      "剧情",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Salish & Jordan Matter: Season 2",
+    "views": 4700000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Salish & Jordan Matter: Season 2",
+    "titleZh": "麥特父女檔：高中初體驗",
+    "country": "US",
+    "genres": [
+      "真人秀",
+      "儿童"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Avatar: The Last Airbender: Season 1",
+    "views": 3600000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Avatar: The Last Airbender: Season 1",
+    "titleZh": "降世神通：最後的氣宗",
+    "country": "US",
+    "genres": [
+      "动作冒险",
+      "Sci-Fi & Fantasy",
+      "剧情",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Sullivan's Crossing: Season 4",
+    "views": 3000000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Sullivan's Crossing: Season 4",
+    "titleZh": "蘇利文的十字路口",
+    "country": "CA",
+    "genres": [
+      "剧情"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Raw: 2026 - June 29, 2026",
+    "views": 2300000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Raw: 2026 - June 29, 2026",
+    "titleZh": "",
+    "country": "US",
+    "genres": []
+  },
+  {
+    "rank": 8,
+    "title": "Salish & Jordan Matter: Season 1",
+    "views": 1500000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Salish & Jordan Matter: Season 1",
+    "titleZh": "麥特父女檔：高中初體驗",
+    "country": "US",
+    "genres": [
+      "真人秀",
+      "儿童"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Danny Go!: Season 1",
+    "views": 1300000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Danny Go!: Season 1",
+    "titleZh": "",
+    "country": "US",
+    "genres": [
+      "儿童"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Ms. Rachel: Season 1",
+    "views": 1300000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Shows|English",
+    "titleEn": "Ms. Rachel: Season 1",
+    "titleZh": "",
+    "country": "US",
+    "genres": [
+      "儿童"
+    ]
   }
 ]
