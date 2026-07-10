@@ -77,36 +77,6 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .photo-add{width:90px;height:90px;border:2px dashed #ccc;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#aaa;font-size:10px;gap:4px;}
 .photo-add:hover{border-color:#c084b8;color:#7c3aed;}
 .upload-progress{font-size:12px;color:#7c3aed;padding:6px 0;display:none;}
-/* CALENDAR */
-.cal-wrap{padding:10px 12px 16px;}
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.cal-nav{background:#f0ebff;border:1px solid #c084b8;color:#7c3aed;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:13px;font-weight:700;}
-.cal-nav:hover{background:#e4d4f7;}
-.cal-title{font-weight:700;font-size:14px;letter-spacing:0.05em;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-.cal-dow{text-align:center;font-size:10px;color:#999;padding:2px 0 6px;}
-.cal-day{position:relative;aspect-ratio:1;border-radius:8px;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:5px 3px 4px;font-size:11px;color:#555;border:1px solid transparent;}
-.cal-day.has-evt{cursor:pointer;background:#fff;border-color:#e4d4f5;font-weight:700;color:#1a1a1a;}
-.cal-day.has-evt:hover{background:#f6f0ff;}
-.cal-day.empty{visibility:hidden;}
-.cal-day.today{border-color:#7c3aed;border-width:2px;}
-.cal-day-num{line-height:1;}
-.cal-day-count{font-size:9px;color:#999;font-weight:400;margin-top:1px;}
-.cal-day.has-evt .cal-day-count{color:#7c3aed;font-weight:700;}
-.cal-bars{display:flex;width:100%;gap:1px;border-radius:3px;overflow:hidden;height:4px;margin-top:2px;}
-.cal-bar-seg{flex:1;}
-.cal-stats{display:flex;gap:14px;flex-wrap:wrap;margin:10px 2px 4px;font-size:11px;color:#666;}
-.cal-stats b{color:#7c3aed;}
-.cal-legend-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;}
-.cal-daylist{display:none;margin-top:12px;border-top:1px dashed #ddd;padding-top:10px;}
-.cal-evt-item{display:flex;gap:8px;align-items:flex-start;padding:6px 2px;font-size:12px;border-bottom:1px solid #f2f2f2;}
-.cal-evt-tag{flex-shrink:0;font-size:10px;padding:2px 8px;border-radius:10px;color:#fff;white-space:nowrap;margin-top:1px;}
-.cal-evt-loc{color:#999;font-size:11px;margin-top:1px;}
-.cal-add-row{display:flex;gap:6px;margin-top:12px;border-top:1px dashed #ddd;padding-top:10px;flex-wrap:wrap;}
-.cal-add-row input,.cal-add-row select{background:#fafafa;border:1px solid #ddd;border-radius:6px;padding:6px 8px;font-size:12px;font-family:'Noto Sans TC',sans-serif;}
-.cal-add-row input[type=date]{flex:1;min-width:120px;}
-.cal-add-row input[type=text]{flex:2;min-width:140px;}
-.cal-add-btn{background:linear-gradient(135deg,#c084b8,#7c3aed);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-weight:600;}
 /* LIGHTBOX */
 .lightbox{position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;}
 .lightbox.open{display:flex;}
@@ -187,20 +157,20 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     </tr>
     <tr>
       <td class="td-label">生日</td>
-      <td class="td-val" colspan="2" id="disp-birthday">—</td>
+      <td class="td-val" colspan="2" id="disp-birthday">1989/12/25</td>
     </tr>
     <tr>
       <td class="td-label">身高</td>
-      <td class="td-val" id="disp-height">—</td>
-      <td class="td-val"><span style="font-size:11px;color:#888">罩杯：</span><strong id="disp-cup" style="color:#7c3aed">F~G</strong></td>
+      <td class="td-val" id="disp-height">157 cm</td>
+      <td class="td-val"><span style="font-size:11px;color:#888">罩杯：</span><strong id="disp-cup" style="color:#7c3aed">G</strong></td>
     </tr>
     <tr>
       <td class="td-label">星座</td>
-      <td class="td-val" colspan="2" id="disp-zodiac">摩羯座 ♑</td>
+      <td class="td-val" colspan="2" id="disp-zodiac">魔羯座 ♑</td>
     </tr>
     <tr>
       <td class="td-label">住址</td>
-      <td class="td-val" colspan="2" id="disp-location">高雄出身，目前台北</td>
+      <td class="td-val" colspan="2" id="disp-location">高雄（楠梓）· 東湖</td>
     </tr>
     <tr>
       <td class="td-label">手機</td>
@@ -209,7 +179,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 
     <tr>
       <td class="td-label">認識日期</td>
-      <td class="td-val" colspan="2" id="disp-met">—</td>
+      <td class="td-val" colspan="2" id="disp-met">8/30</td>
     </tr>
   </table>
 
@@ -219,25 +189,25 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr>
       <td class="td-group" rowspan="2">學歷</td>
       <td class="td-label">學校 1</td>
-      <td class="td-val" colspan="2"><span id="disp-edu-school">—</span>　<span id="disp-edu-dept" style="color:#555;font-size:12px"></span></td>
+      <td class="td-val" colspan="2"><span id="disp-edu-school">文化大學</span>　<span id="disp-edu-dept" style="color:#555;font-size:12px">新聞系</span></td>
     </tr>
     <tr>
       <td class="td-label">學校 2</td>
-      <td class="td-val" colspan="2"><span id="disp-edu-school2">—</span>　<span id="disp-edu-dept2" style="color:#555;font-size:12px"></span></td>
+      <td class="td-val" colspan="2"><span id="disp-edu-school2">文藻外語大學</span>　<span id="disp-edu-dept2" style="color:#555;font-size:12px"></span></td>
     </tr>
     <tr>
       <td class="td-group" rowspan="3">職涯</td>
       <td class="td-label">前職 1</td>
-      <td class="td-val" id="disp-job-prev">樂天（Rakuten）業務／BD（2023–2025.6）</td>
-      <td class="td-val" id="disp-job-prev2">海運部門</td>
+      <td class="td-val" id="disp-job-prev">—</td>
+      <td class="td-val" id="disp-job-prev2">—</td>
     </tr>
     <tr>
       <td class="td-label">前職 2</td>
-      <td class="td-val" colspan="2" id="disp-job-prev3">夏威夷鐵板燒外場・空姐面試（未成功）</td>
+      <td class="td-val" colspan="2" id="disp-job-prev3">夏威夷鐵板燒外場</td>
     </tr>
     <tr>
       <td class="td-label">現職</td>
-      <td class="td-val" colspan="2" id="disp-job-curr">零售百貨業務（2025.6.16 入職）</td>
+      <td class="td-val" colspan="2" id="disp-job-curr">—</td>
     </tr>
 
   </table>
@@ -247,11 +217,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr><td colspan="3" class="section-head">感情背景</td></tr>
     <tr>
       <td class="td-label">戀愛經歷</td>
-      <td class="td-val" colspan="2" id="disp-rel-history">目前單身；2024.8前與男友同住台北內湖</td>
+      <td class="td-val" colspan="2" id="disp-rel-history">3任，曾單身 6 年</td>
     </tr>
     <tr>
       <td class="td-label">前任男友</td>
-      <td class="td-val" colspan="2" id="disp-rel-current">台塑業務，南亞纖維部（最近一任）；前一任（同住台北內湖，2024年8月底出國後分開）</td>
+      <td class="td-val" colspan="2" id="disp-rel-current">台塑業務，南亞纖維部</td>
     </tr>
     <tr>
       <td class="td-label" style="vertical-align:top;padding-top:10px">追求者</td>
@@ -259,7 +229,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     </tr>
     <tr>
       <td class="td-label">家人</td>
-      <td class="td-val" colspan="2" id="disp-rel-family">出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的；有一個親弟弟；爸爸煮菜很好（可樂雞翅用雪碧煮，她超愛）</td>
+      <td class="td-val" colspan="2" id="disp-rel-family">出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的</td>
     </tr>
   </table>
 
@@ -276,11 +246,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     </tr>
     <tr>
       <td class="td-label">最愛的地方</td>
-      <td class="td-val" colspan="2" id="disp-fav-place">杜拜（阿布達比羅浮宮）、首爾、英國倫敦・大英博物館</td>
+      <td class="td-val" colspan="2" id="disp-fav-place">杜拜（阿布達比羅浮宮）、首爾</td>
     </tr>
     <tr>
       <td class="td-label">旅遊風格</td>
-      <td class="td-val" colspan="2">愛博物館（可獨自逛很久）、討厭曬太陽和排隊、偏好好一點的航空、不搭聯航（怕行李丟）、不愛暑假出國（怕熱浪）、不怕一個人睡</td>
+      <td class="td-val" colspan="2">愛博物館、討厭曬太陽和排隊、偏好好一點的航空</td>
     </tr>
   </table>
 
@@ -305,19 +275,20 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     </tr>
     <tr>
       <td class="td-label">喜歡的電影</td>
-      <td class="td-val" colspan="2" id="disp-movie">—</td>
+      <td class="td-val" id="disp-movie">佈局</td>
+      <td class="td-val"><span class="td-label" style="display:block;margin-bottom:5px">明星</span><span id="disp-idol">趙露思</span></td>
     </tr>
     <tr>
-      <td class="td-label">喜歡的明星</td>
-      <td class="td-val" colspan="2" id="disp-idol">meovv的Anna（覺得超美）</td>
+      <td class="td-label">不喜歡的明星</td>
+      <td class="td-val" colspan="2" id="disp-idol-dislike">—</td>
     </tr>
     <tr>
       <td class="td-label">喜歡的節目</td>
-      <td class="td-val" colspan="2" id="disp-shows">《三流之路》（朋友說她很像劇中愛羅）</td>
+      <td class="td-val" colspan="2" id="disp-shows">懸案命案類</td>
     </tr>
     <tr>
       <td class="td-label">不喜歡</td>
-      <td class="td-val" colspan="2" id="disp-dontlike">男韓團、大陸口水歌、泡溫泉、排隊、人擠人</td>
+      <td class="td-val" colspan="2" id="disp-dontlike">漫才、韓劇、綜藝搞笑</td>
     </tr>
   </table>
 
@@ -326,32 +297,25 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr><td colspan="2" class="section-head">個性觀察</td></tr>
     <tr>
       <td class="td-label">感情觀</td>
-      <td class="td-val" id="disp-obs-romance">「我缺的是幸福，不是性福」；不接受說說哥；不接受有約砲習慣的男生；希望男友覺得自己最漂亮最可愛；若交男友，自己也不跟其他男生私下聊天；對感情防衛心強，覺得累的關係就淡出</td>
+      <td class="td-val">極度獨立，不喜歡被管或問行蹤；「我是我自己的，不是你一個人的」；被前任甩後容貌焦慮加重；對感情有防衛心</td>
     </tr>
     <tr>
       <td class="td-label">價值觀</td>
-      <td class="td-val" id="disp-obs-values">極度重視隱私和自由；不喜歡被問行蹤；篩選朋友很嚴，讓她覺得麻煩的人慢慢淡出；不喜歡形式感（不需要每天早安晚安）；有潔癖；愛記仇；記性極好（帳算很清楚）</td>
+      <td class="td-val">很重視隱私；篩選朋友很嚴，讓她累的人會慢慢淡出；鮮少跟人吵架；討厭形式感（不喜歡每天早安晚安）</td>
     </tr>
     <tr>
       <td class="td-label">生涯規劃</td>
-      <td class="td-val" id="disp-obs-career">進修英文、西文、法文；有在申請社宅（北流那邊）；想去首爾打醫美（明洞PPEUM）；希望住台北市區</td>
+      <td class="td-val">打算撐到明年五月領年終再換工作；同時進修英文、西文、法文；希望住台北市內湖</td>
     </tr>
     <tr>
       <td class="td-label">消費習慣</td>
-      <td class="td-val" id="disp-obs-spending">精打細算（找最便宜美甲$588）；愛買衣服偏白色素色；護髮保養極在意；有做美甲（白色系，指甲軟才開始做手甲）；有做去角質、清粉刺、敷面膜</td>
+      <td class="td-val">誠品黑卡會員；愛買泰國奶油小熊、袋子、可愛小物；分分鐘有購物慾；理性但衝動並存</td>
     </tr>
     <tr>
       <td class="td-label">雷區</td>
-      <td class="td-val" id="disp-obs-redzone">說說哥（只說不做）；男生只站在自己角度思考；過度依賴、問行蹤；被逼、不尊重意願；惹毛就說封鎖/消失</td>
+      <td class="td-val">過度依賴、問行蹤、每天早安晚安、被逼、不尊重她的意願；惹毛就說封鎖/消失</td>
     </tr>
-    <tr>
-      <td class="td-label">身體特質</td>
-      <td class="td-val" id="disp-obs-body">體質燥熱不怕冷；不管多冷用冰水洗臉、穿短袖短褲睡覺；一年只感冒一次但生病要命；不會經痛；腿從小被稱讚（男女都說美）；21歲在中山站被蘋果日報拍「今日我最美」登報</td>
-    </tr>
-    <tr>
-      <td class="td-label">其他特質</td>
-      <td class="td-val" id="disp-obs-misc">幾乎不會自慰（「我就是可以沒有性的女生」）；幽默感強、接梗快；不常生氣但一旦觸底線非常兇（冷戰專業戶）；很享受單身、在家的生活；居家派（可以整天在家）</td>
-    </tr>
+
   </table>
 
   <!-- 外號 -->
@@ -369,44 +333,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <tr>
       <td class="td-label">特質評分</td>
       <td class="td-val">
-        <div class="trait-row-inline"><span class="trait-label">獨立性</span><div class="trait-bg"><div class="trait-fill" style="width:95%"></div></div><span class="trait-val">極強</span></div>
-        <div class="trait-row-inline"><span class="trait-label">底線清晰</span><div class="trait-bg"><div class="trait-fill" style="width:92%"></div></div><span class="trait-val">從不妥協</span></div>
-        <div class="trait-row-inline"><span class="trait-label">幽默感</span><div class="trait-bg"><div class="trait-fill" style="width:88%"></div></div><span class="trait-val">接梗極快</span></div>
-        <div class="trait-row-inline"><span class="trait-label">旅遊慾</span><div class="trait-bg"><div class="trait-fill" style="width:82%"></div></div><span class="trait-val">多國+</span></div>
-        <div class="trait-row-inline"><span class="trait-label">精打細算</span><div class="trait-bg"><div class="trait-fill" style="width:78%"></div></div><span class="trait-val">帳算很清</span></div>
-        <div class="trait-row-inline"><span class="trait-label">居家傾向</span><div class="trait-bg"><div class="trait-fill" style="width:85%"></div></div><span class="trait-val">整天在家沒問題</span></div>
-      </td>
-    </tr>
-  </table>
-
-  <!-- 約會行事曆 -->
-  <table style="margin-top:-1px">
-    <tr><td colspan="2" class="section-head">約會行事曆</td></tr>
-    <tr>
-      <td colspan="2" class="td-val" style="padding:0">
-        <div class="cal-wrap">
-          <div class="cal-header">
-            <button class="cal-nav" id="cal-prev">‹</button>
-            <div class="cal-title" id="cal-title">—</div>
-            <button class="cal-nav" id="cal-next">›</button>
-          </div>
-          <div class="cal-grid" id="cal-grid"></div>
-          <div class="cal-stats" id="cal-stats"></div>
-          <div class="cal-daylist" id="cal-daylist"></div>
-          <div class="cal-add-row">
-            <input type="date" id="cal-add-date">
-            <input type="text" id="cal-add-title" placeholder="活動內容">
-            <input type="text" id="cal-add-loc" placeholder="地點（選填）">
-            <select id="cal-add-cat">
-              <option value="約會">約會</option>
-              <option value="美食">美食</option>
-              <option value="電影">電影</option>
-              <option value="表演">表演</option>
-              <option value="出遊">出遊</option>
-            </select>
-            <button class="cal-add-btn" id="cal-add-btn">＋ 新增紀錄</button>
-          </div>
-        </div>
+        <div class="trait-row-inline"><span class="trait-label">氣質感</span><div class="trait-bg"><div class="trait-fill" style="width:90%"></div></div><span class="trait-val">★★★★★</span></div>
+        <div class="trait-row-inline"><span class="trait-label">務實理性</span><div class="trait-bg"><div class="trait-fill" style="width:82%"></div></div><span class="trait-val">魔羯特質</span></div>
+        <div class="trait-row-inline"><span class="trait-label">獨立性格</span><div class="trait-bg"><div class="trait-fill" style="width:88%"></div></div><span class="trait-val">單身6年</span></div>
+        <div class="trait-row-inline"><span class="trait-label">旅遊慾</span><div class="trait-bg"><div class="trait-fill" style="width:76%"></div></div><span class="trait-val">6國+</span></div>
+        <div class="trait-row-inline"><span class="trait-label">美食鑑賞</span><div class="trait-bg"><div class="trait-fill" style="width:70%"></div></div><span class="trait-val">有挑食</span></div>
       </td>
     </tr>
   </table>
@@ -473,20 +404,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="form-group full"><label class="form-label">挑食不吃（逗號分隔）</label><input class="form-input" id="f-picky" placeholder="豬腳,大埔"></div>
       <div class="form-group full"><label class="form-label">愛吃的（逗號分隔）</label><input class="form-input" id="f-foods" placeholder="海苔,肉乾,巧克力"></div>
       <div class="form-group full"><label class="form-label">外號（逗號分隔）</label><input class="form-input" id="f-nicknames" placeholder="仙女,小可愛,水梨"></div>
+      <div class="form-group full"><label class="form-label">不喜歡的明星</label><input class="form-input" id="f-idol-dislike" placeholder="..."></div>
       <div class="form-group full"><label class="form-label">喜歡的節目</label><input class="form-input" id="f-shows" placeholder="懸案命案類"></div>
       <div class="form-group full"><label class="form-label">不喜歡的娛樂</label><input class="form-input" id="f-dontlike" placeholder="漫才、韓劇"></div>
       <div class="form-group full"><label class="form-label">最愛的地方</label><input class="form-input" id="f-favplace" placeholder="杜拜、首爾"></div>
       <div class="form-group full"><label class="form-label">備忘筆記</label><textarea class="form-textarea" id="f-notes" rows="3"></textarea></div>
-      <div class="form-group full" style="grid-column:1/-1;border-top:1px dashed #ddd;padding-top:12px;margin-top:4px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#7c3aed;margin-bottom:10px">── 個性觀察 ──</div>
-      </div>
-      <div class="form-group full"><label class="form-label">感情觀</label><textarea class="form-textarea" id="f-obs-romance" rows="3"></textarea></div>
-      <div class="form-group full"><label class="form-label">價值觀</label><textarea class="form-textarea" id="f-obs-values" rows="3"></textarea></div>
-      <div class="form-group full"><label class="form-label">生涯規劃</label><textarea class="form-textarea" id="f-obs-career" rows="2"></textarea></div>
-      <div class="form-group full"><label class="form-label">消費習慣</label><textarea class="form-textarea" id="f-obs-spending" rows="2"></textarea></div>
-      <div class="form-group full"><label class="form-label">雷區</label><textarea class="form-textarea" id="f-obs-redzone" rows="2"></textarea></div>
-      <div class="form-group full"><label class="form-label">身體特質</label><textarea class="form-textarea" id="f-obs-body" rows="3"></textarea></div>
-      <div class="form-group full"><label class="form-label">其他特質</label><textarea class="form-textarea" id="f-obs-misc" rows="3"></textarea></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-cancel" id="cancelModal">取消</button>
@@ -559,187 +481,26 @@ var LS_IMGBB='sumoai_imgbb_key';
 var ghSha=null;
 
 var DEFAULT={
-  met:'',birthday:'',height:'',zodiac:'摩羯座',
-  edu:'｜｜｜',
-  jobPrev1:'樂天（Rakuten）業務／BD（2023–2025.6）',jobPrev2:'曾面試空姐（未成功）',jobPrev3:'',jobCurr:'零售百貨業務（2025.6.16 入職）',
-  location:'高雄出身，目前台北（2025.6前住內湖男友家，之後搬出）',cup:'F~G（不同品牌80F~80I之間）',phone:'',
-  idol:'meovv的Anna（覺得超美）',movie:'',
-  visited:['杜拜','阿布達比','英國倫敦','荷蘭','比利時'],
-  wishlist:['法國羅浮宮','上海迪士尼'],
-  likes:['博物館（可獨自逛很久）','周杰倫（十一月的蕭邦專輯）','大陸歌涼涼','師大夜市鹹酥雞','美甲（白色系）','韓式沙龍照','醫美（首爾明洞PPEUM）','捲髮','護髮保養'],
-  dislikes:['貓','大陸口水歌（沒質感中二）','男韓團','泡溫泉','排隊人擠人','暑假出國（怕熱浪）','被人含臉頰（都是口水）','說說哥','聯航（怕行李丟）'],
-  picky:['白切肉','肥肉'],
-  foods:['雞翅（超愛，從小就愛）','炒飯（標準很高）','蛤蜊湯','鐵板燒','火鍋湯底','品湯','金沙料理','蒸蛋','鴨血冬粉','鳥蛋','冬瓜檸檬去冰','烤香腸'],
-  nicknames:['公主','仙女','小可愛','水梨'],
-  relHistory:'目前單身（2025年前與男友同住台北內湖，2024.8男友出國後分開）；曾單身多年',
-  relCurrent:'前任：台塑業務南亞纖維部（最近一任）；更前一任2023–2024年同住台北內湖，男友2024.8底出國去越南做生意後分開',
-  relSuitor:'',relSuitors:[
-    '歐洲學長｜高雄人，機械工程背景，同學在台積電，接家族事業；開保時捷+Defender，高雄最貴地段買房；2026/6帶她去英國+荷蘭共花35萬，幫她訂獨立房，非常紳士；她說「我配不上他」',
-    '杜拜男｜帶她去杜拜+阿布達比羅浮宮旅行；兩人在羅浮宮分開逛；她評語「公子哥不幫拿東西」',
-    '上海學弟｜2025年本來要帶她去新加坡，臨時爽約；2026/6看到她在歐洲，問她11月要不要去上海迪士尼',
-    '7777｜線上追求者，未曾見面，只通過電話；做太陽能、合夥賣包包；曾匯生日禮金、請吃饗饗',
-    '國中醫生｜從國中就喜歡她至今；她視為備胎，但不想讓他知道（「怕把人當備胎」）',
-    '乾爹｜開BMW，吃飯不給錢但逛街買單約2~3000；她非常討厭他，只是偶爾能撈到一點好處'
-  ],
-  relFamily:'爸爸煮菜很好（可樂雞翅用雪碧煮，她超愛）；有親弟弟（偶爾幫她出錢買東西）',
-  jobdesc:'',jobPrevDesc:'',
-  shows:'《三流之路》（朋友說她很像劇中愛羅）',
-  dontlike:'男韓團、大陸口水歌、泡溫泉、排隊、人擠人',
-  favplace:'英國倫敦・大英博物館、杜拜・阿布達比羅浮宮',
-  notes:'',photos:[],avatar:'',
-  calendarEvents:[
-  {d:"2023-12-20",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2023-12-27",t:"晚餐．築間幸福鍋物",c:"美食",l:"台北松江店"},
-  {d:"2024-01-04",t:"聊天",c:"約會",l:"慶城公園"},
-  {d:"2024-01-04",t:"晚餐．海底撈火鍋",c:"美食",l:"慶城店"},
-  {d:"2024-01-16",t:"晚餐．雞湯大叔",c:"美食",l:"民生店"},
-  {d:"2024-01-26",t:"買內衣",c:"約會",l:"Qmomo台北忠孝門市"},
-  {d:"2024-01-26",t:"逛夜市",c:"約會",l:"臨江街觀光夜市"},
-  {d:"2024-02-02",t:"晚餐．初魚鐵板燒",c:"美食",l:"民生店"},
-  {d:"2024-02-07",t:"車上聊天",c:"約會",l:"內湖金湖路"},
-  {d:"2024-02-17",t:"逛逛",c:"約會",l:"微風信義"},
-  {d:"2024-02-17",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2024-03-17",t:"唱歌",c:"約會",l:"星聚點KTV台北旗艦館"},
-  {d:"2024-03-29",t:"晚餐．肉你好燒肉",c:"美食",l:"合江總舖"},
-  {d:"2024-03-29",t:"午餐．橫濱家系拉麵大和家",c:"美食",l:"中山店"},
-  {d:"2024-04-12",t:"晚餐．歐買尬日式海鮮串燒",c:"美食",l:"市民二店"},
-  {d:"2024-04-19",t:"晚餐．鷄麵CHILLMEN",c:"美食"},
-  {d:"2024-05-03",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2024-05-09",t:"晚餐．堤諾義大利比薩",c:"美食",l:"台北民生門市"},
-  {d:"2024-05-17",t:"晚餐．堤諾義大利比薩",c:"美食",l:"台北民生門市"},
-  {d:"2024-07-17",t:"晚餐．有間火鍋",c:"美食"},
-  {d:"2024-07-30",t:"電影．龍捲風暴",c:"電影",l:"台北松仁威秀影城"},
-  {d:"2024-07-30",t:"晚餐．忠青商行",c:"美食",l:"遠百信義A13店"},
-  {d:"2024-08-09",t:"電影．鬼才之道",c:"電影",l:"哈拉影城"},
-  {d:"2024-09-03",t:"陪蔡看房",c:"約會"},
-  {d:"2024-10-11",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2024-10-21",t:"晚餐．岩漿火鍋",c:"美食",l:"微風信義店"},
-  {d:"2024-10-26",t:"按摩",c:"約會",l:"心知足spa養生館"},
-  {d:"2024-10-26",t:"晚餐．季樂和牛鐵板燒",c:"美食",l:"A13"},
-  {d:"2024-12-03",t:"晚餐．築間幸福鍋物",c:"美食",l:"台北復興南路店"},
-  {d:"2024-12-07",t:"電影．海洋奇緣2",c:"電影",l:"台北松仁威秀影城"},
-  {d:"2024-12-07",t:"晚餐．扶旺號",c:"美食",l:"松壽A11 ToGo"},
-  {d:"2025-02-28",t:"表演．果陀劇場「冒牌天使」",c:"表演",l:"臺灣戲曲中心"},
-  {d:"2025-02-28",t:"晚餐．食尚曼谷",c:"美食"},
-  {d:"2025-04-19",t:"幫小梨子搬家",c:"約會"},
-  {d:"2025-04-26",t:"表演．大喜利對決-真劍勝負",c:"表演",l:"Legacy TERA"},
-  {d:"2025-04-27",t:"幫小雪梨搬家",c:"約會"},
-  {d:"2025-05-03",t:"幫小雪梨搬家",c:"約會"},
-  {d:"2025-05-18",t:"電影．不可能的任務：最終清算",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2025-05-18",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2025-05-25",t:"幫小雪梨搬家",c:"約會"},
-  {d:"2025-06-07",t:"幫小雪梨搬家",c:"約會"},
-  {d:"2025-06-10",t:"幫小雪梨搬家",c:"約會"},
-  {d:"2025-06-13",t:"幫小雪梨搬家",c:"約會"},
-  {d:"2025-06-23",t:"幫小雪梨整理家",c:"約會"},
-  {d:"2025-06-27",t:"逛夜市",c:"約會",l:"基隆廟口夜市"},
-  {d:"2025-06-27",t:"表演．卡拉JO K生日派對（1828元）",c:"表演",l:"B'IN LIVE SPACE基隆"},
-  {d:"2025-06-29",t:"電影．FI",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2025-07-03",t:"晚餐（3696元）",c:"美食",l:"台北晶華酒店栢麗廳"},
-  {d:"2025-07-04",t:"表演．炎上 炎亞綸",c:"表演",l:"臺北流行音樂中心"},
-  {d:"2025-07-07",t:"晚餐．三商巧福",c:"美食",l:"第一航廈"},
-  {d:"2025-07-08",t:"逛弘大",c:"出遊",l:"弘大"},
-  {d:"2025-07-08",t:"韓式照相",c:"約會",l:"Studio Photobi（首爾）"},
-  {d:"2025-07-08",t:"拍貼",c:"約會",l:"pic dot 弘大旗艦店"},
-  {d:"2025-07-08",t:"晚餐．豬肉商會",c:"美食",l:"首爾弘大"},
-  {d:"2025-07-09",t:"逛逛（水原華城行宮）",c:"出遊",l:"華城行宮"},
-  {d:"2025-07-09",t:"逛明洞",c:"出遊",l:"明洞"},
-  {d:"2025-07-09",t:"逛街",c:"約會",l:"Starfield Suwon"},
-  {d:"2025-07-09",t:"逛街",c:"約會",l:"樂天Outlet首爾車站"},
-  {d:"2025-07-09",t:"晚餐．百濟蔘雞湯",c:"美食",l:"首爾明洞"},
-  {d:"2025-07-09",t:"吃冰．雪冰",c:"美食",l:"首爾水原"},
-  {d:"2025-07-10",t:"玩遊樂園",c:"約會",l:"樂天世界"},
-  {d:"2025-07-10",t:"晚餐．祖傳三代馬鈴薯排骨湯",c:"美食",l:"首爾聖水"},
-  {d:"2025-07-11",t:"逛聖水洞",c:"出遊"},
-  {d:"2025-07-11",t:"逛明洞",c:"出遊",l:"明洞"},
-  {d:"2025-07-11",t:"陪雪梨醫美",c:"約會"},
-  {d:"2025-07-11",t:"午餐．Ggupdang Seongsu",c:"美食",l:"首爾聖水"},
-  {d:"2025-07-13",t:"電影．超人",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2025-07-26",t:"電影．全知讀者視角",c:"電影",l:"台北信義威秀影城"},
-  {d:"2025-07-26",t:"晚餐．石研室爆炒石頭火鍋",c:"美食",l:"微風南山店"},
-  {d:"2025-08-06",t:"晚餐．Bon Jour請慢用法國小皇后",c:"美食"},
-  {d:"2025-08-09",t:"休息",c:"約會",l:"探索汽車旅館-南港館"},
-  {d:"2025-08-16",t:"休息",c:"約會",l:"薇閣精品旅館-大直館"},
-  {d:"2025-08-16",t:"晚餐．肯德基",c:"美食",l:"台北內湖餐廳"},
-  {d:"2025-08-22",t:"買文具",c:"約會",l:"金玉堂文具批發廣場市府店"},
-  {d:"2025-08-22",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2025-08-24",t:"晚餐．INPARADISE饗饗",c:"美食",l:"微風信義店"},
-  {d:"2025-09-27",t:"電影．一戰再戰",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2025-09-27",t:"晚餐．朱記餡餅粥店",c:"美食",l:"遠東百貨信義A13店"},
-  {d:"2025-09-29",t:"晚餐．博多味処いろは Iroha",c:"美食"},
-  {d:"2025-10-10",t:"逛士林夜市",c:"約會"},
-  {d:"2025-10-10",t:"表演．2025幻術大仙年度公演",c:"表演",l:"臺北表演藝術中心"},
-  {d:"2025-10-10",t:"晚餐．長生塩人",c:"美食",l:"劍潭"},
-  {d:"2025-10-12",t:"休息",c:"約會",l:"Tango天豪屋"},
-  {d:"2025-10-12",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2025-10-15",t:"表演．《韋瓦第的調色盤》巡迴",c:"表演",l:"誠品表演廳"},
-  {d:"2025-10-15",t:"晚餐．小龍飲食",c:"美食"},
-  {d:"2025-10-18",t:"休息",c:"約會",l:"沐蘭精品旅館台北館"},
-  {d:"2025-10-18",t:"晚餐．麥當勞",c:"美食",l:"內湖金龍餐廳"},
-  {d:"2025-11-04",t:"晚餐．明水然無菜單鐵板燒",c:"美食",l:"慶城店"},
-  {d:"2025-11-16",t:"電影．出神入化3",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2025-11-16",t:"晚餐．炸牛元村",c:"美食",l:"遠百信義A13店"},
-  {d:"2025-11-22",t:"晚餐．饒河街觀光夜市",c:"美食"},
-  {d:"2025-11-24",t:"晚餐．林家蔬菜羊肉爐",c:"美食"},
-  {d:"2025-11-30",t:"載公主上班",c:"約會"},
-  {d:"2025-11-30",t:"電影．動物方城市2",c:"電影",l:"桃園青埔新光影城"},
-  {d:"2025-12-07",t:"晚餐．BURGER OUT",c:"美食"},
-  {d:"2025-12-21",t:"電影．阿凡達：火與燼",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2025-12-21",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2025-12-23",t:"晚餐．Kamekona夏威夷鐵板燒",c:"美食",l:"安和店"},
-  {d:"2025-12-26",t:"休息",c:"約會",l:"Q.MOTEL精品旅館Villa"},
-  {d:"2025-12-27",t:"幫公主拿手機",c:"約會"},
-  {d:"2026-01-07",t:"休息．泡湯",c:"約會",l:"甲山林湯旅"},
-  {d:"2026-01-26",t:"晚餐．士林十全排骨店",c:"美食"},
-  {d:"2026-01-31",t:"表演．果陀劇場〈生命中最美好的5分鐘〉",c:"表演",l:"城市舞臺"},
-  {d:"2026-01-31",t:"晚餐．涮乃葉",c:"美食",l:"信義遠百店"},
-  {d:"2026-02-07",t:"陪公主逛街",c:"約會",l:"台北101購物中心"},
-  {d:"2026-02-07",t:"晚餐．涮乃葉",c:"美食",l:"信義遠百店"},
-  {d:"2026-02-14",t:"電影．功夫",c:"電影",l:"大巨蛋秀泰影城"},
-  {d:"2026-02-14",t:"晚餐．週末炸雞漢堡俱樂部",c:"美食",l:"大巨蛋店"},
-  {d:"2026-02-21",t:"晚餐．PS TAPAS西班牙餐酒館",c:"美食"},
-  {d:"2026-02-25",t:"2026台日棒球國際交流賽",c:"約會",l:"臺北大巨蛋"},
-  {d:"2026-02-26",t:"晚餐．島語",c:"美食",l:"桃園台茂店"},
-  {d:"2026-03-15",t:"休息",c:"約會",l:"Tango天豪屋"},
-  {d:"2026-03-22",t:"電影．極限返航",c:"電影",l:"美麗華影城"},
-  {d:"2026-04-03",t:"晚餐．旨醞鐵板料理",c:"美食",l:"微風店"},
-  {d:"2026-04-04",t:"表演．《好了啦！達康！》第十季",c:"表演",l:"中影八德大樓"},
-  {d:"2026-04-07",t:"晚餐．Ggupdang Seongsu",c:"美食",l:"首爾聖水"},
-  {d:"2026-04-08",t:"逛逛",c:"約會",l:"德壽宮（首爾）"},
-  {d:"2026-04-08",t:"新村賞櫻",c:"約會"},
-  {d:"2026-04-08",t:"陪公主拍照",c:"約會",l:"Studio Photobi（首爾）"},
-  {d:"2026-04-08",t:"聖水逛街",c:"約會"},
-  {d:"2026-04-08",t:"午餐．제이스피자",c:"美食",l:"首爾"},
-  {d:"2026-04-08",t:"晚餐．祖傳三代馬鈴薯排骨湯",c:"美食",l:"首爾聖水"},
-  {d:"2026-04-09",t:"逛Object",c:"約會",l:"Object（首爾）"},
-  {d:"2026-04-09",t:"明洞逛街",c:"約會"},
-  {d:"2026-04-09",t:"午餐．新村奶油燉排骨",c:"美食",l:"首爾"},
-  {d:"2026-04-09",t:"晚餐．一片里脊",c:"美食",l:"首爾明洞店"},
-  {d:"2026-04-10",t:"聖水逛街",c:"約會"},
-  {d:"2026-04-26",t:"晚餐．品湯白色麻辣鍋",c:"美食",l:"信義市府店"},
-  {d:"2026-04-30",t:"逛夜市",c:"約會",l:"羅東觀光夜市"},
-  {d:"2026-05-02",t:"電影．穿著PRADA的惡魔2",c:"電影",l:"MUVIE CINEMAS台北松仁"},
-  {d:"2026-05-02",t:"晚餐．Lazy Pasta慵懶義式廚房",c:"美食",l:"信義市府店"},
-  {d:"2026-05-23",t:"中職味全龍vs中信兄弟",c:"表演",l:"臺北大巨蛋"},
-  {d:"2026-05-24",t:"休息",c:"約會",l:"沐蘭精品旅館台北館"},
-  {d:"2026-06-03",t:"休息．（980元）",c:"約會",l:"芬多精加香汽車旅館"},
-  {d:"2026-06-27",t:"電影．玩具總動員5",c:"電影",l:"南港LaLaport威秀影城"},
-  {d:"2026-06-27",t:"晚餐．サッポロボーン",c:"美食",l:"南港LaLaport"},
-  {d:"2026-01-26",t:"載公主去中和區民德路175號",c:"約會"},
-  {d:"2026-06-04",t:"跟公主分手",c:"約會"},
-  {d:"2026-06-14",t:"載公主回家",c:"約會"},
-  {d:"2026-06-15",t:"幫公主修行李箱",c:"約會"},
-  {d:"2026-06-18",t:"載公主出國",c:"約會"},
-  {d:"2026-06-27",t:"公主接機",c:"約會"},
-  {d:"2026-06-30",t:"載公主回家順便摸摸",c:"約會"}
-  ],
-  obsRomance:'「我缺的是幸福，不是性福」；不接受說說哥；不接受有約砲習慣的男生；希望男友覺得自己最漂亮最可愛；若交男友，自己也不跟其他男生私下聊天；對感情防衛心強，覺得累的關係就淡出',
-  obsValues:'極度重視隱私和自由；不喜歡被問行蹤；篩選朋友很嚴，讓她覺得麻煩的人慢慢淡出；不喜歡形式感（不需要每天早安晚安）；有潔癖；愛記仇；記性極好（帳算很清楚）',
-  obsCareer:'進修英文、西文、法文；有在申請社宅（北流那邊）；想去首爾打醫美（明洞PPEUM）；希望住台北市區',
-  obsSpending:'精打細算（找最便宜美甲$588）；愛買衣服偏白色素色；護髮保養極在意；有做美甲（白色系，指甲軟才開始做手甲）；有做去角質、清粉刺、敷面膜',
-  obsRedzone:'說說哥（只說不做）；男生只站在自己角度思考；過度依賴、問行蹤；被逼、不尊重意願；惹毛就說封鎖/消失',
-  obsBody:'體質燥熱不怕冷；不管多冷用冰水洗臉、穿短袖短褲睡覺；一年只感冒一次但生病要命；不會經痛；腿從小被稱讚（男女都說美）；21歲在中山站被蘋果日報拍「今日我最美」登報',
-  obsMisc:'幾乎不會自慰（「我就是可以沒有性的女生」）；幽默感強、接梗快；不常生氣但一旦觸底線非常兇（冷戰專業戶）；很享受單身、在家的生活；居家派（可以整天在家）'
+  met:'8/30',birthday:'1989/12/25',height:'157 cm',zodiac:'魔羯座',
+  edu:'文化大學｜新聞系｜文藻外語大學｜',
+  jobPrev1:'樂天招商',jobPrev2:'海運部門',jobPrev3:'夏威夷鐵板燒外場',jobCurr:'',
+  location:'高雄（楠梓）· 東湖',cup:'G',phone:'0927136706',
+  idol:'趙露思',movie:'佈局',
+  visited:['新加坡','泰國','柬埔寨','香港','澳門','杜拜'],
+  wishlist:['夏威夷','阿拉伯'],
+  likes:['泰國奶油小熊','袋子','看懸案命案','馬臉姐'],
+  dislikes:['寵物','吃藥','韓劇'],
+  picky:['豬腳','大埔'],
+  foods:['海苔','肉乾','巧克力','藥燉排骨','鍋燒意麵','義美泡芙'],
+  nicknames:['高雄俟佩芩','仙女','小可愛','小騷貨','小母狗','水梨'],
+  relHistory:'3任，曾單身 6 年',
+  relCurrent:'台塑業務，南亞纖維部',
+  relSuitor:'',relSuitors:[],
+  relFamily:'出生三個月後爸媽離婚，壞壞的後母；弟弟跟妹妹是後母生的',
+  jobdesc:'',
+  jobPrevDesc:'',
+  shows:'懸案命案類',idolDislike:'',dontlike:'漫才、韓劇、綜藝搞笑',favplace:'杜拜（阿布達比羅浮宮）、首爾',
+  notes:'',photos:[],avatar:''
 };
 var data=JSON.parse(JSON.stringify(DEFAULT));
 
@@ -776,7 +537,8 @@ function applyData(d){
   setText('disp-cup',d.cup||'—');
   setText('disp-phone',d.phone||'—');
   setText('disp-idol',d.idol||'—');
-  setText('disp-movie',d.movie||'—');  // 學歷：相容兩種格式
+  setText('disp-movie',d.movie||'—');
+  // 學歷：相容兩種格式
   var ep=(d.edu||'').split('｜');
   var s1='',d1='',s2='',d2='';
   if(ep.length>=4){s1=ep[0];d1=ep[1];s2=ep[2];d2=ep[3];}
@@ -799,6 +561,7 @@ function applyData(d){
   setText('disp-job-prev2',prev2);
   // 感情
   setText('disp-shows',d.shows||'懸案命案類');
+  setText('disp-idol-dislike',d.idolDislike||'—');
   setText('disp-dontlike',d.dontlike||'漫才、韓劇、綜藝搞笑');
   setText('disp-fav-place',d.favplace||'杜拜（阿布達比羅浮宮）、首爾');
   setText('disp-rel-history',d.relHistory||'—');
@@ -811,28 +574,6 @@ function applyData(d){
     else{suitorEl.innerHTML=suitors.map(function(s,i){return '<div style="padding:2px 0;border-bottom:1px dashed #eee;display:flex;align-items:center;justify-content:space-between"><span>'+s+'</span></div>';}).join('');}
   }
   setText('disp-rel-family',d.relFamily||'—');
-  // 個性觀察
-  setText('disp-obs-romance',d.obsRomance||'');
-  setText('disp-obs-values',d.obsValues||'');
-  setText('disp-obs-career',d.obsCareer||'');
-  setText('disp-obs-spending',d.obsSpending||'');
-  setText('disp-obs-redzone',d.obsRedzone||'');
-  setText('disp-obs-body',d.obsBody||'');
-  setText('disp-obs-misc',d.obsMisc||'');
-  // 追求者名冊表格（disp-suitors-table）
-  var suitorTableEl=document.getElementById('disp-suitors-table');
-  if(suitorTableEl){
-    if(!suitors||suitors.length===0){suitorTableEl.innerHTML='<span style="color:#aaa;font-size:13px">尚無資料</span>';}
-    else{
-      var rows=suitors.map(function(s,i){
-        return '<tr>'
-          +'<td style="border:1px solid #eee;padding:6px 10px;font-size:12px;color:#888;white-space:nowrap;vertical-align:top">#'+(i+1)+'</td>'
-          +'<td style="border:1px solid #eee;padding:6px 10px;font-size:12px;color:#1a1a1a;line-height:1.7">'+s+'</td>'
-          +'</tr>';
-      }).join('');
-      suitorTableEl.innerHTML='<table style="width:100%;border-collapse:collapse">'+rows+'</table>';
-    }
-  }
   // tags
   setHTML('disp-visited',mkTags(d.visited,'tag-default'));
   setHTML('disp-wishlist',mkTags(d.wishlist,'tag-teal'));
@@ -852,7 +593,6 @@ function applyData(d){
     document.getElementById('avatarPlaceholder').style.display='none';
   }
   renderPhotos(d.photos||[]);
-  renderCalendar();
 }
 
 // AVATAR UPLOAD
@@ -1015,17 +755,11 @@ function fillForm(){
   document.getElementById('f-picky').value=(d.picky||[]).join(',');
   document.getElementById('f-foods').value=(d.foods||[]).join(',');
   document.getElementById('f-nicknames').value=(d.nicknames||[]).join(',');
+  document.getElementById('f-idol-dislike').value=d.idolDislike||'';
   document.getElementById('f-shows').value=d.shows||'';
   document.getElementById('f-dontlike').value=d.dontlike||'';
   document.getElementById('f-favplace').value=d.favplace||'';
   document.getElementById('f-notes').value=d.notes||'';
-  document.getElementById('f-obs-romance').value=d.obsRomance||'';
-  document.getElementById('f-obs-values').value=d.obsValues||'';
-  document.getElementById('f-obs-career').value=d.obsCareer||'';
-  document.getElementById('f-obs-spending').value=d.obsSpending||'';
-  document.getElementById('f-obs-redzone').value=d.obsRedzone||'';
-  document.getElementById('f-obs-body').value=d.obsBody||'';
-  document.getElementById('f-obs-misc').value=d.obsMisc||'';
 }
 function readForm(){
   function csv(id){return document.getElementById(id).value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
@@ -1053,17 +787,11 @@ function readForm(){
     likes:csv('f-likes'),dislikes:csv('f-dislikes'),
     picky:csv('f-picky'),foods:csv('f-foods'),
     nicknames:csv('f-nicknames'),
+    idolDislike:document.getElementById('f-idol-dislike').value.trim(),
     shows:document.getElementById('f-shows').value.trim(),
     dontlike:document.getElementById('f-dontlike').value.trim(),
     favplace:document.getElementById('f-favplace').value.trim(),
     notes:document.getElementById('f-notes').value,
-    obsRomance:document.getElementById('f-obs-romance').value.trim(),
-    obsValues:document.getElementById('f-obs-values').value.trim(),
-    obsCareer:document.getElementById('f-obs-career').value.trim(),
-    obsSpending:document.getElementById('f-obs-spending').value.trim(),
-    obsRedzone:document.getElementById('f-obs-redzone').value.trim(),
-    obsBody:document.getElementById('f-obs-body').value.trim(),
-    obsMisc:document.getElementById('f-obs-misc').value.trim(),
   });
 }
 
@@ -1109,91 +837,6 @@ document.getElementById('closeImgBB').addEventListener('click',function(){docume
   }
   tick();setInterval(tick,10000);
 })();
-
-// ── 約會行事曆 ──
-var CAL_COLORS={'約會':'#c084b8','美食':'#0EA5E9','電影':'#7C3AED','表演':'#D4A017','出遊':'#FF6B35'};
-var calState=(function(){var n=new Date();return {y:n.getFullYear(),m:n.getMonth()};})();
-function renderCalendar(){
-  var grid=document.getElementById('cal-grid');
-  if(!grid)return;
-  var y=calState.y,m=calState.m;
-  document.getElementById('cal-title').textContent=y+' 年 '+(m+1)+' 月';
-  var events=data.calendarEvents||[];
-  var byDay={};
-  events.forEach(function(e){
-    var p=e.d.split('-');
-    if(+p[0]===y&&+p[1]===m+1){
-      var day=+p[2];
-      (byDay[day]=byDay[day]||[]).push(e);
-    }
-  });
-  grid.innerHTML='';
-  ['日','一','二','三','四','五','六'].forEach(function(dn){
-    var el=document.createElement('div');el.className='cal-dow';el.textContent=dn;grid.appendChild(el);
-  });
-  var first=new Date(y,m,1),startDow=first.getDay(),daysInMonth=new Date(y,m+1,0).getDate();
-  for(var i=0;i<startDow;i++){var e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
-  var todayStr=(function(){var n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');})();
-  for(var day=1;day<=daysInMonth;day++){
-    var dateStr=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-    var cell=document.createElement('div');
-    cell.className='cal-day'+(byDay[day]?' has-evt':'')+(dateStr===todayStr?' today':'');
-    var num=document.createElement('div');num.className='cal-day-num';num.textContent=day;cell.appendChild(num);
-    if(byDay[day]){
-      var evts=byDay[day];
-      var count=document.createElement('div');count.className='cal-day-count';count.textContent=evts.length+'則';cell.appendChild(count);
-      var bars=document.createElement('div');bars.className='cal-bars';
-      evts.forEach(function(e){
-        var seg=document.createElement('div');seg.className='cal-bar-seg';seg.style.background=CAL_COLORS[e.c]||'#999';bars.appendChild(seg);
-      });
-      cell.appendChild(bars);
-      cell.addEventListener('click',(function(ds,evts){return function(){showDayEvents(ds,evts);};})(dateStr,evts));
-    } else {
-      var spacer=document.createElement('div');spacer.style.height='9px';cell.appendChild(spacer);
-      var barSpacer=document.createElement('div');barSpacer.style.height='4px';barSpacer.style.width='100%';cell.appendChild(barSpacer);
-    }
-    grid.appendChild(cell);
-  }
-  renderCalStats();
-}
-function showDayEvents(dateStr,evts){
-  var list=document.getElementById('cal-daylist');
-  var html='<div style="font-weight:700;font-size:12px;margin-bottom:6px">📅 '+dateStr+'</div>';
-  evts.forEach(function(e){
-    html+='<div class="cal-evt-item"><span class="cal-evt-tag" style="background:'+(CAL_COLORS[e.c]||'#999')+'">'+e.c+'</span><div><div>'+e.t+'</div>'+(e.l?'<div class="cal-evt-loc">📍 '+e.l+'</div>':'')+'</div></div>';
-  });
-  list.innerHTML=html;list.style.display='block';
-}
-function renderCalStats(){
-  var el=document.getElementById('cal-stats');if(!el)return;
-  var events=data.calendarEvents||[];
-  var byCat={};
-  events.forEach(function(e){byCat[e.c]=(byCat[e.c]||0)+1;});
-  var html='<span>共 <b>'+events.length+'</b> 筆紀錄</span>';
-  Object.keys(byCat).forEach(function(c){
-    html+='<span><i class="cal-legend-dot" style="background:'+CAL_COLORS[c]+'"></i>'+c+' '+byCat[c]+'</span>';
-  });
-  el.innerHTML=html;
-}
-document.getElementById('cal-prev').addEventListener('click',function(){calState.m--;if(calState.m<0){calState.m=11;calState.y--;}document.getElementById('cal-daylist').style.display='none';renderCalendar();});
-document.getElementById('cal-next').addEventListener('click',function(){calState.m++;if(calState.m>11){calState.m=0;calState.y++;}document.getElementById('cal-daylist').style.display='none';renderCalendar();});
-document.getElementById('cal-add-btn').addEventListener('click',async function(){
-  var d=document.getElementById('cal-add-date').value;
-  var t=document.getElementById('cal-add-title').value.trim();
-  var l=document.getElementById('cal-add-loc').value.trim();
-  var c=document.getElementById('cal-add-cat').value;
-  if(!d||!t){showToast('❌ 請填日期和活動內容');return;}
-  var evt={d:d,t:t,c:c};if(l)evt.l=l;
-  if(!data.calendarEvents)data.calendarEvents=[];
-  data.calendarEvents.push(evt);
-  data.calendarEvents.sort(function(a,b){return a.d<b.d?-1:1;});
-  document.getElementById('cal-add-date').value='';
-  document.getElementById('cal-add-title').value='';
-  document.getElementById('cal-add-loc').value='';
-  var dp=d.split('-');calState.y=+dp[0];calState.m=+dp[1]-1;
-  renderCalendar();
-  await saveData('✅ 已新增行事曆紀錄！');
-});
 
 loadData();
 </script>
