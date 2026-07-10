@@ -6496,7 +6496,7 @@
     "week": "3/2/26 - 3/8/26",
     "cat": "Movies|English",
     "titleEn": "The Boss Baby",
-    "titleZh": "寶貝老闆：耶誕特輯",
+    "titleZh": "寶貝老闆",
     "country": "US",
     "genres": [
       "动画",
@@ -6691,7 +6691,7 @@
     "week": "3/9/26 - 3/15/26",
     "cat": "Movies|English",
     "titleEn": "The Boss Baby",
-    "titleZh": "寶貝老闆：耶誕特輯",
+    "titleZh": "寶貝老闆",
     "country": "US",
     "genres": [
       "动画",
@@ -14137,6 +14137,154 @@
     "country": "FR",
     "genres": [
       "剧情"
+    ]
+  },
+  {
+    "rank": 1,
+    "title": "Enola Holmes 3",
+    "views": 20700000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Enola Holmes 3",
+    "titleZh": "天才少女福爾摩斯 3",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "犯罪",
+      "悬疑"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Voicemails for Isabelle",
+    "views": 13300000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Voicemails for Isabelle",
+    "titleZh": "真愛留聲",
+    "country": "US",
+    "genres": [
+      "爱情",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Little Brother",
+    "views": 12700000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Little Brother",
+    "titleZh": "人生大弟震",
+    "country": "US",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "Retribution",
+    "views": 3900000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Retribution",
+    "titleZh": "爆復",
+    "country": "US",
+    "genres": [
+      "惊悚",
+      "动作",
+      "冒险"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Swapped",
+    "views": 3600000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Swapped",
+    "titleZh": "奇幻變身大冒險",
+    "country": "US",
+    "genres": [
+      "冒险",
+      "动画",
+      "家庭",
+      "奇幻"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "KPop Demon Hunters",
+    "views": 3500000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "KPop Demon Hunters",
+    "titleZh": "Kpop 獵魔女團",
+    "country": "US",
+    "genres": [
+      "奇幻",
+      "音乐",
+      "喜剧",
+      "动画"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Maternal Instinct",
+    "views": 3500000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Maternal Instinct",
+    "titleZh": "母性本能：德州奪胎案",
+    "country": "US",
+    "genres": [
+      "纪录",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Paradise City",
+    "views": 2700000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Paradise City",
+    "titleZh": "驚爆夏威夷",
+    "country": "US",
+    "genres": [
+      "动作",
+      "犯罪",
+      "惊悚"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Spider-Man: Homecoming",
+    "views": 2600000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "Spider-Man: Homecoming",
+    "titleZh": "蜘蛛人：返校日",
+    "country": "US",
+    "genres": [
+      "动作",
+      "冒险",
+      "科幻"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "The Boss Baby",
+    "views": 2600000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|English",
+    "titleEn": "The Boss Baby",
+    "titleZh": "寶貝老闆",
+    "country": "US",
+    "genres": [
+      "动画",
+      "喜剧",
+      "家庭"
     ]
   }
 ]
