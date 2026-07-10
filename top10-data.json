@@ -14286,5 +14286,146 @@
       "喜剧",
       "家庭"
     ]
+  },
+  {
+    "rank": 1,
+    "title": "Blast",
+    "views": 3100000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Blast",
+    "titleZh": "",
+    "country": "IN",
+    "genres": [
+      "科幻",
+      "恐怖",
+      "喜剧",
+      "动作"
+    ]
+  },
+  {
+    "rank": 2,
+    "title": "Husbands in Action",
+    "views": 1700000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Husbands in Action",
+    "titleZh": "人夫總動員",
+    "country": "KR",
+    "genres": [
+      "喜剧",
+      "动作"
+    ]
+  },
+  {
+    "rank": 3,
+    "title": "Raja Shivaji",
+    "views": 1600000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Raja Shivaji",
+    "titleZh": "",
+    "country": "IN",
+    "genres": [
+      "动画"
+    ]
+  },
+  {
+    "rank": 4,
+    "title": "The Marked Woman",
+    "views": 1300000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "The Marked Woman",
+    "titleZh": "謎印女子",
+    "country": "ES",
+    "genres": [
+      "惊悚",
+      "剧情"
+    ]
+  },
+  {
+    "rank": 5,
+    "title": "Torrente for President",
+    "views": 1000000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Torrente for President",
+    "titleZh": "",
+    "country": "ES",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 6,
+    "title": "Daadi Ki Shaadi",
+    "views": 1000000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Daadi Ki Shaadi",
+    "titleZh": "",
+    "country": "IN",
+    "genres": [
+      "喜剧",
+      "剧情",
+      "家庭"
+    ]
+  },
+  {
+    "rank": 7,
+    "title": "Colors Of Evil: Black",
+    "views": 900000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Colors Of Evil: Black",
+    "titleZh": "極惡原色：闇黑謎鎮",
+    "country": "PL",
+    "genres": [
+      "惊悚",
+      "悬疑",
+      "犯罪"
+    ]
+  },
+  {
+    "rank": 8,
+    "title": "Les Condés",
+    "views": 900000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Les Condés",
+    "titleZh": "",
+    "country": "FR",
+    "genres": [
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 9,
+    "title": "Bhooth Bangla",
+    "views": 800000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Bhooth Bangla",
+    "titleZh": "鬼叫你要嫁",
+    "country": "IN",
+    "genres": [
+      "恐怖",
+      "喜剧"
+    ]
+  },
+  {
+    "rank": 10,
+    "title": "Pee Nak 5",
+    "views": 700000,
+    "week": "6/29/26 - 7/5/26",
+    "cat": "Movies|Non-English",
+    "titleEn": "Pee Nak 5",
+    "titleZh": "",
+    "country": "TH",
+    "genres": [
+      "喜剧",
+      "恐怖"
+    ]
   }
 ]
