@@ -265,7 +265,7 @@ body{
       <div class="form-title" id="tripFormTitle">＋ 新增行程明細</div>
       <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
         <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
-        <div class="form-group"><label>分類</label><select class="form-input" id="f-category"><option value="uber">uber</option><option value="56688">56688</option></select></div>
+        <div class="form-group"><label>分類</label><select class="form-input" id="f-category"><option value="uber">uber</option><option value="55688">55688</option></select></div>
         <div class="form-group"><label>時間</label>
           <div style="display:flex;gap:3px;align-items:center;">
             <input class="form-input" type="number" id="f-time-h" placeholder="時" min="0" style="width:44px;text-align:center;padding:8px 4px;">
@@ -816,7 +816,7 @@ function renderTrips(){
     return `<tr>
       <td style="color:rgba(240,220,160,0.5);font-size:11px">${seqMap[t.id]||''}</td>
       <td>${t.d||''}</td>
-      <td style="text-align:center"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;${(t.cat||'uber')==='56688'?'background:#FFD700;color:#000;':'background:rgba(0,200,83,0.18);color:#00E860;'}">${t.cat||'uber'}</span></td>
+      <td style="text-align:center"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;${(t.cat||'uber')==='55688'?'background:#FFD700;color:#000;':'background:rgba(0,200,83,0.18);color:#00E860;'}">${t.cat||'uber'}</span></td>
       <td style="color:rgba(200,200,200,0.85);font-size:12px;white-space:nowrap;text-align:center">${(function(){if(!t.tm)return '';var p=t.tm.split(':');var h=parseInt(p[0])||0;var m=p[1]||'00';var s=p[2]||'00';return h>0?h+':'+m+':'+s:m+':'+s;})()}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
