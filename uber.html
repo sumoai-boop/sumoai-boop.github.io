@@ -1062,17 +1062,10 @@ function deleteMonthly(id){
   saveAndPush('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
 }
-const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','罰鍰/過路費':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff','車貸':'#fd79a8'};
+const TYPE_COLOR={'車貸':'#FF3B30','汽車百貨':'#FF9500','停車費':'#FFCC00','油錢':'#34C759','保險/費用':'#00C7BE','罰鍰/過路費':'#007AFF','保養/維修':'#AF52DE'};
 const PIE_COLORS=['#FF3B30','#FF9500','#FFCC00','#34C759','#00C7BE','#007AFF','#AF52DE'];
-// 依總金額排序產生「類型→顏色」對照（與圓餅圖一致）
-function getTypeColorMap(){
-  var allData=getData('uberMonthly'),typeMap={};
-  allData.forEach(function(m){ var t=m.type||'其他'; typeMap[t]=(typeMap[t]||0)+(m.amount||0); });
-  var types=Object.keys(typeMap).sort(function(a,b){ return typeMap[b]-typeMap[a]; });
-  var map={};
-  types.forEach(function(t,i){ map[t]=PIE_COLORS[i%PIE_COLORS.length]; });
-  return map;
-}
+// 固定色：每個類型永遠同一色
+function getTypeColorMap(){ return TYPE_COLOR; }
 var monthlyPageMonth = 0;
 
 var gasSortKey='totalLiters', gasSortAsc=false;
@@ -1189,7 +1182,7 @@ function renderMonthly(){
       ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, r, startAngle, startAngle+slice);
       ctx.closePath();
-      ctx.fillStyle = COLORS[i % COLORS.length];
+      ctx.fillStyle = TYPE_COLOR[t] || COLORS[i % COLORS.length];
       ctx.fill();
       ctx.strokeStyle = 'rgba(30,33,48,0.8)';
       ctx.lineWidth = 2;
@@ -1217,8 +1210,8 @@ function renderMonthly(){
       var pct = (typeMap[t]/grandTotal*100).toFixed(1);
       return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;">'
         +'<div style="display:flex;align-items:center;gap:10px;">'
-        +'<div style="width:14px;height:14px;border-radius:3px;background:'+COLORS[i%COLORS.length]+';flex-shrink:0;"></div>'
-        +'<span style="font-size:16px;color:'+COLORS[i%COLORS.length]+';font-weight:600;">'+t+'</span>'
+        +'<div style="width:14px;height:14px;border-radius:3px;background:'+(TYPE_COLOR[t]||COLORS[i%COLORS.length])+';flex-shrink:0;"></div>'
+        +'<span style="font-size:16px;color:'+(TYPE_COLOR[t]||COLORS[i%COLORS.length])+';font-weight:600;">'+t+'</span>'
         +'</div>'
         +'<div style="text-align:right;white-space:nowrap;">'
         +'<div style="font-size:16px;color:#E8EAF0;font-weight:700;">'+typeMap[t].toLocaleString()+'</div>'
