@@ -299,8 +299,6 @@ body::before { background: transparent !important; }
   </div>
   <span class="top5-label">— 個人最愛 TOP 5｜電影</span>
   <div class="top5-grid" id="top5MovieGrid"></div>
-  <span class="top5-label" style="margin-top:8px;">— 個人最愛 TOP 5｜影集</span>
-  <div class="top5-grid" id="top5SeriesGrid"></div>
   <div class="section-divider"></div>
 
   <!-- 電影行事曆 -->
@@ -520,7 +518,7 @@ function buildTop5(){
   }
 
   renderGrid(topMovies,'top5MovieGrid');
-  renderGrid(topSeries,'top5SeriesGrid');
+  
 }
 
 async function fetchPosterForCard(m, imgEl){
