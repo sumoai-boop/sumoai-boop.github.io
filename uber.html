@@ -1063,6 +1063,16 @@ function deleteMonthly(id){
   renderMonthly();updateStats();
 }
 const TYPE_COLOR={'油錢':'#ff6b6b','保養/維修':'#ff9f43','罰鍰/過路費':'#ee5a24','停車費':'#f7b731','汽車百貨':'#a29bfe','保險/費用':'#74b9ff','車貸':'#fd79a8'};
+const PIE_COLORS=['#FF3B30','#FF9500','#FFCC00','#34C759','#00C7BE','#007AFF','#AF52DE'];
+// 依總金額排序產生「類型→顏色」對照（與圓餅圖一致）
+function getTypeColorMap(){
+  var allData=getData('uberMonthly'),typeMap={};
+  allData.forEach(function(m){ var t=m.type||'其他'; typeMap[t]=(typeMap[t]||0)+(m.amount||0); });
+  var types=Object.keys(typeMap).sort(function(a,b){ return typeMap[b]-typeMap[a]; });
+  var map={};
+  types.forEach(function(t,i){ map[t]=PIE_COLORS[i%PIE_COLORS.length]; });
+  return map;
+}
 var monthlyPageMonth = 0;
 
 var gasSortKey='totalLiters', gasSortAsc=false;
@@ -1165,7 +1175,7 @@ function renderMonthly(){
     if(!grandTotal){ document.getElementById('expenseChartWrap').style.display='none'; return; }
     document.getElementById('expenseChartWrap').style.display='flex';
 
-    var COLORS = ['#FF3B30','#FF9500','#FFCC00','#34C759','#00C7BE','#007AFF','#AF52DE'];
+    var COLORS = PIE_COLORS;
     var canvas = document.getElementById('monthlyPieChart');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
@@ -1225,8 +1235,8 @@ function renderMonthly(){
     +'<table style="width:100%;border-collapse:collapse;"><thead><tr>'
     +['日期','支出類型','金額','備註',''].map(h=>`<th style="padding:13px 16px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,200,83,0.7);text-align:left;border-bottom:1px solid rgba(0,200,83,0.15);background:rgba(0,200,83,0.05);">${h}</th>`).join('')
     +'</tr></thead><tbody>'
-    +monthly.map(m=>{
-      var col=TYPE_COLOR[m.type]||'#f0dca8';
+    +(function(){ var _tcMap=getTypeColorMap(); return monthly.map(m=>{
+      var col=_tcMap[m.type]||'#f0dca8';
       return `<tr>
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#E8EAF0;font-size:17px;">${m.date}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:4px 14px;border-radius:99px;font-size:15px;letter-spacing:0.05em;">${m.type}</span></td>
@@ -1234,7 +1244,7 @@ function renderMonthly(){
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'—'}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;white-space:nowrap;"><span onclick="editMonthly(${m.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:15px;padding:2px 5px;margin-right:4px;" title="編輯">✎</span><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:15px;padding:2px 5px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
       </tr>`;
-    }).join('')
+    }).join(''); })()
     +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
