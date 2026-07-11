@@ -312,7 +312,7 @@ body{
         <colgroup>
           <col style="width:50px">     <!-- # -->
           <col style="width:100px">    <!-- 日期 -->
-          <col style="width:62px">     <!-- 分類 -->
+          <col style="width:78px">     <!-- 分類 -->
           <col style="width:72px">     <!-- 時間 -->
           <col style="width:70px">     <!-- 上車區域 -->
           <col style="width:140px">    <!-- 上車地點 -->
@@ -816,7 +816,7 @@ function renderTrips(){
     return `<tr>
       <td style="color:rgba(240,220,160,0.5);font-size:11px">${seqMap[t.id]||''}</td>
       <td>${t.d||''}</td>
-      <td style="text-align:center"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;${(t.cat||'uber')==='55688'?'background:#FFD700;color:#000;':'background:rgba(0,200,83,0.18);color:#00E860;'}">${t.cat||'uber'}</span></td>
+      <td style="text-align:center;white-space:nowrap"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;${(t.cat||'uber')==='55688'?'background:#FFD700;color:#000;':'background:rgba(0,200,83,0.18);color:#00E860;'}">${t.cat||'uber'}</span></td>
       <td style="color:rgba(200,200,200,0.85);font-size:12px;white-space:nowrap;text-align:center">${(function(){if(!t.tm)return '';var p=t.tm.split(':');var h=parseInt(p[0])||0;var m=p[1]||'00';var s=p[2]||'00';return h>0?h+':'+m+':'+s:m+':'+s;})()}</td>
       <td style="border-left:1px solid rgba(0,200,83,0.1);font-size:15px">${t.fd||''}</td>
       <td style="color:#fff;font-size:15px;font-weight:600">${t.fr||''}</td>
@@ -1481,6 +1481,12 @@ document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   var m=getData('uberMonthly'),changed=false;
   m.forEach(function(x){ if(x.type==='交通罰鍰'){ x.type='罰鍰/過路費'; changed=true; } });
   if(changed) saveAndPush('uberMonthly',m);
+})();
+// 舊資料轉換：行程分類 56688 → 55688
+(function(){
+  var t=getData('uberTrips'),changed=false;
+  t.forEach(function(x){ if(x.cat==='56688'){ x.cat='55688'; changed=true; } });
+  if(changed) saveAndPush('uberTrips',t);
 })();
 renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 </script>
