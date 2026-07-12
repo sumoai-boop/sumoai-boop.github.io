@@ -201,25 +201,25 @@ body{
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
       <!-- Row 1: 公里 + 薪資 -->
-      <div class="stat-card"><div class="stat-label">平均公里數</div><div class="stat-val" id="s-avg-km2"><em class="num">0</em> <em class="unit">km</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均公里數</div><div class="stat-val" id="s-avg-km2"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">本月公里數</div><div class="stat-val" id="s-month-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">總公里數</div><div class="stat-val" id="s-total-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均週薪</div><div class="stat-val" id="s-avg-month-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <!-- Row 2: 載客 + 費用 -->
-      <div class="stat-card"><div class="stat-label">平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">本月載客數</div><div class="stat-val" id="s-month-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">總載客數</div><div class="stat-val" id="s-total-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均行程時間</div><div class="stat-val" id="s-avg-fare"><em class="num" style="font-size:32px;">—</em></div></div>
       <!-- Row 3: 趟數 + 收入 -->
-      <div class="stat-card"><div class="stat-label">平均日趟數</div><div class="stat-val" id="s-avg-day-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均趟數</div><div class="stat-val" id="s-avg-day-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月趟數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">總趟數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <!-- Row 4: 時數 + 支出 -->
-      <div class="stat-card"><div class="stat-label">平均日時數</div><div class="stat-val" id="s-avg-day-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均時數</div><div class="stat-val" id="s-avg-day-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card">
         <div class="stat-label">總時數</div>
@@ -1366,20 +1366,31 @@ function updateStats(){
   document.getElementById('s-total-net').textContent=fmt(totalNet);
   // 平均公里數
   // 有收入的天數（作為所有平均的分母）
-  var incomeDaySet={};
-  allWeekly.forEach(function(w){ if(w.date&&w.income>0) incomeDaySet[w.date]=1; });
-  var incomeDays = Object.keys(incomeDaySet).length||1;
   // 本月載客數
   var monthPax = 0; // 計算後更新
-  // 平均公里數（有收入天的行程）
-  var incomeDayTrips = allTrips.filter(function(t){ return t.d && incomeDaySet[t.d]; });
-  var avgKm2 = incomeDayTrips.length>0?(incomeDayTrips.reduce(function(s,t){return s+(t.km||0);},0)/incomeDayTrips.length).toFixed(2):0;
-  // 平均載客數（有收入天的行程）
-  var avgPax2 = incomeDayTrips.length>0?(incomeDayTrips.reduce(function(s,t){return s+(t.pax||1);},0)/incomeDayTrips.length).toFixed(1):0;
-  // 平均日趟數（總趟數 / 有收入天數）
-  var avgDayTrips = incomeDays>0?(totalTrips/incomeDays).toFixed(1):0;
-  // 平均日時數（總時數 / 有收入天數）
-  var avgDayHours = incomeDays>0?(totalHours/incomeDays).toFixed(1):0;
+
+  // ── 月平均統計（排除當月，當月未結束不列入）──
+  var _now=new Date(), curYM=_now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  // 排除當月的行程與收入
+  var pastTrips=allTrips.filter(function(t){ return t.d && t.d.slice(0,7)!==curYM; });
+  var pastWeekly=allWeekly.filter(function(w){ return w.date && w.date.slice(0,7)!==curYM; });
+  // 有資料的月份數（不含當月）
+  var pastMonthSet={};
+  pastTrips.forEach(function(t){ pastMonthSet[t.d.slice(0,7)]=1; });
+  pastWeekly.forEach(function(w){ pastMonthSet[w.date.slice(0,7)]=1; });
+  var pastMonths=Object.keys(pastMonthSet).length||1;
+
+  // 月平均公里數（不含當月）
+  var pastKm=pastTrips.reduce(function(s,t){return s+(t.km||0);},0);
+  var avgKm2=(pastKm/pastMonths).toFixed(2);
+  // 月平均載客數（不含當月）
+  var pastPax=pastTrips.reduce(function(s,t){return s+(t.pax||1);},0);
+  var avgPax2=(pastPax/pastMonths).toFixed(1);
+  // 月平均趟數（不含當月）
+  var avgDayTrips=(pastTrips.length/pastMonths).toFixed(1);
+  // 月平均時數（不含當月）
+  var pastMins=pastWeekly.reduce(function(s,w){return s+(w.hours||0)*60+(w.mins||0);},0);
+  var avgDayHours=(pastMins/60/pastMonths).toFixed(1);
 
   if(document.getElementById('s-avg-km2')) document.getElementById('s-avg-km2').innerHTML='<em class="num">'+avgKm2+'</em> <em class="unit">km</em>';
   if(document.getElementById('s-avg-day-trips')) document.getElementById('s-avg-day-trips').innerHTML='<em class="num">'+avgDayTrips+'</em> <em class="unit">趟</em>';
