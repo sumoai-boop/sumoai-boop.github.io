@@ -140,10 +140,10 @@ body{
   .chart-grid{grid-template-columns:1fr;}
 }
 /* 統計格子欄顏色：每欄統一一色 */
-/* Col 1: 平均 → 青藍 */
-#s-avg-km2 em.num,#s-avg-pax em.num,#s-avg-day-trips em.num,#s-avg-day-hours em.num{color:#22D3EE!important;}
-/* Col 2: 本月 → 綠 */
+/* Col 1: 本月 → 綠 */
 #s-month-km em.num,#s-month-pax em.num,#s-trips em.num,#s-hours em.num{color:#00C853!important;}
+/* Col 2: 月平均 → 青藍 */
+#s-avg-km2 em.num,#s-avg-pax em.num,#s-avg-day-trips em.num,#s-avg-day-hours em.num{color:#22D3EE!important;}
 /* Col 3: 總計 → 橘 */
 #s-total-km em.num,#s-total-pax em.num,#s-total-trips em.num,#s-total-hours em.num{color:#FF8C00!important;}
 /* Col 4: 薪資/費用/收支(本月) → 紫 */
@@ -201,26 +201,26 @@ body{
   <div class="tab-panel active" id="tab-overview">
     <div class="stats-grid">
       <!-- Row 1: 公里 + 薪資 -->
-      <div class="stat-card"><div class="stat-label">月平均公里數</div><div class="stat-val" id="s-avg-km2"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">本月公里數</div><div class="stat-val" id="s-month-km"><em class="num">0</em> <em class="unit">km</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均公里數</div><div class="stat-val" id="s-avg-km2"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">總公里數</div><div class="stat-val" id="s-total-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均週薪</div><div class="stat-val" id="s-avg-month-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <!-- Row 2: 載客 + 費用 -->
-      <div class="stat-card"><div class="stat-label">月平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">本月載客數</div><div class="stat-val" id="s-month-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">總載客數</div><div class="stat-val" id="s-total-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均行程時間</div><div class="stat-val" id="s-avg-fare"><em class="num" style="font-size:32px;">—</em></div></div>
       <!-- Row 3: 趟數 + 收入 -->
-      <div class="stat-card"><div class="stat-label">月平均趟數</div><div class="stat-val" id="s-avg-day-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月趟數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均趟數</div><div class="stat-val" id="s-avg-day-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">總趟數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <!-- Row 4: 時數 + 支出 -->
-      <div class="stat-card"><div class="stat-label">月平均時數</div><div class="stat-val" id="s-avg-day-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
+      <div class="stat-card"><div class="stat-label">月平均時數</div><div class="stat-val" id="s-avg-day-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card">
         <div class="stat-label">總時數</div>
         <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
