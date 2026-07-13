@@ -1,5 +1,34 @@
 [
   {
+    "id": "1783941794318",
+    "name": "滿雞軒 中和環球店",
+    "name1": "滿雞軒",
+    "name2": "中和環球店",
+    "type": "拉麵",
+    "meal": "",
+    "price": 425,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "235新北市中和區員山里中山路三段122號4樓",
+    "note": "茶碗蒸好難吃\n湯有松露味不愛",
+    "maps": "https://www.google.com.tw/maps/place/%E6%BB%BF%E9%9B%9E%E8%BB%92+%E4%B8%AD%E5%92%8C%E7%92%B0%E7%90%83%E5%BA%97/@25.0062653,121.4565508,15z/data=!3m1!4b1!4m6!3m5!1s0x3442a9b70095e04d:0x520c8cabf0bd63f2!8m2!3d25.006247!4d121.4750047!16s%2Fg%2F11z1sp23gh?entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-07-13",
+    "score": 2.8,
+    "visitLog": [
+      {
+        "date": "2026-07-13",
+        "meal": "午餐",
+        "price": 425,
+        "menu": "鴨白湯拉麵"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/QF6chrzb/4c8b678abb65.jpg"
+    ],
+    "img": "https://i.ibb.co/QF6chrzb/4c8b678abb65.jpg",
+    "createdAt": 1783941794318
+  },
+  {
     "id": "1783563472729",
     "name": "全晉德港式燒臘舖",
     "name1": "全晉德港式燒臘舖",
