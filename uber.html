@@ -302,6 +302,7 @@ body{
     <!-- 搜尋 + 篩選列 -->
     <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
       <input class="form-input" id="tripSearch" oninput="renderTrips()" placeholder="🔍 搜尋地點、備註..." style="flex:1;min-width:180px;padding:8px 12px;">
+      <select class="form-input" id="tripFilterCat" onchange="renderTrips()" style="width:120px;padding:8px 12px;"><option value="">全部分類</option><option value="uber">uber</option><option value="55688">55688</option></select>
       <input class="form-input" type="date" id="tripFilterDate" onchange="renderTrips()" style="width:150px;padding:8px 12px;">
       <button onclick="clearTripFilter()" style="padding:8px 14px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(240,220,160,0.7);cursor:pointer;font-size:11px;font-family:'Space Mono',monospace;">清除篩選</button>
     </div>
@@ -751,6 +752,7 @@ function sortTrips(key){
 function clearTripFilter(){ tripPage=1;
   document.getElementById('tripSearch').value='';
   document.getElementById('tripFilterDate').value='';
+  if(document.getElementById('tripFilterCat')) document.getElementById('tripFilterCat').value='';
   renderTrips();
 }
 
@@ -758,10 +760,12 @@ function renderTrips(){
   var trips=getData('uberTrips');
   var q=(document.getElementById('tripSearch').value||'').toLowerCase();
   var fd=document.getElementById('tripFilterDate').value;
+  var fcat=document.getElementById('tripFilterCat')?document.getElementById('tripFilterCat').value:'';
 
   // 篩選
   if(q) trips=trips.filter(t=>[t.fd,t.fr,t.td,t.tr,t.note||''].join(' ').toLowerCase().includes(q));
   if(fd) trips=trips.filter(t=>t.d===fd);
+  if(fcat) trips=trips.filter(t=>(t.cat||'uber')===fcat);
 
   // 排序
   trips.sort((a,b)=>{
