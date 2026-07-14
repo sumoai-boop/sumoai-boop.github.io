@@ -423,8 +423,6 @@ body{
     </div>
     <!-- 搜尋+列表 -->
     <div>
-      <!-- 加油站統計 -->
-      <div id="gasStatsWrap" style="margin-bottom:18px;"></div>
       <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
       <input type="text" id="monthly-search" placeholder="🔍 搜尋備註或地點..." oninput="renderMonthly()" style="flex:1;min-width:180px;background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:99px;padding:8px 16px;color:#E8EAF0;font-size:13px;outline:none;font-family:monospace;">
       <select id="monthly-type-filter" onchange="renderMonthly()" style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,200,83,0.5);border-radius:99px;padding:8px 14px;color:#FFFFFF;font-size:13px;font-weight:600;outline:none;font-family:monospace;">
@@ -445,6 +443,8 @@ body{
       </div>
     </div>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
+    <!-- 加油站統計（移到最下方）-->
+    <div id="gasStatsWrap" style="margin-top:24px;"></div>
     </div>
   </div>
 </div>
