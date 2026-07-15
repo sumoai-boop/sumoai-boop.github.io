@@ -34,30 +34,30 @@ body{margin:0; font-family:'Noto Sans TC', sans-serif; color:var(--ink);}
   background:repeating-linear-gradient(45deg,var(--kraft-l),var(--kraft-l) 7px,#EFE4CD 7px,#EFE4CD 14px);
 }
 .d-date{ font-family:'Patrick Hand'; font-size:26px; color:#5E5240; letter-spacing:1px;}
-.d-week{ font-family:'Gaegu'; font-size:14px; color:#7A6A50;}
+.d-week{ font-family:'Gaegu'; font-size:15.5px; color:#6B5B42;}
 .day-title{ text-align:center; font-family:'Zhi Mang Xing'; font-size:29px; color:var(--ink); margin:1mm 0 3mm; flex:0 0 auto;}
 .tags-row{ display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-bottom:5mm; flex:0 0 auto;}
 .tag-pill{
-  font-family:'Gaegu'; font-size:12.5px; padding:2.5px 10px; border-radius:12px;
+  font-family:'Gaegu'; font-size:14px; padding:2.5px 10px; border-radius:12px;
   background:rgba(255,255,255,0.85); border:1px solid var(--ink-soft); color:var(--ink-soft);
 }
 .notes-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm 4.5mm; position:relative; z-index:2; flex:0 0 auto;}
 .note-wrap{ position:relative; filter:drop-shadow(1.5px 2.5px 3px rgba(74,68,60,0.22)); }
 .note{
-  padding:5.5mm 4mm 4.5mm; min-height:27mm;
+  padding:5.5mm 4mm 4.5mm; min-height:29mm;
   display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
 }
 .note-pin{
   position:absolute; top:-3.6mm; left:50%; width:10mm; height:6mm; z-index:3;
   box-shadow:0 1px 2px rgba(0,0,0,0.15);
 }
-.note-icon{ font-size:19px; margin-bottom:1.5mm; }
-.note-name{ font-size:9.5px; line-height:1.25; color:var(--ink); font-weight:500; margin-bottom:2mm; word-break:break-word;}
-.note-amt{ font-family:'Patrick Hand'; font-size:13px; color:#5E5240; }
-.note-amt .twd{ font-size:10px; color:var(--ink-soft); margin-left:3px; }
+.note-icon{ font-size:22px; margin-bottom:1.5mm; }
+.note-name{ font-size:12px; line-height:1.3; color:var(--ink); font-weight:700; margin-bottom:2mm; word-break:break-word;}
+.note-amt{ font-family:'Patrick Hand'; font-size:15.5px; color:#4A3F2E; }
+.note-amt .twd{ font-size:12px; color:#8A7A62; margin-left:3px; }
 
 .journal-fill{ flex:1 1 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6.5mm; margin:2mm 6mm; min-height:8mm; overflow:hidden;}
-.journal-fill .prompt{ font-family:'Gaegu'; font-size:13px; color:var(--ink-soft);}
+.journal-fill .prompt{ font-family:'Gaegu'; font-size:14.5px; color:#8A7A62;}
 .journal-fill .jline{ width:128mm; border-bottom:1.3px dashed #BFB29B; }
 
 /* polaroid photo zone */
@@ -69,15 +69,17 @@ body{margin:0; font-family:'Noto Sans TC', sans-serif; color:var(--ink);}
 .photo-inner{
   width:100%; height:100%; border:1.5px dashed #C6B99F; background:#F4EFE3;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
 }
+img.slot-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; z-index:2;}
 .photo-inner .lbl{ font-family:'Patrick Hand'; font-size:17px; color:#B3A488; letter-spacing:3px;}
 .photo-inner .line{ margin-top:3mm; width:58mm; border-bottom:1.5px dashed #C6B99F; }
-.photo-cap{ position:absolute; bottom:2.5mm; left:0; right:0; text-align:center; font-family:'Gaegu'; font-size:12px; color:var(--ink-soft);}
+.photo-cap{ position:absolute; bottom:2.5mm; left:0; right:0; text-align:center; font-family:'Gaegu'; font-size:13.5px; color:#8A7A62;}
 .pz-tape-l{ position:absolute; top:-4.5mm; left:16mm; width:23mm; height:8mm; box-shadow:0 1.5px 3px rgba(74,68,60,0.25); transform:rotate(-3deg); opacity:0.94; z-index:3;}
 .pz-tape-r{ position:absolute; top:-4.5mm; right:16mm; width:23mm; height:8mm; box-shadow:0 1.5px 3px rgba(74,68,60,0.25); transform:rotate(3deg); opacity:0.94; z-index:3;}
 
 .note-count-badge{
-  position:absolute; top:2mm; right:5mm; font-family:'Gaegu'; font-size:12px; color:var(--ink-soft);
+  position:absolute; top:2mm; right:5mm; font-family:'Gaegu'; font-size:13.5px; color:var(--ink-soft);
   background:rgba(255,255,255,0.9); border:1px dashed var(--ink-soft); border-radius:10px; padding:2px 9px; z-index:6;
 }
 .arrow{ position:absolute; width:32mm; height:auto; opacity:0.8; z-index:1;}
@@ -174,7 +176,7 @@ body{margin:0; font-family:'Noto Sans TC', sans-serif; color:var(--ink);}
   position:absolute; left:50%; top:6mm; transform:translateX(-50%) rotate(-2deg);
   width:92mm; background:#FDFCF8; padding:5mm 5mm 13mm; box-shadow:0 4px 10px rgba(74,68,60,0.28);
 }
-.cover-polaroid .ph{ height:56mm; border:1.5px dashed #C6B99F; display:flex; align-items:center; justify-content:center; font-family:'Patrick Hand'; color:#B3A488; font-size:19px; background:#F4EFE3;}
+.cover-polaroid .ph{ height:56mm; border:1.5px dashed #C6B99F; display:flex; align-items:center; justify-content:center; font-family:'Patrick Hand'; color:#B3A488; font-size:19px; background:#F4EFE3; position:relative; overflow:hidden;}
 .cover-polaroid .cap{ text-align:center; font-family:'Gaegu'; font-size:13px; color:var(--ink-soft); margin-top:3.5mm;}
 .cp-tape{ position:absolute; top:-4.5mm; left:50%; transform:translateX(-50%) rotate(-3deg); width:26mm; height:9mm; opacity:0.94; box-shadow:0 1.5px 3px rgba(74,68,60,0.25);}
 
@@ -255,7 +257,7 @@ body{background:#0B1220; padding:64px 0 40px;}
       <div class="cover-collage">
         <div class="cover-polaroid">
           <div class="cp-tape" style="background:repeating-linear-gradient(45deg,#EADFC9,#EADFC9 6px,#F4EEDF 6px,#F4EEDF 12px);"></div>
-          <div class="ph">Photo</div>
+          <div class="ph"><img class="slot-img" data-photo="cover" alt="">Photo</div>
           <div class="cap">— 여기에 사진을 붙여주세요 · 貼上照片 —</div>
         </div>
         <div style="position:absolute; left:8mm; top:2mm;"><div class="passport" style="transform:rotate(-7deg);">
@@ -417,7 +419,7 @@ body{background:#0B1220; padding:64px 0 40px;}
           <div class="photo-zone">
             <div class="pz-tape-l" style="background:repeating-linear-gradient(45deg,#E1E6DA,#E1E6DA 6px,#EFF2EB 6px,#EFF2EB 12px);"></div>
             <div class="pz-tape-r" style="background:repeating-linear-gradient(45deg,#EBDFC4,#EBDFC4 6px,#F5EEDD 6px,#F5EEDD 12px);"></div>
-            <div class="photo-inner"><div class="lbl">PHOTO</div><div class="line"></div></div>
+            <div class="photo-inner"><img class="slot-img" data-photo="day1" alt=""><div class="lbl">PHOTO</div><div class="line"></div></div>
             <div class="photo-cap">📷 回來貼上今天的拍立得</div>
           </div>
         </div>
@@ -550,7 +552,7 @@ body{background:#0B1220; padding:64px 0 40px;}
           <div class="photo-zone">
             <div class="pz-tape-l" style="background:repeating-linear-gradient(45deg,#EADFC9,#EADFC9 6px,#F4EEDF 6px,#F4EEDF 12px);"></div>
             <div class="pz-tape-r" style="background:repeating-linear-gradient(45deg,#E5E0D3,#E5E0D3 6px,#F2EFE6 6px,#F2EFE6 12px);"></div>
-            <div class="photo-inner"><div class="lbl">PHOTO</div><div class="line"></div></div>
+            <div class="photo-inner"><img class="slot-img" data-photo="day2" alt=""><div class="lbl">PHOTO</div><div class="line"></div></div>
             <div class="photo-cap">📷 回來貼上今天的拍立得</div>
           </div>
         </div>
@@ -704,7 +706,7 @@ body{background:#0B1220; padding:64px 0 40px;}
           <div class="photo-zone">
             <div class="pz-tape-l" style="background:repeating-linear-gradient(45deg,#E7E2DA,#E7E2DA 6px,#F3F0EA 6px,#F3F0EA 12px);"></div>
             <div class="pz-tape-r" style="background:repeating-linear-gradient(45deg,#DCE5E9,#DCE5E9 6px,#EDF2F4 6px,#EDF2F4 12px);"></div>
-            <div class="photo-inner"><div class="lbl">PHOTO</div><div class="line"></div></div>
+            <div class="photo-inner"><img class="slot-img" data-photo="day3" alt=""><div class="lbl">PHOTO</div><div class="line"></div></div>
             <div class="photo-cap">📷 回來貼上今天的拍立得</div>
           </div>
         </div>
@@ -811,7 +813,7 @@ body{background:#0B1220; padding:64px 0 40px;}
           <div class="photo-zone">
             <div class="pz-tape-l" style="background:repeating-linear-gradient(45deg,#EBDFC4,#EBDFC4 6px,#F5EEDD 6px,#F5EEDD 12px);"></div>
             <div class="pz-tape-r" style="background:repeating-linear-gradient(45deg,#E1E6DA,#E1E6DA 6px,#EFF2EB 6px,#EFF2EB 12px);"></div>
-            <div class="photo-inner"><div class="lbl">PHOTO</div><div class="line"></div></div>
+            <div class="photo-inner"><img class="slot-img" data-photo="day4" alt=""><div class="lbl">PHOTO</div><div class="line"></div></div>
             <div class="photo-cap">📷 回來貼上今天的拍立得</div>
           </div>
         </div>
@@ -904,6 +906,15 @@ body{background:#0B1220; padding:64px 0 40px;}
     </div>
 
 <script>
+(function(){
+  // load trip photos from repo: images/seoul-2026/cover.jpg, day1.jpg ... day4.jpg
+  document.querySelectorAll('img.slot-img').forEach(function(img){
+    var name = img.getAttribute('data-photo');
+    var test = new Image();
+    test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+    test.src = 'images/seoul-2026/' + name + '.jpg';
+  });
+})();
 (function(){
   var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
   pages.forEach(function(p){
