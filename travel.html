@@ -46,6 +46,11 @@
   .trips-section{margin-top:40px;}
   .trips-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(94,82,64,0.85);margin-bottom:20px;display:block;}
   .trips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+  .country-group{margin-bottom:26px;}
+  .country-label{display:flex;align-items:center;gap:8px;font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:700;color:#4A443C;margin-bottom:10px;}
+  .country-label .cflag{font-size:17px;}
+  .country-label .ccount{font-family:'Space Mono',monospace;font-size:10.5px;font-weight:400;color:rgba(122,106,80,0.8);letter-spacing:0.05em;}
+  .country-label::after{content:'';flex:1;border-bottom:1.5px dashed rgba(156,139,118,0.45);margin-left:6px;}
   .trip-card{background:rgba(255,255,255,0.65);border:1px solid rgba(156,139,118,0.35);box-shadow:1px 2px 6px rgba(74,68,60,0.08);border-radius:10px;padding:14px 16px;}
   .trip-city{font-family:'Noto Sans TC',sans-serif;font-size:20px;font-weight:700;color:#4A443C;margin-bottom:8px;}
   .trip-date{font-size:12.5px;color:#6B5E48;letter-spacing:0.04em;font-family:'Space Mono',monospace;line-height:2;}
@@ -155,18 +160,51 @@
 
   <div class="trips-section">
     <span class="trips-title">— 旅遊記錄</span>
-    <div class="trips-grid">
-      <div class="trip-card"><div class="trip-city">東京</div><div class="trip-date">2015 / 06.03 — 06.07<br>2017 / 12.09 — 12.12</div></div>
-      <div class="trip-card"><div class="trip-city">首爾</div><div class="trip-date"><a class="trip-link" href="seoul-2025.html" target="_blank">2025 / 07.08 — 07.12 <span class="trip-link-icon">📖</span></a><br><a class="trip-link" href="seoul-2026.html" target="_blank">2026 / 04.07 — 04.10 <span class="trip-link-icon">📖</span></a></div></div>
-      <div class="trip-card"><div class="trip-city">大阪</div><div class="trip-date">2013 / 05.18 — 05.22<br>2024 / 07.11 — 07.12</div></div>
-      <div class="trip-card"><div class="trip-city">曼谷</div><div class="trip-date">2020 / 01.21 — 01.25<br>2025 / 03.28 — 04.01</div></div>
-      <div class="trip-card"><div class="trip-city">京都</div><div class="trip-date">2024 / 07.08 — 07.10</div></div>
-      <div class="trip-card"><div class="trip-city">沖繩</div><div class="trip-date">2019 / 04.04 — 04.09</div></div>
-      <div class="trip-card"><div class="trip-city">上海</div><div class="trip-date">2018 / 10.05 — 10.08</div></div>
-      <div class="trip-card"><div class="trip-city">香港</div><div class="trip-date">2016 / 10.19 — 10.21</div></div>
-      <div class="trip-card"><div class="trip-city">澳門</div><div class="trip-date">2024 / 11.29 — 11.30</div></div>
-      <div class="trip-card"><div class="trip-city">宿霧</div><div class="trip-date">2012 / 06.11 — 06.15</div></div>
-      <div class="trip-card"><div class="trip-city">杭州</div><div class="trip-date">2015 / 04.06</div></div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇯🇵</span>日本<span class="ccount">6 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">東京</div><div class="trip-date">2015 / 06.03 — 06.07<br>2017 / 12.09 — 12.12</div></div>
+        <div class="trip-card"><div class="trip-city">大阪</div><div class="trip-date">2013 / 05.18 — 05.22<br>2024 / 07.11 — 07.12</div></div>
+        <div class="trip-card"><div class="trip-city">京都</div><div class="trip-date">2024 / 07.08 — 07.10</div></div>
+        <div class="trip-card"><div class="trip-city">沖繩</div><div class="trip-date">2019 / 04.04 — 04.09</div></div>
+      </div>
+    </div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇰🇷</span>韓國<span class="ccount">2 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">首爾</div><div class="trip-date"><a class="trip-link" href="seoul-2025.html" target="_blank">2025 / 07.08 — 07.12 <span class="trip-link-icon">📖</span></a><br><a class="trip-link" href="seoul-2026.html" target="_blank">2026 / 04.07 — 04.10 <span class="trip-link-icon">📖</span></a></div></div>
+      </div>
+    </div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇹🇭</span>泰國<span class="ccount">2 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">曼谷</div><div class="trip-date">2020 / 01.21 — 01.25<br>2025 / 03.28 — 04.01</div></div>
+      </div>
+    </div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇨🇳</span>中國<span class="ccount">2 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">上海</div><div class="trip-date">2018 / 10.05 — 10.08</div></div>
+        <div class="trip-card"><div class="trip-city">杭州</div><div class="trip-date">2015 / 04.06</div></div>
+      </div>
+    </div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇭🇰</span>香港<span class="ccount">1 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">香港</div><div class="trip-date">2016 / 10.19 — 10.21</div></div>
+      </div>
+    </div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇲🇴</span>澳門<span class="ccount">1 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">澳門</div><div class="trip-date">2024 / 11.29 — 11.30</div></div>
+      </div>
+    </div>
+    <div class="country-group">
+      <div class="country-label"><span class="cflag">🇵🇭</span>菲律賓<span class="ccount">1 次旅程</span></div>
+      <div class="trips-grid">
+        <div class="trip-card"><div class="trip-city">宿霧</div><div class="trip-date">2012 / 06.11 — 06.15</div></div>
+      </div>
     </div>
   </div>
 </div>
