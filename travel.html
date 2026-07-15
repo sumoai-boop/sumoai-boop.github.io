@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>旅遊足跡 — Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -23,7 +23,7 @@
   .page-content{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:100px 48px 80px;}
   .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,72px);font-weight:300;color:#4A443C;line-height:1;margin-bottom:6px;}
   .page-title em{font-style:italic;color:#B0705C;}
-  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(122,106,80,0.65);margin-bottom:32px;display:block;}
+  .page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(94,82,64,0.85);margin-bottom:32px;display:block;}
   #main-map{width:100%;height:500px;border-radius:12px;overflow:hidden;z-index:1;}
 
   .leaflet-tooltip.city-label{background:transparent;border:none;box-shadow:none;color:#222;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;text-shadow:0 1px 2px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.8);padding:0;}
@@ -44,12 +44,12 @@
   .photo-thumb:hover img{transform:scale(1.05);filter:brightness(0.75);}
 
   .trips-section{margin-top:40px;}
-  .trips-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(122,106,80,0.65);margin-bottom:20px;display:block;}
+  .trips-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(94,82,64,0.85);margin-bottom:20px;display:block;}
   .trips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
   .trip-card{background:rgba(255,255,255,0.65);border:1px solid rgba(156,139,118,0.35);box-shadow:1px 2px 6px rgba(74,68,60,0.08);border-radius:10px;padding:14px 16px;}
-  .trip-city{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#4A443C;margin-bottom:8px;}
-  .trip-date{font-size:10px;color:rgba(122,106,80,0.9);letter-spacing:0.05em;font-family:monospace;line-height:1.8;}
-  .trip-date a.trip-link{color:#B0705C;text-decoration:none;border-bottom:1px dashed rgba(176,112,92,0.55);cursor:pointer;transition:color 0.2s,border-color 0.2s;}
+  .trip-city{font-family:'Noto Sans TC',sans-serif;font-size:20px;font-weight:700;color:#4A443C;margin-bottom:8px;}
+  .trip-date{font-size:12.5px;color:#6B5E48;letter-spacing:0.04em;font-family:'Space Mono',monospace;line-height:2;}
+  .trip-date a.trip-link{color:#A05540;font-weight:700;text-decoration:none;border-bottom:1.5px dashed rgba(160,85,64,0.65);cursor:pointer;transition:color 0.2s,border-color 0.2s;}
   .trip-date a.trip-link:hover{color:#8E4F44;border-bottom-color:#8E4F44;}
   .trip-date .trip-link-icon{font-size:9px;opacity:0.9;}
 
