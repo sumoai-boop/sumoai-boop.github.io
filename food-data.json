@@ -1,5 +1,34 @@
 [
   {
+    "id": "1784192147142",
+    "name": "北港江記龍門生炒鴨肉焿",
+    "name1": "北港江記龍門生炒鴨肉焿",
+    "name2": "",
+    "type": "台式麵館",
+    "meal": "",
+    "price": 80,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "241新北市三重區龍門里龍門路134號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E5%8C%97%E6%B8%AF%E6%B1%9F%E8%A8%98%E9%BE%8D%E9%96%80%E7%94%9F%E7%82%92%E9%B4%A8%E8%82%89%E7%84%BF/@25.0730583,121.4981477,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a9258f54f00d:0x2ef6c7285424f88e!8m2!3d25.0730583!4d121.4981477!16s%2Fg%2F11b635xn3b?entry=ttu&g_ep=EgoyMDI2MDcxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-07-16",
+    "score": 3.5,
+    "visitLog": [
+      {
+        "date": "2026-07-16",
+        "meal": "午餐",
+        "price": 80,
+        "menu": ""
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/nsj6kC64/3619b42ff51e.jpg"
+    ],
+    "img": "https://i.ibb.co/nsj6kC64/3619b42ff51e.jpg",
+    "createdAt": 1784192147142
+  },
+  {
     "id": "1784125778439",
     "name": "阪前鐵板燒 中山北店",
     "name1": "阪前鐵板燒",
