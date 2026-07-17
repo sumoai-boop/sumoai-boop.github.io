@@ -1349,7 +1349,7 @@
       "km": 11.3,
       "fare": 405,
       "bonus": 0,
-      "toll": 0,
+      "toll": 4,
       "tip": 100,
       "service": 101,
       "detail": 404,
