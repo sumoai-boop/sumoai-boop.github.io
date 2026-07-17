@@ -1,5 +1,11 @@
 {
-  "weightEntries": [],
+  "weightEntries": [
+    {
+      "date": "2026-07-17",
+      "weight": 80.9,
+      "note": ""
+    }
+  ],
   "weightSettings": {
     "height": 168,
     "target": null
