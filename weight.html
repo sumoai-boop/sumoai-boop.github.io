@@ -24,6 +24,24 @@ body{
   color:var(--ik-black);
 }
 
+
+/* 全域 Menubar（全站共用） */
+.global-menubar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  height:28px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  font-size:12px;color:rgba(255,255,255,0.92);
+  font-family:'Inter','Noto Sans TC',monospace;
+}
+.gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
+.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;color:rgba(255,255,255,0.95);}
+.mb-menu:hover{background:rgba(255,255,255,0.2);}
+
 /* Dock（全站共用，不變） */
 .global-dock-wrap{
   position:fixed;bottom:0;left:50%;
@@ -66,6 +84,7 @@ body{
 /* ── 頁首：IKEA 藍色橫幅 ── */
 .ik-header{
   background:var(--ik-blue);
+  margin-top:28px;
   padding:34px 32px 30px;
 }
 .ik-header-inner{max-width:1200px;margin:0 auto;}
@@ -209,6 +228,26 @@ body{
 </head>
 <body>
 
+<!-- 全域 Menubar -->
+<div class="global-menubar">
+  <div class="gm-left">
+    <span style="font-size:16px">🗿</span>
+    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
+    <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span>
+    <span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span>
+    <span class="mb-menu">視窗</span><span class="mb-menu">輔助說明</span>
+  </div>
+  <div class="gm-right">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></svg>
+    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M1 9l2 2c5.07-5.07 13.27-5.05 18.36 0l2-2C16.93 2.37 7.1 2.35 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.77 7.27-2.76 10.03 0l2-2C15.14 9.14 8.87 9.13 5 13z"/></svg>
+    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px">
+    <span id="gmbTime"></span>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+  </div>
+</div>
+
+
 <div class="dock-trigger-zone"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
@@ -330,6 +369,17 @@ body{
   dock.addEventListener('mouseleave',hide);
   setTimeout(show,600);
   setTimeout(function(){if(!dock.matches(':hover'))hide();},2600);
+})();
+
+
+// 全域 Menubar 時鐘
+(function(){
+  function t(){
+    var el=document.getElementById('gmbTime');if(!el)return;
+    var now=new Date(),d=['日','一','二','三','四','五','六'][now.getDay()];
+    var h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0');
+    el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
+  }t();setInterval(t,10000);
 })();
 
 // ── GitHub 設定 ──
