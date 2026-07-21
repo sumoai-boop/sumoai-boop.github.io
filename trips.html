@@ -223,6 +223,24 @@ body{
 .day-subtotal .ds-day{font-size:14px;font-weight:900;color:var(--ink-soft);}
 .day-subtotal .ds-sum{margin-left:auto;font-size:13px;font-weight:700;color:var(--red-dk);}
 
+/* Google 日曆式日視圖 */
+.cal-untimed{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.cal-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;border:1px solid;border-radius:8px;padding:4px 9px;color:var(--ink);background:var(--card);}
+.cal-chip b{font-weight:700;color:var(--red-dk);}
+.cal-chip b.cur-twd{color:var(--green-dk);}
+.cal{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;}
+.cal-grid{position:absolute;inset:0;}
+.cal-hline{position:absolute;left:46px;right:0;border-top:1px solid var(--line-soft);}
+.cal-hlabel{position:absolute;left:0;width:40px;text-align:right;font-size:11px;color:var(--hint);font-family:'Space Mono',monospace;}
+.cal-body{position:absolute;left:46px;right:6px;top:0;bottom:0;}
+.cal-ev{position:absolute;border-radius:8px;border-left:3px solid;padding:3px 7px 3px 8px;overflow:hidden;box-sizing:border-box;}
+.cev-title{font-size:12px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:12px;}
+.cev-time{font-size:10px;color:var(--ink-soft);font-family:'Space Mono',monospace;line-height:1.3;}
+.cev-cost{font-size:10px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;line-height:1.3;}
+.cev-cost.cur-twd{color:var(--green-dk);}
+.cev-del{position:absolute;top:1px;right:2px;background:none;border:none;cursor:pointer;color:var(--hint);font-size:11px;line-height:1;padding:1px 3px;}
+.cev-del:hover{color:var(--red);}
+
 /* 類別 badge */
 .badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap;}
 
@@ -370,7 +388,7 @@ body{
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
-        <input type="time" id="logTime" style="width:104px;">
+        <input type="time" id="logTime" step="900" style="width:92px;" title="開始"><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><input type="time" id="logEnd" step="900" style="width:92px;" title="結束">
         <select id="logType" style="width:92px;"></select>
         <input type="text" id="logTitle" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
         <input type="number" id="logAmount" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
@@ -676,27 +694,76 @@ function renderLog(){
     var dot=ds>0?'<span style=\"display:inline-block;width:5px;height:5px;border-radius:50%;background:'+(d===itSelectedDate?'#FFF3EC':'#E24B4A')+';margin-left:5px;vertical-align:middle;\"></span>':'';
     return '<button class=\"day-tab'+(d===itSelectedDate?' active':'')+'\" onclick=\"pickDay(\''+d+'\')\">D'+(i+1)+' '+fmtMD(d)+dot+'</button>';
   }).join('');
-  var items=t.entries.filter(x=>x.date===itSelectedDate).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+  var items=t.entries.filter(x=>x.date===itSelectedDate);
   var sub=items.reduce((s,x)=>s+entryTWD(x,t),0);
   document.getElementById('logDaySub').innerHTML=items.length
-    ?'<span class=\"ds-day\">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
-      +(sub>0?'<span class=\"ds-sum\">當日 NT$ '+num(sub)+'</span>':'')
+    ?'<span class="ds-day">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
+      +(sub>0?'<span class="ds-sum">當日 NT$ '+num(sub)+'</span>':'')
     :'';
-  var tl=document.getElementById('logTimeline');
+  var host=document.getElementById('logTimeline');
   document.getElementById('logEmpty').style.display=items.length?'none':'block';
-  tl.style.display=items.length?'block':'none';
-  tl.innerHTML=items.map(x=>{
-    var ty=TAG[x.type]||TAG['其他'];
-    var meta=x.note||'';
-    var cost=(+x.amount>0)
-      ?'<span class=\"tl-cost'+(x.cur==='TWD'?' cur-twd':'')+'\">'+(x.cur==='TWD'?'NT$ '+num(x.amount):num(x.amount)+' '+esc(x.cur||'')+'<span class=\"tl-twd\">NT$'+num(entryTWD(x,t))+'</span>')+'</span>':'';
-    return '<div class=\"tl-item\"><div class=\"tl-time\">'+(x.time||'--:--')+'</div>'
-      +'<div class=\"tl-card\"><span class=\"badge\" style=\"background:'+ty.bg+';color:'+ty.c+';\">'+esc(x.type)+'</span>'
-      +'<div style=\"min-width:0;\"><div class=\"tl-title\">'+esc(x.title)+'</div>'
-      +(meta?'<div class=\"tl-note\">'+esc(meta)+'</div>':'')+'</div>'
-      +cost
-      +'<button class=\"exp-del\" onclick=\"delEntry(\''+x.id+'\')\" aria-label=\"刪除\">✕</button></div></div>';
+  host.style.display=items.length?'block':'none';
+  host.innerHTML=renderDayCalendar(t,items);
+}
+function toMin(hhmm){var p=(hhmm||'').split(':');return (p.length===2&&p[0]!=='')?(+p[0])*60+(+p[1]):null;}
+function minHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+function layoutColumns(evs){
+  evs.sort(function(a,b){return a.s-b.s||a.e-b.e;});
+  var i=0;
+  while(i<evs.length){
+    var clusterEnd=evs[i].e,cluster=[evs[i]],j=i+1;
+    while(j<evs.length&&evs[j].s<clusterEnd){cluster.push(evs[j]);if(evs[j].e>clusterEnd)clusterEnd=evs[j].e;j++;}
+    var colsEnd=[];
+    cluster.forEach(function(ev){
+      var placed=false;
+      for(var c=0;c<colsEnd.length;c++){if(colsEnd[c]<=ev.s){ev.col=c;colsEnd[c]=ev.e;placed=true;break;}}
+      if(!placed){ev.col=colsEnd.length;colsEnd.push(ev.e);}
+    });
+    cluster.forEach(function(ev){ev.cols=colsEnd.length;});
+    i=j;
+  }
+}
+function chipHTML(t,x){
+  var ty=TAG[x.type]||TAG['其他'];
+  var cost=(+x.amount>0)?' <b class="'+(x.cur==='TWD'?'cur-twd':'')+'" style="font-family:\'Space Mono\',monospace;">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+esc(x.cur||''))+'</b>':'';
+  return '<span class="cal-chip" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
+    +'<span style="color:'+ty.c+';font-weight:700;">'+esc(x.type)+'</span> '+esc(x.title)+cost
+    +'<button class="cev-del" style="position:static;margin-left:4px;color:inherit;" onclick="delEntry(\''+x.id+'\')" aria-label="刪除">✕</button></span>';
+}
+function renderDayCalendar(t,items){
+  var timed=[],untimed=[];
+  items.forEach(function(x){
+    var sm=toMin(x.time);
+    if(sm==null){untimed.push(x);return;}
+    var em=toMin(x.end);if(em==null||em<=sm)em=sm+60;
+    timed.push({x:x,s:sm,e:em});
+  });
+  var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
+  if(!timed.length)return chips;
+  var minS=Math.min.apply(null,timed.map(function(o){return o.s;}));
+  var maxE=Math.max.apply(null,timed.map(function(o){return o.e;}));
+  var startH=Math.max(0,Math.floor(minS/60)),endH=Math.min(24,Math.ceil(maxE/60));
+  if(endH-startH<3)endH=Math.min(24,startH+3);
+  var HP=54,pm=HP/60,top0=startH*60,bodyH=(endH-startH)*HP;
+  var grid='';
+  for(var h=startH;h<=endH;h++){
+    var y=(h-startH)*HP;
+    grid+='<div class="cal-hline" style="top:'+y+'px;"></div>'
+      +'<div class="cal-hlabel" style="top:'+(y-6)+'px;">'+String(h).padStart(2,'0')+':00</div>';
+  }
+  layoutColumns(timed);
+  var evs=timed.map(function(o){
+    var x=o.x,ty=TAG[x.type]||TAG['其他'];
+    var top=(o.s-top0)*pm,hgt=Math.max((o.e-o.s)*pm,26);
+    var w=100/o.cols,left=o.col*w;
+    var cost=(+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
+    return '<div class="cal-ev" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';">'
+      +'<button class="cev-del" onclick="delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
+      +'<div class="cev-title" style="color:'+ty.c+';">'+esc(x.title)+'</div>'
+      +'<div class="cev-time">'+minHHMM(o.s)+'–'+minHHMM(o.e)+'</div>'+cost
+      +'</div>';
   }).join('');
+  return chips+'<div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body">'+evs+'</div></div>';
 }
 function fillCurSelect(t){
   var el=document.getElementById('logCur');
@@ -718,12 +785,14 @@ function addEntry(){
     type:type,
     title:title||type,
     note:document.getElementById('logNote').value.trim(),
+    end:document.getElementById('logEnd').value||'',
     amount:amt>0?amt:0,
     cur:document.getElementById('logCur').value||(t.currency||'TWD')
   });
   document.getElementById('logTitle').value='';
   document.getElementById('logAmount').value='';
   document.getElementById('logNote').value='';
+  document.getElementById('logEnd').value='';
   markDirty();renderLog();renderHeader();
 }
 function delEntry(id){
