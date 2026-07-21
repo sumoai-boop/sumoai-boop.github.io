@@ -1177,6 +1177,28 @@
           "end": "18:45",
           "amount": 16500,
           "cur": "KRW"
+        },
+        {
+          "id": "mrut2avs3wnn2",
+          "date": "2025-07-11",
+          "time": "23:00",
+          "type": "餐飲",
+          "title": "Shake Shack 仁川機場第一航廈店",
+          "note": "",
+          "end": "23:30",
+          "amount": 15100,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrut2took5tks",
+          "date": "2025-07-12",
+          "time": "02:30",
+          "type": "交通",
+          "title": "晶順出國停車場",
+          "note": "",
+          "end": "03:00",
+          "amount": 1200,
+          "cur": "TWD"
         }
       ]
     }
