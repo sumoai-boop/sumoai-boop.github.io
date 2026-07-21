@@ -401,7 +401,7 @@ body{
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
-        <select id="logTime" style="width:92px;" title="開始"></select><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><select id="logEnd" style="width:92px;" title="結束"></select>
+        <select id="logTime" style="width:92px;" title="開始" onchange="syncEndOptions('logTime','logEnd')"></select><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><select id="logEnd" style="width:92px;" title="結束"></select>
         <select id="logType" style="width:92px;"></select>
         <input type="text" id="logTitle" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
         <input type="number" id="logAmount" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
@@ -467,7 +467,6 @@ body{
       <label>結束日期</label><input type="date" id="nmEnd">
       <label>當地幣別</label><input type="text" id="nmCurrency" placeholder="KRW / JPY / TWD" value="TWD">
       <label>匯率（1 當地幣 = ? NT$）</label><input type="number" id="nmRate" step="0.0001" value="1" inputmode="decimal">
-      <label>總預算 NT$</label><input type="number" id="nmBudget" placeholder="選填" inputmode="numeric">
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeTripModal()">取消</button>
@@ -648,7 +647,8 @@ function fillTimeSelects(){
     var v=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
     opts+='<option value="'+v+'">'+v+'</option>';
   }
-  ['logTime','logEnd'].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  var lt=document.getElementById('logTime');if(lt)lt.innerHTML=opts;
+  var le=document.getElementById('logEnd');if(le)le.innerHTML=endOptionsHTML('','');
 }
 
 // ── 渲染 ──
@@ -772,7 +772,7 @@ function renderDayCalendar(t,items){
   items.forEach(function(x){
     var sm=toMin(x.time);
     if(sm==null){untimed.push(x);return;}
-    var em=toMin(x.end);if(em==null||em<=sm)em=sm+60;
+    var em=toMin(x.end);if(em==null)em=sm+60;else if(em<=sm)em+=1440;
     timed.push({x:x,s:sm,e:em});
   });
   var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
@@ -788,7 +788,7 @@ function renderDayCalendar(t,items){
   layoutColumns(timed);
   var evs=timed.map(function(o){
     var x=o.x,ty=TAG[x.type]||TAG['其他'];
-    var top=(o.s-top0)*pm,hgt=Math.max((o.e-o.s)*pm,26);
+    var drawE=Math.min(o.e,endH*60),top=(o.s-top0)*pm,hgt=Math.max((drawE-o.s)*pm,26);
     var w=100/o.cols,left=o.col*w;
     var cost=(+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
     return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';">'
@@ -850,6 +850,24 @@ function timeOptionsHTML(sel){
   for(var m=0;m<1440;m+=15){var v=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');o+='<option'+(v===sel?' selected':'')+'>'+v+'</option>';}
   return o;
 }
+function endOptionsHTML(startVal,sel){
+  var o='<option value="">--:--</option>';
+  var sm=toMin(startVal);
+  if(sm==null){
+    for(var m=0;m<1440;m+=15){var v0=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');o+='<option'+(v0===sel?' selected':'')+'>'+v0+'</option>';}
+    return o;
+  }
+  for(var k=15;k<=1440;k+=15){
+    var tot=sm+k,mm=tot%1440,nd=tot>=1440;
+    var v=String(Math.floor(mm/60)).padStart(2,'0')+':'+String(mm%60).padStart(2,'0');
+    o+='<option value="'+v+'"'+(v===sel?' selected':'')+'>'+v+(nd?' 隔天':'')+'</option>';
+  }
+  return o;
+}
+function syncEndOptions(startId,endId){
+  var el=document.getElementById(endId);if(!el)return;
+  el.innerHTML=endOptionsHTML(document.getElementById(startId).value,el.value);
+}
 function optsHTML(list,sel){return list.map(function(o){return '<option'+(o===sel?' selected':'')+'>'+esc(o)+'</option>';}).join('');}
 function dateOptionsHTML(t,sel){return dateRange(t.start,t.end).map(function(d){return '<option value="'+d+'"'+(d===sel?' selected':'')+'>'+fmtMD(d)+' '+weekdayZh(d)+'</option>';}).join('');}
 function openEntryDetail(id){
@@ -873,8 +891,8 @@ function renderDetail(){
       +'<label>日期</label><select id="edDate">'+dateOptionsHTML(t,x.date)+'</select>'
       +'<label>類型</label><select id="edType">'+optsHTML(Object.keys(TAG),x.type)+'</select>'
       +'<label>標題</label><input type="text" id="edTitle" value="'+esc(x.title)+'">'
-      +'<label>開始</label><select id="edStart">'+timeOptionsHTML(x.time||'')+'</select>'
-      +'<label>結束</label><select id="edEnd">'+timeOptionsHTML(x.end||'')+'</select>'
+      +'<label>開始</label><select id="edStart" onchange="syncEndOptions(\'edStart\',\'edEnd\')">'+timeOptionsHTML(x.time||'')+'</select>'
+      +'<label>結束</label><select id="edEnd">'+endOptionsHTML(x.time||'',x.end||'')+'</select>'
       +'<label>幣別</label><select id="edCur">'+optsHTML(curOpts,x.cur||curOpts[0])+'</select>'
       +'<label>金額</label><input type="number" id="edAmount" inputmode="decimal" placeholder="選填" value="'+(+x.amount>0?x.amount:'')+'">'
       +'<label>備註</label><textarea id="edNote" rows="3">'+esc(x.note||'')+'</textarea>'
@@ -1022,13 +1040,13 @@ function createTrip(){
     start:s,end:e,
     currency:(document.getElementById('nmCurrency').value.trim()||'TWD').toUpperCase(),
     rate:parseFloat(document.getElementById('nmRate').value)||1,
-    budget:parseFloat(document.getElementById('nmBudget').value)||0,
+    budget:0,
     entries:[]
   };
   DB.trips.push(t);
   currentTripId=t.id;itSelectedDate=null;
   closeTripModal();
-  ['nmCity','nmCityEn','nmStart','nmEnd','nmBudget'].forEach(id=>document.getElementById(id).value='');
+  ['nmCity','nmCityEn','nmStart','nmEnd'].forEach(id=>document.getElementById(id).value='');
   markDirty();switchView('log');
 }
 
