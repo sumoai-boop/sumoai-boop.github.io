@@ -1100,6 +1100,83 @@
           "end": "17:00",
           "amount": 0,
           "cur": "TWD"
+        },
+        {
+          "id": "mrusv7rox0qkf",
+          "date": "2025-07-11",
+          "time": "15:00",
+          "type": "餐飲",
+          "title": "黨 燒肉 꿉당 성수점",
+          "note": "",
+          "end": "16:00",
+          "amount": 668,
+          "cur": "TWD"
+        },
+        {
+          "id": "mrusvi4ctjnpd",
+          "date": "2025-07-11",
+          "time": "18:00",
+          "type": "景點",
+          "title": "明洞",
+          "note": "",
+          "end": "20:00",
+          "amount": 0,
+          "cur": "TWD"
+        },
+        {
+          "id": "mruswtedqo4q4",
+          "date": "2025-07-11",
+          "time": "20:45",
+          "type": "交通",
+          "title": "AREX韓國首爾機場快線x2",
+          "note": "",
+          "end": "21:30",
+          "amount": 506,
+          "cur": "TWD"
+        },
+        {
+          "id": "mrusxpdxw8djc",
+          "date": "2025-07-11",
+          "time": "14:30",
+          "type": "購物",
+          "title": "橘色帽子",
+          "note": "",
+          "end": "14:45",
+          "amount": 19000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrusyn5yqf9le",
+          "date": "2025-07-11",
+          "time": "16:00",
+          "type": "購物",
+          "title": "襯衫",
+          "note": "",
+          "end": "16:30",
+          "amount": 52000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrut024vqtvut",
+          "date": "2025-07-11",
+          "time": "16:30",
+          "type": "購物",
+          "title": "NYUNYU",
+          "note": "",
+          "end": "17:00",
+          "amount": 21500,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrut0n6vjwwyj",
+          "date": "2025-07-11",
+          "time": "18:00",
+          "type": "餐飲",
+          "title": "雪冰-西瓜冰",
+          "note": "",
+          "end": "18:45",
+          "amount": 16500,
+          "cur": "KRW"
         }
       ]
     }
