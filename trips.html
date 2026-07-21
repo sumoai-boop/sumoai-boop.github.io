@@ -388,7 +388,7 @@ body{
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
-        <input type="time" id="logTime" step="900" style="width:92px;" title="開始"><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><input type="time" id="logEnd" step="900" style="width:92px;" title="結束">
+        <select id="logTime" style="width:92px;" title="開始"></select><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><select id="logEnd" style="width:92px;" title="結束"></select>
         <select id="logType" style="width:92px;"></select>
         <input type="text" id="logTitle" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
         <input type="number" id="logAmount" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
@@ -615,11 +615,20 @@ function init(){
     currentTripId=sorted[0].id;
   }
   fillSelect('logType',Object.keys(TAG));
+  fillTimeSelects();
   renderAll();
 }
 function fillSelect(id,opts){
   var el=document.getElementById(id);
   el.innerHTML=opts.map(o=>'<option>'+o+'</option>').join('');
+}
+function fillTimeSelects(){
+  var opts='<option value="">--:--</option>';
+  for(var m=0;m<24*60;m+=15){
+    var v=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+    opts+='<option value="'+v+'">'+v+'</option>';
+  }
+  ['logTime','logEnd'].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=opts;});
 }
 
 // ── 渲染 ──
