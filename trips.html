@@ -228,7 +228,8 @@ body{
 .cal-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;border:1px solid;border-radius:8px;padding:4px 9px;color:var(--ink);background:var(--card);}
 .cal-chip b{font-weight:700;color:var(--red-dk);}
 .cal-chip b.cur-twd{color:var(--green-dk);}
-.cal{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;}
+.cal-scroll{height:60vh;min-height:360px;max-height:760px;overflow-y:auto;overflow-x:hidden;border:1px solid var(--line);border-radius:12px;background:var(--card);-webkit-overflow-scrolling:touch;}
+.cal{position:relative;background:var(--card);}
 .cal-grid{position:absolute;inset:0;}
 .cal-hline{position:absolute;left:46px;right:0;border-top:1px solid var(--line-soft);}
 .cal-hlabel{position:absolute;left:0;width:40px;text-align:right;font-size:11px;color:var(--hint);font-family:'Space Mono',monospace;}
@@ -536,14 +537,14 @@ const DIRTY_KEY='trips_dirty_count';
 
 // ── 統一標籤（行程類型＋支出類別合一，紅橘綠暖色譜） ──
 const TAG={
-  '景點':{c:'#9A3B0A',bg:'#FFC79E',pie:'#F5620E'},
-  '餐飲':{c:'#3C6E12',bg:'#D3EAB2',pie:'#6FAE35'},
-  '交通':{c:'#4A4A4A',bg:'#DEDEDE',pie:'#8A8A8A'},
-  '機票':{c:'#8A6208',bg:'#FBE79E',pie:'#E8A81C'},
-  '購物':{c:'#7D6A06',bg:'#FBF0A0',pie:'#EDC50C'},
-  '門票':{c:'#1F5A8A',bg:'#CFE3F6',pie:'#4A90D9'},
-  '住宿':{c:'#7A1F33',bg:'#F3C4CE',pie:'#C24A63'},
-  '其他':{c:'#1E3A66',bg:'#B8C8E2',pie:'#294F8C'}
+  '景點':{c:'#A11E1E',bg:'#F9CFCF',pie:'#E23B3B'},
+  '餐飲':{c:'#9A4A0A',bg:'#FBDCBE',pie:'#F5731A'},
+  '交通':{c:'#8A6E06',bg:'#FBEFA6',pie:'#EBC208'},
+  '機票':{c:'#3C6E12',bg:'#D3EAB2',pie:'#5CA82E'},
+  '購物':{c:'#1F5A8A',bg:'#CBE0F6',pie:'#3B86D6'},
+  '門票':{c:'#324A9A',bg:'#D2D8F4',pie:'#4A5AC8'},
+  '住宿':{c:'#6B2E9A',bg:'#E6D2F4',pie:'#9A4AD0'},
+  '其他':{c:'#4A4A4A',bg:'#DEDEDE',pie:'#8A8A8A'}
 };
 
 // ── 狀態 ──
@@ -732,6 +733,12 @@ function renderLog(){
   document.getElementById('logEmpty').style.display='none';
   host.style.display='block';
   host.innerHTML=renderDayCalendar(t,items);
+  var sc=host.querySelector('.cal-scroll');
+  if(sc){
+    var mins=items.map(function(x){return toMin(x.time);}).filter(function(m){return m!=null&&m>=360;});
+    var startMin=mins.length?Math.min.apply(null,mins):480; // 預設 08:00
+    sc.scrollTop=Math.max(0,(Math.floor(startMin/60)-6)*66-16);
+  }
 }
 function toMin(hhmm){var p=(hhmm||'').split(':');return (p.length===2&&p[0]!=='')?(+p[0])*60+(+p[1]):null;}
 function minHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
@@ -797,7 +804,7 @@ function renderDayCalendar(t,items){
       +'<div class="cev-time">'+minHHMM(o.s)+'–'+minHHMM(o.e)+'</div>'+cost
       +'</div>';
   }).join('');
-  return chips+'<div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body">'+evs+'</div></div>';
+  return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body">'+evs+'</div></div></div>';
 }
 function fillCurSelect(t){
   var el=document.getElementById('logCur');
