@@ -112,8 +112,8 @@ body{
   border-radius:8px;border-left:3px solid transparent;
   cursor:pointer;
 }
-.trip-item:hover{background:rgba(255,107,53,0.08);}
-.trip-item.active{background:var(--orange-bg);border-left-color:var(--orange);border-radius:0 8px 8px 0;}
+.trip-item:hover{background-color:rgba(255,107,53,0.08);}
+.trip-item.active{background-color:var(--orange-bg);border-left-color:var(--orange);border-radius:0 8px 8px 0;}
 .trip-city{font-size:14px;font-weight:700;color:var(--ink-soft);}
 .trip-item.active .trip-city{color:var(--orange-dk);}
 .trip-dates{font-size:11px;color:var(--hint);font-family:'Space Mono',monospace;margin-top:1px;}
@@ -664,6 +664,28 @@ function renderAll(){
   else if(currentView==='settings')renderSettings();
 }
 
+function cityFlag(t){
+  var s=((t.city||'')+' '+(t.cityEn||'')).toLowerCase();
+  var map=[
+    [/首爾|釜山|濟州|韓國|seoul|busan|jeju|korea/,'kr'],
+    [/清邁|曼谷|普吉|芭達雅|甲米|泰國|chiang\s*mai|bangkok|phuket|pattaya|krabi|thai/,'th'],
+    [/東京|大阪|京都|福岡|沖繩|北海道|札幌|名古屋|神戶|日本|tokyo|osaka|kyoto|fukuoka|okinawa|hokkaido|sapporo|nagoya|kobe|japan/,'jp'],
+    [/香港|hong\s*kong/,'hk'],
+    [/澳門|macau|macao/,'mo'],
+    [/上海|北京|杭州|廣州|深圳|成都|西安|中國|shanghai|beijing|hangzhou|guangzhou|shenzhen|chengdu|china/,'cn'],
+    [/台北|台中|高雄|台南|臺北|臺中|花蓮|taipei|taichung|kaohsiung|tainan|hualien|taiwan/,'tw'],
+    [/馬尼拉|宿霧|長灘|菲律賓|manila|cebu|boracay|philippine/,'ph'],
+    [/新加坡|singapore/,'sg'],
+    [/吉隆坡|檳城|馬來|kuala\s*lumpur|penang|malaysia/,'my'],
+    [/峴港|胡志明|河內|會安|越南|da\s*nang|ho\s*chi\s*minh|hanoi|hoi\s*an|vietnam/,'vn'],
+    [/峇里|巴里|雅加達|印尼|bali|jakarta|indonesia/,'id'],
+    [/巴黎|法國|paris|france/,'fr'],
+    [/倫敦|英國|london|britain|england/,'gb'],
+    [/紐約|洛杉磯|舊金山|美國|new\s*york|los\s*angeles|san\s*francisco|usa|america/,'us']
+  ];
+  for(var i=0;i<map.length;i++){if(map[i][0].test(s))return map[i][1];}
+  return '';
+}
 function renderTripList(){
   var box=document.getElementById('tripList');
   var sorted=[...DB.trips].sort((a,b)=>b.start.localeCompare(a.start));
@@ -671,7 +693,13 @@ function renderTripList(){
   sorted.forEach(t=>{
     var y=t.start.slice(0,4);
     if(y!==lastYear){html+='<div class="sb-year">'+y+'</div>';lastYear=y;}
-    html+='<div class="trip-item'+(t.id===currentTripId?' active':'')+'" onclick="selectTrip(\''+t.id+'\')">'
+    var active=(t.id===currentTripId);
+    var fc=cityFlag(t),bg='';
+    if(fc){
+      var ov=active?'rgba(255,232,220,0.74)':'rgba(255,253,249,0.72)';
+      bg='background-image:linear-gradient('+ov+','+ov+'),url(\'https://flagcdn.com/w160/'+fc+'.png\');background-size:cover;background-position:center;';
+    }
+    html+='<div class="trip-item'+(active?' active':'')+'" style="'+bg+'" onclick="selectTrip(\''+t.id+'\')">'
       +'<div class="trip-city">'+esc(t.city)+(t.cityEn?' '+esc(t.cityEn):'')+'</div>'
       +'<div class="trip-dates">'+t.start.slice(5).replace('-','.')+' – '+t.end.slice(5).replace('-','.')+'</div>'
       +'</div>';
