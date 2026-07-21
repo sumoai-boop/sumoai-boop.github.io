@@ -114,9 +114,9 @@ body{
 }
 .trip-item:hover{background-color:rgba(255,107,53,0.08);}
 .trip-item.active{background-color:var(--orange-bg);border-left-color:var(--orange);border-radius:0 8px 8px 0;}
-.trip-city{font-size:14px;font-weight:700;color:var(--ink-soft);text-shadow:0 1px 2px rgba(255,253,249,0.95),0 0 3px rgba(255,253,249,0.8);}
+.trip-city{font-size:14px;font-weight:700;color:var(--ink);text-shadow:0 0 3px rgba(255,253,249,1),0 0 6px rgba(255,253,249,0.9),0 1px 2px rgba(255,253,249,1);}
 .trip-item.active .trip-city{color:var(--orange-dk);}
-.trip-dates{font-size:11px;color:var(--ink-soft);font-family:'Space Mono',monospace;margin-top:1px;text-shadow:0 1px 2px rgba(255,253,249,0.95);}
+.trip-dates{font-size:11px;color:var(--ink);font-weight:700;font-family:'Space Mono',monospace;margin-top:1px;text-shadow:0 0 3px rgba(255,253,249,1),0 1px 2px rgba(255,253,249,1);}
 .trip-item.active .trip-dates{color:#C0653D;}
 .sb-fn{border-top:1px solid var(--line);padding:10px 12px;}
 .fn-item{
@@ -396,8 +396,8 @@ body{
     <section id="view-log">
       <div class="stat-row">
         <div class="stat-card red"><div class="sc-label">總花費 NT$</div><div class="sc-value" id="stLocalTotal">0</div></div>
-        <div class="stat-card orange"><div class="sc-label">日均花費 NT$</div><div class="sc-value" id="stDaily">0</div></div>
-        <div class="stat-card green" onclick="editRate()" style="cursor:pointer;"><div class="sc-label" id="stRateLabel">匯率 ✎</div><div class="sc-value" id="stRate">—</div></div>
+        <div class="stat-card orange"><div class="sc-label">機票 NT$</div><div class="sc-value" id="stFlight">0</div></div>
+        <div class="stat-card green"><div class="sc-label">住宿 NT$</div><div class="sc-value" id="stStay">0</div></div>
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
@@ -569,6 +569,7 @@ function num(n){return Math.round(n).toLocaleString('en-US');}
 function curTrip(){return DB.trips.find(t=>t.id===currentTripId)||null;}
 function entryTWD(e,t){var a=+e.amount||0;return (e.cur==='TWD')?a:a*(+t.rate||1);}
 function tripTotalTWD(t){return (t.entries||[]).reduce((s,e)=>s+entryTWD(e,t),0);}
+function sumByType(t,type){return (t.entries||[]).filter(e=>e.type===type).reduce((s,e)=>s+entryTWD(e,t),0);}
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // ── 本地儲存 / 髒資料標記 ──
@@ -697,7 +698,7 @@ function renderTripList(){
     var fc=cityFlag(t),bg='';
     if(fc){
       var c1=active?'255,236,224':'255,253,249';
-      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.90) 0%,rgba('+c1+',0.45) 45%,rgba('+c1+',0.22) 100%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%;background-repeat:no-repeat;';
+      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.97) 0%,rgba('+c1+',0.92) 52%,rgba('+c1+',0.5) 78%,rgba('+c1+',0.25) 100%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%;background-repeat:no-repeat;';
     }
     html+='<div class="trip-item'+(active?' active':'')+'" style="'+bg+'" onclick="selectTrip(\''+t.id+'\')">'
       +'<div class="trip-city">'+esc(t.city)+(t.cityEn?' '+esc(t.cityEn):'')+'</div>'
@@ -741,10 +742,8 @@ function renderLog(){
   var today=fmtDateLocal(new Date());
   var dayCount=Math.min(days.filter(d=>d<=today).length||1,days.length);
   document.getElementById('stLocalTotal').textContent='NT$ '+num(totalTWD);
-  document.getElementById('stDaily').textContent=num(totalTWD/dayCount);
-  var rEl=document.getElementById('stRate'),rL=document.getElementById('stRateLabel');
-  if(t.currency&&t.currency!=='TWD'){rL.textContent='匯率 1'+t.currency+' ✎';rEl.textContent=t.rate;}
-  else{rL.textContent='匯率 ✎';rEl.textContent='TWD 1:1';}
+  document.getElementById('stFlight').textContent='NT$ '+num(sumByType(t,'機票'));
+  document.getElementById('stStay').textContent='NT$ '+num(sumByType(t,'住宿'));
   if(!itSelectedDate||!days.includes(itSelectedDate)){itSelectedDate=days.includes(today)?today:days[0];}
   document.getElementById('logDayTabs').innerHTML=days.map((d,i)=>{
     var ds=t.entries.filter(x=>x.date===d).reduce((s,x)=>s+entryTWD(x,t),0);
