@@ -132,6 +132,194 @@
           "cur": "TWD"
         }
       ]
+    },
+    {
+      "id": "mrupb4f506zjs",
+      "city": "首爾",
+      "cityEn": "Seoul",
+      "start": "2026-04-07",
+      "end": "2026-04-10",
+      "currency": "KRW",
+      "rate": 0.021,
+      "budget": 0,
+      "entries": [
+        {
+          "id": "mrupej7v90lea",
+          "date": "2026-04-07",
+          "time": "",
+          "type": "住宿",
+          "title": "Monoplan Seongsu Lofty Stay",
+          "note": "4月7日~4月10日",
+          "end": "",
+          "amount": 6756,
+          "cur": "TWD"
+        },
+        {
+          "id": "mrupgrgs1rdzg",
+          "date": "2026-04-07",
+          "time": "15:15",
+          "type": "機票",
+          "title": "台北 (桃園機場) to 首爾 (仁川機場)",
+          "note": "",
+          "end": "18:45",
+          "amount": 20262,
+          "cur": "TWD"
+        },
+        {
+          "id": "mruph93okgmbj",
+          "date": "2026-04-10",
+          "time": "19:45",
+          "type": "機票",
+          "title": "首爾 (仁川機場) to 台北 (桃園機場)",
+          "note": "",
+          "end": "21:30",
+          "amount": 0,
+          "cur": "TWD"
+        },
+        {
+          "id": "mruppwbtk62ns",
+          "date": "2026-04-07",
+          "time": "20:15",
+          "type": "交通",
+          "title": "機場包車接送",
+          "note": "",
+          "end": "21:15",
+          "amount": 1697,
+          "cur": "TWD"
+        },
+        {
+          "id": "mruprpvuzsgzc",
+          "date": "2026-04-07",
+          "time": "21:45",
+          "type": "餐飲",
+          "title": "Ggupdang Seongsu 꿉당 성수점",
+          "note": "黨燒肉",
+          "end": "22:45",
+          "amount": 61000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrupt1dm4sk9u",
+          "date": "2026-04-07",
+          "time": "",
+          "type": "其他",
+          "title": "韓國｜4G 上網 SIM卡（桃園機場領取）",
+          "note": "",
+          "end": "",
+          "amount": 399,
+          "cur": "TWD"
+        },
+        {
+          "id": "mruptlyry73ii",
+          "date": "2026-04-07",
+          "time": "19:45",
+          "type": "其他",
+          "title": "韓國｜4G 上網 SIM卡（仁川機場）",
+          "note": "",
+          "end": "20:15",
+          "amount": 23000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrupwbfgscl5c",
+          "date": "2026-04-07",
+          "time": "23:00",
+          "type": "餐飲",
+          "title": "CU",
+          "note": "Binggrae牛奶、水",
+          "end": "23:30",
+          "amount": 12900,
+          "cur": "KRW"
+        },
+        {
+          "id": "mrupzf2upxyuz",
+          "date": "2026-04-08",
+          "time": "10:30",
+          "type": "門票",
+          "title": "德壽宮門票x2",
+          "note": "",
+          "end": "12:00",
+          "amount": 2000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruq19j3oc6s1",
+          "date": "2026-04-08",
+          "time": "12:15",
+          "type": "景點",
+          "title": "新村賞櫻",
+          "note": "",
+          "end": "12:45",
+          "amount": 0,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruq3sv45qo3j",
+          "date": "2026-04-09",
+          "time": "11:45",
+          "type": "餐飲",
+          "title": "新村奶油燉排骨 소신이쏘",
+          "note": "",
+          "end": "13:00",
+          "amount": 39000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruq4dh4vui3z",
+          "date": "2026-04-08",
+          "time": "13:15",
+          "type": "景點",
+          "title": "弘大",
+          "note": "",
+          "end": "18:00",
+          "amount": 0,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruq5ht5z4k2r",
+          "date": "2026-04-08",
+          "time": "13:15",
+          "type": "餐飲",
+          "title": "Jayspizza 제이스피자",
+          "note": "",
+          "end": "14:15",
+          "amount": 44000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruq5yihoeezo",
+          "date": "2026-04-08",
+          "time": "10:00",
+          "type": "交通",
+          "title": "氣候同行卡加值",
+          "note": "",
+          "end": "10:15",
+          "amount": 10000,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruq752qb76y7",
+          "date": "2026-04-08",
+          "time": "14:45",
+          "type": "購物",
+          "title": "NNN",
+          "note": "帽子、手機吊繩",
+          "end": "15:15",
+          "amount": 54500,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruqba8stp04v",
+          "date": "2026-04-08",
+          "time": "16:00",
+          "type": "其他",
+          "title": "Studio Photobi",
+          "note": "陪公主拍照",
+          "end": "17:00",
+          "amount": 0,
+          "cur": "KRW"
+        }
+      ]
     }
   ]
 }
