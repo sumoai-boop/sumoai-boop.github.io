@@ -362,7 +362,7 @@ body{
 
     <section id="view-log">
       <div class="stat-row">
-        <div class="stat-card red"><div class="sc-label">總花費（當地幣）</div><div class="sc-value" id="stLocalTotal">0</div></div>
+        <div class="stat-card red"><div class="sc-label">總花費 NT$</div><div class="sc-value" id="stLocalTotal">0</div></div>
         <div class="stat-card orange"><div class="sc-label">日均花費 NT$</div><div class="sc-value" id="stDaily">0</div></div>
         <div class="stat-card green"><div class="sc-label">預算剩餘 NT$</div><div class="sc-value" id="stBudget">—</div></div>
       </div>
@@ -372,9 +372,7 @@ body{
         <select id="logType" style="width:92px;"></select>
         <input type="text" id="logTitle" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
         <input type="number" id="logAmount" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
-        <select id="logPay" style="width:96px;">
-          <option value="">付款…</option><option>現金</option><option>刷卡</option><option>行動支付</option><option>交通卡</option>
-        </select>
+        <select id="logCur" style="width:96px;"></select>
         <input type="text" id="logNote" placeholder="備註（選填）" style="flex:1;min-width:110px;">
         <button class="btn-add" onclick="addEntry()">記錄</button>
       </div>
@@ -530,8 +528,8 @@ function fmtMD(s){var p=s.split('-');return (+p[1])+'/'+(+p[2]);}
 function weekdayZh(s){return '週'+['日','一','二','三','四','五','六'][parseDate(s).getDay()];}
 function num(n){return Math.round(n).toLocaleString('en-US');}
 function curTrip(){return DB.trips.find(t=>t.id===currentTripId)||null;}
-function tripTotalLocal(t){return (t.entries||[]).reduce((s,e)=>s+(+e.amount||0),0);}
-function tripTotalTWD(t){return tripTotalLocal(t)*(+t.rate||1);}
+function entryTWD(e,t){var a=+e.amount||0;return (e.cur==='TWD')?a:a*(+t.rate||1);}
+function tripTotalTWD(t){return (t.entries||[]).reduce((s,e)=>s+entryTWD(e,t),0);}
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // ── 本地儲存 / 髒資料標記 ──
@@ -553,17 +551,17 @@ function countRecords(db){
 }
 // 舊資料（分開的 itinerary + expenses）遷移成單一 entries[]
 function migrateTrip(t){
-  if(t.entries){t.entries.forEach(e=>{if(e.amount==null)e.amount=0;if(e.pay==null)e.pay='';});return;}
+  if(t.entries){t.entries.forEach(e=>{if(e.amount==null)e.amount=0;if(!e.cur)e.cur=t.currency||'TWD';delete e.pay;});return;}
   var TYPEMAP={'餐廳':'餐飲'},out=[];
   (t.itinerary||[]).forEach(it=>{
     var linked=(t.expenses||[]).filter(e=>e.linkId===it.id);
     out.push({id:it.id||uid(),date:it.date,time:it.time||'',type:TYPEMAP[it.type]||it.type||'其他',
-      title:it.title||'',note:it.note||'',amount:linked.reduce((s,e)=>s+(+e.amount||0),0),pay:linked[0]?linked[0].pay||'':''});
+      title:it.title||'',note:it.note||'',amount:linked.reduce((s,e)=>s+(+e.amount||0),0),cur:t.currency||'TWD'});
   });
   (t.expenses||[]).forEach(e=>{
     if(e.linkId)return;
     out.push({id:e.id||uid(),date:e.date,time:'',type:TYPEMAP[e.category]||e.category||'其他',
-      title:e.item||'',note:'',amount:+e.amount||0,pay:e.pay||''});
+      title:e.item||'',note:'',amount:+e.amount||0,cur:t.currency||'TWD'});
   });
   t.entries=out;delete t.itinerary;delete t.expenses;
 }
@@ -661,34 +659,35 @@ function renderHeader(){
 // ── 行程＋記帳（合併記錄） ──
 function renderLog(){
   var t=curTrip(),days=dateRange(t.start,t.end),rate=+t.rate||1;
-  var totalLocal=tripTotalLocal(t),totalTWD=totalLocal*rate;
+  fillCurSelect(t);
+  var totalTWD=tripTotalTWD(t);
   var today=fmtDateLocal(new Date());
   var dayCount=Math.min(days.filter(d=>d<=today).length||1,days.length);
-  document.getElementById('stLocalTotal').textContent=(t.currency&&t.currency!=='TWD'?t.currency+' ':'NT$ ')+num(totalLocal);
+  document.getElementById('stLocalTotal').textContent='NT$ '+num(totalTWD);
   document.getElementById('stDaily').textContent=num(totalTWD/dayCount);
   var bEl=document.getElementById('stBudget');
   if(+t.budget>0){var left=t.budget-totalTWD;bEl.textContent=(left<0?'-':'')+num(Math.abs(left));bEl.classList.toggle('over',left<0);}
   else{bEl.textContent='—';bEl.classList.remove('over');}
   if(!itSelectedDate||!days.includes(itSelectedDate)){itSelectedDate=days.includes(today)?today:days[0];}
   document.getElementById('logDayTabs').innerHTML=days.map((d,i)=>{
-    var ds=t.entries.filter(x=>x.date===d).reduce((s,x)=>s+(+x.amount||0),0);
+    var ds=t.entries.filter(x=>x.date===d).reduce((s,x)=>s+entryTWD(x,t),0);
     var dot=ds>0?'<span style=\"display:inline-block;width:5px;height:5px;border-radius:50%;background:'+(d===itSelectedDate?'#FFF3EC':'#E24B4A')+';margin-left:5px;vertical-align:middle;\"></span>':'';
     return '<button class=\"day-tab'+(d===itSelectedDate?' active':'')+'\" onclick=\"pickDay(\''+d+'\')\">D'+(i+1)+' '+fmtMD(d)+dot+'</button>';
   }).join('');
   var items=t.entries.filter(x=>x.date===itSelectedDate).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
-  var sub=items.reduce((s,x)=>s+(+x.amount||0),0);
+  var sub=items.reduce((s,x)=>s+entryTWD(x,t),0);
   document.getElementById('logDaySub').innerHTML=items.length
     ?'<span class=\"ds-day\">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
-      +(sub>0?'<span class=\"ds-sum\">當日 '+num(sub)+(t.currency&&t.currency!=='TWD'?'（NT$ '+num(sub*rate)+'）':'')+'</span>':'')
+      +(sub>0?'<span class=\"ds-sum\">當日 NT$ '+num(sub)+'</span>':'')
     :'';
   var tl=document.getElementById('logTimeline');
   document.getElementById('logEmpty').style.display=items.length?'none':'block';
   tl.style.display=items.length?'block':'none';
   tl.innerHTML=items.map(x=>{
     var ty=TAG[x.type]||TAG['其他'];
-    var meta=[x.note,x.pay].filter(Boolean).join(' · ');
+    var meta=x.note||'';
     var cost=(+x.amount>0)
-      ?'<span class=\"tl-cost\">'+num(x.amount)+(t.currency&&t.currency!=='TWD'?'<span class=\"tl-twd\">NT$'+num(x.amount*rate)+'</span>':'')+'</span>':'';
+      ?'<span class=\"tl-cost\">'+(x.cur==='TWD'?'NT$ '+num(x.amount):num(x.amount)+' '+esc(x.cur||'')+'<span class=\"tl-twd\">NT$'+num(entryTWD(x,t))+'</span>')+'</span>':'';
     return '<div class=\"tl-item\"><div class=\"tl-time\">'+(x.time||'--:--')+'</div>'
       +'<div class=\"tl-card\"><span class=\"badge\" style=\"background:'+ty.bg+';color:'+ty.c+';\">'+esc(x.type)+'</span>'
       +'<div style=\"min-width:0;\"><div class=\"tl-title\">'+esc(x.title)+'</div>'
@@ -696,6 +695,13 @@ function renderLog(){
       +cost
       +'<button class=\"exp-del\" onclick=\"delEntry(\''+x.id+'\')\" aria-label=\"刪除\">✕</button></div></div>';
   }).join('');
+}
+function fillCurSelect(t){
+  var el=document.getElementById('logCur');
+  var opts=(t.currency&&t.currency!=='TWD')?[t.currency,'TWD']:['TWD'];
+  var keep=el.value;
+  el.innerHTML=opts.map(o=>'<option>'+o+'</option>').join('');
+  el.value=opts.indexOf(keep)>=0?keep:opts[0];
 }
 function pickDay(d){itSelectedDate=d;renderLog();}
 function addEntry(){
@@ -711,7 +717,7 @@ function addEntry(){
     title:title||type,
     note:document.getElementById('logNote').value.trim(),
     amount:amt>0?amt:0,
-    pay:document.getElementById('logPay').value||''
+    cur:document.getElementById('logCur').value||(t.currency||'TWD')
   });
   document.getElementById('logTitle').value='';
   document.getElementById('logAmount').value='';
@@ -728,7 +734,7 @@ function delEntry(id){
 function renderStats(){
   var t=curTrip(),rate=+t.rate||1;
   var byCat={};
-  t.entries.forEach(e=>{if(+e.amount>0)byCat[e.type]=(byCat[e.type]||0)+(+e.amount);});
+  t.entries.forEach(e=>{if(+e.amount>0)byCat[e.type]=(byCat[e.type]||0)+entryTWD(e,t);});
   var entries=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
   var total=entries.reduce((s,x)=>s+x[1],0);
   // 圓餅
@@ -753,13 +759,12 @@ function renderStats(){
   document.getElementById('catTable').innerHTML=entries.map(en=>{
     var c=TAG[en[0]]||TAG['其他'];
     return '<tr><td><span class="legend-item"><span class="legend-swatch" style="background:'+c.pie+';"></span>'+esc(en[0])+'</span></td>'
-      +'<td class="num">'+num(en[1])+'</td>'
-      +'<td class="num" style="color:var(--hint);">NT$'+num(en[1]*rate)+'</td>'
+      +'<td class="num">NT$ '+num(en[1])+'</td>'
       +'<td class="num" style="color:'+c.c+';">'+(total?Math.round(en[1]/total*100):0)+'%</td></tr>';
   }).join('')||'<tr><td style="color:var(--hint);">還沒有資料</td></tr>';
   // 每日長條
   var days=dateRange(t.start,t.end);
-  var vals=days.map(d=>t.entries.filter(e=>e.date===d).reduce((s,e)=>s+(+e.amount||0),0)*rate);
+  var vals=days.map(d=>t.entries.filter(e=>e.date===d).reduce((s,e)=>s+entryTWD(e,t),0));
   var max=Math.max(...vals,1);
   var W=600,H=180,pad=6,bw=(W-pad*2)/days.length;
   var bars='';
