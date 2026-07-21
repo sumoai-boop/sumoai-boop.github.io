@@ -710,8 +710,8 @@ function renderLog(){
       +(sub>0?'<span class="ds-sum">當日 NT$ '+num(sub)+'</span>':'')
     :'';
   var host=document.getElementById('logTimeline');
-  document.getElementById('logEmpty').style.display=items.length?'none':'block';
-  host.style.display=items.length?'block':'none';
+  document.getElementById('logEmpty').style.display='none';
+  host.style.display='block';
   host.innerHTML=renderDayCalendar(t,items);
 }
 function toMin(hhmm){var p=(hhmm||'').split(':');return (p.length===2&&p[0]!=='')?(+p[0])*60+(+p[1]):null;}
@@ -757,17 +757,14 @@ function renderDayCalendar(t,items){
     timed.push({x:x,s:sm,e:em});
   });
   var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
-  if(!timed.length)return chips;
-  var minS=Math.min.apply(null,timed.map(function(o){return o.s;}));
-  var maxE=Math.max.apply(null,timed.map(function(o){return o.e;}));
-  var startH=Math.max(0,Math.floor(minS/60)),endH=Math.min(24,Math.ceil(maxE/60));
-  if(endH-startH<3)endH=Math.min(24,startH+3);
-  var HP=54,pm=HP/60,top0=startH*60,bodyH=(endH-startH)*HP;
+  var startH=6,endH=26;               // 固定顯示 06:00 → 隔天 02:00
+  var HP=66,pm=HP/60,top0=startH*60,bodyH=(endH-startH)*HP;
+  timed.forEach(function(o){if(o.s<startH*60){o.s+=1440;o.e+=1440;}}); // 凌晨行程移到底部
   var grid='';
   for(var h=startH;h<=endH;h++){
     var y=(h-startH)*HP;
     grid+='<div class="cal-hline" style="top:'+y+'px;"></div>'
-      +'<div class="cal-hlabel" style="top:'+(y-6)+'px;">'+String(h).padStart(2,'0')+':00</div>';
+      +'<div class="cal-hlabel" style="top:'+(y-6)+'px;">'+String(h%24).padStart(2,'0')+':00</div>';
   }
   layoutColumns(timed);
   var evs=timed.map(function(o){
