@@ -215,7 +215,11 @@ body{
 .tl-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-top:4px;display:flex;align-items:center;gap:9px;}
 .tl-title{font-size:14px;font-weight:700;color:var(--ink);}
 .tl-note{font-size:12px;color:var(--hint);margin-top:2px;}
-.tl-cost{margin-left:auto;font-size:13px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;white-space:nowrap;}
+.tl-cost{margin-left:auto;font-size:13px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;white-space:nowrap;text-align:right;}
+.tl-twd{display:block;font-size:10px;font-weight:400;color:var(--hint);}
+.day-subtotal{display:flex;align-items:baseline;gap:10px;margin:2px 0 12px;font-family:'Space Mono',monospace;}
+.day-subtotal .ds-day{font-size:14px;font-weight:900;color:var(--ink-soft);}
+.day-subtotal .ds-sum{margin-left:auto;font-size:13px;font-weight:700;color:var(--red-dk);}
 
 /* 類別 badge */
 .badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap;}
@@ -326,13 +330,9 @@ body{
       <div id="tripList"></div>
     </div>
     <div class="sb-fn" id="fnMenu">
-      <div class="fn-item active" data-view="itinerary" onclick="switchView('itinerary')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11.5A7 7 0 0 1 19 9.5C19 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-        行程
-      </div>
-      <div class="fn-item" data-view="expenses" onclick="switchView('expenses')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21z"/><path d="M9 8h6M9 12h6"/></svg>
-        記帳
+      <div class="fn-item active" data-view="log" onclick="switchView('log')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11.5A7 7 0 0 1 19 9.5C19 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/><path d="M15.5 18.5l1.6 1.6 3-3.4"/></svg>
+        行程記帳
       </div>
       <div class="fn-item" data-view="stats" onclick="switchView('stats')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 12 2v10z"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
@@ -360,37 +360,27 @@ body{
       <span class="th-total" id="thTotal"></span>
     </div>
 
-    <section id="view-itinerary">
-      <div class="day-tabs" id="itDayTabs"></div>
-      <div class="form-row">
-        <input type="time" id="itTime" style="width:110px;">
-        <select id="itType" style="width:96px;"></select>
-        <input type="text" id="itTitle" placeholder="地點／活動" style="flex:2;min-width:140px;">
-        <input type="text" id="itNote" placeholder="備註（選填）" style="flex:2;min-width:120px;">
-        <button class="btn-add" onclick="addItineraryItem()">加入行程</button>
-      </div>
-      <div class="timeline" id="itTimeline"></div>
-      <div id="itEmpty" style="color:var(--hint);font-size:13px;padding:16px 4px;display:none;">這一天還沒有行程,從上面加入第一筆吧。</div>
-    </section>
-
-    <section id="view-expenses" style="display:none;">
+    <section id="view-log">
       <div class="stat-row">
-        <div class="stat-card red"><div class="sc-label">總支出（當地幣）</div><div class="sc-value" id="stLocalTotal">0</div></div>
+        <div class="stat-card red"><div class="sc-label">總花費（當地幣）</div><div class="sc-value" id="stLocalTotal">0</div></div>
         <div class="stat-card orange"><div class="sc-label">日均花費 NT$</div><div class="sc-value" id="stDaily">0</div></div>
         <div class="stat-card green"><div class="sc-label">預算剩餘 NT$</div><div class="sc-value" id="stBudget">—</div></div>
       </div>
+      <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
-        <input type="date" id="exDate" style="width:150px;">
-        <input type="number" id="exAmount" placeholder="金額" inputmode="decimal" style="width:110px;">
-        <select id="exCat" style="width:96px;"></select>
-        <input type="text" id="exItem" placeholder="項目" style="flex:2;min-width:130px;">
-        <select id="exPay" style="width:90px;">
-          <option>現金</option><option>刷卡</option><option>行動支付</option><option>交通卡</option>
+        <input type="time" id="logTime" style="width:104px;">
+        <select id="logType" style="width:92px;"></select>
+        <input type="text" id="logTitle" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
+        <input type="number" id="logAmount" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
+        <select id="logPay" style="width:96px;">
+          <option value="">付款…</option><option>現金</option><option>刷卡</option><option>行動支付</option><option>交通卡</option>
         </select>
-        <button class="btn-add" onclick="addExpense()">記一筆</button>
+        <input type="text" id="logNote" placeholder="備註（選填）" style="flex:1;min-width:110px;">
+        <button class="btn-add" onclick="addEntry()">記錄</button>
       </div>
-      <div id="expGroups"></div>
-      <div id="exEmpty" style="color:var(--hint);font-size:13px;padding:16px 4px;display:none;">還沒有任何記帳,上面輸入金額和項目就能開始。</div>
+      <div class="day-subtotal" id="logDaySub"></div>
+      <div class="timeline" id="logTimeline"></div>
+      <div id="logEmpty" style="color:var(--hint);font-size:13px;padding:16px 4px;display:none;">這一天還沒有記錄,上面填地點或金額就能加入第一筆。</div>
     </section>
 
     <section id="view-stats" style="display:none;">
@@ -507,29 +497,22 @@ const SHA_KEY='gh_json_sha_trips';
 const LOCAL_KEY='trips_local_data';
 const DIRTY_KEY='trips_dirty_count';
 
-// ── 類別（紅橘綠暖色譜） ──
-const CAT={
+// ── 統一標籤（行程類型＋支出類別合一，紅橘綠暖色譜） ──
+const TAG={
+  '景點':{c:'#8A3A12',bg:'#FFE8DC',pie:'#FF8A4C'},
   '餐飲':{c:'#A32D2D',bg:'#FCEBEB',pie:'#E24B4A'},
-  '交通':{c:'#8A3A12',bg:'#FFE8DC',pie:'#FF6B35'},
+  '交通':{c:'#7A4A12',bg:'#F3E4D0',pie:'#C77D3A'},
   '機票':{c:'#9A5B0A',bg:'#FBE7C6',pie:'#E8912B'},
   '購物':{c:'#854F0B',bg:'#FAEEDA',pie:'#EF9F27'},
   '門票':{c:'#3B6D11',bg:'#EAF3DE',pie:'#97C459'},
   '住宿':{c:'#791F1F',bg:'#F7D9D9',pie:'#A32D2D'},
   '其他':{c:'#5C4A3D',bg:'#F0E5D6',pie:'#B4B2A9'}
 };
-const ITYPE={
-  '景點':{c:'#8A3A12',bg:'#FFE8DC'},
-  '餐廳':{c:'#A32D2D',bg:'#FCEBEB'},
-  '交通':{c:'#854F0B',bg:'#FAEEDA'},
-  '住宿':{c:'#791F1F',bg:'#F7D9D9'},
-  '購物':{c:'#3B6D11',bg:'#EAF3DE'},
-  '其他':{c:'#5C4A3D',bg:'#F0E5D6'}
-};
 
 // ── 狀態 ──
 let DB={trips:[]};
 let currentTripId=null;
-let currentView='itinerary';
+let currentView='log';
 let itSelectedDate=null;
 
 // ── 工具 ──
@@ -547,7 +530,7 @@ function fmtMD(s){var p=s.split('-');return (+p[1])+'/'+(+p[2]);}
 function weekdayZh(s){return '週'+['日','一','二','三','四','五','六'][parseDate(s).getDay()];}
 function num(n){return Math.round(n).toLocaleString('en-US');}
 function curTrip(){return DB.trips.find(t=>t.id===currentTripId)||null;}
-function tripTotalLocal(t){return t.expenses.reduce((s,e)=>s+(+e.amount||0),0);}
+function tripTotalLocal(t){return (t.entries||[]).reduce((s,e)=>s+(+e.amount||0),0);}
 function tripTotalTWD(t){return tripTotalLocal(t)*(+t.rate||1);}
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -566,7 +549,23 @@ function renderSync(){
   else{el.className='sync-state ok';el.textContent='已同步';}
 }
 function countRecords(db){
-  return (db.trips||[]).reduce((s,t)=>s+1+(t.expenses||[]).length+(t.itinerary||[]).length,0);
+  return (db.trips||[]).reduce((s,t)=>s+1+(t.entries||[]).length+(t.itinerary||[]).length+(t.expenses||[]).length,0);
+}
+// 舊資料（分開的 itinerary + expenses）遷移成單一 entries[]
+function migrateTrip(t){
+  if(t.entries){t.entries.forEach(e=>{if(e.amount==null)e.amount=0;if(e.pay==null)e.pay='';});return;}
+  var TYPEMAP={'餐廳':'餐飲'},out=[];
+  (t.itinerary||[]).forEach(it=>{
+    var linked=(t.expenses||[]).filter(e=>e.linkId===it.id);
+    out.push({id:it.id||uid(),date:it.date,time:it.time||'',type:TYPEMAP[it.type]||it.type||'其他',
+      title:it.title||'',note:it.note||'',amount:linked.reduce((s,e)=>s+(+e.amount||0),0),pay:linked[0]?linked[0].pay||'':''});
+  });
+  (t.expenses||[]).forEach(e=>{
+    if(e.linkId)return;
+    out.push({id:e.id||uid(),date:e.date,time:'',type:TYPEMAP[e.category]||e.category||'其他',
+      title:e.item||'',note:'',amount:+e.amount||0,pay:e.pay||''});
+  });
+  t.entries=out;delete t.itinerary;delete t.expenses;
 }
 
 // ── 載入：raw 讀取 + 防止舊快取覆蓋本地新資料 ──
@@ -592,13 +591,12 @@ function loadData(){
 
 function init(){
   if(!DB.trips)DB.trips=[];
-  DB.trips.forEach(t=>{if(!t.itinerary)t.itinerary=[];if(!t.expenses)t.expenses=[];});
+  DB.trips.forEach(migrateTrip);
   if(!currentTripId&&DB.trips.length){
     var sorted=[...DB.trips].sort((a,b)=>b.start.localeCompare(a.start));
     currentTripId=sorted[0].id;
   }
-  fillSelect('itType',Object.keys(ITYPE));
-  fillSelect('exCat',Object.keys(CAT));
+  fillSelect('logType',Object.keys(TAG));
   renderAll();
 }
 function fillSelect(id,opts){
@@ -614,8 +612,7 @@ function renderAll(){
   document.getElementById('mainEmpty').style.display=t?'none':'flex';
   if(!t)return;
   renderHeader();
-  if(currentView==='itinerary')renderItinerary();
-  else if(currentView==='expenses')renderExpenses();
+  if(currentView==='log')renderLog();
   else if(currentView==='stats')renderStats();
   else if(currentView==='settings')renderSettings();
 }
@@ -646,7 +643,7 @@ function switchView(v){
   document.querySelectorAll('#fnMenu .fn-item').forEach(el=>{
     el.classList.toggle('active',el.dataset.view===v);
   });
-  ['itinerary','expenses','stats','settings'].forEach(x=>{
+  ['log','stats','settings'].forEach(x=>{
     document.getElementById('view-'+x).style.display=(x===v)?'block':'none';
   });
   toggleSidebar(false);
@@ -661,125 +658,77 @@ function renderHeader(){
   document.getElementById('thTotal').textContent='NT$ '+num(tripTotalTWD(t));
 }
 
-// ── 行程 ──
-function renderItinerary(){
-  var t=curTrip(),days=dateRange(t.start,t.end);
-  if(!itSelectedDate||!days.includes(itSelectedDate)){
-    var today=fmtDateLocal(new Date());
-    itSelectedDate=days.includes(today)?today:days[0];
-  }
-  document.getElementById('itDayTabs').innerHTML=days.map((d,i)=>
-    '<button class="day-tab'+(d===itSelectedDate?' active':'')+'" onclick="pickDay(\''+d+'\')">D'+(i+1)+' '+fmtMD(d)+'</button>'
-  ).join('');
-  var items=t.itinerary.filter(x=>x.date===itSelectedDate).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
-  var tl=document.getElementById('itTimeline');
-  document.getElementById('itEmpty').style.display=items.length?'none':'block';
-  tl.style.display=items.length?'block':'none';
-  tl.innerHTML=items.map(x=>{
-    var ty=ITYPE[x.type]||ITYPE['其他'];
-    var linked=t.expenses.filter(e=>e.linkId===x.id).reduce((s,e)=>s+(+e.amount||0),0);
-    return '<div class="tl-item">'
-      +'<div class="tl-time">'+(x.time||'--:--')+'</div>'
-      +'<div class="tl-card">'
-      +'<span class="badge" style="background:'+ty.bg+';color:'+ty.c+';">'+esc(x.type)+'</span>'
-      +'<div style="min-width:0;"><div class="tl-title">'+esc(x.title)+'</div>'
-      +(x.note?'<div class="tl-note">'+esc(x.note)+'</div>':'')+'</div>'
-      +(linked?'<span class="tl-cost">'+num(linked)+'</span>':'')
-      +'<button class="exp-del" onclick="delItinerary(\''+x.id+'\')" aria-label="刪除">✕</button>'
-      +'</div></div>';
-  }).join('');
-}
-function pickDay(d){itSelectedDate=d;renderItinerary();}
-function addItineraryItem(){
-  var t=curTrip();if(!t)return;
-  var title=document.getElementById('itTitle').value.trim();
-  if(!title){showToast('請輸入地點或活動',true);return;}
-  t.itinerary.push({
-    id:uid(),date:itSelectedDate,
-    time:document.getElementById('itTime').value||'',
-    type:document.getElementById('itType').value,
-    title:title,
-    note:document.getElementById('itNote').value.trim()
-  });
-  document.getElementById('itTitle').value='';
-  document.getElementById('itNote').value='';
-  markDirty();renderItinerary();
-}
-function delItinerary(id){
-  var t=curTrip();
-  t.itinerary=t.itinerary.filter(x=>x.id!==id);
-  markDirty();renderItinerary();
-}
-
-// ── 記帳 ──
-function renderExpenses(){
-  var t=curTrip(),days=dateRange(t.start,t.end);
-  var totalLocal=tripTotalLocal(t),totalTWD=tripTotalTWD(t);
+// ── 行程＋記帳（合併記錄） ──
+function renderLog(){
+  var t=curTrip(),days=dateRange(t.start,t.end),rate=+t.rate||1;
+  var totalLocal=tripTotalLocal(t),totalTWD=totalLocal*rate;
   var today=fmtDateLocal(new Date());
-  var elapsed=days.filter(d=>d<=today).length||1;
-  var dayCount=Math.min(elapsed,days.length);
+  var dayCount=Math.min(days.filter(d=>d<=today).length||1,days.length);
   document.getElementById('stLocalTotal').textContent=(t.currency&&t.currency!=='TWD'?t.currency+' ':'NT$ ')+num(totalLocal);
   document.getElementById('stDaily').textContent=num(totalTWD/dayCount);
   var bEl=document.getElementById('stBudget');
-  if(+t.budget>0){
-    var left=t.budget-totalTWD;
-    bEl.textContent=(left<0?'-':'')+num(Math.abs(left));
-    bEl.classList.toggle('over',left<0);
-  }else{bEl.textContent='—';bEl.classList.remove('over');}
-  var dEl=document.getElementById('exDate');
-  if(!dEl.value)dEl.value=days.includes(today)?today:days[0];
-  var groups=days.filter(d=>t.expenses.some(e=>e.date===d)).reverse();
-  var box=document.getElementById('expGroups');
-  document.getElementById('exEmpty').style.display=t.expenses.length?'none':'block';
-  box.innerHTML=groups.map(d=>{
-    var rows=t.expenses.filter(e=>e.date===d);
-    var sub=rows.reduce((s,e)=>s+(+e.amount||0),0);
-    return '<div class="exp-group">'
-      +'<div class="exp-date">'+fmtMD(d)+' '+weekdayZh(d)
-      +'<span class="ed-sub">小計 '+num(sub)+'（NT$ '+num(sub*(+t.rate||1))+'）</span></div>'
-      +'<div class="exp-list">'+rows.map(e=>{
-        var c=CAT[e.category]||CAT['其他'];
-        return '<div class="exp-row">'
-          +'<span class="badge" style="background:'+c.bg+';color:'+c.c+';">'+esc(e.category)+'</span>'
-          +'<span class="exp-item-name">'+esc(e.item)+'</span>'
-          +'<span class="exp-pay">'+esc(e.pay||'')+'</span>'
-          +'<span class="exp-amt">'+num(e.amount)+'</span>'
-          +((t.currency&&t.currency!=='TWD')?'<span class="exp-twd">NT$'+num(e.amount*(+t.rate||1))+'</span>':'')
-          +'<button class="exp-del" onclick="delExpense(\''+e.id+'\')" aria-label="刪除">✕</button>'
-          +'</div>';
-      }).join('')+'</div></div>';
+  if(+t.budget>0){var left=t.budget-totalTWD;bEl.textContent=(left<0?'-':'')+num(Math.abs(left));bEl.classList.toggle('over',left<0);}
+  else{bEl.textContent='—';bEl.classList.remove('over');}
+  if(!itSelectedDate||!days.includes(itSelectedDate)){itSelectedDate=days.includes(today)?today:days[0];}
+  document.getElementById('logDayTabs').innerHTML=days.map((d,i)=>{
+    var ds=t.entries.filter(x=>x.date===d).reduce((s,x)=>s+(+x.amount||0),0);
+    var dot=ds>0?'<span style=\"display:inline-block;width:5px;height:5px;border-radius:50%;background:'+(d===itSelectedDate?'#FFF3EC':'#E24B4A')+';margin-left:5px;vertical-align:middle;\"></span>':'';
+    return '<button class=\"day-tab'+(d===itSelectedDate?' active':'')+'\" onclick=\"pickDay(\''+d+'\')\">D'+(i+1)+' '+fmtMD(d)+dot+'</button>';
+  }).join('');
+  var items=t.entries.filter(x=>x.date===itSelectedDate).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+  var sub=items.reduce((s,x)=>s+(+x.amount||0),0);
+  document.getElementById('logDaySub').innerHTML=items.length
+    ?'<span class=\"ds-day\">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
+      +(sub>0?'<span class=\"ds-sum\">當日 '+num(sub)+(t.currency&&t.currency!=='TWD'?'（NT$ '+num(sub*rate)+'）':'')+'</span>':'')
+    :'';
+  var tl=document.getElementById('logTimeline');
+  document.getElementById('logEmpty').style.display=items.length?'none':'block';
+  tl.style.display=items.length?'block':'none';
+  tl.innerHTML=items.map(x=>{
+    var ty=TAG[x.type]||TAG['其他'];
+    var meta=[x.note,x.pay].filter(Boolean).join(' · ');
+    var cost=(+x.amount>0)
+      ?'<span class=\"tl-cost\">'+num(x.amount)+(t.currency&&t.currency!=='TWD'?'<span class=\"tl-twd\">NT$'+num(x.amount*rate)+'</span>':'')+'</span>':'';
+    return '<div class=\"tl-item\"><div class=\"tl-time\">'+(x.time||'--:--')+'</div>'
+      +'<div class=\"tl-card\"><span class=\"badge\" style=\"background:'+ty.bg+';color:'+ty.c+';\">'+esc(x.type)+'</span>'
+      +'<div style=\"min-width:0;\"><div class=\"tl-title\">'+esc(x.title)+'</div>'
+      +(meta?'<div class=\"tl-note\">'+esc(meta)+'</div>':'')+'</div>'
+      +cost
+      +'<button class=\"exp-del\" onclick=\"delEntry(\''+x.id+'\')\" aria-label=\"刪除\">✕</button></div></div>';
   }).join('');
 }
-function addExpense(){
+function pickDay(d){itSelectedDate=d;renderLog();}
+function addEntry(){
   var t=curTrip();if(!t)return;
-  var amt=parseFloat(document.getElementById('exAmount').value);
-  var item=document.getElementById('exItem').value.trim();
-  if(!(amt>0)){showToast('請輸入金額',true);return;}
-  if(!item){showToast('請輸入項目',true);return;}
-  t.expenses.push({
-    id:uid(),
-    date:document.getElementById('exDate').value||fmtDateLocal(new Date()),
-    amount:amt,
-    category:document.getElementById('exCat').value,
-    item:item,
-    pay:document.getElementById('exPay').value,
-    linkId:null
+  var title=document.getElementById('logTitle').value.trim();
+  var amt=parseFloat(document.getElementById('logAmount').value);
+  if(!title&&!(amt>0)){showToast('請輸入地點/項目,或金額',true);return;}
+  var type=document.getElementById('logType').value;
+  t.entries.push({
+    id:uid(),date:itSelectedDate,
+    time:document.getElementById('logTime').value||'',
+    type:type,
+    title:title||type,
+    note:document.getElementById('logNote').value.trim(),
+    amount:amt>0?amt:0,
+    pay:document.getElementById('logPay').value||''
   });
-  document.getElementById('exAmount').value='';
-  document.getElementById('exItem').value='';
-  markDirty();renderExpenses();renderHeader();
+  document.getElementById('logTitle').value='';
+  document.getElementById('logAmount').value='';
+  document.getElementById('logNote').value='';
+  markDirty();renderLog();renderHeader();
 }
-function delExpense(id){
+function delEntry(id){
   var t=curTrip();
-  t.expenses=t.expenses.filter(e=>e.id!==id);
-  markDirty();renderExpenses();renderHeader();
+  t.entries=t.entries.filter(x=>x.id!==id);
+  markDirty();renderLog();renderHeader();
 }
 
 // ── 統計 ──
 function renderStats(){
   var t=curTrip(),rate=+t.rate||1;
   var byCat={};
-  t.expenses.forEach(e=>{byCat[e.category]=(byCat[e.category]||0)+(+e.amount||0);});
+  t.entries.forEach(e=>{if(+e.amount>0)byCat[e.type]=(byCat[e.type]||0)+(+e.amount);});
   var entries=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
   var total=entries.reduce((s,x)=>s+x[1],0);
   // 圓餅
@@ -787,7 +736,7 @@ function renderStats(){
   if(total<=0){
     svg='<circle cx="85" cy="85" r="78" fill="#F0E5D6"/>';
   }else if(entries.length===1){
-    svg='<circle cx="85" cy="85" r="78" fill="'+(CAT[entries[0][0]]||CAT['其他']).pie+'"/>';
+    svg='<circle cx="85" cy="85" r="78" fill="'+(TAG[entries[0][0]]||TAG['其他']).pie+'"/>';
   }else{
     entries.forEach(en=>{
       var frac=en[1]/total,a1=a0+frac*2*Math.PI;
@@ -796,13 +745,13 @@ function renderStats(){
       var large=frac>0.5?1:0;
       svg+='<path d="M'+cx+' '+cy+' L'+x0.toFixed(1)+' '+y0.toFixed(1)
         +' A'+r+' '+r+' 0 '+large+' 1 '+x1.toFixed(1)+' '+y1.toFixed(1)
-        +' Z" fill="'+(CAT[en[0]]||CAT['其他']).pie+'" stroke="#FDF6EE" stroke-width="1.5"/>';
+        +' Z" fill="'+(TAG[en[0]]||TAG['其他']).pie+'" stroke="#FDF6EE" stroke-width="1.5"/>';
       a0=a1;
     });
   }
   document.getElementById('pieChart').innerHTML=svg;
   document.getElementById('catTable').innerHTML=entries.map(en=>{
-    var c=CAT[en[0]]||CAT['其他'];
+    var c=TAG[en[0]]||TAG['其他'];
     return '<tr><td><span class="legend-item"><span class="legend-swatch" style="background:'+c.pie+';"></span>'+esc(en[0])+'</span></td>'
       +'<td class="num">'+num(en[1])+'</td>'
       +'<td class="num" style="color:var(--hint);">NT$'+num(en[1]*rate)+'</td>'
@@ -810,7 +759,7 @@ function renderStats(){
   }).join('')||'<tr><td style="color:var(--hint);">還沒有資料</td></tr>';
   // 每日長條
   var days=dateRange(t.start,t.end);
-  var vals=days.map(d=>t.expenses.filter(e=>e.date===d).reduce((s,e)=>s+(+e.amount||0),0)*rate);
+  var vals=days.map(d=>t.entries.filter(e=>e.date===d).reduce((s,e)=>s+(+e.amount||0),0)*rate);
   var max=Math.max(...vals,1);
   var W=600,H=180,pad=6,bw=(W-pad*2)/days.length;
   var bars='';
@@ -855,7 +804,7 @@ function deleteTrip(){
   if(!confirm('確定刪除「'+t.city+' '+t.start+'」整個旅程？行程和記帳都會一起刪除。'))return;
   DB.trips=DB.trips.filter(x=>x.id!==t.id);
   currentTripId=DB.trips.length?[...DB.trips].sort((a,b)=>b.start.localeCompare(a.start))[0].id:null;
-  currentView='itinerary';switchView('itinerary');
+  currentView='log';switchView('log');
   markDirty();renderAll();
 }
 
@@ -874,13 +823,13 @@ function createTrip(){
     currency:(document.getElementById('nmCurrency').value.trim()||'TWD').toUpperCase(),
     rate:parseFloat(document.getElementById('nmRate').value)||1,
     budget:parseFloat(document.getElementById('nmBudget').value)||0,
-    itinerary:[],expenses:[]
+    entries:[]
   };
   DB.trips.push(t);
   currentTripId=t.id;itSelectedDate=null;
   closeTripModal();
   ['nmCity','nmCityEn','nmStart','nmEnd','nmBudget'].forEach(id=>document.getElementById(id).value='');
-  markDirty();switchView('itinerary');
+  markDirty();switchView('log');
 }
 
 // ── 側欄（手機抽屜） ──
