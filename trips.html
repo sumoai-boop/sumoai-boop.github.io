@@ -737,33 +737,26 @@ function renderLog(){
   if(sc){
     var mins=items.map(function(x){return toMin(x.time);}).filter(function(m){return m!=null&&m>=360;});
     var startMin=mins.length?Math.min.apply(null,mins):480; // 預設 08:00
-    sc.scrollTop=Math.max(0,(Math.floor(startMin/60)-6)*66-16);
+    sc.scrollTop=Math.max(0,Math.floor(startMin/60)*66-16);
   }
 }
 function toMin(hhmm){var p=(hhmm||'').split(':');return (p.length===2&&p[0]!=='')?(+p[0])*60+(+p[1]):null;}
 function minHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-function assignCols(list,offset){
-  var colsEnd=[];
-  list.forEach(function(ev){
-    var placed=false;
-    for(var c=0;c<colsEnd.length;c++){if(colsEnd[c]<=ev.s){ev.col=offset+c;colsEnd[c]=ev.e;placed=true;break;}}
-    if(!placed){ev.col=offset+colsEnd.length;colsEnd.push(ev.e);}
-  });
-  return colsEnd.length;
-}
 function layoutColumns(evs){
-  evs.sort(function(a,b){return a.s-b.s||a.e-b.e;});
+  // 依開始時間排序，同開始時間則「時段較長」的優先 → 長區塊佔左欄，
+  // 其餘較短且互不重疊的行程盡量共用同一欄（上下對齊）
+  evs.sort(function(a,b){return a.s-b.s||b.e-a.e;});
   var i=0;
   while(i<evs.length){
     var clusterEnd=evs[i].e,cluster=[evs[i]],j=i+1;
     while(j<evs.length&&evs[j].s<clusterEnd){cluster.push(evs[j]);if(evs[j].e>clusterEnd)clusterEnd=evs[j].e;j++;}
-    // 沒金額的純行程固定放左欄，有金額的花費排在右邊
-    var noAmt=cluster.filter(function(ev){return !(+ev.x.amount>0);});
-    var amt=cluster.filter(function(ev){return (+ev.x.amount>0);});
-    var leftCols=assignCols(noAmt,0);
-    var rightCols=assignCols(amt,leftCols);
-    var total=leftCols+rightCols||1;
-    cluster.forEach(function(ev){ev.cols=total;});
+    var colsEnd=[];
+    cluster.forEach(function(ev){
+      var placed=false;
+      for(var c=0;c<colsEnd.length;c++){if(colsEnd[c]<=ev.s){ev.col=c;colsEnd[c]=ev.e;placed=true;break;}}
+      if(!placed){ev.col=colsEnd.length;colsEnd.push(ev.e);}
+    });
+    cluster.forEach(function(ev){ev.cols=colsEnd.length;});
     i=j;
   }
 }
@@ -783,7 +776,7 @@ function renderDayCalendar(t,items){
     timed.push({x:x,s:sm,e:em});
   });
   var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
-  var startH=6,endH=26;               // 固定顯示 06:00 → 隔天 02:00
+  var startH=0,endH=24;               // 固定顯示 00:00 → 24:00（完整一天）
   var HP=66,pm=HP/60,top0=startH*60,bodyH=(endH-startH)*HP;
   timed.forEach(function(o){if(o.s<startH*60){o.s+=1440;o.e+=1440;}}); // 凌晨行程移到底部
   var grid='';
