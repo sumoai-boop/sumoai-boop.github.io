@@ -235,9 +235,10 @@ body{
 .cal-hlabel{position:absolute;left:0;width:40px;text-align:right;font-size:11px;color:var(--hint);font-family:'Space Mono',monospace;}
 .cal-body{position:absolute;left:46px;right:6px;top:0;bottom:0;}
 .cal-ev{position:absolute;border-radius:8px;border-left:5px solid;padding:3px 7px 3px 8px;overflow:hidden;box-sizing:border-box;}
-.cev-title{font-size:15px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:14px;}
+.cev-row{display:flex;align-items:baseline;gap:6px;padding-right:15px;}
+.cev-title{flex:1;min-width:0;font-size:15px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cev-time{font-size:10px;color:var(--ink-soft);font-family:'Space Mono',monospace;line-height:1.3;}
-.cev-cost{font-size:13px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;line-height:1.35;}
+.cev-cost{flex-shrink:0;font-size:13px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;line-height:1.25;white-space:nowrap;}
 .cev-cost.cur-twd{color:var(--green-dk);}
 .cev-del{position:absolute;top:1px;right:2px;background:none;border:none;cursor:pointer;color:var(--hint);font-size:11px;line-height:1;padding:1px 3px;}
 .cev-del:hover{color:var(--red);}
@@ -828,8 +829,7 @@ function renderDayCalendar(t,day){
     var title=(o.cont?'↳ ':'')+esc(x.title);
     return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
       +'<button class="cev-del" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
-      +'<div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'
-      +cost
+      +'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'
       +'</div>';
   }).join('');
   return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body">'+evs+'</div></div></div>';
