@@ -732,7 +732,7 @@ function renderLog(){
   var host=document.getElementById('logTimeline');
   document.getElementById('logEmpty').style.display='none';
   host.style.display='block';
-  host.innerHTML=renderDayCalendar(t,items);
+  host.innerHTML=renderDayCalendar(t,itSelectedDate);
   var sc=host.querySelector('.cal-scroll');
   if(sc){
     var mins=items.map(function(x){return toMin(x.time);}).filter(function(m){return m!=null&&m>=360;});
@@ -767,18 +767,25 @@ function chipHTML(t,x){
     +'<span style="color:'+ty.c+';font-weight:700;">'+esc(x.type)+'</span> '+esc(x.title)+cost
     +'<button class="cev-del" style="position:static;margin-left:4px;color:inherit;" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button></span>';
 }
-function renderDayCalendar(t,items){
+function prevDateStr(day){var d=parseDate(day);d.setDate(d.getDate()-1);return fmtDateLocal(d);}
+function renderDayCalendar(t,day){
   var timed=[],untimed=[];
-  items.forEach(function(x){
+  (t.entries||[]).filter(function(e){return e.date===day;}).forEach(function(x){
     var sm=toMin(x.time);
     if(sm==null){untimed.push(x);return;}
     var em=toMin(x.end);if(em==null)em=sm+60;else if(em<=sm)em+=1440;
-    timed.push({x:x,s:sm,e:em});
+    timed.push({x:x,s:sm,e:em,cont:false});
+  });
+  // 前一天跨過午夜、延續到今天的行程 → 今天從 00:00 畫到結束
+  var pd=prevDateStr(day);
+  (t.entries||[]).filter(function(e){return e.date===pd;}).forEach(function(x){
+    var sm=toMin(x.time),em=toMin(x.end);
+    if(sm==null||em==null||em>sm)return; // 未跨夜
+    timed.push({x:x,s:0,e:em,cont:true});
   });
   var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
-  var startH=0,endH=24;               // 固定顯示 00:00 → 24:00（完整一天）
+  var startH=0,endH=24;
   var HP=66,pm=HP/60,top0=startH*60,bodyH=(endH-startH)*HP;
-  timed.forEach(function(o){if(o.s<startH*60){o.s+=1440;o.e+=1440;}}); // 凌晨行程移到底部
   var grid='';
   for(var h=startH;h<=endH;h++){
     var y=(h-startH)*HP;
@@ -790,10 +797,11 @@ function renderDayCalendar(t,items){
     var x=o.x,ty=TAG[x.type]||TAG['其他'];
     var drawE=Math.min(o.e,endH*60),top=(o.s-top0)*pm,hgt=Math.max((drawE-o.s)*pm,26);
     var w=100/o.cols,left=o.col*w;
-    var cost=(+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
-    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';">'
+    var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
+    var title=(o.cont?'↳ ':'')+esc(x.title);
+    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
       +'<button class="cev-del" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
-      +'<div class="cev-title" style="color:'+ty.c+';">'+esc(x.title)+'</div>'
+      +'<div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'
       +cost
       +'</div>';
   }).join('');
