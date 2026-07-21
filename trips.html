@@ -279,11 +279,12 @@ body{
 /* 設定 */
 .set-grid{display:grid;grid-template-columns:110px 1fr;gap:10px 14px;align-items:center;max-width:460px;}
 .set-grid label{font-size:13px;font-weight:700;color:var(--ink-soft);}
-.set-grid input,.set-grid select{
+.set-grid input,.set-grid select,.set-grid textarea{
   background:var(--card);border:1px solid var(--line);border-radius:9px;
   padding:9px 11px;font-size:14px;font-family:inherit;color:var(--ink);outline:none;
 }
-.set-grid input:focus{border-color:var(--orange);}
+.set-grid input:focus,.set-grid select:focus,.set-grid textarea:focus{border-color:var(--orange);}
+.set-grid textarea{width:100%;resize:vertical;line-height:1.4;}
 .btn-danger{
   background:transparent;border:1px solid var(--red);color:var(--red-dk);
   border-radius:9px;padding:8px 16px;font-size:13px;font-weight:700;
@@ -477,10 +478,7 @@ body{
 <div class="modal-mask" id="detailModal" onclick="if(event.target===this)closeDetail()">
   <div class="modal" id="detailCard">
     <div id="detailBody"></div>
-    <div class="modal-actions">
-      <button class="btn-danger" style="margin-top:0;" onclick="detailDelete()">刪除</button>
-      <button class="btn-cancel" onclick="closeDetail()">關閉</button>
-    </div>
+    <div class="modal-actions" id="detailActions"></div>
   </div>
 </div>
 
@@ -836,28 +834,81 @@ function delEntry(id){
   t.entries=t.entries.filter(x=>x.id!==id);
   markDirty();renderLog();renderHeader();
 }
-var _detailId=null;
+var _detailId=null,_detailEdit=false;
+function timeOptionsHTML(sel){
+  var o='<option value="">--:--</option>';
+  for(var m=0;m<1440;m+=15){var v=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');o+='<option'+(v===sel?' selected':'')+'>'+v+'</option>';}
+  return o;
+}
+function optsHTML(list,sel){return list.map(function(o){return '<option'+(o===sel?' selected':'')+'>'+esc(o)+'</option>';}).join('');}
+function dateOptionsHTML(t,sel){return dateRange(t.start,t.end).map(function(d){return '<option value="'+d+'"'+(d===sel?' selected':'')+'>'+fmtMD(d)+' '+weekdayZh(d)+'</option>';}).join('');}
 function openEntryDetail(id){
   var t=curTrip();if(!t)return;
   var x=(t.entries||[]).find(function(e){return e.id===id;});
   if(!x)return;
-  _detailId=id;
-  var ty=TAG[x.type]||TAG['其他'];
-  var timeTxt=x.time?(x.time+(x.end?' – '+x.end:'')):'未定時間';
-  var rows='<div class="dt-row"><span class="dt-key">日期</span><span class="dt-val">'+fmtMD(x.date)+' '+weekdayZh(x.date)+'</span></div>'
-    +'<div class="dt-row"><span class="dt-key">時間</span><span class="dt-val">'+esc(timeTxt)+'</span></div>';
-  if(+x.amount>0){
-    var amtInner=(x.cur==='TWD')?'NT$ '+num(x.amount)
-      :num(x.amount)+' '+esc(x.cur||'')+'<span class="dt-twd">≈ NT$'+num(entryTWD(x,t))+'</span>';
-    rows+='<div class="dt-row"><span class="dt-key">金額</span><span class="dt-val dt-amt'+(x.cur==='TWD'?' cur-twd':'')+'">'+amtInner+'</span></div>';
-  }
-  rows+='<div class="dt-row"><span class="dt-key">備註</span><span class="dt-val">'+(x.note?esc(x.note):'<span style="color:var(--hint)">（無）</span>')+'</span></div>';
-  document.getElementById('detailBody').innerHTML=
-    '<div class="dt-head"><span class="dt-badge" style="background:'+ty.bg+';color:'+ty.c+';">'+esc(x.type)+'</span></div>'
-    +'<div class="dt-title">'+esc(x.title)+'</div>'+rows;
+  _detailId=id;_detailEdit=false;
   document.getElementById('detailModal').classList.add('open');
+  renderDetail();
 }
-function closeDetail(){document.getElementById('detailModal').classList.remove('open');_detailId=null;}
+function renderDetail(){
+  var t=curTrip();if(!t){closeDetail();return;}
+  var x=(t.entries||[]).find(function(e){return e.id===_detailId;});
+  if(!x){closeDetail();return;}
+  var ty=TAG[x.type]||TAG['其他'];
+  var body=document.getElementById('detailBody'),actions=document.getElementById('detailActions');
+  if(_detailEdit){
+    var curOpts=(t.currency&&t.currency!=='TWD')?[t.currency,'TWD']:['TWD'];
+    body.innerHTML='<div class="dt-head"><span class="dt-badge" style="background:'+ty.bg+';color:'+ty.c+';">編輯記錄</span></div>'
+      +'<div class="set-grid">'
+      +'<label>日期</label><select id="edDate">'+dateOptionsHTML(t,x.date)+'</select>'
+      +'<label>類型</label><select id="edType">'+optsHTML(Object.keys(TAG),x.type)+'</select>'
+      +'<label>標題</label><input type="text" id="edTitle" value="'+esc(x.title)+'">'
+      +'<label>開始</label><select id="edStart">'+timeOptionsHTML(x.time||'')+'</select>'
+      +'<label>結束</label><select id="edEnd">'+timeOptionsHTML(x.end||'')+'</select>'
+      +'<label>幣別</label><select id="edCur">'+optsHTML(curOpts,x.cur||curOpts[0])+'</select>'
+      +'<label>金額</label><input type="number" id="edAmount" inputmode="decimal" placeholder="選填" value="'+(+x.amount>0?x.amount:'')+'">'
+      +'<label>備註</label><textarea id="edNote" rows="3">'+esc(x.note||'')+'</textarea>'
+      +'</div>';
+    actions.innerHTML='<button class="btn-cancel" onclick="cancelEdit()">取消</button>'
+      +'<button class="btn-add" onclick="saveDetail()">儲存</button>';
+  }else{
+    var timeTxt=x.time?(x.time+(x.end?' – '+x.end:'')):'未定時間';
+    var rows='<div class="dt-row"><span class="dt-key">日期</span><span class="dt-val">'+fmtMD(x.date)+' '+weekdayZh(x.date)+'</span></div>'
+      +'<div class="dt-row"><span class="dt-key">時間</span><span class="dt-val">'+esc(timeTxt)+'</span></div>';
+    if(+x.amount>0){
+      var amtInner=(x.cur==='TWD')?'NT$ '+num(x.amount)
+        :num(x.amount)+' '+esc(x.cur||'')+'<span class="dt-twd">≈ NT$'+num(entryTWD(x,t))+'</span>';
+      rows+='<div class="dt-row"><span class="dt-key">金額</span><span class="dt-val dt-amt'+(x.cur==='TWD'?' cur-twd':'')+'">'+amtInner+'</span></div>';
+    }
+    rows+='<div class="dt-row"><span class="dt-key">備註</span><span class="dt-val">'+(x.note?esc(x.note):'<span style="color:var(--hint)">（無）</span>')+'</span></div>';
+    body.innerHTML='<div class="dt-head"><span class="dt-badge" style="background:'+ty.bg+';color:'+ty.c+';">'+esc(x.type)+'</span></div>'
+      +'<div class="dt-title">'+esc(x.title)+'</div>'+rows;
+    actions.innerHTML='<button class="btn-danger" style="margin:0 auto 0 0;" onclick="detailDelete()">刪除</button>'
+      +'<button class="btn-add" onclick="editDetail()">編輯</button>'
+      +'<button class="btn-cancel" onclick="closeDetail()">關閉</button>';
+  }
+}
+function editDetail(){_detailEdit=true;renderDetail();}
+function cancelEdit(){_detailEdit=false;renderDetail();}
+function saveDetail(){
+  var t=curTrip();if(!t)return;
+  var x=(t.entries||[]).find(function(e){return e.id===_detailId;});if(!x)return;
+  var title=document.getElementById('edTitle').value.trim();
+  var amt=parseFloat(document.getElementById('edAmount').value);
+  if(!title&&!(amt>0)){showToast('請輸入標題或金額',true);return;}
+  var type=document.getElementById('edType').value;
+  x.date=document.getElementById('edDate').value||x.date;
+  x.type=type;
+  x.title=title||type;
+  x.time=document.getElementById('edStart').value||'';
+  x.end=document.getElementById('edEnd').value||'';
+  x.cur=document.getElementById('edCur').value||(t.currency||'TWD');
+  x.amount=amt>0?amt:0;
+  x.note=document.getElementById('edNote').value.trim();
+  markDirty();renderLog();renderHeader();
+  _detailEdit=false;renderDetail();
+}
+function closeDetail(){document.getElementById('detailModal').classList.remove('open');_detailId=null;_detailEdit=false;}
 function detailDelete(){
   if(!_detailId)return;
   var id=_detailId;closeDetail();
