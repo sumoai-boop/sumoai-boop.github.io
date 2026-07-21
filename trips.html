@@ -697,7 +697,7 @@ function renderTripList(){
     var fc=cityFlag(t),bg='';
     if(fc){
       var c1=active?'255,236,224':'255,253,249';
-      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.92) 0%,rgba('+c1+',0.55) 42%,rgba('+c1+',0.32) 100%),url(\'https://flagcdn.com/w320/'+fc+'.png\');background-size:cover;background-position:center;';
+      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.90) 0%,rgba('+c1+',0.45) 45%,rgba('+c1+',0.22) 100%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%;background-repeat:no-repeat;';
     }
     html+='<div class="trip-item'+(active?' active':'')+'" style="'+bg+'" onclick="selectTrip(\''+t.id+'\')">'
       +'<div class="trip-city">'+esc(t.city)+(t.cityEn?' '+esc(t.cityEn):'')+'</div>'
