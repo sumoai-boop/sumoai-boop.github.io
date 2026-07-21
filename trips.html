@@ -300,6 +300,17 @@ body{
 /* 新增旅程 Modal */
 .modal-mask{display:none;position:fixed;inset:0;background:rgba(59,47,42,0.45);z-index:500;align-items:center;justify-content:center;padding:16px;}
 .modal-mask.open{display:flex;}
+.cal-ev,.cal-chip{cursor:pointer;}
+#detailCard{max-width:400px;}
+.dt-head{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.dt-badge{font-size:13px;font-weight:700;padding:3px 12px;border-radius:99px;}
+.dt-title{font-size:19px;font-weight:900;color:var(--ink);line-height:1.25;}
+.dt-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:14px;}
+.dt-row .dt-key{width:60px;flex-shrink:0;color:var(--hint);font-weight:700;}
+.dt-row .dt-val{flex:1;color:var(--ink);word-break:break-word;white-space:pre-wrap;}
+.dt-amt{font-family:'Space Mono',monospace;font-weight:700;color:var(--red-dk);}
+.dt-amt.cur-twd{color:var(--green-dk);}
+.dt-amt .dt-twd{color:var(--hint);font-weight:400;font-size:12px;margin-left:6px;}
 .modal{background:var(--panel);border-radius:14px;padding:22px 24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(59,47,42,0.3);}
 .modal h3{font-size:17px;font-weight:900;margin-bottom:16px;color:var(--ink);}
 .modal .set-grid{max-width:none;}
@@ -459,6 +470,16 @@ body{
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeTripModal()">取消</button>
       <button class="btn-add" onclick="createTrip()">建立</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="detailModal" onclick="if(event.target===this)closeDetail()">
+  <div class="modal" id="detailCard">
+    <div id="detailBody"></div>
+    <div class="modal-actions">
+      <button class="btn-danger" style="margin-top:0;" onclick="detailDelete()">刪除</button>
+      <button class="btn-cancel" onclick="closeDetail()">關閉</button>
     </div>
   </div>
 </div>
@@ -744,9 +765,9 @@ function layoutColumns(evs){
 function chipHTML(t,x){
   var ty=TAG[x.type]||TAG['其他'];
   var cost=(+x.amount>0)?' <b class="'+(x.cur==='TWD'?'cur-twd':'')+'" style="font-family:\'Space Mono\',monospace;">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+esc(x.cur||''))+'</b>':'';
-  return '<span class="cal-chip" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
+  return '<span class="cal-chip" onclick="openEntryDetail(\''+x.id+'\')" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
     +'<span style="color:'+ty.c+';font-weight:700;">'+esc(x.type)+'</span> '+esc(x.title)+cost
-    +'<button class="cev-del" style="position:static;margin-left:4px;color:inherit;" onclick="delEntry(\''+x.id+'\')" aria-label="刪除">✕</button></span>';
+    +'<button class="cev-del" style="position:static;margin-left:4px;color:inherit;" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button></span>';
 }
 function renderDayCalendar(t,items){
   var timed=[],untimed=[];
@@ -772,8 +793,8 @@ function renderDayCalendar(t,items){
     var top=(o.s-top0)*pm,hgt=Math.max((o.e-o.s)*pm,26);
     var w=100/o.cols,left=o.col*w;
     var cost=(+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
-    return '<div class="cal-ev" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';">'
-      +'<button class="cev-del" onclick="delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
+    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';">'
+      +'<button class="cev-del" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
       +'<div class="cev-title" style="color:'+ty.c+';">'+esc(x.title)+'</div>'
       +'<div class="cev-time">'+minHHMM(o.s)+'–'+minHHMM(o.e)+'</div>'+cost
       +'</div>';
@@ -814,6 +835,33 @@ function delEntry(id){
   var t=curTrip();
   t.entries=t.entries.filter(x=>x.id!==id);
   markDirty();renderLog();renderHeader();
+}
+var _detailId=null;
+function openEntryDetail(id){
+  var t=curTrip();if(!t)return;
+  var x=(t.entries||[]).find(function(e){return e.id===id;});
+  if(!x)return;
+  _detailId=id;
+  var ty=TAG[x.type]||TAG['其他'];
+  var timeTxt=x.time?(x.time+(x.end?' – '+x.end:'')):'未定時間';
+  var rows='<div class="dt-row"><span class="dt-key">日期</span><span class="dt-val">'+fmtMD(x.date)+' '+weekdayZh(x.date)+'</span></div>'
+    +'<div class="dt-row"><span class="dt-key">時間</span><span class="dt-val">'+esc(timeTxt)+'</span></div>';
+  if(+x.amount>0){
+    var amtInner=(x.cur==='TWD')?'NT$ '+num(x.amount)
+      :num(x.amount)+' '+esc(x.cur||'')+'<span class="dt-twd">≈ NT$'+num(entryTWD(x,t))+'</span>';
+    rows+='<div class="dt-row"><span class="dt-key">金額</span><span class="dt-val dt-amt'+(x.cur==='TWD'?' cur-twd':'')+'">'+amtInner+'</span></div>';
+  }
+  rows+='<div class="dt-row"><span class="dt-key">備註</span><span class="dt-val">'+(x.note?esc(x.note):'<span style="color:var(--hint)">（無）</span>')+'</span></div>';
+  document.getElementById('detailBody').innerHTML=
+    '<div class="dt-head"><span class="dt-badge" style="background:'+ty.bg+';color:'+ty.c+';">'+esc(x.type)+'</span></div>'
+    +'<div class="dt-title">'+esc(x.title)+'</div>'+rows;
+  document.getElementById('detailModal').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailModal').classList.remove('open');_detailId=null;}
+function detailDelete(){
+  if(!_detailId)return;
+  var id=_detailId;closeDetail();
+  delEntry(id);
 }
 
 // ── 統計 ──
