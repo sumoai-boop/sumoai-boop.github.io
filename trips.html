@@ -194,14 +194,15 @@ body{
 .btn-add:hover{filter:brightness(1.06);}
 
 /* 日期分頁（行程用） */
-.day-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.day-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
 .day-tab{
-  border:1px solid var(--line);background:var(--card);
-  border-radius:99px;padding:5px 13px;
-  font-size:12px;font-weight:700;color:var(--ink-soft);cursor:pointer;
-  font-family:'Space Mono',monospace;
+  border:1.5px solid var(--line);background:var(--card);
+  border-radius:12px;padding:9px 18px;
+  font-size:15px;font-weight:700;color:var(--ink-soft);cursor:pointer;
+  font-family:'Space Mono',monospace;transition:transform 0.12s,box-shadow 0.12s;
 }
-.day-tab.active{background:var(--orange);border-color:var(--orange);color:#FFF3EC;}
+.day-tab:hover{transform:translateY(-1px);}
+.day-tab.active{background:var(--orange);border-color:var(--orange);color:#FFF3EC;box-shadow:0 3px 10px rgba(255,107,53,0.35);}
 
 /* 行程時間軸 */
 .timeline{border-left:2px solid var(--line);margin-left:8px;padding-left:18px;}
@@ -216,6 +217,7 @@ body{
 .tl-title{font-size:14px;font-weight:700;color:var(--ink);}
 .tl-note{font-size:12px;color:var(--hint);margin-top:2px;}
 .tl-cost{margin-left:auto;font-size:13px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;white-space:nowrap;text-align:right;}
+.tl-cost.cur-twd{color:var(--green-dk);}
 .tl-twd{display:block;font-size:10px;font-weight:400;color:var(--hint);}
 .day-subtotal{display:flex;align-items:baseline;gap:10px;margin:2px 0 12px;font-family:'Space Mono',monospace;}
 .day-subtotal .ds-day{font-size:14px;font-weight:900;color:var(--ink-soft);}
@@ -687,7 +689,7 @@ function renderLog(){
     var ty=TAG[x.type]||TAG['其他'];
     var meta=x.note||'';
     var cost=(+x.amount>0)
-      ?'<span class=\"tl-cost\">'+(x.cur==='TWD'?'NT$ '+num(x.amount):num(x.amount)+' '+esc(x.cur||'')+'<span class=\"tl-twd\">NT$'+num(entryTWD(x,t))+'</span>')+'</span>':'';
+      ?'<span class=\"tl-cost'+(x.cur==='TWD'?' cur-twd':'')+'\">'+(x.cur==='TWD'?'NT$ '+num(x.amount):num(x.amount)+' '+esc(x.cur||'')+'<span class=\"tl-twd\">NT$'+num(entryTWD(x,t))+'</span>')+'</span>':'';
     return '<div class=\"tl-item\"><div class=\"tl-time\">'+(x.time||'--:--')+'</div>'
       +'<div class=\"tl-card\"><span class=\"badge\" style=\"background:'+ty.bg+';color:'+ty.c+';\">'+esc(x.type)+'</span>'
       +'<div style=\"min-width:0;\"><div class=\"tl-title\">'+esc(x.title)+'</div>'
