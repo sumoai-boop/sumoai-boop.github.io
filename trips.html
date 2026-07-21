@@ -233,7 +233,7 @@ body{
 .cal-hline{position:absolute;left:46px;right:0;border-top:1px solid var(--line-soft);}
 .cal-hlabel{position:absolute;left:0;width:40px;text-align:right;font-size:11px;color:var(--hint);font-family:'Space Mono',monospace;}
 .cal-body{position:absolute;left:46px;right:6px;top:0;bottom:0;}
-.cal-ev{position:absolute;border-radius:8px;border-left:3px solid;padding:3px 7px 3px 8px;overflow:hidden;box-sizing:border-box;}
+.cal-ev{position:absolute;border-radius:8px;border-left:5px solid;padding:3px 7px 3px 8px;overflow:hidden;box-sizing:border-box;}
 .cev-title{font-size:12px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:12px;}
 .cev-time{font-size:10px;color:var(--ink-soft);font-family:'Space Mono',monospace;line-height:1.3;}
 .cev-cost{font-size:10px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;line-height:1.3;}
@@ -517,14 +517,14 @@ const DIRTY_KEY='trips_dirty_count';
 
 // ── 統一標籤（行程類型＋支出類別合一，紅橘綠暖色譜） ──
 const TAG={
-  '景點':{c:'#8A3A12',bg:'#FFE8DC',pie:'#FF8A4C'},
-  '餐飲':{c:'#A32D2D',bg:'#FCEBEB',pie:'#E24B4A'},
-  '交通':{c:'#7A4A12',bg:'#F3E4D0',pie:'#C77D3A'},
-  '機票':{c:'#9A5B0A',bg:'#FBE7C6',pie:'#E8912B'},
-  '購物':{c:'#854F0B',bg:'#FAEEDA',pie:'#EF9F27'},
-  '門票':{c:'#3B6D11',bg:'#EAF3DE',pie:'#97C459'},
-  '住宿':{c:'#791F1F',bg:'#F7D9D9',pie:'#A32D2D'},
-  '其他':{c:'#5C4A3D',bg:'#F0E5D6',pie:'#B4B2A9'}
+  '景點':{c:'#8A3A12',bg:'#FFD9C2',pie:'#FB7A2E'},
+  '餐飲':{c:'#A32D2D',bg:'#FBD0D0',pie:'#E24B4A'},
+  '交通':{c:'#6E4A16',bg:'#E7D3B0',pie:'#B07C34'},
+  '機票':{c:'#8A6208',bg:'#FBE79E',pie:'#E8A81C'},
+  '購物':{c:'#7A4A0A',bg:'#F6D293',pie:'#E8912B'},
+  '門票':{c:'#3B6D11',bg:'#D6EBB0',pie:'#7DB03A'},
+  '住宿':{c:'#7A1F33',bg:'#F3C4CE',pie:'#C24A63'},
+  '其他':{c:'#5C4A3D',bg:'#DED8CB',pie:'#9A958A'}
 };
 
 // ── 狀態 ──
@@ -716,19 +716,28 @@ function renderLog(){
 }
 function toMin(hhmm){var p=(hhmm||'').split(':');return (p.length===2&&p[0]!=='')?(+p[0])*60+(+p[1]):null;}
 function minHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+function assignCols(list,offset){
+  var colsEnd=[];
+  list.forEach(function(ev){
+    var placed=false;
+    for(var c=0;c<colsEnd.length;c++){if(colsEnd[c]<=ev.s){ev.col=offset+c;colsEnd[c]=ev.e;placed=true;break;}}
+    if(!placed){ev.col=offset+colsEnd.length;colsEnd.push(ev.e);}
+  });
+  return colsEnd.length;
+}
 function layoutColumns(evs){
   evs.sort(function(a,b){return a.s-b.s||a.e-b.e;});
   var i=0;
   while(i<evs.length){
     var clusterEnd=evs[i].e,cluster=[evs[i]],j=i+1;
     while(j<evs.length&&evs[j].s<clusterEnd){cluster.push(evs[j]);if(evs[j].e>clusterEnd)clusterEnd=evs[j].e;j++;}
-    var colsEnd=[];
-    cluster.forEach(function(ev){
-      var placed=false;
-      for(var c=0;c<colsEnd.length;c++){if(colsEnd[c]<=ev.s){ev.col=c;colsEnd[c]=ev.e;placed=true;break;}}
-      if(!placed){ev.col=colsEnd.length;colsEnd.push(ev.e);}
-    });
-    cluster.forEach(function(ev){ev.cols=colsEnd.length;});
+    // 沒金額的純行程固定放左欄，有金額的花費排在右邊
+    var noAmt=cluster.filter(function(ev){return !(+ev.x.amount>0);});
+    var amt=cluster.filter(function(ev){return (+ev.x.amount>0);});
+    var leftCols=assignCols(noAmt,0);
+    var rightCols=assignCols(amt,leftCols);
+    var total=leftCols+rightCols||1;
+    cluster.forEach(function(ev){ev.cols=total;});
     i=j;
   }
 }
