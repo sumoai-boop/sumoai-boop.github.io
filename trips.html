@@ -397,7 +397,7 @@ body{
       <div class="stat-row">
         <div class="stat-card red"><div class="sc-label">總花費 NT$</div><div class="sc-value" id="stLocalTotal">0</div></div>
         <div class="stat-card orange"><div class="sc-label">日均花費 NT$</div><div class="sc-value" id="stDaily">0</div></div>
-        <div class="stat-card green"><div class="sc-label">預算剩餘 NT$</div><div class="sc-value" id="stBudget">—</div></div>
+        <div class="stat-card green" onclick="editRate()" style="cursor:pointer;"><div class="sc-label" id="stRateLabel">匯率 ✎</div><div class="sc-value" id="stRate">—</div></div>
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
@@ -714,9 +714,9 @@ function renderLog(){
   var dayCount=Math.min(days.filter(d=>d<=today).length||1,days.length);
   document.getElementById('stLocalTotal').textContent='NT$ '+num(totalTWD);
   document.getElementById('stDaily').textContent=num(totalTWD/dayCount);
-  var bEl=document.getElementById('stBudget');
-  if(+t.budget>0){var left=t.budget-totalTWD;bEl.textContent=(left<0?'-':'')+num(Math.abs(left));bEl.classList.toggle('over',left<0);}
-  else{bEl.textContent='—';bEl.classList.remove('over');}
+  var rEl=document.getElementById('stRate'),rL=document.getElementById('stRateLabel');
+  if(t.currency&&t.currency!=='TWD'){rL.textContent='匯率 1'+t.currency+' ✎';rEl.textContent=t.rate;}
+  else{rL.textContent='匯率 ✎';rEl.textContent='TWD 1:1';}
   if(!itSelectedDate||!days.includes(itSelectedDate)){itSelectedDate=days.includes(today)?today:days[0];}
   document.getElementById('logDayTabs').innerHTML=days.map((d,i)=>{
     var ds=t.entries.filter(x=>x.date===d).reduce((s,x)=>s+entryTWD(x,t),0);
@@ -812,6 +812,16 @@ function fillCurSelect(t){
   var keep=el.value;
   el.innerHTML=opts.map(o=>'<option>'+o+'</option>').join('');
   el.value=opts.indexOf(keep)>=0?keep:opts[0];
+}
+function editRate(){
+  var t=curTrip();if(!t)return;
+  if(!t.currency||t.currency==='TWD'){showToast('台幣旅程無需匯率',false);return;}
+  var v=prompt('設定匯率：1 '+t.currency+' = ? NT$\n（例如 1 KRW ≈ 0.0235）',t.rate);
+  if(v==null)return;
+  var r=parseFloat(v);
+  if(!(r>0)){showToast('請輸入有效匯率',true);return;}
+  t.rate=r;markDirty();renderLog();renderHeader();
+  showToast('✅ 匯率已更新為 '+r,false);
 }
 function pickDay(d){itSelectedDate=d;renderLog();}
 function addEntry(){
