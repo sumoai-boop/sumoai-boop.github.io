@@ -318,6 +318,28 @@
           "end": "17:00",
           "amount": 0,
           "cur": "KRW"
+        },
+        {
+          "id": "mruqcfhou53g6",
+          "date": "2026-04-08",
+          "time": "19:00",
+          "type": "景點",
+          "title": "聖水",
+          "note": "",
+          "end": "22:00",
+          "amount": 0,
+          "cur": "KRW"
+        },
+        {
+          "id": "mruqdv11prhn3",
+          "date": "2026-04-08",
+          "time": "20:30",
+          "type": "餐飲",
+          "title": "祖傳三代馬鈴薯排骨湯",
+          "note": "",
+          "end": "21:30",
+          "amount": 40000,
+          "cur": "KRW"
         }
       ]
     }
