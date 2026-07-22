@@ -2581,12 +2581,12 @@
     "type": "便當",
     "meal": "",
     "price": 110,
-    "visits": 56,
+    "visits": 57,
     "gscore": 0,
     "addr": "104臺北市中山區大佳里濱江街136號",
     "note": "",
     "maps": "",
-    "date": "2026-07-07",
+    "date": "2026-07-22",
     "score": 3,
     "visitLog": [
       {
@@ -2924,6 +2924,12 @@
         "meal": "午餐",
         "price": 110,
         "menu": "雞肉便當"
+      },
+      {
+        "date": "2026-07-22",
+        "meal": "午餐",
+        "price": 110,
+        "menu": "雞肉便當"
       }
     ],
     "imgs": [
@@ -2931,7 +2937,7 @@
     ],
     "img": "https://i.ibb.co/mCFhsjJk/9098de8d399d.jpg",
     "createdAt": 1779779539427,
-    "updatedAt": 1783428108962
+    "updatedAt": 1784695922055
   },
   {
     "id": "1779774971395",
