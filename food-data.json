@@ -1,5 +1,34 @@
 [
   {
+    "id": "1784694136594",
+    "name": "小漢堡便當店",
+    "name1": "小漢堡便當店",
+    "name2": "",
+    "type": "便當",
+    "meal": "",
+    "price": 130,
+    "visits": 1,
+    "gscore": 3.9,
+    "addr": "10491臺北市中山區江寧里錦州街433號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E5%B0%8F%E6%BC%A2%E5%A0%A1%E4%BE%BF%E7%95%B6%E5%BA%97/@25.060363,121.5426603,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abe387e8cb41:0x4ef3c6a3d2edc93b!8m2!3d25.060363!4d121.5426603!16s%2Fg%2F11b638m_51?entry=ttu&g_ep=EgoyMDI2MDcxOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-07-21",
+    "score": 3.5,
+    "visitLog": [
+      {
+        "date": "2026-07-21",
+        "meal": "午餐",
+        "price": 130,
+        "menu": "招牌便當"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/RT7g2Cqr/0884e4e92181.jpg"
+    ],
+    "img": "https://i.ibb.co/RT7g2Cqr/0884e4e92181.jpg",
+    "createdAt": 1784694136594
+  },
+  {
     "id": "1784438004367",
     "name": "小小麥 信義新光A11",
     "name1": "小小麥",
