@@ -134,7 +134,8 @@ body{
 
 /* 週條 */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;min-width:0;}
-.chart-card{background:rgba(255,255,255,0.1);border:1px solid rgba(0,200,83,0.4);border-radius:14px;padding:22px;min-width:0;overflow-x:hidden;overflow-y:visible;}
+.chart-card{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(0,200,83,0.28);border-radius:14px;padding:22px;min-width:0;overflow-x:hidden;overflow-y:visible;box-shadow:0 2px 12px rgba(0,0,0,0.15);transition:border-color 0.25s,box-shadow 0.25s;}
+.chart-card:hover{border-color:rgba(0,200,83,0.45);box-shadow:0 6px 22px rgba(0,0,0,0.25);}
 .chart-title{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.9);margin-bottom:16px;}
 .week-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .week-label{font-size:10px;color:rgba(240,220,160,0.9);min-width:55px;}
@@ -163,6 +164,7 @@ body{
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;transition:color 0.15s,background 0.15s;}
   .del-btn:hover{color:#ff6b6b;background:rgba(255,100,100,0.12);}
+  .top10-row:hover{background:rgba(0,200,83,0.08);}
   /* 翻頁/小按鈕統一 hover 手感 */
   button{transition:filter 0.15s,transform 0.1s;}
   button:active{transform:scale(0.96);}
@@ -513,13 +515,18 @@ function renderTop5(){
   function makeCard(title, data){
     var rows = data.map(function(entry, i){
       var name=entry[0], count=entry[1];
-      var rankColor = i===0?'#FFD700': i===1?'#C0C0C0': i===2?'#CD7F32':'rgba(255,255,255,0.45)';
-      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);">'
+      var isMedal = i<3;
+      var rankColor = i===0?'#FFD700': i===1?'#C0C0C0': i===2?'#CD7F32':'rgba(255,255,255,0.4)';
+      var rankBg = i===0?'rgba(255,215,0,0.14)': i===1?'rgba(192,192,192,0.14)': i===2?'rgba(205,127,50,0.14)':'transparent';
+      var rankBadge = isMedal
+        ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:'+rankBg+';border:1px solid '+rankColor+';font-size:12px;font-weight:700;color:'+rankColor+';flex-shrink:0;">'+(i+1)+'</span>'
+        : '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;font-size:13px;font-weight:700;color:'+rankColor+';flex-shrink:0;">'+(i+1)+'</span>';
+      return '<div class="top10-row" style="display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-radius:7px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;">'
         + '<div style="display:flex;align-items:center;gap:10px;overflow:hidden;">'
-          + '<span style="font-size:13px;font-weight:700;color:'+rankColor+';min-width:20px;text-align:right;">'+(i+1)+'</span>'
-          + '<span style="font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+name+'">'+name+'</span>'
+          + rankBadge
+          + '<span style="font-size:13px;color:'+(isMedal?'#fff':'#f0dca8')+';font-weight:'+(isMedal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+name+'">'+name+'</span>'
         + '</div>'
-        + '<span style="font-size:13px;font-weight:700;color:#00C853;flex-shrink:0;margin-left:10px;">'+count+'</span>'
+        + '<span style="font-size:14px;font-weight:700;color:#00E860;flex-shrink:0;margin-left:10px;">'+count+'</span>'
       + '</div>';
     }).join('');
     return '<div class="chart-card" style="padding:18px 20px;">'
