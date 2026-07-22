@@ -115,9 +115,9 @@ body{
 }
 .trip-item:hover{background-color:rgba(255,107,53,0.08);}
 .trip-item.active{background-color:var(--orange-bg);border-left-color:var(--orange);border-radius:0 8px 8px 0;}
-.trip-city{font-size:14px;font-weight:700;color:var(--ink);text-shadow:0 0 3px rgba(255,253,249,1),0 0 6px rgba(255,253,249,0.9),0 1px 2px rgba(255,253,249,1);}
+.trip-city{text-align:right;font-size:14px;font-weight:700;color:var(--ink);text-shadow:0 0 3px rgba(255,253,249,1),0 0 6px rgba(255,253,249,0.9),0 1px 2px rgba(255,253,249,1);}
 .trip-item.active .trip-city{color:var(--orange-dk);}
-.trip-dates{font-size:11px;color:var(--ink);font-weight:700;font-family:'Space Mono',monospace;margin-top:1px;text-shadow:0 0 3px rgba(255,253,249,1),0 1px 2px rgba(255,253,249,1);}
+.trip-dates{text-align:right;font-size:11px;color:var(--ink);font-weight:700;font-family:'Space Mono',monospace;margin-top:1px;text-shadow:0 0 3px rgba(255,253,249,1),0 1px 2px rgba(255,253,249,1);}
 .trip-item.active .trip-dates{color:#C0653D;}
 .sb-fn{border-top:1px solid var(--line);padding:10px 12px;}
 .fn-item{
@@ -701,7 +701,7 @@ function renderTripList(){
     var fc=cityFlag(t),bg='';
     if(fc){
       var c1=active?'255,236,224':'255,253,249';
-      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.98) 0%,rgba('+c1+',0.95) 44%,rgba('+c1+',0.55) 60%,rgba('+c1+',0) 76%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%,auto 100%;background-position:center,right center;background-repeat:no-repeat;';
+      bg='background-image:linear-gradient(90deg,rgba('+c1+',0) 24%,rgba('+c1+',0.55) 40%,rgba('+c1+',0.95) 56%,rgba('+c1+',0.98) 100%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%,auto 100%;background-position:center,left center;background-repeat:no-repeat;';
     }
     html+='<div class="trip-item'+(active?' active':'')+'" style="'+bg+'" onclick="selectTrip(\''+t.id+'\')">'
       +'<div class="trip-city">'+esc(t.city)+(t.cityEn?' '+esc(t.cityEn):'')+'</div>'
