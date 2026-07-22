@@ -1234,6 +1234,61 @@
       "rate": 0.2,
       "budget": 0,
       "entries": []
+    },
+    {
+      "id": "mrvh61qdzjc9j",
+      "city": "曼谷",
+      "cityEn": "Bangkok",
+      "start": "2020-01-21",
+      "end": "2020-01-25",
+      "currency": "THB",
+      "rate": 0.96,
+      "budget": 0,
+      "entries": []
+    },
+    {
+      "id": "mrvh8pui1yaz3",
+      "city": "上海",
+      "cityEn": "Shanghai",
+      "start": "2018-10-05",
+      "end": "2018-10-08",
+      "currency": "CNY",
+      "rate": 0.21,
+      "budget": 0,
+      "entries": []
+    },
+    {
+      "id": "mrvha3suefqa5",
+      "city": "沖繩",
+      "cityEn": "Okinawa",
+      "start": "2019-04-04",
+      "end": "2019-04-09",
+      "currency": "JPY",
+      "rate": 0.2,
+      "budget": 0,
+      "entries": []
+    },
+    {
+      "id": "mrvhc3y5qxqxz",
+      "city": "香港",
+      "cityEn": "Hongkong",
+      "start": "2016-10-19",
+      "end": "2016-10-21",
+      "currency": "HKD",
+      "rate": 0.24,
+      "budget": 0,
+      "entries": []
+    },
+    {
+      "id": "mrvhffie5dbfc",
+      "city": "東京",
+      "cityEn": "TOKYO",
+      "start": "2017-12-09",
+      "end": "2017-12-12",
+      "currency": "JPY",
+      "rate": 0.26,
+      "budget": 0,
+      "entries": []
     }
   ]
 }
