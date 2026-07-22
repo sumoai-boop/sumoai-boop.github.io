@@ -108,9 +108,10 @@ body{
 .btn-newtrip:hover{filter:brightness(1.06);}
 .sb-year{font-size:11px;font-weight:700;color:var(--hint);letter-spacing:0.08em;margin:14px 4px 4px;font-family:'Space Mono',monospace;}
 .trip-item{
-  display:block;padding:9px 11px;margin:2px 0;
+  display:flex;flex-direction:column;justify-content:center;
+  min-height:56px;padding:10px 12px;margin:3px 0;
   border-radius:8px;border-left:3px solid transparent;
-  cursor:pointer;
+  cursor:pointer;overflow:hidden;
 }
 .trip-item:hover{background-color:rgba(255,107,53,0.08);}
 .trip-item.active{background-color:var(--orange-bg);border-left-color:var(--orange);border-radius:0 8px 8px 0;}
@@ -700,7 +701,7 @@ function renderTripList(){
     var fc=cityFlag(t),bg='';
     if(fc){
       var c1=active?'255,236,224':'255,253,249';
-      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.97) 0%,rgba('+c1+',0.92) 52%,rgba('+c1+',0.5) 78%,rgba('+c1+',0.25) 100%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%;background-repeat:no-repeat;';
+      bg='background-image:linear-gradient(90deg,rgba('+c1+',0.98) 0%,rgba('+c1+',0.95) 44%,rgba('+c1+',0.55) 60%,rgba('+c1+',0) 76%),url(\'https://flagcdn.com/256x192/'+fc+'.png\');background-size:100% 100%,auto 100%;background-position:center,right center;background-repeat:no-repeat;';
     }
     html+='<div class="trip-item'+(active?' active':'')+'" style="'+bg+'" onclick="selectTrip(\''+t.id+'\')">'
       +'<div class="trip-city">'+esc(t.city)+(t.cityEn?' '+esc(t.cityEn):'')+'</div>'
