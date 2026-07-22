@@ -1201,6 +1201,39 @@
           "cur": "TWD"
         }
       ]
+    },
+    {
+      "id": "mrvg1udvqdw2q",
+      "city": "曼谷",
+      "cityEn": "Bangkok",
+      "start": "2025-03-28",
+      "end": "2025-04-01",
+      "currency": "THB",
+      "rate": 0.96,
+      "budget": 0,
+      "entries": []
+    },
+    {
+      "id": "mrvg4xllkdnxi",
+      "city": "澳門",
+      "cityEn": "Macao",
+      "start": "2024-11-29",
+      "end": "2024-12-01",
+      "currency": "AUD",
+      "rate": 0.044,
+      "budget": 0,
+      "entries": []
+    },
+    {
+      "id": "mrvgaeiddmuem",
+      "city": "京都",
+      "cityEn": "Kyoto",
+      "start": "2024-07-08",
+      "end": "2024-07-12",
+      "currency": "JPY",
+      "rate": 0.2,
+      "budget": 0,
+      "entries": []
     }
   ]
 }
