@@ -147,9 +147,73 @@ body{
 .empty-icon{font-size:40px;margin-bottom:12px;opacity:0.3;display:block;}
 
 @media(max-width:768px){
-  .page-content{padding:44px 16px 100px;}
-  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .page-content{padding:44px 12px 110px;}
+  /* 統計卡片：2欄，縮小字級 */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat-card{padding:12px 12px;border-radius:12px;}
+  .stat-label{font-size:12px!important;margin-bottom:6px;}
+  .stat-val{font-size:26px!important;}
+  .stat-val em{font-size:26px!important;}
+  .stat-val em.unit{font-size:14px!important;}
+  .stat-unit{font-size:13px!important;}
+  /* 圖表改單欄 */
   .chart-grid{grid-template-columns:1fr;}
+  .chart-card{padding:16px 14px;}
+  /* TOP10 改單欄 */
+  #top5Section{grid-template-columns:1fr!important;}
+  /* 分頁按鈕：可橫向捲動不換行擠壓 */
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{flex-shrink:0;padding:8px 14px;font-size:12px;}
+  /* 總淨利：手機上縮小並靠左 */
+  #total-net-display{text-align:left!important;width:100%;}
+  #total-net-display > div:first-child{font-size:14px!important;}
+  #total-net-display > div:last-child{font-size:22px!important;}
+  /* 表單改單欄堆疊 */
+  .form-grid{grid-template-columns:1fr 1fr!important;gap:10px!important;}
+  .form-section{padding:16px 14px;border-radius:12px;}
+  .form-title{font-size:13px!important;}
+  .form-input,.form-select{font-size:14px!important;padding:10px 12px!important;}
+  .btn-add{width:auto;padding:12px 20px;font-size:12px;}
+  /* 篩選列輸入框：手機上自動填滿不溢出 */
+  #tripSearch{min-width:100%!important;flex:1 1 100%!important;}
+  #tripFilterCat,#tripFilterDate{width:calc(50% - 5px)!important;flex:1 1 calc(50% - 5px);}
+  #monthly-search{min-width:100%!important;flex:1 1 100%!important;}
+  /* 行程表格：橫向捲動 + 加大觸控目標 */
+  .trip-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
+  .trip-table{min-width:1100px;}
+  .trip-table th{font-size:11px;padding:8px 4px;}
+  .trip-table td{padding:10px 5px;font-size:12px;}
+  /* 星期平均卡片：橫向捲動 */
+  #weekdayAvgWrap > div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+  #weekdayAvgWrap > div:last-child > div{min-width:96px;flex-shrink:0;}
+  /* 圓餅圖：縮放並改直排 */
+  #monthlyPieChart{width:100%!important;max-width:280px;height:auto!important;}
+  #expenseChartWrap{padding:14px!important;min-width:0!important;}
+  #expenseChartWrap > div:last-child{flex-direction:column!important;gap:16px!important;}
+  #pieLegend{width:100%;}
+  /* 每日/支出列表字級微調 */
+  #weeklyList table,#monthlyList table,#gasStatsWrap table{font-size:12px;}
+  /* Dock 縮小 */
+  .gd-icon{width:44px;height:44px;border-radius:11px;font-size:22px;}
+  .global-dock{gap:5px;padding:7px 9px;border-radius:16px;}
+  .gd-item:hover .gd-icon{transform:translateY(-8px) scale(1.15);}
+  .gd-icon svg{width:38px;height:38px;}
+  .gd-icon span{font-size:26px!important;}
+  /* Menubar 精簡 */
+  .menubar{font-size:10px;padding:0 8px;}
+  .mb-menu{display:none;}
+}
+@media(max-width:420px){
+  /* 極小螢幕：統計卡片單欄不擠 */
+  .stats-grid{gap:8px;}
+  .stat-val{font-size:23px!important;}
+  .stat-val em{font-size:23px!important;}
+  .form-grid{grid-template-columns:1fr!important;}
+  .gd-icon{width:38px;height:38px;border-radius:10px;}
+  .gd-icon svg{width:32px;height:32px;}
+  .gd-icon span{font-size:22px!important;}
+  .global-dock{gap:4px;padding:6px 7px;}
 }
 /* 統計格子欄顏色：每欄統一一色（含同色微光）*/
 /* Col 1: 本月 → 綠 */
