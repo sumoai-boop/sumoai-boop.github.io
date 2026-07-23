@@ -198,6 +198,43 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .detail-week{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.04);}
 .detail-week:last-child{border-bottom:none;}
 .detail-week-label{color:rgba(255,255,255,0.6);}
+
+/* ===== 手機版共用修正 ===== */
+@media(max-width:768px){
+  /* Dock 縮小，11 個項目完整顯示 */
+  .global-dock-wrap{max-width:100vw;}
+  .global-dock{gap:2px!important;padding:5px 6px!important;border-radius:14px!important;
+    max-width:calc(100vw - 12px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .global-dock::-webkit-scrollbar{display:none;}
+  .gd-icon{width:29px!important;height:29px!important;border-radius:8px!important;font-size:15px!important;}
+  .gd-icon svg{width:25px!important;height:25px!important;}
+  .gd-icon span{font-size:17px!important;}
+  .gd-item{flex-shrink:0;}
+  .gd-item:hover .gd-icon{transform:translateY(-5px) scale(1.12)!important;}
+  .gd-sep{height:22px!important;margin:0 1px!important;}
+  .gd-label{display:none!important;}
+  /* Menubar 精簡 */
+  .menubar{font-size:10px!important;padding:0 8px!important;}
+  .mb-menu{display:none!important;}
+  .menubar-left{gap:8px!important;}
+  .menubar-right{gap:7px!important;}
+  /* 觸控目標加大 */
+  button,.btn,a.btn{min-height:40px;}
+  /* 內文最小字級，避免過小難讀 */
+  body{-webkit-text-size-adjust:100%;}
+  /* 表格一律可橫向捲動 */
+  table{max-width:100%;}
+  .table-wrap,.trip-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
+  /* 圖片不溢出 */
+  img,video,canvas{max-width:100%;height:auto;}
+}
+@media(max-width:420px){
+  .gd-icon{width:26px!important;height:26px!important;border-radius:7px!important;}
+  .gd-icon svg{width:22px!important;height:22px!important;}
+  .gd-icon span{font-size:15px!important;}
+  .global-dock{gap:1px!important;padding:4px 5px!important;}
+  .gd-sep{height:19px!important;margin:0 1px!important;}
+}
 </style>
 </head>
 <body>
