@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 圖庫 — Sumoai's Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  min-height:100vh;background:#0b0b10;color:#e8e8ef;
+  font-family:'Space Mono',monospace;padding-top:28px;
+  -webkit-text-size-adjust:100%;
+}
+a{color:inherit;}
+::selection{background:#FBBF24;color:#111;}
+
+/* ── 版面 ── */
+.page-content{max-width:1400px;margin:0 auto;padding:34px 24px 120px;}
+.page-title{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(38px,6vw,64px);line-height:1;letter-spacing:0.01em;
+}
+.page-title em{font-style:italic;color:#FBBF24;}
+.page-label{
+  display:block;margin-top:8px;font-size:11px;letter-spacing:0.25em;
+  color:rgba(255,255,255,0.38);text-transform:uppercase;
+}
+
+/* ── 工具列 ── */
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  margin:26px 0 8px;padding-bottom:18px;
+  border-bottom:1px solid rgba(255,255,255,0.09);
+}
+.search-box{
+  flex:1;min-width:210px;position:relative;
+}
+.search-box input{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);
+  border-radius:9px;padding:10px 12px 10px 34px;color:#e8e8ef;
+  font-family:inherit;font-size:13px;outline:none;transition:border-color .15s,background .15s;
+}
+.search-box input:focus{border-color:#FBBF24;background:rgba(255,255,255,0.08);}
+.search-box::before{
+  content:"⌕";position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:rgba(255,255,255,0.4);font-size:16px;
+}
+.btn{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);
+  color:#e8e8ef;border-radius:9px;padding:10px 15px;font-family:inherit;
+  font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:40px;
+}
+.btn:hover{background:rgba(255,255,255,0.13);border-color:rgba(255,255,255,0.28);}
+.btn-primary{background:#FBBF24;border-color:#FBBF24;color:#1a1a1a;font-weight:700;}
+.btn-primary:hover{background:#fcd34d;border-color:#fcd34d;}
+.btn-danger{border-color:rgba(239,68,68,0.45);color:#f87171;}
+.btn-danger:hover{background:rgba(239,68,68,0.16);}
+.btn-sm{padding:6px 10px;font-size:11px;min-height:0;border-radius:7px;}
+
+.sync-pill{
+  display:inline-flex;align-items:center;gap:7px;font-size:11px;
+  color:rgba(255,255,255,0.5);padding:0 4px;white-space:nowrap;
+}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0;}
+.sync-dot.dirty{background:#FBBF24;}
+.sync-dot.err{background:#f87171;}
+
+/* ── 標籤列 ── */
+.tagbar{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 4px;}
+.tag-chip{
+  font-size:11px;padding:5px 11px;border-radius:20px;cursor:pointer;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.11);
+  color:rgba(255,255,255,0.62);transition:all .15s;user-select:none;
+}
+.tag-chip:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.tag-chip.on{background:#FBBF24;border-color:#FBBF24;color:#1a1a1a;font-weight:700;}
+
+/* ── 圖片牆（masonry）── */
+.gallery{column-count:4;column-gap:14px;margin-top:22px;}
+@media(max-width:1100px){.gallery{column-count:3;}}
+@media(max-width:760px){.gallery{column-count:2;column-gap:10px;}}
+@media(max-width:420px){.gallery{column-count:2;column-gap:8px;}}
+
+.card{
+  break-inside:avoid;margin-bottom:14px;position:relative;
+  border-radius:12px;overflow:hidden;cursor:pointer;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  transition:transform .22s cubic-bezier(.34,1.4,.64,1),border-color .2s,box-shadow .2s;
+}
+.card:hover{transform:translateY(-4px);border-color:rgba(251,191,36,0.55);box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+.card img{width:100%;display:block;background:#16161d;}
+.card-ov{
+  position:absolute;inset:auto 0 0 0;padding:26px 12px 11px;
+  background:linear-gradient(transparent,rgba(0,0,0,0.88));
+  opacity:0;transition:opacity .2s;
+}
+.card:hover .card-ov{opacity:1;}
+.card-t{font-size:12.5px;font-weight:700;line-height:1.35;}
+.card-m{font-size:10px;color:rgba(255,255,255,0.55);margin-top:3px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@media(max-width:760px){.card-ov{opacity:1;padding:20px 9px 8px;}.card-t{font-size:11px;}}
+
+.empty{
+  text-align:center;padding:80px 20px;color:rgba(255,255,255,0.32);
+  font-size:13px;line-height:2;
+}
+
+/* ── Modal 共用 ── */
+.mask{
+  position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.82);
+  backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;
+}
+.mask.open{display:flex;}
+.modal{
+  background:#14141b;border:1px solid rgba(255,255,255,0.13);border-radius:16px;
+  max-width:1120px;width:100%;max-height:90vh;overflow:auto;
+  box-shadow:0 24px 70px rgba(0,0,0,0.7);
+}
+.modal-sm{max-width:640px;}
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.09);
+  position:sticky;top:0;background:#14141b;z-index:2;
+}
+.modal-head h3{font-size:15px;font-weight:700;}
+.x-btn{
+  background:none;border:none;color:rgba(255,255,255,0.5);font-size:24px;
+  cursor:pointer;line-height:1;padding:0 4px;
+}
+.x-btn:hover{color:#fff;}
+.modal-body{padding:20px;}
+
+/* ── 詳細檢視 ── */
+.detail-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:22px;}
+@media(max-width:820px){.detail-grid{grid-template-columns:1fr;}}
+.detail-img{
+  width:100%;border-radius:11px;background:#0d0d12;display:block;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.pblock{margin-bottom:16px;}
+.pblock-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;
+}
+.pblock-label{
+  font-size:10px;letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(255,255,255,0.45);
+}
+.pblock-label.pos{color:#86efac;}
+.pblock-label.neg{color:#fca5a5;}
+.ptext{
+  background:rgba(255,255,255,0.045);border:1px solid rgba(255,255,255,0.09);
+  border-radius:9px;padding:11px 12px;font-size:12px;line-height:1.65;
+  white-space:pre-wrap;word-break:break-word;max-height:230px;overflow:auto;
+  color:rgba(255,255,255,0.88);
+}
+.ptext.pos{border-left:3px solid #4ade80;}
+.ptext.neg{border-left:3px solid #f87171;}
+.meta-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px;margin-top:4px;
+}
+.meta-item{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;padding:8px 10px;
+}
+.meta-k{font-size:9px;letter-spacing:0.13em;text-transform:uppercase;color:rgba(255,255,255,0.38);}
+.meta-v{font-size:12px;margin-top:3px;word-break:break-all;color:#FBBF24;}
+
+/* ── 表單 ── */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;letter-spacing:0.1em;
+  text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+.field input,.field textarea,.field select{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.13);
+  border-radius:9px;padding:10px 12px;color:#e8e8ef;font-family:inherit;
+  font-size:12.5px;outline:none;transition:border-color .15s;resize:vertical;
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#FBBF24;}
+.field textarea{min-height:82px;line-height:1.6;}
+.set-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.set-grid{grid-template-columns:1fr;}}
+
+.dropzone{
+  border:2px dashed rgba(255,255,255,0.2);border-radius:12px;padding:26px 16px;
+  text-align:center;cursor:pointer;transition:all .18s;margin-bottom:16px;
+  background:rgba(255,255,255,0.02);
+}
+.dropzone:hover,.dropzone.over{border-color:#FBBF24;background:rgba(251,191,36,0.07);}
+.dz-title{font-size:13px;font-weight:700;margin-bottom:5px;}
+.dz-sub{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.7;}
+.dz-preview{max-height:170px;border-radius:9px;margin:0 auto 10px;display:block;}
+
+.toast{
+  position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#FBBF24;color:#1a1a1a;padding:11px 20px;border-radius:9px;
+  font-size:12.5px;font-weight:700;z-index:10001;opacity:0;
+  transition:all .25s;pointer-events:none;box-shadow:0 8px 26px rgba(0,0,0,0.5);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:#f87171;color:#fff;}
+
+.hint{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.75;margin-top:-6px;margin-bottom:14px;}
+.foot-btns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px;
+  padding-top:16px;border-top:1px solid rgba(255,255,255,0.09);}
+
+/* ── 共用 Menubar ── */
+.global-menubar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;font-size:12px;color:rgba(255,255,255,0.92);
+  letter-spacing:0.02em;font-family:'Space Mono',monospace;
+}
+.gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
+.mb-menu{padding:0 6px;border-radius:4px;cursor:default;transition:background 0.15s;font-size:12px;}
+.mb-menu:hover{background:rgba(255,255,255,0.2);}
+
+/* ── 共用 Dock ── */
+.global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
+.global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
+.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
+.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
+.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
+.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
+.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;font-family:'Space Mono',monospace;}
+.gd-item:hover .gd-label{opacity:1;}
+.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
+.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
+.ic-photos,.ic-dramas,.ic-food,.ic-threads,.ic-uber,.ic-weight,.ic-reminder,
+.ic-netflix,.ic-mlb,.ic-chloe,.ic-trips,.ic-ai{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+.dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
+
+@media(max-width:768px){
+  .global-dock-wrap{max-width:100vw;}
+  .global-dock{gap:2px!important;padding:5px 6px!important;border-radius:14px!important;
+    max-width:calc(100vw - 12px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .global-dock::-webkit-scrollbar{display:none;}
+  .gd-icon{width:29px!important;height:29px!important;border-radius:8px!important;font-size:15px!important;}
+  .gd-icon svg{width:25px!important;height:25px!important;}
+  .gd-icon span{font-size:17px!important;}
+  .gd-item{flex-shrink:0;}
+  .gd-item:hover .gd-icon{transform:translateY(-5px) scale(1.12)!important;}
+  .gd-sep{height:22px!important;margin:0 1px!important;}
+  .gd-label{display:none!important;}
+  .mb-menu{display:none!important;}
+  .gm-left{gap:8px!important;}
+  .gm-right{gap:7px!important;}
+  .page-content{padding:24px 14px 110px;}
+  img,video,canvas{max-width:100%;height:auto;}
+}
+@media(max-width:420px){
+  .gd-icon{width:26px!important;height:26px!important;border-radius:7px!important;}
+  .gd-icon svg{width:22px!important;height:22px!important;}
+  .gd-icon span{font-size:15px!important;}
+  .global-dock{gap:1px!important;padding:4px 5px!important;}
+  .gd-sep{height:19px!important;margin:0 1px!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- 全域 Menubar -->
+<div class="global-menubar">
+  <div class="gm-left">
+    <span style="font-size:16px">🗿</span>
+    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;cursor:pointer;position:relative;z-index:9999;">Sumoai's Reel</a>
+    <span class="mb-menu">檔案</span>
+    <span class="mb-menu">編輯</span>
+    <span class="mb-menu">顯示方式</span>
+    <span class="mb-menu">前往</span>
+    <span class="mb-menu">視窗</span>
+    <span class="mb-menu">輔助說明</span>
+  </div>
+  <div class="gm-right">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="vertical-align:middle"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></svg>
+    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="vertical-align:middle"><path d="M1 9l2 2c5.07-5.07 13.27-5.05 18.36 0l2-2C16.93 2.37 7.1 2.35 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.77 7.27-2.76 10.03 0l2-2C15.14 9.14 8.87 9.13 5 13z"/></svg>
+    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="vertical-align:middle"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px" alt="TW">
+    <span id="gmbTime" style="letter-spacing:0.03em"></span>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" style="vertical-align:middle;cursor:default"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+  </div>
+</div>
+
+<div class="page-content">
+  <h1 class="page-title">AI <em>圖庫</em></h1>
+  <span class="page-label">— 12 / AI GALLERY</span>
+
+  <div class="toolbar">
+    <div class="search-box"><input id="q" type="text" placeholder="搜尋提示詞、標題、模型、標籤…"></div>
+    <button class="btn btn-primary" id="btnAdd">＋ 新增圖片</button>
+    <button class="btn" id="btnSync">同步</button>
+    <button class="btn" id="btnSettings">設定</button>
+    <span class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncTxt">載入中…</span></span>
+  </div>
+
+  <div class="tagbar" id="tagbar"></div>
+  <div class="gallery" id="gallery"></div>
+  <div class="empty" id="empty" style="display:none">
+    還沒有任何圖片<br>
+    點右上角「＋ 新增圖片」，把 ComfyUI 產出的 PNG 拖進去<br>
+    正負向提示詞會自動讀出來
+  </div>
+</div>
+
+<!-- ══ 詳細檢視 ══ -->
+<div class="mask" id="detailMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="dTitle">—</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-sm" id="dEdit">編輯</button>
+        <button class="btn btn-sm btn-danger" id="dDel">刪除</button>
+        <button class="x-btn" data-close>×</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div>
+          <img class="detail-img" id="dImg" alt="">
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn btn-sm" id="dOpen" target="_blank" rel="noopener">原圖開新分頁 ↗</a>
+            <button class="btn btn-sm" id="dCopyAll">複製全部參數</button>
+          </div>
+        </div>
+        <div>
+          <div class="pblock">
+            <div class="pblock-head">
+              <span class="pblock-label pos">正向提示詞 / Positive</span>
+              <button class="btn btn-sm" data-copy="pos">複製</button>
+            </div>
+            <div class="ptext pos" id="dPos">—</div>
+          </div>
+          <div class="pblock">
+            <div class="pblock-head">
+              <span class="pblock-label neg">負向提示詞 / Negative</span>
+              <button class="btn btn-sm" data-copy="neg">複製</button>
+            </div>
+            <div class="ptext neg" id="dNeg">—</div>
+          </div>
+          <div class="pblock" id="dNoteWrap">
+            <div class="pblock-head"><span class="pblock-label">備註</span></div>
+            <div class="ptext" id="dNote">—</div>
+          </div>
+          <div class="meta-grid" id="dMeta"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 新增／編輯 ══ -->
+<div class="mask" id="editMask">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <h3 id="eTitle">新增圖片</h3>
+      <button class="x-btn" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="dropzone" id="dz">
+        <img class="dz-preview" id="dzPrev" style="display:none" alt="">
+        <div class="dz-title" id="dzTitle">拖曳圖片到這裡，或點擊選檔</div>
+        <div class="dz-sub" id="dzSub">
+          支援 ComfyUI / A1111 產出的 PNG —— 會自動讀取內嵌的正負向提示詞、模型、步驟、CFG、種子<br>
+          （JPG 沒有內嵌資料，需要手動填）
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+      </div>
+
+      <div class="field">
+        <label>圖片網址</label>
+        <input id="fUrl" type="text" placeholder="上傳後自動填入，也可以直接貼網址">
+      </div>
+      <div class="hint">選檔後會自動上傳、這格自動填好，<b>你不用自己準備網址</b>。預設是存進你 GitHub repo 的 images/ai/ 資料夾（只需要 Token）；也可以在「設定」改成 ImgBB 圖床。手邊已經有網址的話也能直接貼。</div>
+
+      <div class="field"><label>標題</label><input id="fTitle" type="text" placeholder="例如：亡靈法師少女"></div>
+
+      <div class="field">
+        <label>正向提示詞 Positive</label>
+        <textarea id="fPos" placeholder="1girl, masterpiece, best quality, ..."></textarea>
+      </div>
+      <div class="field">
+        <label>負向提示詞 Negative</label>
+        <textarea id="fNeg" placeholder="embedding:DeepNegative_xl_v1, lowres, bad anatomy, ..."></textarea>
+      </div>
+
+      <div class="set-grid">
+        <div class="field"><label>模型 Checkpoint</label><input id="fModel" type="text" placeholder="例如：ltx-2.3-22b-dev-fp8"></div>
+        <div class="field"><label>LoRA</label><input id="fLora" type="text" placeholder="名稱:權重"></div>
+        <div class="field"><label>取樣器 Sampler</label><input id="fSampler" type="text" placeholder="euler / dpmpp_2m"></div>
+        <div class="field"><label>排程器 Scheduler</label><input id="fSched" type="text" placeholder="karras"></div>
+        <div class="field"><label>步驟 Steps</label><input id="fSteps" type="text"></div>
+        <div class="field"><label>CFG</label><input id="fCfg" type="text"></div>
+        <div class="field"><label>種子 Seed</label><input id="fSeed" type="text"></div>
+        <div class="field"><label>尺寸 Size</label><input id="fSize" type="text" placeholder="1024x1024"></div>
+      </div>
+
+      <div class="field"><label>標籤（逗號分隔）</label><input id="fTags" type="text" placeholder="動漫, 人像, SDXL"></div>
+      <div class="field"><label>備註</label><textarea id="fNote" style="min-height:56px" placeholder="這張為什麼成功／失敗、下次要調什麼"></textarea></div>
+
+      <div class="foot-btns">
+        <button class="btn" data-close>取消</button>
+        <button class="btn btn-primary" id="eSave">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 設定 ══ -->
+<div class="mask" id="setMask">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h3>設定</h3><button class="x-btn" data-close>×</button></div>
+    <div class="modal-body">
+      <div class="field">
+        <label>GitHub Token</label>
+        <input id="sToken" type="password" placeholder="ghp_… （存在瀏覽器本機，不會上傳）">
+      </div>
+      <div class="hint">與其他頁面共用同一組 token（localStorage: sumoai_gh_token）。需要 repo 寫入權限，用來把 ai-data.json 推回 GitHub。</div>
+
+      <div class="field">
+        <label>圖片存放方式</label>
+        <select id="sUpMode">
+          <option value="repo">存進我的 GitHub repo（推薦，不需圖床）</option>
+          <option value="imgbb">上傳到 ImgBB 圖床</option>
+        </select>
+      </div>
+      <div class="hint">選 GitHub 的話，圖片會存進 repo 的 <code>images/ai/</code> 資料夾，用上面那組 Token 就夠了，不用再申請圖床。缺點是會佔 repo 空間（建議單張不超過 5MB）。</div>
+
+      <div class="field" id="imgbbField">
+        <label>ImgBB API Key</label>
+        <input id="sImgbb" type="password" placeholder="從 api.imgbb.com 取得">
+      </div>
+      <div class="hint" id="imgbbHint">與其他頁面共用（localStorage: sumoai_imgbb_key）。只有選 ImgBB 模式才需要填。</div>
+
+      <div class="foot-btns">
+        <button class="btn" id="sExport">匯出 JSON 備份</button>
+        <button class="btn" id="sImport">匯入 JSON</button>
+        <button class="btn btn-primary" id="sSave">儲存設定</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json" style="display:none">
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 全域 Dock -->
+<div class="dock-trigger-zone" id="dockTrigger"></div>
+<div class="global-dock-wrap" id="globalDock">
+  <div class="global-dock">
+    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FF6B9D;line-height:1;letter-spacing:-2px;">P</span></div><span class="gd-label">照片</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#A78BFA;line-height:1;letter-spacing:-2px;">D</span></div><span class="gd-label">追劇</span></a>
+    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#38BDF8;line-height:1;letter-spacing:-2px;">F</span></div><span class="gd-label">食記</span></a>
+    <a href="ai.html" class="gd-item"><div class="gd-dot" style="position:absolute;bottom:-8px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);"></div><div class="gd-icon ic-ai"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M11.5 8.5 L13.6 14.2 L19.3 16.3 L13.6 18.4 L11.5 24.1 L9.4 18.4 L3.7 16.3 L9.4 14.2 Z" fill="#FBBF24"/><path d="M36 26 L37.4 29.8 L41.2 31.2 L37.4 32.6 L36 36.4 L34.6 32.6 L30.8 31.2 L34.6 29.8 Z" fill="#FBBF24" opacity="0.75"/><text x="25" y="41" text-anchor="middle" font-family="Arial" font-size="25" font-weight="900" fill="#FBBF24">A</text></svg></div><span class="gd-label">AI 圖庫</span></a>
+    <div class="gd-sep"></div>
+    <a href="trips.html" class="gd-item"><div class="gd-icon ic-trips"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="16.5" y="3.5" width="15" height="12" rx="4" fill="none" stroke="#A32D2D" stroke-width="3.6"/><rect x="5.5" y="10" width="37" height="33" rx="5.5" fill="#E24B4A"/><rect x="11.5" y="10" width="3.4" height="33" fill="#A32D2D"/><rect x="33.1" y="10" width="3.4" height="33" fill="#A32D2D"/><text x="24" y="33.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">T</text></svg></div><span class="gd-label">行程記帳</span></a>
+    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FFFFFF;line-height:1;letter-spacing:-2px;">T</span></div><span class="gd-label">Threads</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
+    <a href="weight.html" class="gd-item"><div class="gd-icon ic-weight"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="9" fill="#2DD4BF"/><path d="M14 4.6 A 17.5 17.5 0 0 1 34 4.6 L 31 11.5 A 11 11 0 0 0 17 11.5 Z" fill="#0F766E"/><rect x="19.5" y="6" width="9" height="4.2" rx="1.8" fill="#E6FFFA"/><text x="24" y="34.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">W</text></svg></div><span class="gd-label">體重</span></a>
+    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M6 11.5 L13.5 3.5 L18 8.5 Z" fill="#34D399"/><path d="M42 11.5 L34.5 3.5 L30 8.5 Z" fill="#34D399"/><circle cx="24" cy="25" r="19" fill="#34D399"/><circle cx="24" cy="25" r="14.8" fill="#065F46"/><path d="M10.5 40 L7 45 M37.5 40 L41 45" stroke="#34D399" stroke-width="3" stroke-linecap="round"/><text x="24" y="32.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">R</text></svg></div><span class="gd-label">提醒</span></a>
+    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#E50914;line-height:1;letter-spacing:-2px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
+    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="52" height="52" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#FFFFFF"/><path d="M8 9 A 27 27 0 0 1 8 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M40 9 A 27 27 0 0 0 40 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M9.5 14 l3.4 1.6 M8 19 l3.6 0.9 M8 29 l3.6 -0.9 M9.5 34 l3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><path d="M38.5 14 l-3.4 1.6 M40 19 l-3.6 0.9 M40 29 l-3.6 -0.9 M38.5 34 l-3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><text x="24" y="31.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#0C2340">M</text></svg></div><span class="gd-label">MLB</span></a>
+    <div class="gd-sep"></div>
+    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M24 43.5 L6 25.5 A11.3 11.3 0 0 1 22.1 9.4 L24 11.3 L25.9 9.4 A11.3 11.3 0 0 1 42 25.5 Z" fill="#E879F9"/><text x="24" y="28.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#111">C</text></svg></div><span class="gd-label">Chloe ♥</span></a>
+  </div>
+</div>
+
+<script>
+/* ══════════ 時鐘 ══════════ */
+(function(){
+  function u(){var el=document.getElementById('gmbTime');if(!el)return;
+    var n=new Date(),d=['日','一','二','三','四','五','六'][n.getDay()];
+    el.textContent='週'+d+' '+(n.getMonth()+1)+'/'+n.getDate()+' '+
+      String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
+  u();setInterval(u,10000);
+})();
+
+/* ══════════ Dock ══════════ */
+(function(){
+  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger)return;var timer;
+  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
+})();
+
+/* ══════════ 常數 ══════════ */
+const REPO_OWNER='sumoai-boop';
+const REPO_NAME='sumoai-boop.github.io';
+const BRANCH='main';
+const DATA_FILE='ai-data.json';
+const RAW_URL='https://raw.githubusercontent.com/'+REPO_OWNER+'/'+REPO_NAME+'/'+BRANCH+'/'+DATA_FILE;
+const LS_ITEMS='ai_items';
+const LS_DIRTY='ai_dirty';
+const LS_SHA='gh_json_sha_ai';
+const LS_TOKEN='sumoai_gh_token';
+const LS_IMGBB='sumoai_imgbb_key';
+const LS_UPMODE='ai_upload_mode';        // 'repo' | 'imgbb'
+const IMG_DIR='images/ai/';
+
+let items=[];
+let dirty=parseInt(localStorage.getItem(LS_DIRTY)||'0',10);
+let activeTag='';
+let editingId=null;
+let pushing=false;
+
+/* ══════════ 小工具 ══════════ */
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function uid(){return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function toast(msg,isErr){
+  const t=$('toast');t.textContent=msg;t.className='toast show'+(isErr?' err':'');
+  clearTimeout(t._tm);t._tm=setTimeout(()=>t.className='toast',2600);
+}
+/* 中文安全的 base64（絕不用 btoa(unescape(encodeURIComponent(...)))） */
+function b64encode(str){
+  const bytes=new TextEncoder().encode(str);
+  let bin='';const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+function copyText(txt){
+  if(!txt){toast('沒有內容可複製',true);return;}
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(txt).then(()=>toast('已複製')).catch(()=>fallbackCopy(txt));
+  } else fallbackCopy(txt);
+}
+function fallbackCopy(txt){
+  const ta=document.createElement('textarea');ta.value=txt;
+  ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+  ta.select();try{document.execCommand('copy');toast('已複製');}catch(e){toast('複製失敗',true);}
+  document.body.removeChild(ta);
+}
+
+/* ══════════ 狀態列 ══════════ */
+function setSync(state,text){
+  const d=$('syncDot');
+  d.className='sync-dot'+(state==='dirty'?' dirty':state==='err'?' err':'');
+  $('syncTxt').textContent=text;
+}
+function markDirty(){
+  dirty++;localStorage.setItem(LS_DIRTY,String(dirty));
+  setSync('dirty',dirty+' 筆未同步');
+}
+function saveLocal(){localStorage.setItem(LS_ITEMS,JSON.stringify(items));}
+
+/* ══════════ 載入 ══════════ */
+async function load(){
+  try{items=JSON.parse(localStorage.getItem(LS_ITEMS)||'[]');}catch(e){items=[];}
+  render();
+  try{
+    const r=await fetch(RAW_URL+'?t='+Date.now(),{cache:'no-store'});
+    if(r.ok){
+      const remote=await r.json();
+      const rItems=Array.isArray(remote)?remote:(remote.items||[]);
+      // 記錄數守門：本機有未同步的變更且遠端筆數較少時，不覆蓋本機
+      if(dirty>0 && rItems.length<items.length){
+        setSync('dirty',dirty+' 筆未同步（遠端較舊，已保留本機）');
+      }else if(dirty===0){
+        items=rItems;saveLocal();render();
+        setSync('ok','已同步 · '+items.length+' 張');
+      }else{
+        setSync('dirty',dirty+' 筆未同步');
+      }
+    }else if(r.status===404){
+      setSync(dirty>0?'dirty':'ok',dirty>0?dirty+' 筆未同步':'尚未建立資料檔');
+    }else{
+      setSync('err','讀取失敗 '+r.status);
+    }
+  }catch(e){
+    setSync('err','離線模式（僅本機）');
+  }
+}
+
+/* ══════════ 渲染 ══════════ */
+function allTags(){
+  const s=new Set();items.forEach(it=>(it.tags||[]).forEach(t=>t&&s.add(t)));
+  return [...s].sort();
+}
+function renderTags(){
+  const tags=allTags();const bar=$('tagbar');
+  if(!tags.length){bar.innerHTML='';return;}
+  bar.innerHTML='<span class="tag-chip'+(activeTag===''?' on':'')+'" data-tag="">全部</span>'+
+    tags.map(t=>'<span class="tag-chip'+(activeTag===t?' on':'')+'" data-tag="'+esc(t)+'">'+esc(t)+'</span>').join('');
+}
+function filtered(){
+  const q=$('q').value.trim().toLowerCase();
+  return items.filter(it=>{
+    if(activeTag && !(it.tags||[]).includes(activeTag)) return false;
+    if(!q) return true;
+    return [it.title,it.pos,it.neg,it.model,it.lora,it.note,(it.tags||[]).join(' ')]
+      .join(' ').toLowerCase().includes(q);
+  });
+}
+function render(){
+  renderTags();
+  const list=filtered();
+  const g=$('gallery');
+  $('empty').style.display=items.length?'none':'block';
+  if(items.length && !list.length){
+    g.innerHTML='<div class="empty" style="column-span:all">找不到符合的圖片</div>';return;
+  }
+  g.innerHTML=list.map(it=>
+    '<div class="card" data-id="'+it.id+'">'+
+      '<img src="'+esc(it.thumb||it.url)+'" loading="lazy" alt="'+esc(it.title||'')+'">'+
+      '<div class="card-ov">'+
+        '<div class="card-t">'+esc(it.title||'未命名')+'</div>'+
+        '<div class="card-m">'+esc(it.model||(it.pos||'').slice(0,42))+'</div>'+
+      '</div>'+
+    '</div>').join('');
+}
+
+/* ══════════ 詳細檢視 ══════════ */
+let detailId=null;
+function openDetail(id){
+  const it=items.find(x=>x.id===id);if(!it)return;
+  detailId=id;
+  $('dTitle').textContent=it.title||'未命名';
+  $('dImg').src=it.url||'';
+  $('dOpen').href=it.url||'#';
+  $('dPos').textContent=it.pos||'（未填）';
+  $('dNeg').textContent=it.neg||'（未填）';
+  $('dNote').textContent=it.note||'';
+  $('dNoteWrap').style.display=it.note?'block':'none';
+  const m=[['模型',it.model],['LoRA',it.lora],['取樣器',it.sampler],['排程器',it.sched],
+           ['步驟',it.steps],['CFG',it.cfg],['種子',it.seed],['尺寸',it.size],['日期',it.date]]
+    .filter(x=>x[1]);
+  $('dMeta').innerHTML=m.map(x=>
+    '<div class="meta-item"><div class="meta-k">'+esc(x[0])+'</div><div class="meta-v">'+esc(x[1])+'</div></div>').join('');
+  $('detailMask').classList.add('open');
+}
+function detailAllText(){
+  const it=items.find(x=>x.id===detailId);if(!it)return '';
+  let s=(it.pos||'')+'\n';
+  if(it.neg) s+='Negative prompt: '+it.neg+'\n';
+  const p=[];
+  if(it.steps)p.push('Steps: '+it.steps);
+  if(it.sampler)p.push('Sampler: '+it.sampler);
+  if(it.sched)p.push('Scheduler: '+it.sched);
+  if(it.cfg)p.push('CFG scale: '+it.cfg);
+  if(it.seed)p.push('Seed: '+it.seed);
+  if(it.size)p.push('Size: '+it.size);
+  if(it.model)p.push('Model: '+it.model);
+  if(it.lora)p.push('LoRA: '+it.lora);
+  return s+p.join(', ');
+}
+
+/* ══════════ PNG 內嵌參數解析 ══════════ */
+async function readPngChunks(file){
+  const buf=await file.arrayBuffer();
+  const dv=new DataView(buf),u8=new Uint8Array(buf);
+  const sig=[137,80,78,71,13,10,26,10];
+  for(let i=0;i<8;i++) if(u8[i]!==sig[i]) return null;   // 不是 PNG
+  const out={};let off=8;
+  while(off+8<=u8.length){
+    const len=dv.getUint32(off);
+    const type=String.fromCharCode(u8[off+4],u8[off+5],u8[off+6],u8[off+7]);
+    const dataStart=off+8;
+    if(type==='IEND') break;
+    if(type==='tEXt'||type==='iTXt'||type==='zTXt'){
+      const seg=u8.subarray(dataStart,dataStart+len);
+      let z=seg.indexOf(0);
+      if(z>0){
+        const key=new TextDecoder('latin1').decode(seg.subarray(0,z));
+        try{
+          if(type==='tEXt'){
+            out[key]=new TextDecoder('utf-8').decode(seg.subarray(z+1));
+          }else if(type==='iTXt'){
+            const cf=seg[z+1];
+            let p=z+3;
+            p=seg.indexOf(0,p)+1;      // language tag
+            p=seg.indexOf(0,p)+1;      // translated keyword
+            const body=seg.subarray(p);
+            out[key]=cf===1?await inflate(body):new TextDecoder('utf-8').decode(body);
+          }else{ // zTXt
+            out[key]=await inflate(seg.subarray(z+2));
+          }
+        }catch(e){/* 單一 chunk 解析失敗就跳過 */}
+      }
+    }
+    off=dataStart+len+4;
+    if(len<0||off<=dataStart) break;
+  }
+  return out;
+}
+async function inflate(bytes){
+  if(typeof DecompressionStream==='undefined') throw new Error('no ds');
+  const ds=new DecompressionStream('deflate');
+  const stream=new Blob([bytes]).stream().pipeThrough(ds);
+  return await new Response(stream).text();
+}
+
+/* A1111 / Forge 格式 */
+function parseA1111(txt){
+  const r={};
+  const negIdx=txt.indexOf('Negative prompt:');
+  let head,tail;
+  if(negIdx>=0){
+    head=txt.slice(0,negIdx).trim();
+    const rest=txt.slice(negIdx+16);
+    const lines=rest.split('\n');
+    // 參數行 = 最後一行含 "Steps:" 或 "Sampler:"
+    let pIdx=lines.length-1;
+    for(let i=lines.length-1;i>=0;i--){ if(/(^|,\s*)(Steps|Sampler|CFG scale):/i.test(lines[i])){pIdx=i;break;} }
+    r.neg=lines.slice(0,pIdx).join('\n').trim();
+    tail=lines[pIdx]||'';
+  }else{
+    const lines=txt.split('\n');
+    let pIdx=-1;
+    for(let i=lines.length-1;i>=0;i--){ if(/(^|,\s*)(Steps|Sampler|CFG scale):/i.test(lines[i])){pIdx=i;break;} }
+    head=(pIdx>=0?lines.slice(0,pIdx):lines).join('\n').trim();
+    tail=pIdx>=0?lines[pIdx]:'';
+  }
+  r.pos=head;
+  const grab=(k)=>{const m=tail.match(new RegExp(k+':\\s*([^,]+)','i'));return m?m[1].trim():'';};
+  r.steps=grab('Steps');r.sampler=grab('Sampler');r.cfg=grab('CFG scale');
+  r.seed=grab('Seed');r.size=grab('Size');r.model=grab('Model');
+  r.sched=grab('Schedule type')||grab('Scheduler');
+  return r;
+}
+
+/* ComfyUI API-format workflow */
+function parseComfy(json){
+  let p;try{p=JSON.parse(json);}catch(e){return null;}
+  if(typeof p!=='object'||!p)return null;
+  const nodes=Object.entries(p);
+  const r={};
+  const ct=n=>(n&&n.class_type)||'';
+  // 找取樣器
+  let samp=null;
+  for(const [id,n] of nodes){
+    if(/sampler/i.test(ct(n)) && n.inputs && (n.inputs.positive||n.inputs.negative)){samp=n;break;}
+  }
+  // 順著連結找出第一個含 text 字串的節點
+  function followText(link,depth){
+    if(!Array.isArray(link)||depth>6)return '';
+    const n=p[link[0]];if(!n||!n.inputs)return '';
+    if(typeof n.inputs.text==='string')return n.inputs.text;
+    if(typeof n.inputs.string==='string')return n.inputs.string;
+    for(const v of Object.values(n.inputs)){
+      if(Array.isArray(v)){const t=followText(v,depth+1);if(t)return t;}
+    }
+    return '';
+  }
+  if(samp){
+    r.pos=followText(samp.inputs.positive,0);
+    r.neg=followText(samp.inputs.negative,0);
+    const i=samp.inputs;
+    if(i.steps!=null)r.steps=String(i.steps);
+    if(i.cfg!=null)r.cfg=String(i.cfg);
+    if(i.seed!=null)r.seed=String(i.seed);
+    if(i.noise_seed!=null)r.seed=String(i.noise_seed);
+    if(i.sampler_name)r.sampler=String(i.sampler_name);
+    if(i.scheduler)r.sched=String(i.scheduler);
+  }
+  // 沒有取樣器時：抓所有 CLIPTextEncode，第一個當正向、第二個當負向
+  if(!r.pos){
+    const te=nodes.filter(([id,n])=>/CLIPTextEncode/i.test(ct(n))&&n.inputs&&typeof n.inputs.text==='string');
+    if(te[0])r.pos=te[0][1].inputs.text;
+    if(te[1])r.neg=te[1][1].inputs.text;
+  }
+  for(const [id,n] of nodes){
+    const c=ct(n),i=n.inputs||{};
+    if(!r.model&&i.ckpt_name)r.model=String(i.ckpt_name).replace(/\.(safetensors|ckpt)$/i,'');
+    if(!r.model&&i.unet_name)r.model=String(i.unet_name).replace(/\.(safetensors|ckpt)$/i,'');
+    if(i.lora_name){
+      const nm=String(i.lora_name).replace(/\.safetensors$/i,'');
+      const w=i.strength_model!=null?i.strength_model:'';
+      r.lora=(r.lora?r.lora+', ':'')+nm+(w!==''?':'+w:'');
+    }
+    if(!r.size&&/EmptyLatent|EmptySD3|EmptyLTXV/i.test(c)&&i.width&&i.height) r.size=i.width+'x'+i.height;
+  }
+  return r;
+}
+
+async function extractMeta(file){
+  const chunks=await readPngChunks(file);
+  if(!chunks)return null;
+  if(chunks.parameters) return {src:'A1111',data:parseA1111(chunks.parameters)};
+  if(chunks.prompt){const d=parseComfy(chunks.prompt);if(d)return {src:'ComfyUI',data:d};}
+  if(chunks.workflow){const d=parseComfy(chunks.workflow);if(d)return {src:'ComfyUI',data:d};}
+  return null;
+}
+
+/* ══════════ 圖片上傳 ══════════ */
+function fileToB64(file){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=()=>res(String(fr.result).split(',')[1]);
+    fr.onerror=()=>rej(new Error('讀檔失敗'));
+    fr.readAsDataURL(file);
+  });
+}
+function uploadMode(){return localStorage.getItem(LS_UPMODE)||'repo';}
+
+/* 方式一：直接傳進自己的 GitHub repo（不需圖床，用既有的 token） */
+async function uploadToRepo(file){
+  const token=localStorage.getItem(LS_TOKEN);
+  if(!token) throw new Error('尚未設定 GitHub Token');
+  if(file.size>9*1024*1024) throw new Error('檔案超過 9MB，GitHub API 會失敗');
+  const m=file.name.match(/\.(png|jpe?g|webp|gif)$/i);
+  const ext=m?m[0].toLowerCase():'.png';
+  const path=IMG_DIR+'img'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+ext;
+  const b64=await fileToB64(file);
+  const api='https://api.github.com/repos/'+REPO_OWNER+'/'+REPO_NAME+'/contents/'+path;
+  const r=await fetch(api,{
+    method:'PUT',
+    headers:{'Authorization':'token '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+    body:JSON.stringify({message:'add '+path,content:b64,branch:BRANCH})
+  });
+  if(!r.ok){
+    const t=await r.text();
+    throw new Error(r.status===401?'Token 無效或沒有 repo 權限':r.status+' '+t.slice(0,90));
+  }
+  return {url:path,thumb:path};   // 相對路徑，GitHub Pages 直接吃
+}
+
+/* 方式二：ImgBB 圖床 */
+async function uploadImgbb(file){
+  const key=localStorage.getItem(LS_IMGBB);
+  if(!key) throw new Error('尚未設定 ImgBB API Key');
+  const b64=await fileToB64(file);
+  const fd=new FormData();fd.append('image',b64);
+  const r=await fetch('https://api.imgbb.com/1/upload?key='+encodeURIComponent(key),{method:'POST',body:fd});
+  const j=await r.json();
+  if(!j.success) throw new Error(j.error&&j.error.message?j.error.message:'上傳失敗');
+  return {url:j.data.url,thumb:(j.data.thumb&&j.data.thumb.url)||j.data.url};
+}
+
+/* ══════════ 新增／編輯 ══════════ */
+let pendingThumb='';
+function openEditor(id){
+  editingId=id||null;pendingThumb='';
+  const it=id?items.find(x=>x.id===id):null;
+  $('eTitle').textContent=id?'編輯圖片':'新增圖片';
+  const set=(f,v)=>{$(f).value=v||'';};
+  set('fUrl',it&&it.url);set('fTitle',it&&it.title);set('fPos',it&&it.pos);set('fNeg',it&&it.neg);
+  set('fModel',it&&it.model);set('fLora',it&&it.lora);set('fSampler',it&&it.sampler);
+  set('fSched',it&&it.sched);set('fSteps',it&&it.steps);set('fCfg',it&&it.cfg);
+  set('fSeed',it&&it.seed);set('fSize',it&&it.size);set('fNote',it&&it.note);
+  set('fTags',it&&(it.tags||[]).join(', '));
+  if(it){pendingThumb=it.thumb||'';}
+  const pv=$('dzPrev');
+  if(it&&it.url){pv.src=it.thumb||it.url;pv.style.display='block';}else{pv.style.display='none';}
+  $('dzTitle').textContent=it?'換一張圖（可拖曳）':'拖曳圖片到這裡，或點擊選檔';
+  $('editMask').classList.add('open');
+}
+async function handleFile(file){
+  if(!file||!file.type.startsWith('image/')){toast('請選圖片檔',true);return;}
+  const pv=$('dzPrev');pv.src=URL.createObjectURL(file);pv.style.display='block';
+
+  // 1) 讀內嵌參數
+  $('dzTitle').textContent='讀取圖片參數…';
+  try{
+    const meta=await extractMeta(file);
+    if(meta&&meta.data){
+      const d=meta.data,fill=(f,v)=>{if(v&&!$(f).value)$(f).value=v;};
+      fill('fPos',d.pos);fill('fNeg',d.neg);fill('fModel',d.model);fill('fLora',d.lora);
+      fill('fSampler',d.sampler);fill('fSched',d.sched);fill('fSteps',d.steps);
+      fill('fCfg',d.cfg);fill('fSeed',d.seed);fill('fSize',d.size);
+      toast('已讀取 '+meta.src+' 參數');
+    }else{
+      toast('這張圖沒有內嵌參數，請手動填');
+    }
+  }catch(e){toast('參數解析失敗，請手動填',true);}
+
+  // 2) 上傳
+  const mode=uploadMode();
+  if(mode==='repo' && !localStorage.getItem(LS_TOKEN)){
+    $('dzTitle').textContent='未設定 GitHub Token —— 請先到「設定」填入';
+    toast('請先到「設定」填 GitHub Token',true);return;
+  }
+  if(mode==='imgbb' && !localStorage.getItem(LS_IMGBB)){
+    $('dzTitle').textContent='未設定 ImgBB Key —— 請先到「設定」填入';
+    toast('請先到「設定」填 ImgBB Key',true);return;
+  }
+  $('dzTitle').textContent=mode==='repo'?'上傳到 GitHub…':'上傳到 ImgBB…';
+  try{
+    const up=mode==='repo'?await uploadToRepo(file):await uploadImgbb(file);
+    $('fUrl').value=up.url;pendingThumb=up.thumb;
+    $('dzTitle').textContent='上傳完成 ✓'+(mode==='repo'?'（GitHub Pages 約 30 秒後生效）':'');
+  }catch(e){
+    $('dzTitle').textContent='上傳失敗：'+e.message;
+    toast('上傳失敗：'+e.message,true);
+  }
+}
+function saveEntry(){
+  const url=$('fUrl').value.trim();
+  if(!url){toast('請先上傳圖片或填入網址',true);return;}
+  const v=f=>$(f).value.trim();
+  const obj={
+    id:editingId||uid(),
+    url:url,thumb:pendingThumb||url,
+    title:v('fTitle'),pos:v('fPos'),neg:v('fNeg'),
+    model:v('fModel'),lora:v('fLora'),sampler:v('fSampler'),sched:v('fSched'),
+    steps:v('fSteps'),cfg:v('fCfg'),seed:v('fSeed'),size:v('fSize'),
+    note:v('fNote'),
+    tags:v('fTags').split(',').map(s=>s.trim()).filter(Boolean),
+    date:(editingId&&(items.find(x=>x.id===editingId)||{}).date)||new Date().toLocaleDateString('sv-SE')
+  };
+  if(editingId){items=items.map(x=>x.id===editingId?obj:x);}
+  else{items.unshift(obj);}
+  saveLocal();markDirty();render();
+  $('editMask').classList.remove('open');
+  toast(editingId?'已更新':'已新增');
+}
+
+/* ══════════ 推送 GitHub ══════════ */
+async function push(){
+  if(pushing)return;
+  const token=localStorage.getItem(LS_TOKEN);
+  if(!token){toast('請先到「設定」填入 GitHub Token',true);$('setMask').classList.add('open');return;}
+  pushing=true;setSync('dirty','同步中…');
+  const api='https://api.github.com/repos/'+REPO_OWNER+'/'+REPO_NAME+'/contents/'+DATA_FILE;
+  const hdr={'Authorization':'token '+token,'Accept':'application/vnd.github+json'};
+  try{
+    // 取得最新 SHA（快取失效時重抓）
+    let sha=localStorage.getItem(LS_SHA)||null;
+    try{
+      const g=await fetch(api+'?ref='+BRANCH,{headers:hdr,cache:'no-store'});
+      if(g.ok){const gj=await g.json();sha=gj.sha;}
+      else if(g.status===404){sha=null;}   // 檔案不存在，第一次推送會自動建立
+    }catch(e){}
+    const body={
+      message:'update ai-data.json ('+items.length+' items)',
+      content:b64encode(JSON.stringify({version:1,updated:new Date().toISOString(),items:items},null,2)),
+      branch:BRANCH
+    };
+    if(sha)body.sha=sha;
+    const r=await fetch(api,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},hdr),body:JSON.stringify(body)});
+    if(!r.ok){const t=await r.text();throw new Error(r.status+' '+t.slice(0,120));}
+    const j=await r.json();
+    if(j.content&&j.content.sha)localStorage.setItem(LS_SHA,j.content.sha);
+    dirty=0;localStorage.setItem(LS_DIRTY,'0');
+    setSync('ok','已同步 · '+items.length+' 張');
+    toast('已推送到 GitHub');
+  }catch(e){
+    setSync('err','同步失敗');
+    toast('同步失敗：'+e.message,true);
+  }finally{pushing=false;}
+}
+
+/* ══════════ 事件綁定 ══════════ */
+$('gallery').addEventListener('click',e=>{
+  const c=e.target.closest('.card');if(c)openDetail(c.dataset.id);
+});
+$('tagbar').addEventListener('click',e=>{
+  const t=e.target.closest('.tag-chip');if(!t)return;
+  activeTag=t.dataset.tag;render();
+});
+$('q').addEventListener('input',render);
+$('btnAdd').addEventListener('click',()=>openEditor(null));
+$('btnSync').addEventListener('click',push);
+function toggleImgbbField(){
+  const on=$('sUpMode').value==='imgbb';
+  $('imgbbField').style.display=on?'block':'none';
+  $('imgbbHint').style.display=on?'block':'none';
+}
+$('sUpMode').addEventListener('change',toggleImgbbField);
+$('btnSettings').addEventListener('click',()=>{
+  $('sToken').value=localStorage.getItem(LS_TOKEN)||'';
+  $('sImgbb').value=localStorage.getItem(LS_IMGBB)||'';
+  $('sUpMode').value=uploadMode();
+  toggleImgbbField();
+  $('setMask').classList.add('open');
+});
+document.querySelectorAll('[data-close]').forEach(b=>
+  b.addEventListener('click',()=>b.closest('.mask').classList.remove('open')));
+document.querySelectorAll('.mask').forEach(m=>
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.mask.open').forEach(m=>m.classList.remove('open'));
+});
+
+$('dEdit').addEventListener('click',()=>{
+  $('detailMask').classList.remove('open');openEditor(detailId);
+});
+$('dDel').addEventListener('click',()=>{
+  const it=items.find(x=>x.id===detailId);if(!it)return;
+  if(!confirm('確定刪除「'+(it.title||'未命名')+'」？\n（圖床上的圖不會被刪除）'))return;
+  items=items.filter(x=>x.id!==detailId);
+  saveLocal();markDirty();render();
+  $('detailMask').classList.remove('open');toast('已刪除');
+});
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
+  const it=items.find(x=>x.id===detailId);if(!it)return;
+  copyText(b.dataset.copy==='pos'?it.pos:it.neg);
+}));
+$('dCopyAll').addEventListener('click',()=>copyText(detailAllText()));
+
+/* 拖放 / 選檔 */
+const dz=$('dz');
+dz.addEventListener('click',()=>$('fileInput').click());
+$('fileInput').addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
+['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{
+  e.preventDefault();e.stopPropagation();dz.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{
+  e.preventDefault();e.stopPropagation();dz.classList.remove('over');}));
+dz.addEventListener('drop',e=>{
+  const f=e.dataTransfer.files[0];if(f)handleFile(f);});
+$('eSave').addEventListener('click',saveEntry);
+
+/* 設定 */
+$('sSave').addEventListener('click',()=>{
+  const t=$('sToken').value.trim(),k=$('sImgbb').value.trim();
+  if(t)localStorage.setItem(LS_TOKEN,t);else localStorage.removeItem(LS_TOKEN);
+  if(k)localStorage.setItem(LS_IMGBB,k);else localStorage.removeItem(LS_IMGBB);
+  localStorage.setItem(LS_UPMODE,$('sUpMode').value);
+  $('setMask').classList.remove('open');toast('設定已儲存');
+});
+$('sExport').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify({version:1,items:items},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='ai-data-backup-'+new Date().toLocaleDateString('sv-SE')+'.json';
+  a.click();URL.revokeObjectURL(a.href);
+});
+$('sImport').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const j=JSON.parse(fr.result);
+      const arr=Array.isArray(j)?j:(j.items||[]);
+      if(!Array.isArray(arr))throw new Error('格式不符');
+      if(!confirm('將匯入 '+arr.length+' 筆，覆蓋目前的 '+items.length+' 筆。確定？'))return;
+      items=arr;saveLocal();markDirty();render();toast('已匯入 '+arr.length+' 筆');
+      $('setMask').classList.remove('open');
+    }catch(err){toast('匯入失敗：'+err.message,true);}
+  };
+  fr.readAsText(f);
+  e.target.value='';
+});
+
+/* 離開前提醒 */
+window.addEventListener('beforeunload',e=>{
+  if(dirty>0){e.preventDefault();e.returnValue='';}
+});
+
+load();
+</script>
+</body></html>
