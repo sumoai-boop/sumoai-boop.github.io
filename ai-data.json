@@ -1,7 +1,26 @@
 {
   "version": 1,
-  "updated": "2026-07-24T15:55:08.942Z",
+  "updated": "2026-07-24T15:57:53.894Z",
   "items": [
+    {
+      "id": "amrz4j12f8erw0",
+      "url": "images/ai/imgmrz4iun5al49.png",
+      "thumb": "images/ai/imgmrz4iun5al49.png",
+      "title": "",
+      "pos": "masterpiece,best quality,score_9,score_8,score_7, absurdres, newest, very aesthetic, amazing quality,highres,sensitive, <lora:shiny_nai_style_anima:1> shiny skin,wet,\n1girl, areola slip, black choker, black hair, blue background, blue eyes, blunt bangs, blush, breasts, choker, cleavage, collarbone, earrings, hairband, jewelry, large breasts, looking down, nightgown, one breast out, orange hairband, orange nightgown, parted lips, portrait, shiny skin, simple background, solo, sweatdrop, very low bun",
+      "neg": "bad quality,worst quality,worst detail,sketch,censored, artist name,score_1,score_2,score_3,blurry,jpeg artifacts,lowres, signature, watermark,patreon username, patreon logo",
+      "model": "abyssorangemix3AOM3_aom3a1b",
+      "lora": "BrownDustLoRA:1",
+      "sampler": "dpmpp_2s_ancestral",
+      "sched": "karras",
+      "steps": "25",
+      "cfg": "8",
+      "seed": "1086740994928766",
+      "size": "1024x1024",
+      "note": "",
+      "tags": [],
+      "date": "2026-07-24"
+    },
     {
       "id": "amrz4cqks2ti9y",
       "url": "images/ai/imgmrz4cj5v4sep.png",
