@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "updated": "2026-07-24T15:37:45.761Z",
+  "items": [
+    {
+      "id": "amrz3svfexikcg",
+      "url": "images/ai/imgmrz3ssj0crbb.png",
+      "thumb": "images/ai/imgmrz3ssj0crbb.png",
+      "title": "",
+      "pos": "masterpiece,best quality,ultra-detailed,very detailed illustrations,extremely detailed,intricate details,highres,super complex details,extremely detailed 8k cg wallpaper,white hair hair,soldier armour,long cape,angel wings,large breasts,<lora:BrownDustLoRA:0.8>",
+      "neg": "EasyNegative, ng_deepnegative_v1_75t, (worst quality:1.4), (low quality:1.4), (normal quality:1.4),lowres,crowd,multiple bodies",
+      "model": "abyssorangemix3AOM3_aom3a1b",
+      "lora": "",
+      "sampler": "dpm_adaptive",
+      "sched": "karras",
+      "steps": "20",
+      "cfg": "8",
+      "seed": "988104513943547",
+      "size": "1024x1560",
+      "note": "",
+      "tags": [],
+      "date": "2026-07-24"
+    }
+  ]
+}
