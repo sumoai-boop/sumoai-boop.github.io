@@ -1211,7 +1211,195 @@
       "currency": "THB",
       "rate": 0.96,
       "budget": 0,
-      "entries": []
+      "entries": [
+        {
+          "id": "mrw6gwxdkbqza",
+          "date": "2025-03-28",
+          "time": "",
+          "type": "住宿",
+          "title": "The Salil Hotel Sukhumvit 57",
+          "note": "",
+          "end": "",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6lefe3hop8",
+          "date": "2025-03-28",
+          "time": "17:45",
+          "type": "餐飲",
+          "title": "Sit and Wonder",
+          "note": "",
+          "end": "19:00",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6mdsb7duyx",
+          "date": "2025-03-28",
+          "time": "20:30",
+          "type": "餐飲",
+          "title": "McDonald's Sukhumvit",
+          "note": "",
+          "end": "21:15",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6qost08m5a",
+          "date": "2025-03-29",
+          "time": "10:45",
+          "type": "景點",
+          "title": "吞武里市場",
+          "note": "",
+          "end": "13:00",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6reba81ezf",
+          "date": "2025-03-29",
+          "time": "14:00",
+          "type": "餐飲",
+          "title": "After the Rain Coffee & Gallery",
+          "note": "",
+          "end": "15:30",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6rt72a4ich",
+          "date": "2025-03-29",
+          "time": "16:30",
+          "type": "景點",
+          "title": "鄭王廟",
+          "note": "",
+          "end": "18:00",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6s5z24lgfc",
+          "date": "2025-03-29",
+          "time": "19:00",
+          "type": "景點",
+          "title": "唐人街夜市",
+          "note": "",
+          "end": "21:30",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6siwuf6mwz",
+          "date": "2025-03-30",
+          "time": "10:00",
+          "type": "景點",
+          "title": "暹羅古城",
+          "note": "",
+          "end": "12:45",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6sxjlss09i",
+          "date": "2025-03-30",
+          "time": "13:15",
+          "type": "景點",
+          "title": "三頭象神博物館",
+          "note": "",
+          "end": "14:30",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6te0v3hz0b",
+          "date": "2025-03-30",
+          "time": "16:15",
+          "type": "景點",
+          "title": "恰圖恰市集",
+          "note": "",
+          "end": "18:15",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6tuwnk0cpf",
+          "date": "2025-03-30",
+          "time": "19:00",
+          "type": "景點",
+          "title": "中央世界購物商場",
+          "note": "",
+          "end": "20:30",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6ugjjqcjd7",
+          "date": "2025-03-30",
+          "time": "19:30",
+          "type": "餐飲",
+          "title": "Shake Shack CentralWorld",
+          "note": "",
+          "end": "20:15",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6v4u8egwpv",
+          "date": "2025-03-31",
+          "time": "11:30",
+          "type": "景點",
+          "title": "Ari區散步",
+          "note": "",
+          "end": "13:00",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6vkog7a0oe",
+          "date": "2025-03-31",
+          "time": "12:00",
+          "type": "餐飲",
+          "title": "TINY HOUSE rice & noodles",
+          "note": "",
+          "end": "12:45",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6w3k03t9uk",
+          "date": "2025-03-31",
+          "time": "14:00",
+          "type": "景點",
+          "title": "Platinum Fashion Mall",
+          "note": "",
+          "end": "15:30",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6wsdcybwnj",
+          "date": "2025-03-31",
+          "time": "18:00",
+          "type": "餐飲",
+          "title": "Terminal 21 Asok 美食街",
+          "note": "",
+          "end": "19:15",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mrw6xgzlhw2js",
+          "date": "2025-03-31",
+          "time": "17:30",
+          "type": "其他",
+          "title": "GANJA MEN 驚奇甘蔗店 買大麻軟糖",
+          "note": "",
+          "end": "18:00",
+          "amount": 0,
+          "cur": "THB"
+        }
+      ]
     },
     {
       "id": "mrvg4xllkdnxi",
