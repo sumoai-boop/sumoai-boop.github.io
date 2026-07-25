@@ -1,7 +1,26 @@
 {
   "version": 1,
-  "updated": "2026-07-24T16:26:50.876Z",
+  "updated": "2026-07-25T17:08:21.550Z",
   "items": [
+    {
+      "id": "ams0mg7723xylf",
+      "url": "images/ai/imgms0mg3jnst39.png",
+      "thumb": "images/ai/imgms0mg3jnst39.png",
+      "title": "",
+      "pos": "masterpiece,best quality,ultra-detailed,very detailed illustrations,extremely detailed,intricate details,highres,super complex details,extremely detailed 8k cg wallpaper,white hair hair,soldier armour,long cape,angel wings,large breasts,<lora:BrownDustLoRA:0.8>",
+      "neg": "EasyNegative, ng_deepnegative_v1_75t, (worst quality:1.4), (low quality:1.4), (normal quality:1.4),lowres,crowd,multiple bodies",
+      "model": "abyssorangemix3AOM3_aom3a1b",
+      "lora": "BrownDustLoRA:0.7",
+      "sampler": "dpmpp_sde",
+      "sched": "karras",
+      "steps": "30",
+      "cfg": "7",
+      "seed": "63577901543283",
+      "size": "832x1216",
+      "note": "",
+      "tags": [],
+      "date": "2026-07-26"
+    },
     {
       "id": "amrz5faah4rxj2",
       "url": "images/ai/imgmrz5f6cj59z7.png",
