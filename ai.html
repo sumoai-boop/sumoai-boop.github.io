@@ -258,6 +258,51 @@ a{color:inherit;}
   .global-dock{gap:1px!important;padding:4px 5px!important;}
   .gd-sep{height:19px!important;margin:0 1px!important;}
 }
+
+/* ── 分頁切換 ── */
+.viewtabs{display:flex;gap:8px;margin:22px 0 2px;flex-wrap:wrap;}
+.vtab{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.72);
+  border-radius:10px;padding:9px 18px;font-family:inherit;font-size:13px;cursor:pointer;transition:all .15s;min-height:40px;}
+.vtab:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.vtab.on{background:#FBBF24;border-color:#FBBF24;color:#1a1a1a;font-weight:700;}
+
+/* ── 提示詞百庫 ── */
+.ptool{display:flex;gap:10px;align-items:center;margin:22px 0 4px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.09);}
+.pcatbar{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 6px;}
+.pcat{font-size:11.5px;padding:6px 13px;border-radius:20px;cursor:pointer;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.11);color:rgba(255,255,255,0.64);transition:all .15s;user-select:none;white-space:nowrap;}
+.pcat:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.pcat.on{background:#FBBF24;border-color:#FBBF24;color:#1a1a1a;font-weight:700;}
+.pbody{margin-top:8px;padding-bottom:40px;}
+.psection{margin:30px 0 8px;}
+.psec-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:26px;color:#FBBF24;
+  margin-bottom:2px;letter-spacing:0.02em;border-bottom:1px solid rgba(251,191,36,0.22);padding-bottom:6px;}
+.pgroup{margin:16px 0;}
+.pgroup-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.46);margin-bottom:9px;}
+.pchips{display:flex;flex-wrap:wrap;gap:8px;}
+.pchip{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;cursor:pointer;user-select:none;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:9px;padding:7px 12px;transition:all .13s;}
+.pchip:hover{background:rgba(255,255,255,0.11);border-color:rgba(251,191,36,0.5);transform:translateY(-2px);}
+.pchip .en{font-family:'Space Mono',monospace;font-size:12.5px;color:#e8e8ef;line-height:1.2;}
+.pchip .zh{font-size:10px;color:rgba(255,255,255,0.5);line-height:1.1;}
+.pchip.sel{background:#FBBF24;border-color:#FBBF24;}
+.pchip.sel .en{color:#1a1a1a;font-weight:700;}
+.pchip.sel .zh{color:rgba(26,26,26,0.7);}
+.ptray{position:sticky;bottom:14px;margin-top:20px;display:flex;gap:12px;align-items:center;
+  background:rgba(18,18,26,0.92);backdrop-filter:blur(10px);border:1px solid rgba(251,191,36,0.35);
+  border-radius:14px;padding:12px 14px;box-shadow:0 10px 34px rgba(0,0,0,0.55);}
+.ptray-main{flex:1;display:flex;align-items:center;gap:10px;min-width:0;}
+.ptray-count{flex-shrink:0;min-width:26px;height:26px;padding:0 8px;border-radius:13px;background:#FBBF24;color:#1a1a1a;
+  font-weight:700;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;}
+.ptray-list{display:flex;flex-wrap:wrap;gap:6px;max-height:64px;overflow-y:auto;}
+.ptray-hint{font-size:12px;color:rgba(255,255,255,0.42);}
+.ttag{font-family:'Space Mono',monospace;font-size:11px;color:#e8e8ef;background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);border-radius:7px;padding:3px 8px;cursor:pointer;white-space:nowrap;}
+.ttag:hover{border-color:#f87171;color:#f87171;}
+.ttag b{color:rgba(255,255,255,0.4);font-weight:400;}
+.ttag:hover b{color:#f87171;}
+.ptray-btns{display:flex;gap:8px;flex-shrink:0;}
+@media(max-width:600px){.ptray{flex-direction:column;align-items:stretch;}.ptray-btns{justify-content:flex-end;}}
 </style>
 </head>
 <body>
@@ -288,6 +333,12 @@ a{color:inherit;}
   <h1 class="page-title">AI <em>圖庫</em></h1>
   <span class="page-label">— 12 / AI GALLERY</span>
 
+  <div class="viewtabs">
+    <button class="vtab on" data-view="gallery">🖼 圖庫</button>
+    <button class="vtab" data-view="prompts">📖 提示詞百庫</button>
+  </div>
+
+  <div id="viewGallery">
   <div class="toolbar">
     <div class="search-box"><input id="q" type="text" placeholder="搜尋提示詞、標題、模型、標籤…"></div>
     <button class="btn btn-primary" id="btnAdd">＋ 新增圖片</button>
@@ -302,6 +353,25 @@ a{color:inherit;}
     還沒有任何圖片<br>
     點右上角「＋ 新增圖片」，把 ComfyUI 產出的 PNG 拖進去<br>
     正負向提示詞會自動讀出來
+  </div>
+  </div><!-- /viewGallery -->
+
+  <div id="viewPrompts" style="display:none">
+    <div class="ptool">
+      <div class="search-box"><input id="pq" type="text" placeholder="搜尋提示詞（中英皆可）…"></div>
+    </div>
+    <div class="pcatbar" id="pcatbar"></div>
+    <div class="pbody" id="pbody"></div>
+    <div class="ptray" id="ptray">
+      <div class="ptray-main">
+        <span class="ptray-count" id="ptrayCount">0</span>
+        <div class="ptray-list" id="ptrayList"><span class="ptray-hint">點上方標籤加入組合，可一次複製多個</span></div>
+      </div>
+      <div class="ptray-btns">
+        <button class="btn btn-sm" id="ptrayClear">清空</button>
+        <button class="btn btn-primary btn-sm" id="ptrayCopy">複製全部</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1040,5 +1110,82 @@ window.addEventListener('beforeunload',e=>{
 });
 
 load();
+</script>
+<script>
+/* ══════════ 提示詞百庫 ══════════ */
+(function(){
+  const PDATA = [{"cat": "品質・起手式", "groups": [{"label": "基礎品質", "tags": [["masterpiece", "傑作"], ["best quality", "最佳品質"], ["high quality", "高品質"], ["ultra-detailed", "超細節"], ["highly detailed", "高細節"], ["extremely detailed", "極致細節"], ["highres", "高解析"], ["absurdres", "超高解析"], ["8k", "8K"], ["4k", "4K"], ["best illustration", "最佳插畫"], ["official art", "官方美術"]]}, {"label": "風格", "tags": [["photorealistic", "照片級寫實"], ["realistic", "寫實"], ["semi-realistic", "半寫實"], ["anime style", "動漫風"], ["anime screencap", "動畫截圖"], ["concept art", "概念美術"], ["cinematic", "電影感"]]}, {"label": "人數起手", "tags": [["1girl", "單一女性"], ["1boy", "單一男性"], ["solo", "單人"], ["2girls", "兩位女性"], ["multiple girls", "多位女性"]]}]}, {"cat": "身材體型", "groups": [{"label": "胸部", "tags": [["flat chest", "平胸"], ["small breasts", "小胸"], ["medium breasts", "中等胸"], ["large breasts", "大胸"], ["huge breasts", "巨乳"], ["gigantic breasts", "超巨乳"]]}, {"label": "腰", "tags": [["narrow waist", "細腰"], ["slim waist", "纖腰"], ["wasp waist", "蜂腰"]]}, {"label": "臀腿", "tags": [["wide hips", "寬臀"], ["curvy", "曲線豐滿"], ["thick thighs", "粗大腿"], ["thigh gap", "大腿縫"], ["toned legs", "結實美腿"]]}, {"label": "體型", "tags": [["petite", "嬌小"], ["slender", "纖細"], ["slim", "苗條"], ["hourglass figure", "沙漏身材"], ["plump", "豐腴"], ["voluptuous", "豐滿"], ["mature female", "成熟女性"], ["muscular", "肌肉"], ["athletic", "運動型"]]}, {"label": "身高", "tags": [["tall", "高挑"], ["short", "嬌小身高"]]}, {"label": "細節", "tags": [["collarbone", "鎖骨"], ["navel", "肚臍"], ["bare shoulders", "裸肩"], ["midriff", "小蠻腰露出"], ["abs", "腹肌"]]}]}, {"cat": "臉部・表情", "groups": [{"label": "眼睛顏色", "tags": [["blue eyes", "藍眼"], ["green eyes", "綠眼"], ["red eyes", "紅眼"], ["brown eyes", "棕眼"], ["purple eyes", "紫眼"], ["golden eyes", "金眼"], ["heterochromia", "異色瞳"]]}, {"label": "眼型", "tags": [["tsurime", "吊眼"], ["tareme", "垂眼"], ["half-closed eyes", "半闔眼"], ["glowing eyes", "發光雙眼"], ["sparkling eyes", "閃亮雙眼"]]}, {"label": "妝容・特徵", "tags": [["eyeshadow", "眼影"], ["blush", "臉紅"], ["lipstick", "口紅"], ["mole under eye", "眼下痣"], ["freckles", "雀斑"], ["long eyelashes", "長睫毛"], ["sharp features", "立體五官"]]}, {"label": "表情", "tags": [["smile", "微笑"], ["gentle smile", "溫柔微笑"], ["grin", "咧嘴笑"], ["smirk", "壞笑"], ["seductive smile", "魅惑微笑"], ["pout", "嘟嘴"], ["shy", "害羞"], ["expressionless", "面無表情"], ["open mouth", "張嘴"], ["light smile", "淺笑"], ["looking away", "別開視線"], ["teary eyes", "含淚"]]}]}, {"cat": "頭髮", "groups": [{"label": "長度", "tags": [["very short hair", "超短髮"], ["short hair", "短髮"], ["medium hair", "中長髮"], ["long hair", "長髮"], ["very long hair", "超長髮"], ["absurdly long hair", "極長髮"]]}, {"label": "髮型", "tags": [["ponytail", "馬尾"], ["high ponytail", "高馬尾"], ["side ponytail", "側馬尾"], ["twintails", "雙馬尾"], ["braid", "辮子"], ["twin braids", "雙辮"], ["hair bun", "丸子頭"], ["hime cut", "公主切"], ["bob cut", "鮑伯頭"], ["wavy hair", "波浪捲"], ["curly hair", "捲髮"], ["straight hair", "直髮"], ["messy hair", "凌亂髮"]]}, {"label": "髮色", "tags": [["black hair", "黑髮"], ["brown hair", "棕髮"], ["blonde hair", "金髮"], ["silver hair", "銀髮"], ["white hair", "白髮"], ["pink hair", "粉髮"], ["blue hair", "藍髮"], ["red hair", "紅髮"], ["purple hair", "紫髮"], ["green hair", "綠髮"], ["gradient hair", "漸層髮"], ["two-tone hair", "雙色髮"]]}, {"label": "瀏海", "tags": [["blunt bangs", "齊瀏海"], ["swept bangs", "斜瀏海"], ["hair between eyes", "髮絲遮眼"], ["sidelocks", "鬢髮"]]}]}, {"cat": "服裝", "groups": [{"label": "上身", "tags": [["shirt", "襯衫"], ["blouse", "女衫"], ["t-shirt", "T恤"], ["crop top", "短版上衣"], ["tank top", "背心"], ["sweater", "毛衣"], ["hoodie", "帽T"], ["off-shoulder", "露肩"], ["turtleneck", "高領"]]}, {"label": "洋裝・裙", "tags": [["dress", "洋裝"], ["sundress", "連身裙"], ["evening gown", "晚禮服"], ["long dress", "長洋裝"], ["pleated skirt", "百褶裙"], ["miniskirt", "迷你裙"], ["pencil skirt", "窄裙"], ["high-waist skirt", "高腰裙"]]}, {"label": "制服・職業", "tags": [["school uniform", "校服"], ["sailor uniform", "水手服"], ["serafuku", "水手制服"], ["nurse", "護士"], ["maid", "女僕"], ["office lady", "OL"], ["business suit", "西裝套裝"], ["police uniform", "警察制服"], ["waitress", "女服務生"]]}, {"label": "角色・幻想", "tags": [["witch hat", "女巫帽"], ["wizard robe", "法師袍"], ["armor", "盔甲"], ["plate armor", "板甲"], ["gothic lolita", "哥德蘿莉"], ["bunny suit", "兔女郎"], ["cheerleader", "啦啦隊"], ["idol costume", "偶像服"], ["wedding dress", "婚紗"]]}, {"label": "外套", "tags": [["jacket", "夾克"], ["coat", "大衣"], ["trench coat", "風衣"], ["cardigan", "開襟衫"], ["cape", "斗篷"], ["cloak", "披風"]]}]}, {"cat": "傳統服飾", "groups": [{"label": "漢服・中式", "tags": [["hanfu", "漢服"], ["breast curtain", "抹胸／訶子"], ["china dress", "中式旗袍"], ["cheongsam", "旗袍"], ["qipao", "旗袍"]]}, {"label": "和服", "tags": [["kimono", "和服"], ["yukata", "浴衣"], ["hakama", "袴"], ["furisode", "振袖"]]}, {"label": "束腰・收腰", "tags": [["corset", "束腰馬甲"], ["corset lacing", "綁繩收腰"], ["underbust corset", "下胸束腰"], ["waist cincher", "束腰帶"], ["waist tie", "腰帶結"], ["obi", "和服腰帶"], ["sash", "腰飾帶"]]}]}, {"cat": "內衣・泳裝", "groups": [{"label": "泳裝", "tags": [["bikini", "比基尼"], ["string bikini", "細帶比基尼"], ["swimsuit", "泳裝"], ["one-piece swimsuit", "連身泳裝"], ["competition swimsuit", "競賽泳裝"]]}, {"label": "內衣", "tags": [["lingerie", "內衣"], ["bra", "胸罩"], ["panties", "內褲"], ["babydoll", "性感睡衣"], ["see-through", "透視"], ["garter belt", "吊襪帶"]]}, {"label": "腿部", "tags": [["thighhighs", "過膝襪"], ["stockings", "絲襪"], ["fishnets", "網襪"], ["garter straps", "吊帶"]]}]}, {"cat": "配件", "groups": [{"label": "飾品・配件", "tags": [["choker", "頸圈"], ["necklace", "項鍊"], ["earrings", "耳環"], ["glasses", "眼鏡"], ["sunglasses", "墨鏡"], ["gloves", "手套"], ["elbow gloves", "長手套"], ["hair ribbon", "髮帶"], ["hair flower", "髮花"], ["hairclip", "髮夾"], ["crown", "皇冠"], ["tiara", "頭冠"], ["veil", "面紗"], ["cat ears", "貓耳"], ["animal ears", "獸耳"], ["halo", "光環"], ["wings", "翅膀"]]}]}, {"cat": "姿勢動作", "groups": [{"label": "姿勢", "tags": [["standing", "站姿"], ["sitting", "坐姿"], ["kneeling", "跪姿"], ["lying", "躺姿"], ["on back", "仰躺"], ["on stomach", "趴姿"], ["arms up", "舉手"], ["hands on hips", "叉腰"], ["looking back", "回眸"], ["looking at viewer", "看鏡頭"], ["from behind", "背面"], ["arched back", "挺腰"], ["leaning forward", "前傾"], ["stretching", "伸展"], ["walking", "行走"], ["dynamic pose", "動態姿勢"], ["contrapposto", "重心站姿"], ["crossed legs", "交叉腿"], ["hand on own cheek", "托腮"]]}]}, {"cat": "鏡頭・構圖", "groups": [{"label": "取景", "tags": [["full body", "全身"], ["upper body", "上半身"], ["cowboy shot", "七分身"], ["portrait", "肖像"], ["close-up", "特寫"], ["face focus", "臉部特寫"]]}, {"label": "視角", "tags": [["from above", "俯視"], ["from below", "仰視"], ["from side", "側面"], ["dutch angle", "傾斜構圖"], ["wide shot", "遠景"], ["depth of field", "景深"], ["bokeh", "散景"], ["pov", "第一人稱視角"]]}]}, {"cat": "光影・氛圍", "groups": [{"label": "光線", "tags": [["cinematic lighting", "電影光"], ["soft lighting", "柔光"], ["rim light", "輪廓光"], ["backlighting", "逆光"], ["golden hour", "黃金時刻"], ["dramatic lighting", "戲劇光"], ["volumetric lighting", "體積光"], ["studio lighting", "棚拍光"], ["neon lights", "霓虹光"], ["god rays", "耶穌光"], ["lens flare", "鏡頭光暈"]]}, {"label": "氛圍", "tags": [["moody", "氛圍感"], ["dreamy", "夢幻"], ["glowing", "發光"], ["ethereal", "空靈"]]}]}, {"cat": "場景背景", "groups": [{"label": "底色", "tags": [["simple background", "簡單背景"], ["white background", "白底"], ["gradient background", "漸層背景"], ["transparent background", "透明背景"]]}, {"label": "場景", "tags": [["outdoors", "戶外"], ["indoors", "室內"], ["bedroom", "臥室"], ["classroom", "教室"], ["beach", "海灘"], ["forest", "森林"], ["city street", "城市街道"], ["cafe", "咖啡廳"], ["fantasy background", "奇幻背景"], ["underwater", "水下"]]}, {"label": "氣候・時段", "tags": [["night", "夜晚"], ["cherry blossoms", "櫻花"], ["rain", "雨"], ["snow", "雪"], ["starry sky", "星空"], ["sunset", "夕陽"]]}]}, {"cat": "負向提示詞", "groups": [{"label": "解剖・手部", "tags": [["bad anatomy", "解剖錯誤"], ["bad hands", "手部畸形"], ["bad proportions", "比例錯誤"], ["extra fingers", "多指"], ["missing fingers", "缺指"], ["fused fingers", "手指黏連"], ["extra limbs", "多肢"], ["extra arms", "多手臂"], ["mutated hands", "變形手"], ["long neck", "長脖子"]]}, {"label": "品質・雜訊", "tags": [["lowres", "低解析"], ["worst quality", "最差品質"], ["low quality", "低品質"], ["jpeg artifacts", "壓縮雜訊"], ["blurry", "模糊"], ["deformed", "變形"], ["disfigured", "毀容"], ["poorly drawn face", "臉畫壞"], ["ugly", "醜"], ["duplicate", "重複"]]}, {"label": "畫面・浮水印", "tags": [["watermark", "浮水印"], ["signature", "簽名"], ["username", "用戶名"], ["text", "文字"], ["cropped", "裁切錯誤"], ["out of frame", "超出畫面"]]}]}];
+  const catNames = PDATA.map(c=>c.cat);
+  const sel = new Set();
+  let curCat = '__all__';
+  const g = id=>document.getElementById(id);
+  function tos(m,e){ if(window.toast) window.toast(m,e); }
+  function cp(t){ if(window.copyText) window.copyText(t);
+    else if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>tos('已複製')); }
+  function esc(s){return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+
+  document.querySelectorAll('.vtab').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.vtab').forEach(x=>x.classList.toggle('on',x===b));
+    const v=b.dataset.view;
+    g('viewGallery').style.display = v==='gallery'?'':'none';
+    g('viewPrompts').style.display = v==='prompts'?'':'none';
+    if(v==='prompts' && !g('viewPrompts').dataset.built){ buildCatbar(); render(); g('viewPrompts').dataset.built='1'; }
+  }));
+
+  function buildCatbar(){
+    const bar=g('pcatbar');
+    let html='<span class="pcat on" data-cat="__all__">全部</span>';
+    catNames.forEach(c=> html+='<span class="pcat" data-cat="'+esc(c)+'">'+esc(c)+'</span>');
+    bar.innerHTML=html;
+    bar.querySelectorAll('.pcat').forEach(ch=>ch.addEventListener('click',()=>{
+      curCat=ch.dataset.cat;
+      bar.querySelectorAll('.pcat').forEach(x=>x.classList.toggle('on',x===ch));
+      render();
+    }));
+  }
+
+  function render(){
+    const q=(g('pq').value||'').trim().toLowerCase();
+    let html='';
+    PDATA.forEach(cat=>{
+      if(curCat!=='__all__' && cat.cat!==curCat) return;
+      let sec='';
+      cat.groups.forEach(grp=>{
+        const tags=grp.tags.filter(t=> !q || (t[0]+' '+(t[1]||'')+' '+grp.label+' '+cat.cat).toLowerCase().includes(q));
+        if(!tags.length) return;
+        sec+='<div class="pgroup"><div class="pgroup-label">'+esc(grp.label)+'</div><div class="pchips">';
+        tags.forEach(t=>{
+          const on=sel.has(t[0])?' sel':'';
+          sec+='<span class="pchip'+on+'" data-en="'+esc(t[0])+'"><span class="en">'+esc(t[0])+'</span>'+(t[1]?'<span class="zh">'+esc(t[1])+'</span>':'')+'</span>';
+        });
+        sec+='</div></div>';
+      });
+      if(sec) html+='<div class="psection"><div class="psec-title">'+esc(cat.cat)+'</div>'+sec+'</div>';
+    });
+    g('pbody').innerHTML = html || '<div class="empty" style="padding:60px 20px">找不到符合的提示詞</div>';
+    g('pbody').querySelectorAll('.pchip').forEach(ch=>ch.addEventListener('click',()=>{
+      const en=ch.dataset.en;
+      if(sel.has(en)){sel.delete(en);ch.classList.remove('sel');}
+      else{sel.add(en);ch.classList.add('sel');}
+      renderTray();
+    }));
+  }
+
+  function renderTray(){
+    g('ptrayCount').textContent=sel.size;
+    const list=g('ptrayList');
+    if(!sel.size){ list.innerHTML='<span class="ptray-hint">點上方標籤加入組合，可一次複製多個</span>'; return; }
+    list.innerHTML=[...sel].map(en=>'<span class="ttag" data-en="'+esc(en)+'">'+esc(en)+' <b>✕</b></span>').join('');
+    list.querySelectorAll('.ttag').forEach(t=>t.addEventListener('click',()=>{
+      const en=t.dataset.en; sel.delete(en); renderTray();
+      const ch=g('pbody').querySelector('.pchip[data-en="'+(window.CSS&&CSS.escape?CSS.escape(en):en.replace(/"/g,'\\"'))+'"]');
+      if(ch)ch.classList.remove('sel');
+    }));
+  }
+
+  g('pq').addEventListener('input',render);
+  g('ptrayCopy').addEventListener('click',()=>{ if(!sel.size){tos('還沒有選任何提示詞',true);return;} cp([...sel].join(', ')); });
+  g('ptrayClear').addEventListener('click',()=>{ sel.clear(); renderTray(); g('pbody').querySelectorAll('.pchip.sel').forEach(c=>c.classList.remove('sel')); });
+})();
 </script>
 </body></html>
