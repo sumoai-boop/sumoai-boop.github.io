@@ -70,6 +70,13 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .cat-btn{padding:7px 16px;border-radius:var(--border-radius-md,6px);font-size:12px;cursor:pointer;border:1px solid rgba(229,9,20,0.3);background:transparent;color:var(--muted);font-family:inherit;transition:all .2s;}
 .cat-btn:hover{border-color:var(--red);color:var(--text);}
 .cat-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
+.card-title.has-tools::after{display:none}
+.ct-line{flex:1;height:1px;background:var(--border)}
+.year-tabs{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.year-btn{padding:4px 11px;border-radius:var(--border-radius-md,6px);font-size:11px;letter-spacing:.5px;cursor:pointer;border:1px solid var(--border2, rgba(255,255,255,0.12));background:transparent;color:var(--muted);font-family:inherit;transition:all .18s;}
+.year-btn:hover{border-color:var(--red);color:var(--text);}
+.year-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
+.year-btn:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
 
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-group{display:flex;flex-direction:column;gap:6px}
@@ -298,7 +305,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
     <div class="card"><div class="card-title" id="title-weeks">上榜週數最多</div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
     <div class="card"><div class="card-title" id="title-views">累計觀看最高</div><div id="rank-views"><div class="empty">載入中...</div></div></div>
   </div>
-  <div class="card"><div class="card-title" id="title-ones">各週 #1 作品</div><div id="ones-list"><div class="empty">載入中...</div></div></div>
+  <div class="card"><div class="card-title has-tools" id="title-ones"><span>各週 #1 作品</span><span class="ct-line"></span><div class="year-tabs" id="ones-years"></div></div><div id="ones-list"><div class="empty">載入中...</div></div></div>
   <div class="grid2">
     <div class="card"><div class="card-title" id="stat1-title">各國家上榜部數（不重複）</div><div id="country-titles"></div></div>
     <div class="card"><div class="card-title" id="stat2-title">各國家上榜次數（含重複週次）</div><div id="country-weeks"></div></div>
@@ -928,6 +935,50 @@ function switchCat(btn) {
   renderDashboard();
 }
 
+/* ── 各週 #1 作品：年份切換 ──
+   跨年的週次（例 12/29/25 - 1/4/26）以「開始日」為準，算前一年。
+   parseWeekDate 取的就是 ' - ' 前面那段，所以直接用它的年份即可。 */
+let onesAll = [];
+let onesYear = null;   // 年份數字，或 'all'
+
+function onesYearOf(week) {
+  const t = parseWeekDate(week);
+  return t ? new Date(t).getFullYear() : 0;
+}
+
+function renderOnesYears() {
+  const box = document.getElementById('ones-years');
+  if (!box) return;
+  const years = [...new Set(onesAll.map(e => onesYearOf(e.week)))].filter(Boolean).sort((a,b) => b - a);
+  if (!years.length) { box.innerHTML = ''; return; }
+  // 預設看最新那一年；切換類別後若原本選的年份沒資料，退回最新
+  if (onesYear !== 'all' && years.indexOf(onesYear) < 0) onesYear = years[0];
+  box.innerHTML = years.map(y =>
+      '<button class="year-btn' + (onesYear === y ? ' active' : '') + '" onclick="switchOnesYear(' + y + ')">' + y + '</button>'
+    ).join('') +
+    '<button class="year-btn' + (onesYear === 'all' ? ' active' : '') + '" onclick="switchOnesYear(\'all\')">全部</button>';
+}
+
+function switchOnesYear(y) {
+  onesYear = y;
+  renderOnesYears();
+  renderOnesList();
+}
+
+function renderOnesList() {
+  const list = onesYear === 'all' ? onesAll : onesAll.filter(e => onesYearOf(e.week) === onesYear);
+  document.getElementById('ones-list').innerHTML = list.length ? list.map(e => {
+    const disp = e.titleZh || e.title;
+    const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
+    const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
+    return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
+      '<div class="ones-title" style="flex:1;min-width:0">' +
+        '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
+      '</div>' +
+      '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
+  }).join('') : '<div class="empty">這一年尚無資料</div>';
+}
+
 function renderDashboard() {
   const filtered = currentCat === 'all' ? db : db.filter(e => e.cat === currentCat);
   const catLabel = {
@@ -989,17 +1040,9 @@ function renderDashboard() {
     const key = e.week + '|' + e.cat;
     if (!onesMap[key] || (e.views||0) > (onesMap[key].views||0)) onesMap[key] = e;
   });
-  const onesSorted = Object.values(onesMap).sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
-  document.getElementById('ones-list').innerHTML = onesSorted.length ? onesSorted.map(e => {
-    const disp = e.titleZh || e.title;
-    const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
-    const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
-    return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
-      '<div class="ones-title" style="flex:1;min-width:0">' +
-        '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
-      '</div>' +
-      '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
-  }).join('') : '<div class="empty">尚無資料</div>';
+  onesAll = Object.values(onesMap).sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
+  renderOnesYears();
+  renderOnesList();
 
   // ── 根據類別決定顯示國家統計或類型統計 ──
   const isEnglish = currentCat === 'Movies|English' || currentCat === 'Shows|English';
