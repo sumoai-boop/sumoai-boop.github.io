@@ -307,8 +307,35 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 
 <!-- ADD -->
 <div id="tab-add" class="section">
+  <div class="card" style="border-color:rgba(229,9,20,0.35);">
+    <div class="card-title">從 Netflix 官方資料匯入</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;">
+      直接讀 Netflix 每週二發布的官方統計檔，四個榜單一次匯入，不需要截圖或辨識。
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>週次</label>
+        <select id="nf-week"><option value="">先按右邊「載入週次」</option></select>
+      </div>
+      <div class="form-group">
+        <label>一次匯入幾週（往前算）</label>
+        <input type="number" id="nf-count" value="1" min="1" max="20" step="1">
+      </div>
+    </div>
+    <details style="margin-bottom:12px;">
+      <summary style="cursor:pointer;font-size:12px;color:var(--muted);outline:none;">Worker 網址設定</summary>
+      <input type="text" id="nf-worker" placeholder="https://netflix-top10-sync.你的帳號.workers.dev"
+        style="margin-top:8px;font-family:monospace;font-size:12px;">
+    </details>
+    <div id="nf-status" class="status-box" style="display:none"></div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="nf-btn-load" onclick="nfLoadWeeks()">載入週次</button>
+      <button class="btn-red" id="nf-btn-import" onclick="nfImport()">匯入並儲存</button>
+    </div>
+  </div>
+
   <div class="card">
-    <div class="card-title">新增週榜資料</div>
+    <div class="card-title">手動新增（截圖備援）</div>
     <div class="form-row">
       <div class="form-group">
         <label>週次</label>
@@ -481,6 +508,8 @@ function hideLoading() {
 }
 
 async function init() {
+  const nfw = document.getElementById('nf-worker');
+  if (nfw) nfw.value = localStorage.getItem(NF_URL_KEY) || '';
   setSyncStatus('loading', '連線中...');
   showLoading('從 GitHub 載入資料...');
   try {
@@ -538,6 +567,106 @@ function parseViews(s) {
   if (s.endsWith('M')) return Math.round(parseFloat(s) * 1000000);
   if (s.endsWith('K')) return Math.round(parseFloat(s) * 1000);
   return parseInt(s) || 0;
+}
+
+/* ══════════ Netflix 官方資料匯入 ══════════ */
+const NF_URL_KEY = 'nf_worker_url';
+let nfWeeks = [];
+
+function nfWorker() {
+  const el = document.getElementById('nf-worker');
+  let u = (el.value || localStorage.getItem(NF_URL_KEY) || '').trim().replace(/\/+$/, '');
+  if (u) { localStorage.setItem(NF_URL_KEY, u); el.value = u; }
+  return u;
+}
+
+function nfStatus(kind, text) {
+  const el = document.getElementById('nf-status');
+  el.style.display = 'block';
+  el.className = 'status-box' + (kind ? ' ' + kind : '');
+  el.textContent = text;
+}
+
+async function nfLoadWeeks() {
+  const base = nfWorker();
+  if (!base) { nfStatus('err', '請先在「Worker 網址設定」填入你的 Worker 網址'); return; }
+  const btn = document.getElementById('nf-btn-load');
+  btn.disabled = true;
+  nfStatus('', '讀取 Netflix 週次中...');
+  try {
+    const r = await fetch(base + '/weeks');
+    const d = await r.json();
+    if (d.error) throw new Error(d.error);
+    nfWeeks = d;
+    const have = new Set(db.map(e => e.week));
+    document.getElementById('nf-week').innerHTML = d.map(w =>
+      `<option value="${w.iso}">${w.label}${have.has(w.label) ? '（已有）' : ''}</option>`
+    ).join('');
+    const firstNew = d.findIndex(w => !have.has(w.label));
+    if (firstNew >= 0) document.getElementById('nf-week').selectedIndex = firstNew;
+    nfStatus('ok', '共 ' + d.length + ' 週可匯入，最新為 ' + d[0].label);
+  } catch (e) {
+    nfStatus('err', '載入失敗：' + e.message);
+  }
+  btn.disabled = false;
+}
+
+function nfImport() {
+  const base = nfWorker();
+  if (!base) { nfStatus('err', '請先填入 Worker 網址'); return; }
+  const start = document.getElementById('nf-week');
+  if (!start.value) { nfStatus('err', '請先按「載入週次」'); return; }
+  const n = Math.max(1, Math.min(20, parseInt(document.getElementById('nf-count').value, 10) || 1));
+  const targets = nfWeeks.slice(start.selectedIndex, start.selectedIndex + n);
+
+  requireToken(async () => {
+    const btn = document.getElementById('nf-btn-import');
+    btn.disabled = true;
+    showLoading('抓取 Netflix 官方資料...');
+    try {
+      // 一個榜單一次請求：Cloudflare 免費方案每個請求上限 50 個子請求，
+      // 四個榜一起抓會超額，TMDB 補到一半就會斷。
+      const cats = ['Movies|English', 'Movies|Non-English', 'Shows|English', 'Shows|Non-English'];
+      let all = [];
+      for (let i = 0; i < targets.length; i++) {
+        for (let c = 0; c < cats.length; c++) {
+          nfStatus('', `抓取 ${targets[i].label} · ${catMap[cats[c]]}（${i * 4 + c + 1}/${targets.length * 4}）...`);
+          const r = await fetch(base + '/week?date=' + targets[i].iso + '&cat=' + encodeURIComponent(cats[c]));
+          const d = await r.json();
+          if (d.error) throw new Error(d.error);
+          all = all.concat(d);
+        }
+      }
+      if (!all.length) throw new Error('沒有取得任何資料');
+      const blank = all.filter(e => !e.country && !(e.genres || []).length).length;
+
+      nfStatus('', '寫入 GitHub...');
+      showLoading('寫入 GitHub...');
+      const latest = await ghRead();
+      db = latest || [];
+      const before = db.length;
+      const keys = new Set(all.map(e => e.week + '||' + e.cat));
+      db = db.filter(e => !keys.has(e.week + '||' + e.cat));
+      db.push(...all);
+      if (db.length < before) throw new Error('筆數異常下降，已中止');
+      await ghWrite(db);
+
+      nfStatus('ok', `已匯入 ${targets.length} 週共 ${all.length} 筆（資料庫 ${db.length} 筆）`
+        + (blank ? ` — 其中 ${blank} 筆 TMDB 查無資料，可在「記錄」分頁手動補` : ''));
+      setSyncStatus('ok', '已同步');
+      renderDashboard();
+      renderRecords();
+      const have = new Set(db.map(e => e.week));
+      start.innerHTML = nfWeeks.map(w =>
+        `<option value="${w.iso}">${w.label}${have.has(w.label) ? '（已有）' : ''}</option>`
+      ).join('');
+    } catch (e) {
+      nfStatus('err', '匯入失敗：' + e.message);
+      setSyncStatus('err', '同步失敗');
+    }
+    hideLoading();
+    btn.disabled = false;
+  });
 }
 
 function manualAdd() {
