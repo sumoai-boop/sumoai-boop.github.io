@@ -129,6 +129,45 @@
   .global-dock{gap:1px!important;padding:4px 5px!important;}
   .gd-sep{height:19px!important;margin:0 1px!important;}
 }
+
+/* ── macOS 視窗 ── */
+.osx-win{position:fixed;z-index:60;display:none;flex-direction:column;
+  background:rgba(30,30,36,0.97);backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.16);border-radius:12px;overflow:hidden;
+  box-shadow:0 26px 70px rgba(0,0,0,0.55),0 4px 14px rgba(0,0,0,0.4);
+  opacity:0;transform:scale(0.94);transition:opacity .18s ease,transform .18s cubic-bezier(0.2,0.9,0.3,1.2);}
+.osx-win.show{display:flex;}
+.osx-win.in{opacity:1;transform:scale(1);}
+.osx-win.max{border-radius:0;}
+.win-bar{height:38px;flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 12px;
+  background:linear-gradient(180deg,rgba(60,60,70,0.95),rgba(44,44,52,0.95));
+  border-bottom:1px solid rgba(0,0,0,0.45);cursor:grab;user-select:none;}
+.win-bar:active{cursor:grabbing;}
+.win-lights{display:flex;gap:8px;flex-shrink:0;}
+.wl{width:12px;height:12px;border-radius:50%;border:none;padding:0;cursor:pointer;position:relative;
+  font-size:9px;line-height:12px;text-align:center;color:rgba(0,0,0,0.55);font-weight:900;}
+.wl span{opacity:0;transition:opacity .12s;}
+.win-lights:hover .wl span{opacity:1;}
+.wl-red{background:#FF5F57;}.wl-yellow{background:#FEBC2E;}.wl-green{background:#28C840;}
+.win-title{flex:1;text-align:center;font-size:13px;font-weight:600;color:rgba(255,255,255,0.86);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;}
+.win-ext{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.75);font-size:13px;line-height:1;}
+.win-ext:hover{background:rgba(255,255,255,0.2);color:#fff;}
+.win-body{flex:1;position:relative;background:#fff;min-height:0;}
+.win-body iframe{width:100%;height:100%;border:0;display:block;}
+.win-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(24,24,30,0.96);color:rgba(255,255,255,0.6);font-size:13px;z-index:2;}
+.win-load.off{display:none;}
+.win-grip{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;z-index:3;}
+.win-grip::after{content:'';position:absolute;right:3px;bottom:3px;width:8px;height:8px;
+  border-right:2px solid rgba(255,255,255,0.35);border-bottom:2px solid rgba(255,255,255,0.35);}
+.osx-win.max .win-grip{display:none;}
+@media(max-width:768px){
+  .win-bar{height:44px;}
+  .wl{width:15px;height:15px;line-height:15px;}
+  .win-grip{display:none;}
+}
 </style>
 </head>
 <body>
@@ -206,6 +245,25 @@ setInterval(updateTime, 10000);
 
 
 
+
+<!-- ══ macOS 視窗 ══ -->
+<div class="osx-win" id="osxWin" role="dialog" aria-label="應用程式視窗">
+  <div class="win-bar" id="winBar">
+    <div class="win-lights">
+      <button class="wl wl-red"    id="winClose" title="關閉"><span>✕</span></button>
+      <button class="wl wl-yellow" id="winMin"   title="縮到最小"><span>−</span></button>
+      <button class="wl wl-green"  id="winMax"   title="放到最大"><span>+</span></button>
+    </div>
+    <div class="win-title" id="winTitle">—</div>
+    <button class="win-ext" id="winExt" title="在新分頁開啟">↗</button>
+  </div>
+  <div class="win-body">
+    <div class="win-load" id="winLoad">載入中…</div>
+    <iframe id="winFrame" title="內容"></iframe>
+  </div>
+  <div class="win-grip" id="winGrip"></div>
+</div>
+
 <div class="dock-trigger-zone" id="dockTrigger"></div>
 <div class="global-dock-wrap" id="globalDock">
   <div class="global-dock">
@@ -229,6 +287,132 @@ setInterval(updateTime, 10000);
 (function(){
   var dock=document.getElementById('globalDock');
   if(dock) dock.classList.add('visible');
+})();
+</script>
+<script>
+/* ══════════ Dock → 首頁視窗 ══════════ */
+(function(){
+  const g=id=>document.getElementById(id);
+  const win=g('osxWin'), bar=g('winBar'), frame=g('winFrame'),
+        titleEl=g('winTitle'), load=g('winLoad'), grip=g('winGrip');
+  const GEO='sumoai_win_geo';
+  let cur='', maxed=false, pre=null;
+  const mobile=()=>window.innerWidth<=768;
+
+  /* ── 幾何 ── */
+  function defGeo(){
+    if(mobile()) return {x:6,y:34,w:window.innerWidth-12,h:window.innerHeight-46};
+    const w=Math.min(1180,Math.round(window.innerWidth*0.82));
+    const hh=Math.min(760,Math.round(window.innerHeight*0.8));
+    return {x:Math.round((window.innerWidth-w)/2),y:Math.max(34,Math.round((window.innerHeight-hh)/2)),w:w,h:hh};
+  }
+  function loadGeo(){
+    if(mobile()) return defGeo();
+    try{const s=JSON.parse(localStorage.getItem(GEO)); if(s&&s.w>320&&s.h>240) return s;}catch(e){}
+    return defGeo();
+  }
+  function saveGeo(){
+    if(maxed||mobile()) return;
+    try{localStorage.setItem(GEO,JSON.stringify({x:win.offsetLeft,y:win.offsetTop,w:win.offsetWidth,h:win.offsetHeight}));}catch(e){}
+  }
+  function applyGeo(o){
+    win.style.left=o.x+'px'; win.style.top=o.y+'px';
+    win.style.width=o.w+'px'; win.style.height=o.h+'px';
+  }
+
+  /* ── 開窗 ── */
+  function open(href,label){
+    const same = (cur===href) && win.classList.contains('show');
+    cur=href; titleEl.textContent=label||'';
+    g('winExt').onclick=()=>window.open(href,'_blank');
+    if(!same){ load.classList.remove('off'); frame.src=href; }
+    if(!win.classList.contains('show')){
+      applyGeo(loadGeo());
+      win.classList.add('show');
+      requestAnimationFrame(()=>win.classList.add('in'));
+    }
+  }
+  function close(){
+    win.classList.remove('in');
+    setTimeout(()=>{ win.classList.remove('show'); frame.src='about:blank'; cur=''; },180);
+  }
+  function minimize(){ win.classList.remove('in'); setTimeout(()=>win.classList.remove('show'),180); }
+  function toggleMax(){
+    if(maxed){ applyGeo(pre||defGeo()); win.classList.remove('max'); maxed=false; }
+    else{
+      pre={x:win.offsetLeft,y:win.offsetTop,w:win.offsetWidth,h:win.offsetHeight};
+      win.style.left='0px'; win.style.top='28px';
+      win.style.width=window.innerWidth+'px'; win.style.height=(window.innerHeight-28)+'px';
+      win.classList.add('max'); maxed=true;
+    }
+  }
+
+  g('winClose').onclick=e=>{e.stopPropagation();close();};
+  g('winMin').onclick  =e=>{e.stopPropagation();minimize();};
+  g('winMax').onclick  =e=>{e.stopPropagation();toggleMax();};
+  bar.addEventListener('dblclick',e=>{ if(!e.target.closest('.wl,.win-ext')) toggleMax(); });
+
+  /* ── iframe 載入後隱藏子頁自己的選單列與 Dock ── */
+  frame.addEventListener('load',()=>{
+    load.classList.add('off');
+    try{
+      const d=frame.contentDocument; if(!d||!d.head) return;
+      const s=d.createElement('style');
+      s.textContent='.global-menubar,.menubar,.global-dock-wrap,.dock-trigger-zone{display:none!important}';
+      d.head.appendChild(s);
+      d.addEventListener('click',ev=>{
+        const a=ev.target.closest&&ev.target.closest('a[href$="index.html"]');
+        if(a){ ev.preventDefault(); close(); }
+      });
+    }catch(e){}
+  });
+
+  /* ── 拖曳 ── */
+  let drag=null;
+  bar.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.wl,.win-ext')||maxed) return;
+    drag={sx:e.clientX,sy:e.clientY,ox:win.offsetLeft,oy:win.offsetTop};
+    bar.setPointerCapture(e.pointerId);
+  });
+  bar.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    let nx=drag.ox+(e.clientX-drag.sx), ny=drag.oy+(e.clientY-drag.sy);
+    nx=Math.max(-win.offsetWidth+120,Math.min(window.innerWidth-120,nx));
+    ny=Math.max(28,Math.min(window.innerHeight-46,ny));
+    win.style.left=nx+'px'; win.style.top=ny+'px';
+  });
+  bar.addEventListener('pointerup',e=>{ if(drag){drag=null;saveGeo();} });
+
+  /* ── 縮放 ── */
+  let rz=null;
+  grip.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    rz={sx:e.clientX,sy:e.clientY,w:win.offsetWidth,h:win.offsetHeight};
+    grip.setPointerCapture(e.pointerId);
+  });
+  grip.addEventListener('pointermove',e=>{
+    if(!rz) return;
+    win.style.width =Math.max(360,rz.w+(e.clientX-rz.sx))+'px';
+    win.style.height=Math.max(260,rz.h+(e.clientY-rz.sy))+'px';
+  });
+  grip.addEventListener('pointerup',()=>{ if(rz){rz=null;saveGeo();} });
+
+  /* ── Dock 攔截（事件委派，之後新增圖示自動生效）── */
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('.gd-item'); if(!a) return;
+    const href=a.getAttribute('href')||'';
+    if(!href||/^(https?:|mailto:|#)/.test(href)||a.target==='_blank') return;
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0) return;   /* 保留另開分頁 */
+    e.preventDefault();
+    const lb=a.querySelector('.gd-label');
+    open(href, lb?lb.textContent.trim():href.replace('.html',''));
+  });
+
+  window.addEventListener('resize',()=>{
+    if(!win.classList.contains('show')) return;
+    if(maxed){ win.style.width=window.innerWidth+'px'; win.style.height=(window.innerHeight-28)+'px'; return; }
+    if(mobile()) applyGeo(defGeo());
+  });
 })();
 </script>
 </body>
