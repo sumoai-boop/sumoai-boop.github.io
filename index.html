@@ -207,13 +207,10 @@
   function onlineSrc(slot){ return 'https://picsum.photos/seed/w'+slot+'/2560/1440'; }
 
   var img = document.getElementById('wallpaper');
-  var LIST_KEY = 'sumoai_wall_list', DAY_KEY = 'sumoai_wall_day';
-  var list = null, listDay = null;
-
-  function today(){
-    var d = new Date();
-    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  }
+  var LIST_KEY = 'sumoai_wall_list', TS_KEY = 'sumoai_wall_ts';
+  var list = null, lastOK = 0, lastTry = 0;
+  var RELIST_MS = 10*60*1000;   /* 每 10 分鐘重新讀一次資料夾（新上傳的圖很快就會加入輪播） */
+  var RETRY_MS  = 3*60*1000;    /* 讀取失敗時的重試間隔，避免一直打 API */
   /* 目前是第幾個時段：每 CHANGE_EVERY_MINUTES 分鐘 +1，跨到下一段就換圖 */
   function slotNum(){
     var d = new Date();
@@ -264,13 +261,14 @@
 
   try{
     var saved = JSON.parse(localStorage.getItem(LIST_KEY) || 'null');
-    listDay = localStorage.getItem(DAY_KEY);
+    lastOK = parseInt(localStorage.getItem(TS_KEY) || '0', 10) || 0;
     if(saved && saved.length) list = saved;
   }catch(e){}
   apply();
 
-  /* 一天只查一次資料夾內容，結果存在瀏覽器 */
+  /* 讀取 wallpapers/ 資料夾內容（每次開頁 + 每 10 分鐘各一次） */
   function refreshList(){
+    lastTry = Date.now();
     var h = {'Accept':'application/vnd.github.v3+json'};
     try{ var tk = localStorage.getItem('sumoai_gh_token'); if(tk) h.Authorization = 'token '+tk; }catch(e){}
     fetch('https://api.github.com/repos/'+REPO+'/contents/'+DIR+'?t='+Date.now(), {headers:h})
@@ -281,22 +279,39 @@
                  .map(function(x){ return x.download_url; })
                  .sort();
         if(!l.length) return;
-        list = l; listDay = today();
+        list = l; lastOK = Date.now();
         try{
           localStorage.setItem(LIST_KEY, JSON.stringify(l));
-          localStorage.setItem(DAY_KEY, listDay);
+          localStorage.setItem(TS_KEY, String(lastOK));
         }catch(e){}
+        console.info('[桌布] 找到 ' + l.length + ' 張，目前第 ' + ((slotNum() % l.length) + 1) + ' 張');
         apply();
       })
       .catch(function(){});
   }
-  if(!ONLINE_DAILY && listDay !== today()) refreshList();
+  if(!ONLINE_DAILY) refreshList();   /* 每次開啟頁面都重新確認一次清單 */
 
-  /* 定期檢查：跨到下一個時段就換圖；圖片清單一天更新一次 */
+  /* 定期檢查：跨到下一個時段就換圖；清單每 10 分鐘重新讀一次 */
   setInterval(function(){
-    if(!ONLINE_DAILY && listDay !== today()) refreshList();
+    var now = Date.now();
+    if(!ONLINE_DAILY && now - lastOK > RELIST_MS && now - lastTry > RETRY_MS) refreshList();
     apply();
   }, 15000);
+
+  /* 從背景切回前景（手機解鎖、切回分頁）時立刻檢查一次 */
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden) apply();
+  });
+
+  /* 想確認狀態：瀏覽器主控台輸入 wallInfo() */
+  window.wallInfo = function(){
+    return {
+      張數: list ? list.length : 0,
+      目前第幾張: list && list.length ? (slotNum() % list.length) + 1 : 0,
+      每幾分鐘換: CHANGE_EVERY_MINUTES,
+      目前圖片: img.getAttribute('src')
+    };
+  };
 })();
 </script>
 
