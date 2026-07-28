@@ -23,6 +23,14 @@
     width:100%;height:100%;
   }
   #wallpaper{transition:opacity .45s ease;}
+  /* 比例不合時：底層放同一張圖，放大模糊當背景，避免留黑邊 */
+  #wallpaperBg{
+    position:fixed;inset:0;z-index:0;
+    width:100%;height:100%;object-fit:cover;
+    filter:blur(30px) saturate(1.15) brightness(.82);
+    transform:scale(1.15);
+    opacity:0;transition:opacity .45s ease;
+  }
 
   /* Menubar */
   .menubar{
@@ -173,19 +181,30 @@
 </head>
 <body>
 <!-- 桌布（日夜自動切換）-->
-<img id="wallpaper" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" alt="">
+<img id="wallpaperBg" alt="">
+<img id="wallpaper" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" alt="">
 <script>
 (function(){
-  /* ── 每日自動更換桌布 ──────────────────────────────
+  /* ── 自動更換桌布 ──────────────────────────────
      把桌布圖片放進 repo 的 wallpapers/ 資料夾（jpg / png / webp / avif），
-     每天會自動輪換一張，不需要改這裡的程式。
+     會依下面設定的時間自動輪換，不需要改其他程式。
      資料夾不存在或沒圖時，維持使用預設桌布。
-     想改用線上每日圖源（完全不用自己準備圖）→ ONLINE_DAILY 改成 true。 */
+     想改用線上圖源（完全不用自己準備圖）→ ONLINE_DAILY 改成 true。
+
+     CHANGE_EVERY_HOURS = 每幾小時換一張：
+       1 → 一天 24 張   2 → 一天 12 張   3 → 一天 8 張
+       4 → 一天 6 張    6 → 一天 4 張    8 → 一天 3 張
+       12 → 一天 2 張   24 → 一天 1 張（每天換一次）           */
+  var CHANGE_EVERY_HOURS = 1;
+  /* 圖片比例與螢幕差多少以內就直接填滿（0.10 = 10%）。
+     超過就改成完整顯示整張圖，四周用同一張圖放大模糊補滿。
+     想要「一律填滿、可接受裁切」→ 改成 1 ；想要「一律完整顯示」→ 改成 0 */
+  var FIT_TOLERANCE = 0.10;
   var REPO         = 'sumoai-boop/sumoai-boop.github.io';
   var DIR          = 'wallpapers';
   var DEFAULT_WALL = 'https://sumoai-boop.github.io/wallpaper-xp.jpg';
   var ONLINE_DAILY = false;
-  function onlineSrc(day){ return 'https://picsum.photos/seed/'+day+'/2560/1440'; }
+  function onlineSrc(slot){ return 'https://picsum.photos/seed/w'+slot+'/2560/1440'; }
 
   var img = document.getElementById('wallpaper');
   var LIST_KEY = 'sumoai_wall_list', DAY_KEY = 'sumoai_wall_day';
@@ -195,24 +214,52 @@
     var d = new Date();
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   }
-  function dayNum(){
+  /* 目前是第幾個時段：每 CHANGE_EVERY_HOURS 小時 +1，跨到下一段就換圖 */
+  function slotNum(){
     var d = new Date();
-    return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())/86400000);
+    var hrs = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours())/3600000);
+    var step = Math.min(24, Math.max(1, CHANGE_EVERY_HOURS));
+    return Math.floor(hrs/step);
+  }
+  var bg = document.getElementById('wallpaperBg');
+  var natW = 0, natH = 0;
+  /* 依「圖片比例 vs 螢幕比例」決定顯示方式：
+     接近 → 填滿整個畫面；差太多 → 完整顯示整張圖，用模糊底圖補邊 */
+  function fitWallpaper(){
+    if(!natW || !natH) return;
+    var imgAR = natW / natH;
+    var winAR = (window.innerWidth || 1) / (window.innerHeight || 1);
+    var diff  = Math.abs(imgAR - winAR) / winAR;
+    if(diff <= FIT_TOLERANCE){
+      img.style.objectFit = 'cover';
+      if(bg) bg.style.opacity = '0';
+    }else{
+      img.style.objectFit = 'contain';
+      if(bg) bg.style.opacity = '1';
+    }
   }
   /* 預先載入再淡入，避免換圖時閃一下 */
   function setSrc(u){
     if(!u || img.getAttribute('src') === u) return;
     var pre = new Image();
     pre.onload = function(){
+      natW = pre.naturalWidth; natH = pre.naturalHeight;
       img.style.opacity = '0';
-      setTimeout(function(){ img.src = u; img.style.opacity = '1'; }, 160);
+      setTimeout(function(){
+        img.src = u;
+        if(bg) bg.src = u;
+        fitWallpaper();
+        img.style.opacity = '1';
+      }, 160);
     };
     pre.onerror = function(){ if(u !== DEFAULT_WALL) setSrc(DEFAULT_WALL); };
     pre.src = u;
   }
+  /* 轉螢幕方向或改變視窗大小時重新判斷 */
+  window.addEventListener('resize', fitWallpaper);
   function apply(){
-    if(ONLINE_DAILY){ setSrc(onlineSrc(today())); return; }
-    setSrc(list && list.length ? list[dayNum() % list.length] : DEFAULT_WALL);
+    if(ONLINE_DAILY){ setSrc(onlineSrc(slotNum())); return; }
+    setSrc(list && list.length ? list[slotNum() % list.length] : DEFAULT_WALL);
   }
 
   try{
@@ -245,11 +292,11 @@
   }
   if(!ONLINE_DAILY && listDay !== today()) refreshList();
 
-  /* 每分鐘檢查一次，跨過午夜就換成今天那張 */
+  /* 定期檢查：跨到下一個時段就換圖；圖片清單一天更新一次 */
   setInterval(function(){
     if(!ONLINE_DAILY && listDay !== today()) refreshList();
     apply();
-  }, 60000);
+  }, 30000);
 })();
 </script>
 
