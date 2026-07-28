@@ -302,8 +302,8 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
     <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchCat(this)">🌏 非英語影集</button>
   </div>
   <div class="grid2">
-    <div class="card"><div class="card-title" id="title-weeks">上榜週數最多</div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
-    <div class="card"><div class="card-title" id="title-views">累計觀看最高</div><div id="rank-views"><div class="empty">載入中...</div></div></div>
+    <div class="card"><div class="card-title has-tools" id="title-weeks"><span>上榜週數最多</span><span class="ct-line"></span><div class="year-tabs" id="weeks-years"></div></div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
+    <div class="card"><div class="card-title has-tools" id="title-views"><span>累計觀看最高</span><span class="ct-line"></span><div class="year-tabs" id="views-years"></div></div><div id="rank-views"><div class="empty">載入中...</div></div></div>
   </div>
   <div class="card"><div class="card-title has-tools" id="title-ones"><span>各週 #1 作品</span><span class="ct-line"></span><div class="year-tabs" id="ones-years"></div></div><div id="ones-list"><div class="empty">載入中...</div></div></div>
   <div class="grid2">
@@ -935,6 +935,60 @@ function switchCat(btn) {
   renderDashboard();
 }
 
+/* ── 上榜週數最多 / 累計觀看最高：年份切換 ──
+   兩張卡邏輯相同，只差排序欄位與右側數值，所以共用一支函式。
+   選了年份就只用那一年的紀錄重新統計（週數、累計觀看、展開的明細都跟著變）。
+   這兩張是累計榜，預設維持「全部」。 */
+let dashFiltered = [];
+const rankYear = { weeks: 'all', views: 'all' };
+
+function switchRankYear(kind, y) {
+  rankYear[kind] = y;
+  renderRankCard(kind);
+}
+function switchWeeksYear(y) { switchRankYear('weeks', y); }
+function switchViewsYear(y) { switchRankYear('views', y); }
+
+function renderRankCard(kind) {
+  const isW = kind === 'weeks';
+  const years = yearsOf(dashFiltered);
+  if (rankYear[kind] !== 'all' && years.indexOf(rankYear[kind]) < 0) rankYear[kind] = 'all';
+  paintYearTabs(isW ? 'weeks-years' : 'views-years', years, rankYear[kind],
+                isW ? 'switchWeeksYear' : 'switchViewsYear');
+
+  const list = byYear(dashFiltered, rankYear[kind]);
+  const map = {};
+  list.forEach(e => {
+    if (!map[e.title]) map[e.title] = { weeks: 0, views: 0, titleZh: e.titleZh||'', country: e.country||'' };
+    map[e.title].weeks++;
+    map[e.title].views += e.views || 0;
+    if (!map[e.title].titleZh && e.titleZh) map[e.title].titleZh = e.titleZh;
+    if (!map[e.title].country && e.country) map[e.title].country = e.country;
+  });
+
+  const key  = isW ? 'weeks' : 'views';
+  const sort = Object.entries(map).sort((a,b) => b[1][key] - a[1][key]).slice(0,10);
+  const max  = sort[0] && sort[0][1][key] || 1;
+  const numClass = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+
+  document.getElementById(isW ? 'rank-weeks' : 'rank-views').innerHTML = sort.length ? sort.map(([t,v],i) => {
+    const disp = v.titleZh || t;
+    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);">' + t + '</div>' : '';
+    const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
+    // 這部片在目前年份範圍內的所有上榜週次（新→舊）
+    const weekEntries = list.filter(e => e.title === t)
+      .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
+    const detailHtml = '<div class="detail-panel">' +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      '</div>';
+    const val = isW ? (v.weeks + ' 週') : fmtViews(v.views);
+    return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) +
+      '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub +
+      '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v[key]/max*100) + '%"></div></div></div>' +
+      '<span class="rank-val">' + val + '</span></div>' + detailHtml + '</div>';
+  }).join('') : '<div class="empty">這一年尚無資料</div>';
+}
+
 /* ── 各週 #1 作品：年份切換 ──
    跨年的週次（例 12/29/25 - 1/4/26）以「開始日」為準，算前一年。
    parseWeekDate 取的就是 ' - ' 前面那段，所以直接用它的年份即可。 */
@@ -946,17 +1000,29 @@ function onesYearOf(week) {
   return t ? new Date(t).getFullYear() : 0;
 }
 
-function renderOnesYears() {
-  const box = document.getElementById('ones-years');
+// 這批資料裡有哪些年份（新→舊）
+function yearsOf(list) {
+  return [...new Set(list.map(e => onesYearOf(e.week)))].filter(Boolean).sort((a,b) => b - a);
+}
+// 畫一排年份鈕；cur 是目前選的年份或 'all'，handler 是點擊要呼叫的函式名
+function paintYearTabs(boxId, years, cur, handler) {
+  const box = document.getElementById(boxId);
   if (!box) return;
-  const years = [...new Set(onesAll.map(e => onesYearOf(e.week)))].filter(Boolean).sort((a,b) => b - a);
   if (!years.length) { box.innerHTML = ''; return; }
-  // 預設看最新那一年；切換類別後若原本選的年份沒資料，退回最新
-  if (onesYear !== 'all' && years.indexOf(onesYear) < 0) onesYear = years[0];
   box.innerHTML = years.map(y =>
-      '<button class="year-btn' + (onesYear === y ? ' active' : '') + '" onclick="switchOnesYear(' + y + ')">' + y + '</button>'
+      '<button class="year-btn' + (cur === y ? ' active' : '') + '" onclick="' + handler + '(' + y + ')">' + y + '</button>'
     ).join('') +
-    '<button class="year-btn' + (onesYear === 'all' ? ' active' : '') + '" onclick="switchOnesYear(\'all\')">全部</button>';
+    '<button class="year-btn' + (cur === 'all' ? ' active' : '') + '" onclick="' + handler + '(\'all\')">全部</button>';
+}
+function byYear(list, y) {
+  return y === 'all' ? list : list.filter(e => onesYearOf(e.week) === y);
+}
+
+function renderOnesYears() {
+  const years = yearsOf(onesAll);
+  // 各週 #1 預設看最新那一年；切換類別後若原本選的年份沒資料，退回最新
+  if (onesYear !== 'all' && years.indexOf(onesYear) < 0) onesYear = years[0];
+  paintYearTabs('ones-years', years, onesYear, 'switchOnesYear');
 }
 
 function switchOnesYear(y) {
@@ -1002,36 +1068,9 @@ function renderDashboard() {
     '<div class="metric"><div class="val">' + fmtViews(totalViews) + '</div><div class="lbl">累計觀看次數</div></div>' +
     '<div class="metric"><div class="val">' + filtered.filter(e => e.rank === 1).length + '</div><div class="lbl">冠軍記錄筆數</div></div>';
 
-  function numClass(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; }
-
-  const sortW = Object.entries(titleMap).sort((a,b) => b[1].weeks - a[1].weeks).slice(0,10);
-  const maxW  = sortW[0]?.[1]?.weeks || 1;
-  document.getElementById('rank-weeks').innerHTML = sortW.length ? sortW.map(([t,v],i) => {
-    const disp = v.titleZh || t;
-    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);">' + t + '</div>' : '';
-    const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
-    // 找出這部片所有上榜週次（依日期新→舊）
-    const weekEntries = filtered.filter(e => e.title === t)
-      .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
-    const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
-      '</div>';
-    return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.weeks/maxW*100) + '%"></div></div></div><span class="rank-val">' + v.weeks + ' 週</span></div>' + detailHtml + '</div>';
-  }).join('') : '<div class="empty">尚無資料</div>';
-
-  const sortV = Object.entries(titleMap).sort((a,b) => b[1].views - a[1].views).slice(0,10);
-  const maxV  = sortV[0]?.[1]?.views || 1;
-  document.getElementById('rank-views').innerHTML = sortV.length ? sortV.map(([t,v],i) => {
-    const disp = v.titleZh || t;
-    const sub  = v.titleZh ? '<div style="font-size:14px;color:rgba(255,255,255,0.5);">' + t + '</div>' : '';
-    const flag = v.country ? v.country.split(',').map(flagImg).join('') : '';
-    const weekEntries = filtered.filter(e => e.title === t)
-      .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
-    const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
-      '</div>';
-    return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) + '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub + '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v.views/maxV*100) + '%"></div></div></div><span class="rank-val">' + fmtViews(v.views) + '</span></div>' + detailHtml + '</div>';
-  }).join('') : '<div class="empty">尚無資料</div>';
+  dashFiltered = filtered;
+  renderRankCard('weeks');
+  renderRankCard('views');
 
   const ones = filtered.filter(e => e.rank === 1).sort((a,b) => (b.week||'').localeCompare(a.week||''));
   // 每個週次每個類別取最高觀看的 #1，依週次新→舊排列
