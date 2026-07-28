@@ -191,11 +191,11 @@
      資料夾不存在或沒圖時，維持使用預設桌布。
      想改用線上圖源（完全不用自己準備圖）→ ONLINE_DAILY 改成 true。
 
-     CHANGE_EVERY_HOURS = 每幾小時換一張：
-       1 → 一天 24 張   2 → 一天 12 張   3 → 一天 8 張
-       4 → 一天 6 張    6 → 一天 4 張    8 → 一天 3 張
-       12 → 一天 2 張   24 → 一天 1 張（每天換一次）           */
-  var CHANGE_EVERY_HOURS = 1;
+     CHANGE_EVERY_MINUTES = 每幾分鐘換一張：
+       5 → 一天 288 張   10 → 一天 144 張   15 → 一天 96 張
+       30 → 一天 48 張   60 → 一小時一張    180 → 三小時一張
+       1440 → 一天換一次                                      */
+  var CHANGE_EVERY_MINUTES = 10;
   /* 圖片比例與螢幕差多少以內就直接填滿（0.10 = 10%）。
      超過就改成完整顯示整張圖，四周用同一張圖放大模糊補滿。
      想要「一律填滿、可接受裁切」→ 改成 1 ；想要「一律完整顯示」→ 改成 0 */
@@ -214,12 +214,12 @@
     var d = new Date();
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   }
-  /* 目前是第幾個時段：每 CHANGE_EVERY_HOURS 小時 +1，跨到下一段就換圖 */
+  /* 目前是第幾個時段：每 CHANGE_EVERY_MINUTES 分鐘 +1，跨到下一段就換圖 */
   function slotNum(){
     var d = new Date();
-    var hrs = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours())/3600000);
-    var step = Math.min(24, Math.max(1, CHANGE_EVERY_HOURS));
-    return Math.floor(hrs/step);
+    var mins = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes())/60000);
+    var step = Math.min(1440, Math.max(1, CHANGE_EVERY_MINUTES));
+    return Math.floor(mins/step);
   }
   var bg = document.getElementById('wallpaperBg');
   var natW = 0, natH = 0;
@@ -296,7 +296,7 @@
   setInterval(function(){
     if(!ONLINE_DAILY && listDay !== today()) refreshList();
     apply();
-  }, 30000);
+  }, 15000);
 })();
 </script>
 
