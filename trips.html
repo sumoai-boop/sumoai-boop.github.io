@@ -372,6 +372,86 @@ body{
   .global-dock{gap:1px!important;padding:4px 5px!important;}
   .gd-sep{height:19px!important;margin:0 1px!important;}
 }
+
+/* ── 介面精緻化與動效 ── */
+@keyframes evIn{from{opacity:0;transform:translateY(7px) scale(0.985);}to{opacity:1;transform:none;}}
+@keyframes maskIn{from{opacity:0;}to{opacity:1;}}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.97);}to{opacity:1;transform:none;}}
+@keyframes nowPulse{0%{box-shadow:0 0 0 0 rgba(226,75,74,0.45);}70%{box-shadow:0 0 0 8px rgba(226,75,74,0);}100%{box-shadow:0 0 0 0 rgba(226,75,74,0);}}
+@keyframes chipIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+/* 日曆：夜間時段淡色帶 */
+.cal-night{position:absolute;left:46px;right:0;background:rgba(59,47,42,0.035);pointer-events:none;}
+/* 日曆：今天的「現在」時間線 */
+.cal-now{position:absolute;left:38px;right:4px;height:0;border-top:2px solid var(--red);z-index:6;pointer-events:none;}
+.cal-now::before{content:'';position:absolute;left:0;top:-5px;width:9px;height:9px;border-radius:50%;background:var(--red);animation:nowPulse 2.6s ease-out infinite;}
+
+/* 行程區塊：淡入、浮起、按壓 */
+.cal-ev{box-shadow:0 1px 2px rgba(59,47,42,0.06);animation:evIn .34s cubic-bezier(.22,1,.36,1) both;transition:box-shadow .16s ease,transform .16s ease,filter .16s ease;}
+.cal-ev:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(59,47,42,0.16);filter:saturate(1.07);z-index:5;}
+.cal-ev:active{transform:translateY(0) scale(0.995);}
+.cev-del{border-radius:5px;transition:color .14s ease,background-color .14s ease;}
+.cev-del:hover{background:rgba(255,255,255,0.65);}
+.cal-chip{animation:chipIn .3s ease both;transition:transform .15s ease,box-shadow .15s ease;}
+.cal-chip:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(59,47,42,0.14);}
+
+/* 捲軸細緻化 */
+.cal-scroll{scrollbar-width:thin;scrollbar-color:#E0CDB4 transparent;box-shadow:inset 0 1px 3px rgba(59,47,42,0.04);}
+.cal-scroll::-webkit-scrollbar{width:11px;}
+.cal-scroll::-webkit-scrollbar-track{background:transparent;}
+.cal-scroll::-webkit-scrollbar-thumb{background:#E0CDB4;border-radius:99px;border:3px solid var(--card);}
+.cal-scroll::-webkit-scrollbar-thumb:hover{background:#CDB294;}
+.sb-scroll{scrollbar-width:thin;scrollbar-color:#E0CDB4 transparent;}
+.sb-scroll::-webkit-scrollbar{width:8px;}
+.sb-scroll::-webkit-scrollbar-thumb{background:#E4D5C0;border-radius:99px;}
+
+/* 統計卡 */
+.stat-card{position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(59,47,42,0.05);transition:transform .18s ease,box-shadow .18s ease;}
+.stat-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0) 62%);pointer-events:none;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(59,47,42,0.11);}
+.stat-card .sc-value{font-variant-numeric:tabular-nums;}
+
+/* 日期分頁 */
+.day-tab{transition:transform .14s ease,box-shadow .16s ease,background-color .16s ease,border-color .16s ease;}
+.day-tab:hover{border-color:#DCC3A6;}
+.day-tab:active{transform:translateY(0) scale(0.97);}
+
+/* 側欄 */
+.trip-item{transition:transform .16s ease,background-color .16s ease,box-shadow .18s ease;}
+.trip-item:hover{transform:translateX(2px);box-shadow:0 3px 12px rgba(59,47,42,0.09);}
+.trip-item.active{box-shadow:0 3px 14px rgba(255,107,53,0.20);}
+.fn-item{transition:background-color .15s ease,color .15s ease,transform .14s ease;}
+.fn-item:active{transform:scale(0.98);}
+
+/* 按鈕 */
+.btn-add,.btn-newtrip,.btn-save,.btn-cancel,.btn-danger,.btn-sync{transition:filter .15s ease,transform .12s ease,box-shadow .18s ease,background-color .15s ease,border-color .15s ease;}
+.btn-newtrip{box-shadow:0 3px 10px rgba(255,107,53,0.26);}
+.btn-newtrip:hover,.btn-add:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(255,107,53,0.34);}
+.btn-add:active,.btn-newtrip:active,.btn-save:active,.btn-cancel:active,.btn-danger:active,.btn-sync:active{transform:scale(0.97);}
+
+/* 表單聚焦 */
+.form-row input,.form-row select,.set-grid input,.set-grid select,.set-grid textarea{transition:border-color .15s ease,box-shadow .15s ease;}
+.form-row input:focus,.form-row select:focus,.set-grid input:focus,.set-grid select:focus,.set-grid textarea:focus{box-shadow:0 0 0 3px rgba(255,107,53,0.15);}
+
+/* 彈窗 */
+.modal-mask{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
+.modal-mask.open{animation:maskIn .18s ease both;}
+.modal{animation:modalIn .28s cubic-bezier(.22,1,.36,1) both;box-shadow:0 24px 70px rgba(59,47,42,0.30);}
+
+/* 同步狀態：未同步時輕微脈動提醒 */
+@keyframes syncPulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
+.sync-state{display:flex;align-items:center;gap:6px;}
+.sync-state::before{content:'';width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--green);}
+.sync-state.dirty::before{background:var(--orange);animation:syncPulse 1.8s ease-in-out infinite;}
+.btn-sync:hover{background:var(--orange-bg);}
+
+/* 鍵盤焦點可見 */
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:6px;}
+
+/* 尊重系統的「減少動態」設定 */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+}
 </style>
 </head>
 <body>
@@ -824,20 +904,26 @@ function renderDayCalendar(t,day){
   var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
   var startH=0,endH=24;
   var HP=66,pm=HP/60,top0=startH*60,bodyH=(endH-startH)*HP;
-  var grid='';
+  var grid='<div class="cal-night" style="top:0;height:'+(6*HP)+'px;"></div>'
+    +'<div class="cal-night" style="top:'+(22*HP)+'px;height:'+(2*HP)+'px;"></div>';
   for(var h=startH;h<=endH;h++){
     var y=(h-startH)*HP;
     grid+='<div class="cal-hline" style="top:'+y+'px;"></div>'
       +'<div class="cal-hlabel" style="top:'+(y-6)+'px;">'+String(h%24).padStart(2,'0')+':00</div>';
   }
+  if(day===fmtDateLocal(new Date())){
+    var _n=new Date(),_nm=_n.getHours()*60+_n.getMinutes();
+    grid+='<div class="cal-now" style="top:'+(_nm*pm).toFixed(1)+'px;"></div>';
+  }
   layoutColumns(timed);
-  var evs=timed.map(function(o){
+  var evs=timed.map(function(o,_i){
     var x=o.x,ty=TAG[x.type]||TAG['其他'];
     var drawE=Math.min(o.e,endH*60),top=(o.s-top0)*pm,hgt=Math.max((drawE-o.s)*pm,26);
     var w=100/o.cols,left=o.col*w;
     var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
     var title=(o.cont?'↳ ':'')+esc(x.title);
-    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
+    var _d=Math.min(_i*26,320);
+    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
       +'<button class="cev-del" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
       +'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'
       +'</div>';
@@ -1179,6 +1265,13 @@ async function pushToGitHub(){
     _pushing=false;
   }
 }
+
+function updateNowLine(){
+  var el=document.querySelector('.cal-now');if(!el)return;
+  var n=new Date();
+  el.style.top=(((n.getHours()*60+n.getMinutes())*66)/60).toFixed(1)+'px';
+}
+setInterval(updateNowLine,60000);
 
 window.addEventListener('DOMContentLoaded',loadData);
 </script>
