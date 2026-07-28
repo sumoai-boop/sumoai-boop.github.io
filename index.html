@@ -22,6 +22,7 @@
     position:fixed;inset:0;z-index:0;
     width:100%;height:100%;
   }
+  #wallpaper{transition:opacity .45s ease;}
 
   /* Menubar */
   .menubar{
@@ -175,16 +176,80 @@
 <img id="wallpaper" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" alt="">
 <script>
 (function(){
-  var DAY = "https://sumoai-boop.github.io/wallpaper-xp.jpg";
-  var NIGHT = "https://sumoai-boop.github.io/wallpaper-xp.jpg";
-  function updateWallpaper(){
-    var h = new Date().getHours();
-    // 06:00~18:00 白天；其餘夜晚
-    document.getElementById('wallpaper').src = DAY;
+  /* ── 每日自動更換桌布 ──────────────────────────────
+     把桌布圖片放進 repo 的 wallpapers/ 資料夾（jpg / png / webp / avif），
+     每天會自動輪換一張，不需要改這裡的程式。
+     資料夾不存在或沒圖時，維持使用預設桌布。
+     想改用線上每日圖源（完全不用自己準備圖）→ ONLINE_DAILY 改成 true。 */
+  var REPO         = 'sumoai-boop/sumoai-boop.github.io';
+  var DIR          = 'wallpapers';
+  var DEFAULT_WALL = 'https://sumoai-boop.github.io/wallpaper-xp.jpg';
+  var ONLINE_DAILY = false;
+  function onlineSrc(day){ return 'https://picsum.photos/seed/'+day+'/2560/1440'; }
+
+  var img = document.getElementById('wallpaper');
+  var LIST_KEY = 'sumoai_wall_list', DAY_KEY = 'sumoai_wall_day';
+  var list = null, listDay = null;
+
+  function today(){
+    var d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   }
-  updateWallpaper();
-  // 每分鐘檢查一次
-  setInterval(updateWallpaper, 60000);
+  function dayNum(){
+    var d = new Date();
+    return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())/86400000);
+  }
+  /* 預先載入再淡入，避免換圖時閃一下 */
+  function setSrc(u){
+    if(!u || img.getAttribute('src') === u) return;
+    var pre = new Image();
+    pre.onload = function(){
+      img.style.opacity = '0';
+      setTimeout(function(){ img.src = u; img.style.opacity = '1'; }, 160);
+    };
+    pre.onerror = function(){ if(u !== DEFAULT_WALL) setSrc(DEFAULT_WALL); };
+    pre.src = u;
+  }
+  function apply(){
+    if(ONLINE_DAILY){ setSrc(onlineSrc(today())); return; }
+    setSrc(list && list.length ? list[dayNum() % list.length] : DEFAULT_WALL);
+  }
+
+  try{
+    var saved = JSON.parse(localStorage.getItem(LIST_KEY) || 'null');
+    listDay = localStorage.getItem(DAY_KEY);
+    if(saved && saved.length) list = saved;
+  }catch(e){}
+  apply();
+
+  /* 一天只查一次資料夾內容，結果存在瀏覽器 */
+  function refreshList(){
+    var h = {'Accept':'application/vnd.github.v3+json'};
+    try{ var tk = localStorage.getItem('sumoai_gh_token'); if(tk) h.Authorization = 'token '+tk; }catch(e){}
+    fetch('https://api.github.com/repos/'+REPO+'/contents/'+DIR+'?t='+Date.now(), {headers:h})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if(!Array.isArray(j)) return;
+        var l = j.filter(function(x){ return x.type==='file' && /\.(jpe?g|png|webp|avif)$/i.test(x.name); })
+                 .map(function(x){ return x.download_url; })
+                 .sort();
+        if(!l.length) return;
+        list = l; listDay = today();
+        try{
+          localStorage.setItem(LIST_KEY, JSON.stringify(l));
+          localStorage.setItem(DAY_KEY, listDay);
+        }catch(e){}
+        apply();
+      })
+      .catch(function(){});
+  }
+  if(!ONLINE_DAILY && listDay !== today()) refreshList();
+
+  /* 每分鐘檢查一次，跨過午夜就換成今天那張 */
+  setInterval(function(){
+    if(!ONLINE_DAILY && listDay !== today()) refreshList();
+    apply();
+  }, 60000);
 })();
 </script>
 
