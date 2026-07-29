@@ -330,6 +330,10 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
         <input type="number" id="nf-count" value="1" min="1" max="20" step="1">
       </div>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:12px;cursor:pointer;">
+      <input type="checkbox" id="nf-fresh" style="width:15px;height:15px;accent-color:var(--red);cursor:pointer;">
+      強制重查 TMDB（忽略檔案裡既有的中文片名／國家／類型，用來修正抓錯的片子）
+    </label>
     <details style="margin-bottom:12px;">
       <summary style="cursor:pointer;font-size:12px;color:var(--muted);outline:none;">Worker 網址設定</summary>
       <input type="text" id="nf-worker" placeholder="https://netflix-top10-sync.你的帳號.workers.dev"
@@ -704,11 +708,12 @@ function nfImport() {
       // 一個榜單一次請求：Cloudflare 免費方案每個請求上限 50 個子請求，
       // 四個榜一起抓會超額，TMDB 補到一半就會斷。
       const cats = ['Movies|English', 'Movies|Non-English', 'Shows|English', 'Shows|Non-English'];
+      const fresh = document.getElementById('nf-fresh').checked ? '&fresh=1' : '';
       let all = [];
       for (let i = 0; i < targets.length; i++) {
         for (let c = 0; c < cats.length; c++) {
           nfStatus('', `抓取 ${targets[i].label} · ${catMap[cats[c]]}（${i * 4 + c + 1}/${targets.length * 4}）...`);
-          const r = await fetch(base + '/week?date=' + targets[i].iso + '&cat=' + encodeURIComponent(cats[c]));
+          const r = await fetch(base + '/week?date=' + targets[i].iso + '&cat=' + encodeURIComponent(cats[c]) + fresh);
           const d = await r.json();
           if (d.error) throw new Error(d.error);
           all = all.concat(d);
