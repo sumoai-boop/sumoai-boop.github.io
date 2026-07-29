@@ -287,6 +287,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 
 <!-- DASHBOARD -->
 <div id="tab-dashboard" class="section active">
+  <div id="err-banner" style="display:none;margin-bottom:1.25rem;padding:14px 16px;border:1px solid var(--red);border-radius:var(--border-radius-md,6px);background:rgba(229,9,20,0.08);font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-all;font-family:monospace;"></div>
   <div class="metrics" id="metrics-row">
     <div class="metric"><div class="val">—</div><div class="lbl">已記錄週數</div></div>
     <div class="metric"><div class="val">—</div><div class="lbl">不重複作品</div></div>
@@ -484,24 +485,43 @@ function b64encode(bytes) {
   return btoa(bin);
 }
 
+// 把 GitHub 回的錯誤內容挖出來，方便看到真正原因而不是只有一個狀態碼
+async function ghErr(res, where) {
+  let detail = '';
+  try {
+    const t = await res.text();
+    try { detail = JSON.parse(t).message || t.slice(0, 300); }
+    catch (e) { detail = t.slice(0, 300); }
+  } catch (e) {}
+  return new Error(where + ' HTTP ' + res.status + (detail ? '\n' + detail : ''));
+}
+
+// SHA 從「列目錄」取：目錄清單不含檔案內容，所以不受 1MB 限制
+async function ghSha(auth) {
+  const dir = API_BASE.replace(/\/[^/]+$/, '');
+  const r = await fetch(dir, { headers: { Authorization: auth, Accept: 'application/vnd.github.v3+json' } });
+  if (!r.ok) throw await ghErr(r, '取得 SHA 失敗');
+  const arr = await r.json();
+  const f = (Array.isArray(arr) ? arr : []).find(x => x.name === DATA_FILE);
+  return f ? f.sha : null;
+}
+
 async function ghRead() {
   const auth = 'token ' + (getGHToken()||'');
-  const r = await fetch(API_BASE, {
-    headers: { Authorization: auth, Accept: 'application/vnd.github.v3+json' }
+  // 內容一律用 raw media type：一般的 JSON media type 在檔案超過 1MB 時
+  // 會回空的 content（或直接 403），raw 則可到 100MB。
+  const raw = await fetch(API_BASE, {
+    headers: { Authorization: auth, Accept: 'application/vnd.github.raw' }
   });
-  if (r.status === 404) { fileSha = null; return null; }
-  if (!r.ok) throw new Error('讀取失敗 ' + r.status);
-  const j = await r.json();
-  fileSha = j.sha;
-  // 檔案 ≤1MB 時 content 有值，直接解；超過 1MB GitHub 會回空的 content，
-  // 這時改用 raw media type 取原始內容（上限 100MB）。
-  if (j.content && j.encoding === 'base64') {
-    const bytes = Uint8Array.from(atob(j.content.replace(/\n/g, '')), c => c.charCodeAt(0));
-    return JSON.parse(new TextDecoder().decode(bytes));
+  if (raw.status === 404) { fileSha = null; return null; }
+  if (!raw.ok) throw await ghErr(raw, '讀取資料失敗');
+  const text = await raw.text();
+  fileSha = await ghSha(auth);
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error('資料不是合法 JSON（長度 ' + text.length + '）\n開頭：' + text.slice(0, 120));
   }
-  const raw = await fetch(API_BASE, { headers: { Authorization: auth, Accept: 'application/vnd.github.raw' } });
-  if (!raw.ok) throw new Error('讀取失敗 ' + raw.status);
-  return JSON.parse(await raw.text());
 }
 
 async function ghWrite(data) {
@@ -526,6 +546,17 @@ async function ghWrite(data) {
   fileSha = j.content.sha;
 }
 
+function showErr(e) {
+  const msg = (e && e.message) || String(e);
+  console.error('[top10]', e);
+  const box = document.getElementById('err-banner');
+  if (box) {
+    box.style.display = 'block';
+    box.textContent = '載入失敗\n\n' + msg +
+      '\n\n若是 401/403，多半是 GitHub token 過期或權限不足，可在右上角重新輸入。';
+  }
+}
+
 function setSyncStatus(state, text) {
   document.getElementById('sync-dot').className = 'sync-dot ' + state;
   document.getElementById('sync-text').textContent = text;
@@ -548,9 +579,11 @@ async function init() {
     const data = await ghRead();
     db = data || [];
     setSyncStatus('ok', '已同步');
+    document.getElementById('err-banner').style.display = 'none';
     renderDashboard();
   } catch(e) {
     setSyncStatus('err', '連線失敗');
+    showErr(e);
   }
   hideLoading();
 }
