@@ -469,20 +469,45 @@ const catMap = {
   'Shows|Non-English':'影集 · 非英語'
 };
 
+// 寫入時只保留這些欄位，其餘（titleEn 與 title 完全重複、hours/runtime/src 沒在用）丟掉，
+// 檔案才不會一直長大。GitHub Contents API 讀「內容」的上限是 1MB。
+const KEEP_FIELDS = ['rank','title','views','week','cat','titleZh','country','genres','weeksIn'];
+function slimEntry(e) {
+  const o = {};
+  KEEP_FIELDS.forEach(k => { if (e[k] !== undefined && e[k] !== '' && !(Array.isArray(e[k]) && !e[k].length)) o[k] = e[k]; });
+  return o;
+}
+function b64encode(bytes) {
+  let bin = '';
+  const CH = 0x8000;
+  for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+  return btoa(bin);
+}
+
 async function ghRead() {
+  const auth = 'token ' + (getGHToken()||'');
   const r = await fetch(API_BASE, {
-    headers: { Authorization: 'token ' + (getGHToken()||''), Accept: 'application/vnd.github.v3+json' }
+    headers: { Authorization: auth, Accept: 'application/vnd.github.v3+json' }
   });
-  if (r.status === 404) return null;
+  if (r.status === 404) { fileSha = null; return null; }
   if (!r.ok) throw new Error('讀取失敗 ' + r.status);
   const j = await r.json();
   fileSha = j.sha;
-  return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, '')))));
+  // 檔案 ≤1MB 時 content 有值，直接解；超過 1MB GitHub 會回空的 content，
+  // 這時改用 raw media type 取原始內容（上限 100MB）。
+  if (j.content && j.encoding === 'base64') {
+    const bytes = Uint8Array.from(atob(j.content.replace(/\n/g, '')), c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  const raw = await fetch(API_BASE, { headers: { Authorization: auth, Accept: 'application/vnd.github.raw' } });
+  if (!raw.ok) throw new Error('讀取失敗 ' + raw.status);
+  return JSON.parse(await raw.text());
 }
 
 async function ghWrite(data) {
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-  const body = { message: 'update top10-data.json', content };
+  const slim = data.map(slimEntry);
+  const content = b64encode(new TextEncoder().encode(JSON.stringify(slim)));
+  const body = { message: 'update top10-data.json (' + slim.length + ' 筆)', content };
   if (fileSha) body.sha = fileSha;
   const r = await fetch(API_BASE, {
     method: 'PUT',
@@ -830,7 +855,7 @@ async function parseJSON() {
     // 並行查詢所有片名
     const entries = await Promise.all(parsed.map(async (e) => {
       const info = await fetchTMDBInfo(e.title, cat);
-      return { ...e, week, cat, titleEn: e.title, titleZh: info.titleZh, country: info.country, genres: info.genres||[] };
+      return { ...e, week, cat, titleZh: info.titleZh, country: info.country, genres: info.genres||[] };
     }));
     pendingEntries = entries;
     st.className = 'status-box ok';
