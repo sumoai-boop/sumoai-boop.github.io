@@ -457,7 +457,8 @@ setInterval(updateTime, 10000);
     const same = (cur===href) && win.classList.contains('show');
     cur=href; titleEl.textContent=label||'';
     g('winExt').onclick=()=>window.open(href,'_blank');
-    if(!same){ load.classList.remove('off'); frame.src=href; }
+    // 加上時間戳避免 iframe 吃到舊版快取（改完檔案後點 dock 卻還是舊畫面的元凶）
+    if(!same){ load.classList.remove('off'); frame.src = href + (href.indexOf('?')<0?'?':'&') + '_=' + Date.now(); }
     if(!win.classList.contains('show')){
       applyGeo(loadGeo());
       win.classList.add('show');
