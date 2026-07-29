@@ -296,8 +296,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
   </div>
   <!-- 分類切換 -->
   <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
-    <button class="cat-btn active" data-cat="all" onclick="switchCat(this)">全部</button>
-    <button class="cat-btn" data-cat="Movies|English" onclick="switchCat(this)">🎬 電影</button>
+    <button class="cat-btn active" data-cat="Movies|English" onclick="switchCat(this)">🎬 電影</button>
     <button class="cat-btn" data-cat="Movies|Non-English" onclick="switchCat(this)">🌍 非英語電影</button>
     <button class="cat-btn" data-cat="Shows|English" onclick="switchCat(this)">📺 影集</button>
     <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchCat(this)">🌏 非英語影集</button>
@@ -1003,7 +1002,7 @@ function cancelPreview() {
   pendingEntries = null;
 }
 
-let currentCat = 'all';
+let currentCat = 'Movies|English';
 
 function switchCat(btn) {
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -1015,7 +1014,7 @@ function switchCat(btn) {
 /* ── 上榜週數最多 / 累計觀看最高：年份切換 ──
    兩張卡邏輯相同，只差排序欄位與右側數值，所以共用一支函式。
    選了年份就只用那一年的紀錄重新統計（週數、累計觀看、展開的明細都跟著變）。
-   這兩張是累計榜，預設維持「全部」。 */
+   累計榜，所以保留「全部」並以它為預設；各週 #1 則是一次只看一年。 */
 let dashFiltered = [];
 const rankYear = { weeks: 'all', views: 'all' };
 
@@ -1031,7 +1030,7 @@ function renderRankCard(kind) {
   const years = yearsOf(dashFiltered);
   if (rankYear[kind] !== 'all' && years.indexOf(rankYear[kind]) < 0) rankYear[kind] = 'all';
   paintYearTabs(isW ? 'weeks-years' : 'views-years', years, rankYear[kind],
-                isW ? 'switchWeeksYear' : 'switchViewsYear');
+                isW ? 'switchWeeksYear' : 'switchViewsYear', true);
 
   const list = byYear(dashFiltered, rankYear[kind]);
   const map = {};
@@ -1082,14 +1081,14 @@ function yearsOf(list) {
   return [...new Set(list.map(e => onesYearOf(e.week)))].filter(Boolean).sort((a,b) => b - a);
 }
 // 畫一排年份鈕；cur 是目前選的年份或 'all'，handler 是點擊要呼叫的函式名
-function paintYearTabs(boxId, years, cur, handler) {
+function paintYearTabs(boxId, years, cur, handler, withAll) {
   const box = document.getElementById(boxId);
   if (!box) return;
   if (!years.length) { box.innerHTML = ''; return; }
   box.innerHTML = years.map(y =>
       '<button class="year-btn' + (cur === y ? ' active' : '') + '" onclick="' + handler + '(' + y + ')">' + y + '</button>'
     ).join('') +
-    '<button class="year-btn' + (cur === 'all' ? ' active' : '') + '" onclick="' + handler + '(\'all\')">全部</button>';
+    (withAll ? '<button class="year-btn' + (cur === 'all' ? ' active' : '') + '" onclick="' + handler + '(\'all\')">全部</button>' : '');
 }
 function byYear(list, y) {
   return y === 'all' ? list : list.filter(e => onesYearOf(e.week) === y);
@@ -1097,9 +1096,9 @@ function byYear(list, y) {
 
 function renderOnesYears() {
   const years = yearsOf(onesAll);
-  // 各週 #1 預設看最新那一年；切換類別後若原本選的年份沒資料，退回最新
-  if (onesYear !== 'all' && years.indexOf(onesYear) < 0) onesYear = years[0];
-  paintYearTabs('ones-years', years, onesYear, 'switchOnesYear');
+  // 一次只看一年；切換類別後若原本選的年份沒資料，退回最新那一年
+  if (years.indexOf(onesYear) < 0) onesYear = years[0];
+  paintYearTabs('ones-years', years, onesYear, 'switchOnesYear', false);
 }
 
 function switchOnesYear(y) {
