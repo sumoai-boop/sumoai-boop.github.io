@@ -457,6 +457,9 @@ const GITHUB_OWNER = 'sumoai-boop';
 const GITHUB_REPO  = 'sumoai-boop.github.io';
 const DATA_FILE    = 'top10-data.json';
 const API_BASE     = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + DATA_FILE;
+const DIR_BASE     = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents';
+// Contents API 只在檔案 ≤1MB 時回傳內容；Git Blobs API 支援到 100MB，是官方指定的大檔讀法
+const BLOB_BASE    = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/git/blobs/';
 
 let db = [];
 let fileSha = null;
@@ -496,35 +499,44 @@ async function ghErr(res, where) {
   return new Error(where + ' HTTP ' + res.status + (detail ? '\n' + detail : ''));
 }
 
-// SHA 從「列目錄」取：目錄清單不含檔案內容，所以不受 1MB 限制
-async function ghSha(auth) {
-  const dir = API_BASE.replace(/\/[^/]+$/, '');
-  const r = await fetch(dir, { headers: { Authorization: auth, Accept: 'application/vnd.github.v3+json' } });
-  if (!r.ok) throw await ghErr(r, '取得 SHA 失敗');
+// 從「列目錄」取檔案的 blob SHA：目錄清單不含檔案內容，所以不受 1MB 限制
+async function ghFileInfo(auth) {
+  const r = await fetch(DIR_BASE, { headers: { Authorization: auth, Accept: 'application/vnd.github+json' } });
+  if (!r.ok) throw await ghErr(r, '列出檔案失敗');
   const arr = await r.json();
-  const f = (Array.isArray(arr) ? arr : []).find(x => x.name === DATA_FILE);
-  return f ? f.sha : null;
+  if (!Array.isArray(arr)) throw new Error('列目錄回傳格式異常');
+  return arr.find(x => x.name === DATA_FILE) || null;
 }
 
 async function ghRead() {
   const auth = 'token ' + (getGHToken()||'');
-  // 內容一律用 raw media type：一般的 JSON media type 在檔案超過 1MB 時
-  // 會回空的 content（或直接 403），raw 則可到 100MB。
-  const raw = await fetch(API_BASE, {
-    headers: { Authorization: auth, Accept: 'application/vnd.github.raw' }
+  const info = await ghFileInfo(auth);
+  if (!info) { fileSha = null; return null; }   // 檔案還不存在
+  fileSha = info.sha;
+
+  // 用 Git Blobs API 取內容（上限 100MB）。回傳固定是 base64。
+  const b = await fetch(BLOB_BASE + info.sha, {
+    headers: { Authorization: auth, Accept: 'application/vnd.github+json' }
   });
-  if (raw.status === 404) { fileSha = null; return null; }
-  if (!raw.ok) throw await ghErr(raw, '讀取資料失敗');
-  const text = await raw.text();
-  fileSha = await ghSha(auth);
-  try {
-    return JSON.parse(text);
-  } catch (e) {
-    throw new Error('資料不是合法 JSON（長度 ' + text.length + '）\n開頭：' + text.slice(0, 120));
+  if (!b.ok) throw await ghErr(b, '讀取資料失敗');
+  const j = await b.json();
+  if (!j.content || j.encoding !== 'base64') {
+    throw new Error('無法取得檔案內容（encoding=' + j.encoding + '，size=' + j.size + '）');
   }
+  const bytes = Uint8Array.from(atob(j.content.replace(/\s/g, '')), c => c.charCodeAt(0));
+  const text = new TextDecoder().decode(bytes);
+
+  let data;
+  try { data = JSON.parse(text); }
+  catch (e) { throw new Error('資料不是合法 JSON（長度 ' + text.length + '）\n開頭：' + text.slice(0, 120)); }
+  if (!Array.isArray(data)) {
+    throw new Error('資料格式異常：預期陣列，實際拿到 ' + (data === null ? 'null' : typeof data));
+  }
+  return data;
 }
 
 async function ghWrite(data) {
+  if (!Array.isArray(data)) throw new Error('要寫入的資料不是陣列，已中止');
   const slim = data.map(slimEntry);
   const content = b64encode(new TextEncoder().encode(JSON.stringify(slim)));
   const body = { message: 'update top10-data.json (' + slim.length + ' 筆)', content };
@@ -577,7 +589,7 @@ async function init() {
   showLoading('從 GitHub 載入資料...');
   try {
     const data = await ghRead();
-    db = data || [];
+    db = Array.isArray(data) ? data : [];
     setSyncStatus('ok', '已同步');
     document.getElementById('err-banner').style.display = 'none';
     renderDashboard();
@@ -708,6 +720,7 @@ function nfImport() {
       nfStatus('', '寫入 GitHub...');
       showLoading('寫入 GitHub...');
       const latest = await ghRead();
+      if (latest && !Array.isArray(latest)) throw new Error('讀取到的資料不是陣列，已中止以免覆蓋');
       db = latest || [];
       const before = db.length;
       const keys = new Set(all.map(e => e.week + '||' + e.cat));
@@ -941,6 +954,7 @@ async function confirmSave() {
   showLoading('寫入 GitHub...');
   try {
     const latest = await ghRead();
+    if (latest && !Array.isArray(latest)) throw new Error('讀取到的資料不是陣列，已中止以免覆蓋');
     db = latest || [];
     // 1. 清除同週次同類別的舊資料
     db = db.filter(e => !(e.week === pendingEntries[0].week && e.cat === pendingEntries[0].cat));
