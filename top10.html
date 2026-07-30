@@ -495,7 +495,7 @@ const catMap = {
 
 // 寫入時只保留這些欄位，其餘（titleEn 與 title 完全重複、hours/runtime/src 沒在用）丟掉，
 // 檔案才不會一直長大。GitHub Contents API 讀「內容」的上限是 1MB。
-const KEEP_FIELDS = ['rank','title','views','week','cat','titleZh','country','genres','weeksIn','poster'];
+const KEEP_FIELDS = ['rank','title','views','est','week','cat','titleZh','country','genres','weeksIn','poster'];
 function slimEntry(e) {
   const o = {};
   KEEP_FIELDS.forEach(k => { if (e[k] !== undefined && e[k] !== '' && !(Array.isArray(e[k]) && !e[k].length)) o[k] = e[k]; });
@@ -1251,6 +1251,7 @@ function renderRankCard(kind) {
     if (!map[e.title]) map[e.title] = { weeks: 0, views: 0, titleZh: e.titleZh||'', country: e.country||'' };
     map[e.title].weeks++;
     map[e.title].views += e.views || 0;
+    if (e.est) map[e.title].est = 1;   // 累計值裡混有推算數字
     if (!map[e.title].titleZh && e.titleZh) map[e.title].titleZh = e.titleZh;
     if (!map[e.title].country && e.country) map[e.title].country = e.country;
   });
@@ -1268,9 +1269,10 @@ function renderRankCard(kind) {
     const weekEntries = list.filter(e => e.title === t)
       .sort((a,b) => parseWeekDate(b.week) - parseWeekDate(a.week));
     const detailHtml = '<div class="detail-panel">' +
-      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + fmtViews(e.views) + '</span></div>').join('') +
+      weekEntries.map(e => '<div class="detail-week"><span class="detail-week-label">第' + (getWeekNum(e.week)||'?') + '週</span><span>第 ' + e.rank + ' 名 · ' + (e.views ? (e.est ? '≈' : '') + fmtViews(e.views) : '—') + '</span></div>').join('') +
       '</div>';
-    const val = isW ? (v.weeks + ' 週') : fmtViews(v.views);
+    const val = isW ? (v.weeks + ' 週')
+                    : (v.views ? (v.est ? '≈' : '') + fmtViews(v.views) : '—');
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) +
       '</span>' + posterTag(t, cat, weekEntries[0] && weekEntries[0].week, v.titleZh, v.country) +
       '<div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub +
@@ -1328,12 +1330,13 @@ function renderOnesList() {
     const disp = e.titleZh || e.title;
     const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
+    const viewTxt = e.views ? (e.est ? '≈' : '') + fmtViews(e.views) : '—';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
       posterTag(e.title, e.cat, e.week, e.titleZh, e.country) +
       '<div class="ones-title" style="flex:1;min-width:0">' +
         '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
       '</div>' +
-      '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
+      '<span class="ones-views" title="' + (e.est ? '官方未提供，由總時數÷片長推算' : '') + '">' + viewTxt + '</span></div>';
   }).join('') : '<div class="empty">這一年尚無資料</div>';
   fillPosters();
 }
