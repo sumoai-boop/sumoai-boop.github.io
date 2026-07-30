@@ -961,7 +961,17 @@ function pickPoster(results, isMovie, wantYear, want, wantZh, wantCC) {
     if (!r.poster_path) sc -= 200;   // 沒有海報就沒有意義
     if (sc > bestSc) { bestSc = sc; best = r; }
   }
+  lastPickScore = bestSc;
   return best && best.poster_path ? best.poster_path : '';
+}
+let lastPickScore = -1e9;
+
+async function tmdbSearch(type, q) {
+  try {
+    const r = await fetch(`https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(q)}&language=zh-TW&page=1`);
+    const d = await r.json();
+    return (d && d.results) || [];
+  } catch (e) { return []; }
 }
 
 async function lookupPoster(title, cat, year, zh, cc) {
@@ -970,12 +980,22 @@ async function lookupPoster(title, cat, year, zh, cc) {
   let q = title;
   if (!isMovie) q = title.replace(/:\s*(Season\s*\d+|Limited Series|Part\s*\d+|Volume\s*\d+|Chapter\s*\d+|Series\s*\d+)\s*$/i, '').trim();
   const want = q.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, ' ').trim();
-  try {
-    const r = await fetch(`https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(q)}&language=zh-TW&page=1`);
-    const d = await r.json();
-    if (!d.results || !d.results.length) return '';
-    return pickPoster(d.results, isMovie, year, want, zh, cc);
-  } catch (e) { return ''; }
+
+  let results = await tmdbSearch(type, q);
+  let best = pickPoster(results, isMovie, year, want, zh, cc);
+
+  // 英文片名沒找到夠有把握的結果時，改用中文片名再搜一次。
+  // 手動補的中文名雖然不一定跟 TMDB 一字不差，但搜尋是模糊比對，通常找得到。
+  if (zh && (!best || lastPickScore < 140)) {
+    const alt = await tmdbSearch(type, zh);
+    if (alt.length) {
+      const seen = new Set(results.map(x => x.id));
+      alt.forEach(x => { if (!seen.has(x.id)) results.push(x); });
+      const again = pickPoster(results, isMovie, year, want, zh, cc);
+      if (again) best = again;
+    }
+  }
+  return best || '';
 }
 
 // 畫完清單後，把還沒有海報的補上（同時最多 4 個，避免打太兇）
@@ -1587,6 +1607,8 @@ async function saveEditRecord() {
   st.className = 'status-box';
   st.textContent = '儲存中...';
 
+  const zhBefore = _editTarget.titleZh || '';
+  const ccBefore = _editTarget.country || '';
   const newTitleZh = document.getElementById('edit-titleZh').value.trim();
   const newCountry = document.getElementById('edit-country').value.trim().toUpperCase();
   const newViews   = parseInt(document.getElementById('edit-views').value) || _editTarget.views;
@@ -1603,6 +1625,16 @@ async function saveEditRecord() {
       if (newCountry) e.country = newCountry;
     }
   });
+
+  // 中文名或國家是封面比對的線索，改過就把這部片的封面丟掉重查一次
+  if (newTitleZh !== zhBefore || newCountry !== ccBefore) {
+    db.forEach(e => { if (e.title === _editTarget.title) delete e.poster; });
+    Object.keys(posterCache).forEach(k => {
+      if (k.indexOf(_editTarget.title + '||') === 0) delete posterCache[k];
+    });
+    posterCacheDirty = true;
+    savePosterCache();
+  }
 
   try {
     await ghWrite(db);
