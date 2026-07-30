@@ -45,10 +45,22 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .card-title::after{content:'';flex:1;height:1px;background:var(--border)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
 
-.rank-row{display:flex;align-items:center;gap:12px;padding:0 0;min-height:72px;border-bottom:1px solid var(--border)}
+.rank-row{display:flex;align-items:center;gap:12px;padding:6px 0;min-height:88px;border-bottom:1px solid var(--border)}
 .rank-row:last-child{border-bottom:none}
-.rank-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted2);width:24px;text-align:center;flex-shrink:0}
-.rank-num.gold{color:#FFD700}.rank-num.silver{color:#C0C0C0}.rank-num.bronze{color:#CD7F32}
+/* 名次：借 Netflix Top 10 自己的視覺語言 —— 巨大的描邊數字，實心留給前三名 */
+.rank-num{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;width:38px;text-align:center;flex-shrink:0;
+  color:transparent;-webkit-text-stroke:1.5px var(--muted2);letter-spacing:-1px;user-select:none}
+.rank-num.gold{color:#FFD700;-webkit-text-stroke:0}
+.rank-num.silver{color:#C0C0C0;-webkit-text-stroke:0}
+.rank-num.bronze{color:#CD7F32;-webkit-text-stroke:0}
+
+/* 海報 */
+.poster{width:46px;height:69px;flex-shrink:0;border-radius:3px;object-fit:cover;
+  background:linear-gradient(145deg,#1c1c1c,#111);box-shadow:0 3px 12px rgba(0,0,0,.55);
+  transition:transform .25s ease}
+.poster.blank{box-shadow:none}
+.rank-row:hover .poster,.ones-row:hover .poster{transform:scale(1.06)}
+@media (prefers-reduced-motion:reduce){.poster{transition:none}.rank-row:hover .poster,.ones-row:hover .poster{transform:none}}
 .rank-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;min-height:52px;}
 .rank-title-text{font-size:18px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rank-bar-wrap{width:80px;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:5px}
@@ -61,7 +73,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .b-en{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
 .b-nonen{background:rgba(67,160,71,0.15);color:#81c784;border:1px solid rgba(67,160,71,0.3)}
 
-.ones-row{display:flex;align-items:center;gap:10px;padding:0;min-height:72px;border-bottom:1px solid var(--border)}
+.ones-row{display:flex;align-items:center;gap:12px;padding:6px 0;min-height:88px;border-bottom:1px solid var(--border)}
 .ones-row:last-child{border-bottom:none}
 .ones-week{color:var(--muted);font-size:11px;width:130px;flex-shrink:0}
 .ones-title{flex:1;color:var(--text);display:flex;flex-direction:column;justify-content:center;min-height:52px;}
@@ -201,7 +213,8 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .rec-edit-btn:hover{color:var(--text);}
 .rank-row{cursor:pointer;}
 .rank-row:hover .rank-title-text{color:#E50914;}
-.detail-panel{display:none;padding:8px 0 4px 34px;border-bottom:1px solid var(--border);}
+.detail-panel{display:none;padding:8px 0 4px 108px;border-bottom:1px solid var(--border);}
+@media (max-width:640px){.detail-panel{padding-left:60px}}
 .detail-panel.open{display:block;}
 .detail-week{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.04);}
 .detail-week:last-child{border-bottom:none;}
@@ -463,6 +476,9 @@ const API_BASE     = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITH
 const DIR_BASE     = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents';
 // Contents API 只在檔案 ≤1MB 時回傳內容；Git Blobs API 支援到 100MB，是官方指定的大檔讀法
 const BLOB_BASE    = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/git/blobs/';
+// 讀取走 raw（免驗證、無大小限制、CORS 友善，跟站上其他頁一致）；
+// api.github.com 只在「寫入前取 SHA」時才用到，所以就算它被擋，頁面照樣看得到資料。
+const RAW_URL      = 'https://raw.githubusercontent.com/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/main/' + DATA_FILE;
 
 let db = [];
 let fileSha = null;
@@ -478,7 +494,7 @@ const catMap = {
 
 // 寫入時只保留這些欄位，其餘（titleEn 與 title 完全重複、hours/runtime/src 沒在用）丟掉，
 // 檔案才不會一直長大。GitHub Contents API 讀「內容」的上限是 1MB。
-const KEEP_FIELDS = ['rank','title','views','week','cat','titleZh','country','genres','weeksIn'];
+const KEEP_FIELDS = ['rank','title','views','week','cat','titleZh','country','genres','weeksIn','poster'];
 function slimEntry(e) {
   const o = {};
   KEEP_FIELDS.forEach(k => { if (e[k] !== undefined && e[k] !== '' && !(Array.isArray(e[k]) && !e[k].length)) o[k] = e[k]; });
@@ -502,33 +518,31 @@ async function ghErr(res, where) {
   return new Error(where + ' HTTP ' + res.status + (detail ? '\n' + detail : ''));
 }
 
+// fetch 失敗（連線瞬斷、DNS、被擴充功能擋掉）時重試一次，並把網址寫進錯誤訊息
+async function ghFetch(url, opt, label) {
+  let last;
+  for (let i = 0; i < 2; i++) {
+    try {
+      return await fetch(url, opt);
+    } catch (e) {
+      last = e;
+      if (i === 0) await new Promise(r => setTimeout(r, 700));
+    }
+  }
+  let host = url; try { host = new URL(url).host; } catch (e) {}
+  throw new Error(label + '：連不上 ' + host + '\n（' + (last && last.message || last) + '）');
+}
+
 // 從「列目錄」取檔案的 blob SHA：目錄清單不含檔案內容，所以不受 1MB 限制
 async function ghFileInfo(auth) {
-  const r = await fetch(DIR_BASE, { headers: { Authorization: auth, Accept: 'application/vnd.github+json' } });
+  const r = await ghFetch(DIR_BASE, { headers: { Authorization: auth, Accept: 'application/vnd.github+json' } }, '列出檔案');
   if (!r.ok) throw await ghErr(r, '列出檔案失敗');
   const arr = await r.json();
   if (!Array.isArray(arr)) throw new Error('列目錄回傳格式異常');
   return arr.find(x => x.name === DATA_FILE) || null;
 }
 
-async function ghRead() {
-  const auth = 'token ' + (getGHToken()||'');
-  const info = await ghFileInfo(auth);
-  if (!info) { fileSha = null; return null; }   // 檔案還不存在
-  fileSha = info.sha;
-
-  // 用 Git Blobs API 取內容（上限 100MB）。回傳固定是 base64。
-  const b = await fetch(BLOB_BASE + info.sha, {
-    headers: { Authorization: auth, Accept: 'application/vnd.github+json' }
-  });
-  if (!b.ok) throw await ghErr(b, '讀取資料失敗');
-  const j = await b.json();
-  if (!j.content || j.encoding !== 'base64') {
-    throw new Error('無法取得檔案內容（encoding=' + j.encoding + '，size=' + j.size + '）');
-  }
-  const bytes = Uint8Array.from(atob(j.content.replace(/\s/g, '')), c => c.charCodeAt(0));
-  const text = new TextDecoder().decode(bytes);
-
+function parseDb(text) {
   let data;
   try { data = JSON.parse(text); }
   catch (e) { throw new Error('資料不是合法 JSON（長度 ' + text.length + '）\n開頭：' + text.slice(0, 120)); }
@@ -538,8 +552,55 @@ async function ghRead() {
   return data;
 }
 
+// 備援讀法：走 GitHub API 的 Git Blobs（檔案再大也行，但需要 token）
+async function ghReadViaApi() {
+  const auth = 'token ' + (getGHToken()||'');
+  const info = await ghFileInfo(auth);
+  if (!info) { fileSha = null; return null; }
+  fileSha = info.sha;
+  const b = await ghFetch(BLOB_BASE + info.sha,
+    { headers: { Authorization: auth, Accept: 'application/vnd.github+json' } }, '讀取資料');
+  if (!b.ok) throw await ghErr(b, '讀取資料失敗');
+  const j = await b.json();
+  if (!j.content || j.encoding !== 'base64') throw new Error('無法取得檔案內容（encoding=' + j.encoding + '）');
+  const bytes = Uint8Array.from(atob(j.content.replace(/\s/g, '')), c => c.charCodeAt(0));
+  return parseDb(new TextDecoder().decode(bytes));
+}
+
+async function ghRead() {
+  // 主要走 raw（免驗證、無大小限制）；連不上就換 GitHub API，兩條都掛才放棄
+  try {
+    const r = await ghFetch(RAW_URL + '?t=' + Date.now(), { cache: 'no-store' }, '讀取資料');
+    if (r.status === 404) { fileSha = null; return null; }
+    if (!r.ok) throw await ghErr(r, '讀取資料失敗');
+    fileSha = null;
+    return parseDb(await r.text());
+  } catch (e1) {
+    try {
+      return await ghReadViaApi();
+    } catch (e2) {
+      // 最後一條：透過自己的 Cloudflare Worker 代讀。
+      // Worker 跑在 Cloudflare 上，不受這台電腦連不到 GitHub 的影響。
+      const base = (localStorage.getItem(NF_URL_KEY) || '').trim().replace(/\/+$/, '');
+      if (base) {
+        try {
+          const r = await ghFetch(base + '/data?t=' + Date.now(), { cache: 'no-store' }, '透過 Worker 讀取');
+          if (r.ok) { fileSha = null; return parseDb(await r.text()); }
+        } catch (e3) { /* 三條都不通，往下報錯 */ }
+      }
+      throw new Error('讀取路徑全部失敗。\n\n1) ' + e1.message + '\n\n2) ' + e2.message +
+        (base ? '\n\n3) Worker 代讀也失敗' : '\n\n3) 尚未設定 Worker 網址（在「新增」分頁填入後可當備援）') +
+        '\n\nraw.githubusercontent.com 與 api.github.com 同時連不上，通常是這台電腦的問題：' +
+        'DNS 過濾（AdGuard／Pi-hole／路由器）、VPN、或瀏覽器擴充功能。' +
+        '先用無痕視窗開一次排除擴充功能。');
+    }
+  }
+}
+
 async function ghWrite(data) {
   if (!Array.isArray(data)) throw new Error('要寫入的資料不是陣列，已中止');
+  // 讀取走 raw 不會帶回 SHA，寫入前補抓一次（這裡才需要 api.github.com）
+  if (!fileSha) { const info = await ghFileInfo('token ' + (getGHToken()||'')); fileSha = info ? info.sha : null; }
   const slim = data.map(slimEntry);
   const content = b64encode(new TextEncoder().encode(JSON.stringify(slim)));
   const body = { message: 'update top10-data.json (' + slim.length + ' 筆)', content };
@@ -569,6 +630,12 @@ function showErr(e) {
     box.style.display = 'block';
     box.textContent = '載入失敗\n\n' + msg +
       '\n\n若是 401/403，多半是 GitHub token 過期或權限不足，可在右上角重新輸入。';
+    const btn = document.createElement('button');
+    btn.className = 'btn-red';
+    btn.style.cssText = 'margin-top:12px;font-family:inherit;';
+    btn.textContent = '重新載入';
+    btn.onclick = init;
+    box.appendChild(btn);
   }
 }
 
@@ -837,6 +904,107 @@ function flagImg(code) {
   return '<img src="https://flagcdn.com/16x12/' + code.toLowerCase() + '.png" style="vertical-align:middle;margin-right:5px;border-radius:1px;" alt="' + code + '">';
 }
 
+/* ══════════ TMDB 海報 ══════════
+   poster 會跟著匯入寫進資料檔；舊資料沒有的，開頁時再補查一次並存進
+   localStorage，之後就不用再打 TMDB。 */
+const PCACHE_KEY = 'sumoai_top10_posters';
+let posterCache = {};
+try { posterCache = JSON.parse(localStorage.getItem(PCACHE_KEY) || '{}'); } catch (e) {}
+let posterCacheDirty = false;
+function savePosterCache() {
+  if (!posterCacheDirty) return;
+  posterCacheDirty = false;
+  try { localStorage.setItem(PCACHE_KEY, JSON.stringify(posterCache)); } catch (e) {}
+}
+function posterUrl(path) { return path ? 'https://image.tmdb.org/t/p/w185' + path : ''; }
+
+// 已知的海報：優先用資料檔裡的，其次用本機快取
+const _posterInDb = {};
+function indexPosters() {
+  for (const k in _posterInDb) delete _posterInDb[k];
+  db.forEach(e => { if (e.poster) _posterInDb[e.title + '||' + e.cat] = e.poster; });
+}
+function knownPoster(title, cat) {
+  const k = title + '||' + cat;
+  if (_posterInDb[k]) return _posterInDb[k];
+  return posterCache[k];            // undefined = 還沒查過，'' = 查過但沒有
+}
+
+// 海報用的比對：片名吻合 + 首播年份接近，跟 Worker 同一套想法的精簡版
+function pickPoster(results, isMovie, wantYear, want) {
+  let best = null, bestSc = -1e9;
+  for (const r of results) {
+    const nm = (isMovie ? r.title : r.name) || '';
+    const og = (isMovie ? r.original_title : r.original_name) || '';
+    const dt = (isMovie ? r.release_date : r.first_air_date) || '';
+    const n = x => (x || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, ' ').trim();
+    let sc = 0;
+    if (n(nm) === want || n(og) === want) sc += 100;
+    else if (n(nm).indexOf(want) >= 0 || n(og).indexOf(want) >= 0) sc += 35;
+    else sc -= 15;
+    const y = parseInt(dt.slice(0, 4), 10);
+    if (y) { const g = wantYear - y; sc += g <= 1 ? 70 : g <= 3 ? 40 : g <= 6 ? 8 : -30; }
+    sc += Math.min(20, Math.log10((r.popularity || 0) + 1) * 10);
+    if (!r.poster_path) sc -= 200;   // 沒有海報就沒有意義
+    if (sc > bestSc) { bestSc = sc; best = r; }
+  }
+  return best && best.poster_path ? best.poster_path : '';
+}
+
+async function lookupPoster(title, cat, year) {
+  const isMovie = cat.indexOf('Movies') >= 0;
+  const type = isMovie ? 'movie' : 'tv';
+  let q = title;
+  if (!isMovie) q = title.replace(/:\s*(Season\s*\d+|Limited Series|Part\s*\d+|Volume\s*\d+|Chapter\s*\d+|Series\s*\d+)\s*$/i, '').trim();
+  const want = q.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, ' ').trim();
+  try {
+    const r = await fetch(`https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(q)}&language=zh-TW&page=1`);
+    const d = await r.json();
+    if (!d.results || !d.results.length) return '';
+    return pickPoster(d.results, isMovie, year, want);
+  } catch (e) { return ''; }
+}
+
+// 畫完清單後，把還沒有海報的補上（同時最多 4 個，避免打太兇）
+let _posterRun = 0;
+async function fillPosters() {
+  const run = ++_posterRun;
+  const els = [].slice.call(document.querySelectorAll('img.poster[data-need="1"]'));
+  const jobs = new Map();
+  els.forEach(el => {
+    const k = el.dataset.t + '||' + el.dataset.c;
+    const hit = knownPoster(el.dataset.t, el.dataset.c);
+    if (hit !== undefined) { paintPoster(el, hit); return; }
+    if (!jobs.has(k)) jobs.set(k, { title: el.dataset.t, cat: el.dataset.c, year: +el.dataset.y || 2026, els: [] });
+    jobs.get(k).els.push(el);
+  });
+  const list = Array.from(jobs.values());
+  for (let i = 0; i < list.length; i += 4) {
+    if (run !== _posterRun) return;                 // 使用者已經切走，放棄這批
+    await Promise.all(list.slice(i, i + 4).map(async j => {
+      const path = await lookupPoster(j.title, j.cat, j.year);
+      posterCache[j.title + '||' + j.cat] = path;
+      posterCacheDirty = true;
+      j.els.forEach(el => paintPoster(el, path));
+    }));
+  }
+  savePosterCache();
+}
+function paintPoster(el, path) {
+  el.removeAttribute('data-need');
+  if (path) { el.src = posterUrl(path); el.classList.remove('blank'); }
+  else el.classList.add('blank');
+}
+// 產生一個 <img>：有海報直接給，沒有就標記待補
+function posterTag(title, cat, week) {
+  const hit = knownPoster(title, cat);
+  const y = onesYearOf(week) || new Date().getFullYear();
+  const esc = x => String(x).replace(/"/g, '&quot;');
+  if (hit) return '<img class="poster" loading="lazy" alt="" src="' + posterUrl(hit) + '">';
+  if (hit === '') return '<img class="poster blank" alt="">';
+  return '<img class="poster blank" alt="" data-need="1" data-t="' + esc(title) + '" data-c="' + esc(cat) + '" data-y="' + y + '">';
+}
+
 async function fetchTMDBInfo(title, cat) {
   const isMovie = cat && cat.includes('Movies');
   const isNonEn = cat && cat.includes('Non-English');
@@ -1027,6 +1195,7 @@ function switchViewsYear(y) { switchRankYear('views', y); }
 
 function renderRankCard(kind) {
   const isW = kind === 'weeks';
+  const cat = currentCat;
   const years = yearsOf(dashFiltered);
   if (rankYear[kind] !== 'all' && years.indexOf(rankYear[kind]) < 0) rankYear[kind] = 'all';
   paintYearTabs(isW ? 'weeks-years' : 'views-years', years, rankYear[kind],
@@ -1059,10 +1228,12 @@ function renderRankCard(kind) {
       '</div>';
     const val = isW ? (v.weeks + ' 週') : fmtViews(v.views);
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) +
-      '</span><div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub +
+      '</span>' + posterTag(t, cat, weekEntries[0] && weekEntries[0].week) +
+      '<div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub +
       '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v[key]/max*100) + '%"></div></div></div>' +
       '<span class="rank-val">' + val + '</span></div>' + detailHtml + '</div>';
   }).join('') : '<div class="empty">這一年尚無資料</div>';
+  fillPosters();
 }
 
 /* ── 各週 #1 作品：年份切換 ──
@@ -1114,14 +1285,17 @@ function renderOnesList() {
     const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
+      posterTag(e.title, e.cat, e.week) +
       '<div class="ones-title" style="flex:1;min-width:0">' +
         '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
       '</div>' +
       '<span class="ones-views">' + fmtViews(e.views) + '</span></div>';
   }).join('') : '<div class="empty">這一年尚無資料</div>';
+  fillPosters();
 }
 
 function renderDashboard() {
+  indexPosters();
   const filtered = currentCat === 'all' ? db : db.filter(e => e.cat === currentCat);
   const catLabel = {
     'all':'全部','Movies|English':'電影','Movies|Non-English':'非英語電影',
