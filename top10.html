@@ -353,6 +353,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
     </details>
     <div id="nf-status" class="status-box" style="display:none"></div>
     <div class="btn-row">
+      <button class="btn-ghost" onclick="clearPosterCache()">清除封面快取</button>
       <button class="btn-ghost" id="nf-btn-load" onclick="nfLoadWeeks()">載入週次</button>
       <button class="btn-red" id="nf-btn-import" onclick="nfImport()">匯入並儲存</button>
     </div>
@@ -931,17 +932,29 @@ function knownPoster(title, cat) {
 }
 
 // 海報用的比對：片名吻合 + 首播年份接近，跟 Worker 同一套想法的精簡版
-function pickPoster(results, isMovie, wantYear, want) {
+function pickPoster(results, isMovie, wantYear, want, wantZh, wantCC) {
+  const n = x => (x || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, ' ').trim();
+  const zhWant = n(wantZh);
+  const ccWant = (wantCC || '').split(',').filter(Boolean);
   let best = null, bestSc = -1e9;
   for (const r of results) {
     const nm = (isMovie ? r.title : r.name) || '';
     const og = (isMovie ? r.original_title : r.original_name) || '';
     const dt = (isMovie ? r.release_date : r.first_air_date) || '';
-    const n = x => (x || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, ' ').trim();
     let sc = 0;
+
+    // 資料裡已經有正確的中文片名時，這是最強的線索 —— 它本來就是 TMDB 給的
+    if (zhWant && n(nm) === zhWant) sc += 150;
+
+    // 國家也要對得上（影集的搜尋結果會帶 origin_country）
+    if (ccWant.length && Array.isArray(r.origin_country) && r.origin_country.length) {
+      sc += r.origin_country.some(c => ccWant.indexOf(String(c).toUpperCase()) >= 0) ? 60 : -60;
+    }
+
     if (n(nm) === want || n(og) === want) sc += 100;
     else if (n(nm).indexOf(want) >= 0 || n(og).indexOf(want) >= 0) sc += 35;
     else sc -= 15;
+
     const y = parseInt(dt.slice(0, 4), 10);
     if (y) { const g = wantYear - y; sc += g <= 1 ? 70 : g <= 3 ? 40 : g <= 6 ? 8 : -30; }
     sc += Math.min(20, Math.log10((r.popularity || 0) + 1) * 10);
@@ -951,7 +964,7 @@ function pickPoster(results, isMovie, wantYear, want) {
   return best && best.poster_path ? best.poster_path : '';
 }
 
-async function lookupPoster(title, cat, year) {
+async function lookupPoster(title, cat, year, zh, cc) {
   const isMovie = cat.indexOf('Movies') >= 0;
   const type = isMovie ? 'movie' : 'tv';
   let q = title;
@@ -961,7 +974,7 @@ async function lookupPoster(title, cat, year) {
     const r = await fetch(`https://api.themoviedb.org/3/search/${type}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(q)}&language=zh-TW&page=1`);
     const d = await r.json();
     if (!d.results || !d.results.length) return '';
-    return pickPoster(d.results, isMovie, year, want);
+    return pickPoster(d.results, isMovie, year, want, zh, cc);
   } catch (e) { return ''; }
 }
 
@@ -975,14 +988,15 @@ async function fillPosters() {
     const k = el.dataset.t + '||' + el.dataset.c;
     const hit = knownPoster(el.dataset.t, el.dataset.c);
     if (hit !== undefined) { paintPoster(el, hit); return; }
-    if (!jobs.has(k)) jobs.set(k, { title: el.dataset.t, cat: el.dataset.c, year: +el.dataset.y || 2026, els: [] });
+    if (!jobs.has(k)) jobs.set(k, { title: el.dataset.t, cat: el.dataset.c, year: +el.dataset.y || 2026,
+                                    zh: el.dataset.zh || '', cc: el.dataset.cc || '', els: [] });
     jobs.get(k).els.push(el);
   });
   const list = Array.from(jobs.values());
   for (let i = 0; i < list.length; i += 4) {
     if (run !== _posterRun) return;                 // 使用者已經切走，放棄這批
     await Promise.all(list.slice(i, i + 4).map(async j => {
-      const path = await lookupPoster(j.title, j.cat, j.year);
+      const path = await lookupPoster(j.title, j.cat, j.year, j.zh, j.cc);
       posterCache[j.title + '||' + j.cat] = path;
       posterCacheDirty = true;
       j.els.forEach(el => paintPoster(el, path));
@@ -990,19 +1004,29 @@ async function fillPosters() {
   }
   savePosterCache();
 }
+// 封面抓錯時：清掉本機快取，回統計頁就會重查一次
+function clearPosterCache() {
+  posterCache = {};
+  posterCacheDirty = false;
+  try { localStorage.removeItem(PCACHE_KEY); } catch (e) {}
+  nfStatus('ok', '封面快取已清除，回「統計」分頁會重新查一次');
+  renderDashboard();
+}
+
 function paintPoster(el, path) {
   el.removeAttribute('data-need');
   if (path) { el.src = posterUrl(path); el.classList.remove('blank'); }
   else el.classList.add('blank');
 }
 // 產生一個 <img>：有海報直接給，沒有就標記待補
-function posterTag(title, cat, week) {
+function posterTag(title, cat, week, titleZh, country) {
   const hit = knownPoster(title, cat);
   const y = onesYearOf(week) || new Date().getFullYear();
-  const esc = x => String(x).replace(/"/g, '&quot;');
+  const esc = x => String(x == null ? '' : x).replace(/"/g, '&quot;');
   if (hit) return '<img class="poster" loading="lazy" alt="" src="' + posterUrl(hit) + '">';
   if (hit === '') return '<img class="poster blank" alt="">';
-  return '<img class="poster blank" alt="" data-need="1" data-t="' + esc(title) + '" data-c="' + esc(cat) + '" data-y="' + y + '">';
+  return '<img class="poster blank" alt="" data-need="1" data-t="' + esc(title) + '" data-c="' + esc(cat) +
+         '" data-y="' + y + '" data-zh="' + esc(titleZh) + '" data-cc="' + esc(country) + '">';
 }
 
 async function fetchTMDBInfo(title, cat) {
@@ -1228,7 +1252,7 @@ function renderRankCard(kind) {
       '</div>';
     const val = isW ? (v.weeks + ' 週') : fmtViews(v.views);
     return '<div><div class="rank-row" onclick="toggleDetail(this)"><span class="rank-num ' + numClass(i) + '">' + (i+1) +
-      '</span>' + posterTag(t, cat, weekEntries[0] && weekEntries[0].week) +
+      '</span>' + posterTag(t, cat, weekEntries[0] && weekEntries[0].week, v.titleZh, v.country) +
       '<div class="rank-info"><div class="rank-title-text">' + flag + disp + '</div>' + sub +
       '<div class="rank-bar-wrap"><div class="rank-bar" style="width:' + Math.round(v[key]/max*100) + '%"></div></div></div>' +
       '<span class="rank-val">' + val + '</span></div>' + detailHtml + '</div>';
@@ -1285,7 +1309,7 @@ function renderOnesList() {
     const sub  = e.titleZh ? '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;">' + e.title + '</div>' : '';
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
     return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
-      posterTag(e.title, e.cat, e.week) +
+      posterTag(e.title, e.cat, e.week, e.titleZh, e.country) +
       '<div class="ones-title" style="flex:1;min-width:0">' +
         '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
       '</div>' +
