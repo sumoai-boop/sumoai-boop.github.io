@@ -294,6 +294,30 @@ body{
   font-family:inherit;cursor:pointer;margin-top:18px;
 }
 .btn-danger:hover{background:var(--red-bg);}
+.btn-mini{background:var(--orange-bg);border:1px solid var(--orange);color:var(--orange-dk);
+  border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;
+  cursor:pointer;white-space:nowrap;}
+.btn-mini:hover{background:#FFDCCB;}
+.btn-mini:disabled{opacity:.5;cursor:default;}
+.rate-row{display:flex;gap:8px;align-items:center;}
+.rate-row input{flex:1;min-width:0;}
+.rate-note{font-size:11px;color:var(--hint);grid-column:2;margin-top:-4px;}
+/* 跨旅程比較 */
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cmp-table th{padding:8px 6px;font-size:11px;font-weight:900;color:var(--hint);
+  text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;}
+.cmp-table th:first-child{text-align:left;}
+.cmp-table td{padding:9px 6px;border-bottom:1px solid var(--line-soft);text-align:right;
+  font-family:'Space Mono',monospace;font-weight:700;color:var(--ink);white-space:nowrap;}
+.cmp-table td:first-child{text-align:left;font-family:inherit;}
+.cmp-table tr:last-child td{border-bottom:none;}
+.cmp-name{font-weight:900;color:var(--ink);}
+.cmp-sub{font-size:11px;color:var(--hint);font-weight:400;}
+.cmp-bar{height:9px;border-radius:5px;background:var(--line-soft);overflow:hidden;min-width:70px;}
+.cmp-bar>i{display:block;height:100%;border-radius:5px;background:var(--orange);}
+.cmp-stack{display:flex;height:15px;border-radius:5px;overflow:hidden;background:var(--line-soft);}
+.cmp-stack>i{display:block;height:100%;}
+.cmp-empty{color:var(--hint);font-size:13px;padding:14px 4px;}
 .btn-save{
   background:var(--green);color:#F4FBEA;border:none;
   border-radius:9px;padding:9px 20px;font-size:14px;font-weight:700;
@@ -490,6 +514,10 @@ body{
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 12 2v10z"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
         統計
       </div>
+      <div class="fn-item" data-view="compare" onclick="switchView('compare')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+        跨旅程比較
+      </div>
       <div class="fn-item" data-view="settings" onclick="switchView('settings')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         設定
@@ -550,6 +578,23 @@ body{
       </div>
     </section>
 
+    <section id="view-compare" style="display:none;">
+      <div class="stat-row" id="cmpCards"></div>
+      <div class="chart-box">
+        <div class="chart-title">每日平均花費 NT$</div>
+        <table class="cmp-table" id="cmpDaily"></table>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">各旅程總覽</div>
+        <div style="overflow-x:auto;"><table class="cmp-table" id="cmpTable"></table></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">類別佔比比較</div>
+        <div id="cmpCat"></div>
+        <div class="legend" id="cmpCatLegend"></div>
+      </div>
+    </section>
+
     <section id="view-settings" style="display:none;">
       <div class="set-grid">
         <label>城市</label><input type="text" id="setCity">
@@ -557,7 +602,9 @@ body{
         <label>開始日期</label><input type="date" id="setStart">
         <label>結束日期</label><input type="date" id="setEnd">
         <label>當地幣別</label><input type="text" id="setCurrency" placeholder="KRW / JPY / TWD">
-        <label>匯率（1 當地幣 = ? NT$）</label><input type="number" id="setRate" step="0.0001" inputmode="decimal">
+        <label>匯率（1 當地幣 = ? NT$）</label>
+        <div class="rate-row"><input type="number" id="setRate" step="0.0001" inputmode="decimal"><button class="btn-mini" id="setRateBtn" onclick="autoRate('set')">自動更新</button></div>
+        <div class="rate-note" id="setRateNote"></div>
         <label>總預算 NT$</label><input type="number" id="setBudget" inputmode="numeric">
       </div>
       <button class="btn-save" onclick="saveTripSettings()">儲存設定</button>
@@ -585,7 +632,8 @@ body{
       <label>開始日期</label><input type="date" id="nmStart">
       <label>結束日期</label><input type="date" id="nmEnd">
       <label>當地幣別</label><input type="text" id="nmCurrency" placeholder="KRW / JPY / TWD" value="TWD">
-      <label>匯率（1 當地幣 = ? NT$）</label><input type="number" id="nmRate" step="0.0001" value="1" inputmode="decimal">
+      <label>匯率（1 當地幣 = ? NT$）</label>
+      <div class="rate-row"><input type="number" id="nmRate" step="0.0001" value="1" inputmode="decimal"><button class="btn-mini" id="nmRateBtn" onclick="autoRate('nm')">自動更新</button></div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeTripModal()">取消</button>
@@ -747,8 +795,11 @@ function fillTimeSelects(){
 function renderAll(){
   renderTripList();renderSync();
   var t=curTrip();
-  document.getElementById('mainArea').style.display=t?'block':'none';
-  document.getElementById('mainEmpty').style.display=t?'none':'flex';
+  // 跨旅程比較看的是全部旅程，不需要先選一個
+  var isCmp=(currentView==='compare');
+  document.getElementById('mainArea').style.display=(t||isCmp)?'block':'none';
+  document.getElementById('mainEmpty').style.display=(t||isCmp)?'none':'flex';
+  if(isCmp){ renderCompareHeader(); renderCompare(); return; }
   if(!t)return;
   renderHeader();
   if(currentView==='log')renderLog();
@@ -810,7 +861,7 @@ function switchView(v){
   document.querySelectorAll('#fnMenu .fn-item').forEach(el=>{
     el.classList.toggle('active',el.dataset.view===v);
   });
-  ['log','stats','settings'].forEach(x=>{
+  ['log','stats','compare','settings'].forEach(x=>{
     document.getElementById('view-'+x).style.display=(x===v)?'block':'none';
   });
   toggleSidebar(false);
@@ -938,6 +989,163 @@ function fillCurSelect(t){
   var pref=[keep,saved].filter(function(x){return opts.indexOf(x)>=0;})[0];
   el.value=pref||opts[0];
 }
+/* ══════════ 匯率自動更新 ══════════
+   open.er-api.com 免費、免金鑰、含台幣。取 1 當地幣 = ? TWD。 */
+async function fetchLiveRate(cur){
+  cur=(cur||'').trim().toUpperCase();
+  if(!cur) throw new Error('請先填幣別');
+  if(cur==='TWD') return 1;
+  var r=await fetch('https://open.er-api.com/v6/latest/'+encodeURIComponent(cur));
+  if(!r.ok) throw new Error('查詢失敗 HTTP '+r.status);
+  var d=await r.json();
+  if(d.result!=='success') throw new Error(d['error-type']||'查無此幣別');
+  var v=d.rates&&d.rates.TWD;
+  if(!(v>0)) throw new Error('回傳沒有台幣匯率');
+  return v;
+}
+
+// which = 'set'（設定頁）或 'nm'（新增旅程）
+async function autoRate(which){
+  var curEl=document.getElementById(which+'Currency');
+  var rateEl=document.getElementById(which+'Rate');
+  var btn=document.getElementById(which+'RateBtn');
+  var cur=(curEl.value||'').trim().toUpperCase();
+  if(!cur){ showToast('請先填當地幣別',true); curEl.focus(); return; }
+  btn.disabled=true; var old=btn.textContent; btn.textContent='查詢中…';
+  try{
+    var v=await fetchLiveRate(cur);
+    rateEl.value=(v>=1?v.toFixed(4):v.toPrecision(6)).replace(/0+$/,'').replace(/\.$/,'');
+    if(which==='set'){
+      var note=document.getElementById('setRateNote');
+      if(note) note.textContent='已查到今日匯率，按「儲存設定」才會存下來';
+    }
+    showToast('✅ 1 '+cur+' = '+rateEl.value+' NT$',false);
+  }catch(e){
+    showToast('匯率更新失敗：'+e.message,true);
+  }
+  btn.disabled=false; btn.textContent=old;
+}
+
+function renderRateNote(){
+  var el=document.getElementById('setRateNote');
+  if(!el) return;
+  var t=curTrip();
+  if(!t||!t.rateAt){ el.textContent=''; return; }
+  var d=new Date(t.rateAt);
+  el.textContent='最後更新：'+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()
+    +' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+/* ══════════ 跨旅程比較 ══════════ */
+function tripDays(t){
+  if(!t.start||!t.end) return (t.entries||[]).length?1:0;
+  var a=new Date(t.start), b=new Date(t.end);
+  return Math.max(1, Math.round((b-a)/86400000)+1);
+}
+function tripLabel(t){ return t.city||t.name||t.cityEn||'未命名'; }
+
+function renderCompareHeader(){
+  document.getElementById('thTitle').textContent='跨旅程比較';
+  var n=(DB.trips||[]).length;
+  document.getElementById('thMeta').textContent=n+' 趟旅程';
+  var all=(DB.trips||[]).reduce(function(a,t){return a+tripTotalTWD(t);},0);
+  document.getElementById('thTotal').textContent='NT$ '+num(Math.round(all));
+}
+
+function renderCompare(){
+  var trips=(DB.trips||[]).slice().sort(function(a,b){
+    return String(b.start||'').localeCompare(String(a.start||''));
+  });
+  var cards=document.getElementById('cmpCards');
+  var daily=document.getElementById('cmpDaily');
+  var table=document.getElementById('cmpTable');
+  var catBox=document.getElementById('cmpCat');
+  var catLeg=document.getElementById('cmpCatLegend');
+
+  if(!trips.length){
+    cards.innerHTML='';
+    daily.innerHTML='<tr><td class="cmp-empty">還沒有旅程</td></tr>';
+    table.innerHTML=''; catBox.innerHTML=''; catLeg.innerHTML='';
+    return;
+  }
+
+  var rows=trips.map(function(t){
+    var total=tripTotalTWD(t), days=tripDays(t);
+    return {
+      t:t, label:tripLabel(t), total:total, days:days,
+      per: days>0 ? total/days : 0,
+      budget:+t.budget||0,
+      count:(t.entries||[]).length,
+      cur:t.currency||'TWD'
+    };
+  });
+
+  // ── 概況卡 ──
+  var sumAll=rows.reduce(function(a,r){return a+r.total;},0);
+  var sumDays=rows.reduce(function(a,r){return a+r.days;},0);
+  var withPer=rows.filter(function(r){return r.per>0;});
+  var most=withPer.slice().sort(function(a,b){return b.per-a.per;})[0];
+  var least=withPer.slice().sort(function(a,b){return a.per-b.per;})[0];
+  cards.innerHTML=
+     '<div class="stat-card red"><div class="sc-label">累計旅費 NT$</div><div class="sc-value">'+num(Math.round(sumAll))+'</div></div>'
+    +'<div class="stat-card orange"><div class="sc-label">累計天數</div><div class="sc-value">'+sumDays+' 天</div></div>'
+    +'<div class="stat-card green"><div class="sc-label">整體每日平均 NT$</div><div class="sc-value">'+(sumDays?num(Math.round(sumAll/sumDays)):'—')+'</div></div>'
+    +(most?'<div class="stat-card orange"><div class="sc-label">最花錢的一趟</div><div class="sc-value" style="font-size:15px;">'+esc(most.label)+'</div></div>':'')
+    +(least&&least!==most?'<div class="stat-card green"><div class="sc-label">最省的一趟</div><div class="sc-value" style="font-size:15px;">'+esc(least.label)+'</div></div>':'');
+
+  // ── 每日平均長條 ──
+  var maxPer=Math.max.apply(null, rows.map(function(r){return r.per;}).concat([1]));
+  daily.innerHTML=rows.map(function(r){
+    return '<tr><td style="width:34%;"><span class="cmp-name">'+esc(r.label)+'</span>'
+        +'<span class="cmp-sub"> · '+r.days+' 天</span></td>'
+      +'<td style="width:46%;"><div class="cmp-bar"><i style="width:'+(r.per/maxPer*100).toFixed(1)+'%"></i></div></td>'
+      +'<td>'+(r.per?num(Math.round(r.per)):'—')+'</td></tr>';
+  }).join('');
+
+  // ── 總覽表 ──
+  table.innerHTML='<thead><tr>'
+      +'<th>旅程</th><th>日期</th><th>天數</th><th>總花費 NT$</th><th>每日平均</th><th>預算</th><th>使用率</th><th>筆數</th>'
+    +'</tr></thead><tbody>'
+    +rows.map(function(r){
+      var used=r.budget>0?(r.total/r.budget*100):0;
+      var col=used>100?'var(--red-dk)':(used>85?'var(--amber)':'var(--green-dk)');
+      return '<tr>'
+        +'<td><span class="cmp-name">'+esc(r.label)+'</span>'+(r.cur!=='TWD'?'<span class="cmp-sub"> '+esc(r.cur)+'</span>':'')+'</td>'
+        +'<td class="cmp-sub" style="font-family:inherit;">'+esc(r.t.start||'—')+'</td>'
+        +'<td>'+r.days+'</td>'
+        +'<td>'+num(Math.round(r.total))+'</td>'
+        +'<td>'+(r.per?num(Math.round(r.per)):'—')+'</td>'
+        +'<td>'+(r.budget?num(r.budget):'—')+'</td>'
+        +'<td style="color:'+col+';">'+(r.budget?used.toFixed(0)+'%':'—')+'</td>'
+        +'<td>'+r.count+'</td>'
+      +'</tr>';
+    }).join('')+'</tbody>';
+
+  // ── 類別佔比堆疊條 ──
+  var cats=Object.keys(TAG);
+  catBox.innerHTML=rows.map(function(r){
+    var by={}, tot=0;
+    (r.t.entries||[]).forEach(function(e){
+      if(+e.amount>0){ var v=entryTWD(e,r.t); by[e.type]=(by[e.type]||0)+v; tot+=v; }
+    });
+    if(tot<=0) return '';
+    var seg=cats.map(function(c){
+      var v=by[c]||0; if(!v) return '';
+      return '<i title="'+esc(c)+' '+Math.round(v/tot*100)+'%" style="width:'+(v/tot*100).toFixed(2)+'%;background:'+TAG[c].pie+';"></i>';
+    }).join('');
+    var top=Object.entries(by).sort(function(a,b){return b[1]-a[1];})[0];
+    return '<div style="margin-bottom:12px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">'
+        +'<span class="cmp-name">'+esc(r.label)+'</span>'
+        +'<span class="cmp-sub">最大宗：'+esc(top[0])+' '+Math.round(top[1]/tot*100)+'%</span></div>'
+      +'<div class="cmp-stack">'+seg+'</div></div>';
+  }).join('')||'<div class="cmp-empty">還沒有花費資料</div>';
+
+  catLeg.innerHTML=cats.map(function(c){
+    return '<span class="legend-item"><span class="legend-swatch" style="background:'+TAG[c].pie+';"></span>'+esc(c)+'</span>';
+  }).join('');
+}
+
 function editRate(){
   var t=curTrip();if(!t)return;
   if(!t.currency||t.currency==='TWD'){showToast('台幣旅程無需匯率',false);return;}
@@ -1149,6 +1357,7 @@ function renderSettings(){
   document.getElementById('setCurrency').value=t.currency||'TWD';
   document.getElementById('setRate').value=t.rate||1;
   document.getElementById('setBudget').value=t.budget||'';
+  renderRateNote();
 }
 function saveTripSettings(){
   var t=curTrip();if(!t)return;
@@ -1158,7 +1367,8 @@ function saveTripSettings(){
   t.cityEn=document.getElementById('setCityEn').value.trim();
   t.start=s;t.end=e;
   t.currency=(document.getElementById('setCurrency').value.trim()||'TWD').toUpperCase();
-  t.rate=parseFloat(document.getElementById('setRate').value)||1;
+  var newRate=parseFloat(document.getElementById('setRate').value)||1;
+  if(newRate!==t.rate){ t.rate=newRate; t.rateAt=new Date().toISOString(); }
   t.budget=parseFloat(document.getElementById('setBudget').value)||0;
   markDirty();renderAll();
   showToast('✅ 設定已更新（記得同步）',false);
