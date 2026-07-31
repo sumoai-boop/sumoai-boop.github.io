@@ -376,7 +376,7 @@ body::before { background: transparent !important; }
 
   <div class="section-divider" style="margin-top:40px;"></div>
   <div class="filters">
-    <input class="filter-input" id="searchInput" placeholder="搜尋片名...">
+    <input class="filter-input" id="searchInput" placeholder="搜尋片名或演員...">
     <button class="filter-reset" id="resetBtn" title="重置所有篩選">↺ 重置</button>
     <select class="filter-select" id="langSelect">
       <option value="">全部國家</option>
@@ -640,7 +640,14 @@ async function fetchPosterForCard(m, imgEl){
       for(const t of types){
         if(poster) break;
         const hit=await search(q,t);
-        if(hit&&hit.poster_path) poster=hit.poster_path;
+        if(hit&&hit.poster_path){
+          poster=hit.poster_path;
+          // 順便存 tmdbId 供演員搜尋用
+          if(hit.id && !m.tmdbId){
+            m.tmdbId = hit.id;
+            try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch{}
+          }
+        }
       }
       if(poster) break;
     }
@@ -652,6 +659,9 @@ async function fetchPosterForCard(m, imgEl){
 
 // ── 篩選 ──
 let fLang='',fVenue='',fYear='',fDist='',fType='',sort='date-desc',q='',currentPage=1;
+let actorTmdbIds=null; // null=未搜尋演員, Set=演員搜尋結果（片單 tmdbId 集合）
+let actorName='';      // 目前搜尋的演員名稱
+let actorSearchTimer=null;
 const PAGE_SIZE=25;
 window.st = function(s){ return s===0?'—':s===10?'★ 10':s.toFixed(1); };
 function resetPage(){ currentPage=1; render(); }
@@ -664,7 +674,12 @@ function render(){
     if(fVenue&&m.venue!==fVenue)return false;
     if(fYear&&String(m.year)!==fYear)return false;
     if(fDist&&m.dist!==fDist)return false;
-    if(q&&!m.title.includes(q)&&!m.orig.toLowerCase().includes(q.toLowerCase()))return false;
+    if(actorTmdbIds!==null){
+      // 演員搜尋模式：比對 tmdbId
+      if(!actorTmdbIds.has(String(m.tmdbId||''))) return false;
+    } else if(q){
+      if(!m.title.includes(q)&&!(m.orig||'').toLowerCase().includes(q.toLowerCase()))return false;
+    }
     return true;
   });
   data.sort((a,b)=>{
@@ -985,6 +1000,11 @@ async function openPoster(m){
       }
     }
     if(movie){
+      // 自動把 TMDB ID 存回資料（供演員搜尋用）
+      if(movie.id && !m.tmdbId){
+        m.tmdbId = movie.id;
+        try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch{}
+      }
       if(movie.poster_path){
         pmImg.onload=()=>{pmPlaceholder.style.display='none';pmImg.style.display='block';};
         pmImg.onerror=()=>{pmPlaceholder.textContent='無海報圖';};
@@ -1004,9 +1024,51 @@ async function openPoster(m){
   }catch(e){pmPlaceholder.textContent='載入失敗';}
 }
 
-document.getElementById('searchInput').addEventListener('input',e=>{q=e.target.value;render();});
+document.getElementById('searchInput').addEventListener('input', async function(e){
+  const val = e.target.value.trim();
+  q = val;
+  actorTmdbIds = null;
+  actorName = '';
+
+  if(!val){ render(); return; }
+
+  // debounce 500ms 後查 TMDB 演員
+  clearTimeout(actorSearchTimer);
+  actorSearchTimer = setTimeout(async function(){
+    if(document.getElementById('searchInput').value.trim() !== val) return;
+    try{
+      const res = await fetch(`https://api.themoviedb.org/3/search/person?api_key=${TMDB}&query=${encodeURIComponent(val)}&language=zh-TW`);
+      const json = await res.json();
+      const person = json.results && json.results[0];
+      if(person && person.known_for_department){
+        // 找到演員：取得他的完整演出作品
+        const credRes = await fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=${TMDB}&language=zh-TW`);
+        const credJson = await credRes.json();
+        const castIds = new Set([
+          ...(credJson.cast||[]).map(c=>String(c.id)),
+          ...(credJson.crew||[]).map(c=>String(c.id))
+        ]);
+        // 比對你的資料裡有沒有對應的 tmdbId
+        const matched = DATA.filter(m=>castIds.has(String(m.tmdbId||'')));
+        if(matched.length > 0){
+          actorTmdbIds = castIds;
+          actorName = person.name;
+          q = val; // 保留原始搜尋字串
+          render();
+          showToast(`🎬 找到 ${matched.length} 部「${person.name}」的作品`, false);
+          return;
+        }
+      }
+    }catch(err){ console.warn('actor search:', err); }
+    // 找不到演員或無交集 → 走原本片名搜尋
+    actorTmdbIds = null;
+    render();
+  }, 500);
+
+  render(); // 先用片名即時搜尋
+});
 document.getElementById('resetBtn').addEventListener('click',()=>{
-  q='';fLang='';fVenue='';fYear='';fDist='';fType='';sort='date-desc';
+  q='';fLang='';fVenue='';fYear='';fDist='';fType='';sort='date-desc';actorTmdbIds=null;actorName='';
   document.getElementById('searchInput').value='';
   document.getElementById('langSelect').value='';
   document.getElementById('yearSelect').value='';
