@@ -745,7 +745,7 @@ function render(){
   afEl.innerHTML='';
   const tags=[
     {key:'fType',val:fType,label:fType,clear:()=>{fType='';document.getElementById('typeSelect').value='';}},
-    {key:'q',val:q,label:'搜尋: '+q,clear:()=>{q='';document.getElementById('searchInput').value='';}},
+    {key:'q',val:q,label:(actorTmdbIds?'🎬 演員: '+actorName:'搜尋: '+q),clear:()=>{q='';actorTmdbIds=null;actorName='';document.getElementById('searchInput').value='';}},
     {key:'fLang',val:fLang,label:fLang,clear:()=>{fLang='';document.getElementById('langSelect').value='';}},
     {key:'fYear',val:fYear,label:fYear+'年',clear:()=>{fYear='';document.getElementById('yearSelect').value='';}},
     {key:'fVenue',val:fVenue,label:fVenue,clear:()=>{fVenue='';document.getElementById('venueSelect').value='';}},
@@ -1049,41 +1049,40 @@ document.getElementById('searchInput').addEventListener('input', async function(
       const credRes = await fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=${TMDB}&language=zh-TW`);
       const credJson = await credRes.json();
 
-      // 建立演員片單的片名集合（中文名 + 英文名 + 原文名，全部小寫）
-      const allCredits = [...(credJson.cast||[]), ...(credJson.crew||[])];
+      // 只取 cast（實際演出），排除 crew（工作人員/感謝名單/紀錄片素材）
+      const credits = (credJson.cast||[]).filter(x=>x.media_type!=='person');
+
+      // 正規化：小寫、去空白標點、去季數後綴
+      const norm = s => (s||'').toString().toLowerCase()
+        .replace(/\s*s\d+$/i,'')
+        .replace(/\s*season\s*\d+$/i,'')
+        .replace(/\s*第[一二三四五六七八九十\d]+季$/,'')
+        .replace(/[\s:：，,．.·・、!！?？'"'"「」（）()\[\]-]/g,'')
+        .trim();
+
       const creditTitles = new Set();
-      allCredits.forEach(c => {
-        if(c.title) creditTitles.add(c.title.toLowerCase());
-        if(c.name) creditTitles.add(c.name.toLowerCase());
-        if(c.original_title) creditTitles.add(c.original_title.toLowerCase());
-        if(c.original_name) creditTitles.add(c.original_name.toLowerCase());
+      credits.forEach(x=>{
+        [x.title, x.name, x.original_title, x.original_name].forEach(t=>{
+          const n = norm(t);
+          if(n && n.length >= 2) creditTitles.add(n);
+        });
       });
 
-      // 用片名比對你的觀影記錄
-      const normalize = s => (s||'').toLowerCase().replace(/\s+/g,' ').trim()
-        .replace(/\s*s\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'');
-
-      const matched = DATA.filter(m => {
-        const t = normalize(m.title);
-        const o = normalize(m.orig);
-        return creditTitles.has(t) || creditTitles.has(o) ||
-               (t && [...creditTitles].some(ct => ct.includes(t) || t.includes(ct))) ||
-               (o && o !== 'nan' && [...creditTitles].some(ct => ct.includes(o) || o.includes(ct)));
+      // 嚴格比對：正規化後完全相同才算（避免短片名誤命中）
+      const matched = DATA.filter(m=>{
+        const t = norm(m.title);
+        const o = (m.orig && m.orig !== 'nan') ? norm(m.orig) : '';
+        return (t && creditTitles.has(t)) || (o && creditTitles.has(o));
       });
 
       if(matched.length > 0){
-        // 用演員片單的 ID Set（保留 tmdbId 比對備用）
-        const castIds = new Set(allCredits.map(c=>String(c.id)));
-        actorTmdbIds = castIds;
         actorName = person.name;
-        // 直接用 matched 設定篩選
-        actorTmdbIds = {
-          _matched: new Set(matched.map(m=>m.title)),
-          has: function(id){ return true; } // 改用 _matched 比對
-        };
-        // 實際上改 filter 邏輯用 _matched
+        actorTmdbIds = { _matched: new Set(matched.map(m=>m.title)) };
         render();
-        showToast(`🎬 找到 ${matched.length} 部「${person.name}」的作品`, false);
+        showToast('🎬 找到 ' + matched.length + ' 部「' + person.name + '」的作品', false);
+      } else {
+        actorTmdbIds = null;
+        render();
       }
     }catch(err){ console.warn('actor search:', err); }
   }, 800);
