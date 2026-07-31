@@ -376,7 +376,7 @@ body::before { background: transparent !important; }
 
   <div class="section-divider" style="margin-top:40px;"></div>
   <div class="filters">
-    <input class="filter-input" id="searchInput" placeholder="搜尋片名或演員...">
+    <input class="filter-input" id="searchInput" placeholder="搜尋片名／演員／導演...">
     <button class="filter-reset" id="resetBtn" title="重置所有篩選">↺ 重置</button>
     <select class="filter-select" id="langSelect">
       <option value="">全部國家</option>
@@ -745,7 +745,7 @@ function render(){
   afEl.innerHTML='';
   const tags=[
     {key:'fType',val:fType,label:fType,clear:()=>{fType='';document.getElementById('typeSelect').value='';}},
-    {key:'q',val:q,label:(actorTmdbIds?'🎬 演員: '+actorName:'搜尋: '+q),clear:()=>{q='';actorTmdbIds=null;actorName='';document.getElementById('searchInput').value='';}},
+    {key:'q',val:q,label:(actorTmdbIds?'🎬 影人: '+actorName:'搜尋: '+q),clear:()=>{q='';actorTmdbIds=null;actorName='';document.getElementById('searchInput').value='';}},
     {key:'fLang',val:fLang,label:fLang,clear:()=>{fLang='';document.getElementById('langSelect').value='';}},
     {key:'fYear',val:fYear,label:fYear+'年',clear:()=>{fYear='';document.getElementById('yearSelect').value='';}},
     {key:'fVenue',val:fVenue,label:fVenue,clear:()=>{fVenue='';document.getElementById('venueSelect').value='';}},
@@ -1049,8 +1049,10 @@ document.getElementById('searchInput').addEventListener('input', async function(
       const credRes = await fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=${TMDB}&language=zh-TW`);
       const credJson = await credRes.json();
 
-      // 只取 cast（實際演出），排除 crew（工作人員/感謝名單/紀錄片素材）
-      const credits = (credJson.cast||[]).filter(x=>x.media_type!=='person');
+      // 演出（cast）＋ 執導（crew 中 job=Director），排除其他工作人員/感謝名單
+      const castCredits = (credJson.cast||[]).filter(x=>x.media_type!=='person');
+      const dirCredits  = (credJson.crew||[]).filter(x=>x.job==='Director');
+      const credits = castCredits.concat(dirCredits);
 
       // 正規化：小寫、去空白標點、去季數後綴
       const norm = s => (s||'').toString().toLowerCase()
@@ -1061,12 +1063,18 @@ document.getElementById('searchInput').addEventListener('input', async function(
         .trim();
 
       const creditTitles = new Set();
-      credits.forEach(x=>{
-        [x.title, x.name, x.original_title, x.original_name].forEach(t=>{
-          const n = norm(t);
-          if(n && n.length >= 2) creditTitles.add(n);
+      const castTitles = new Set();
+      const dirTitles = new Set();
+      function collect(list, bucket){
+        list.forEach(x=>{
+          [x.title, x.name, x.original_title, x.original_name].forEach(t=>{
+            const n = norm(t);
+            if(n && n.length >= 2){ creditTitles.add(n); bucket.add(n); }
+          });
         });
-      });
+      }
+      collect(castCredits, castTitles);
+      collect(dirCredits, dirTitles);
 
       // 嚴格比對：正規化後完全相同才算（避免短片名誤命中）
       const matched = DATA.filter(m=>{
@@ -1076,10 +1084,20 @@ document.getElementById('searchInput').addEventListener('input', async function(
       });
 
       if(matched.length > 0){
+        // 統計演出／執導各幾部
+        var nCast = 0, nDir = 0;
+        matched.forEach(function(m){
+          var t = norm(m.title), o = (m.orig&&m.orig!=='nan')?norm(m.orig):'';
+          if(castTitles.has(t)||castTitles.has(o)) nCast++;
+          else if(dirTitles.has(t)||dirTitles.has(o)) nDir++;
+        });
+        var roleTxt = [];
+        if(nCast) roleTxt.push('演出 ' + nCast);
+        if(nDir)  roleTxt.push('執導 ' + nDir);
         actorName = person.name;
         actorTmdbIds = { _matched: new Set(matched.map(m=>m.title)) };
         render();
-        showToast('🎬 找到 ' + matched.length + ' 部「' + person.name + '」的作品', false);
+        showToast('🎬 「' + person.name + '」共 ' + matched.length + ' 部（' + roleTxt.join('、') + '）', false);
       } else {
         actorTmdbIds = null;
         render();
