@@ -298,10 +298,15 @@ body{
   border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;
   cursor:pointer;white-space:nowrap;}
 .btn-mini:hover{background:#FFDCCB;}
+.btn-mini{flex-shrink:0;}
 .btn-mini:disabled{opacity:.5;cursor:default;}
-.rate-row{display:flex;gap:8px;align-items:center;}
-.rate-row input{flex:1;min-width:0;}
-.rate-note{font-size:11px;color:var(--hint);grid-column:2;margin-top:-4px;}
+.rate-row{display:flex;gap:8px;align-items:center;min-width:0;}
+.rate-row input{flex:1;min-width:0;width:100%;}
+.rate-note{font-size:11px;color:var(--hint);grid-column:2;margin-top:-4px;line-height:1.5;}
+@media (max-width:400px){
+  .rate-row{flex-wrap:wrap;}
+  .rate-row input{flex:1 1 100%;}
+}
 /* 跨旅程比較 */
 .cmp-table{width:100%;border-collapse:collapse;font-size:13px;}
 .cmp-table th{padding:8px 6px;font-size:11px;font-weight:900;color:var(--hint);
@@ -602,9 +607,9 @@ body{
         <label>開始日期</label><input type="date" id="setStart">
         <label>結束日期</label><input type="date" id="setEnd">
         <label>當地幣別</label><input type="text" id="setCurrency" placeholder="KRW / JPY / TWD">
-        <label>匯率（1 當地幣 = ? NT$）</label>
+        <label>匯率</label>
         <div class="rate-row"><input type="number" id="setRate" step="0.0001" inputmode="decimal"><button class="btn-mini" id="setRateBtn" onclick="autoRate('set')">自動更新</button></div>
-        <div class="rate-note" id="setRateNote"></div>
+        <div class="rate-note" id="setRateNote">1 當地幣 = ? NT$</div>
         <label>總預算 NT$</label><input type="number" id="setBudget" inputmode="numeric">
       </div>
       <button class="btn-save" onclick="saveTripSettings()">儲存設定</button>
@@ -632,8 +637,9 @@ body{
       <label>開始日期</label><input type="date" id="nmStart">
       <label>結束日期</label><input type="date" id="nmEnd">
       <label>當地幣別</label><input type="text" id="nmCurrency" placeholder="KRW / JPY / TWD" value="TWD">
-      <label>匯率（1 當地幣 = ? NT$）</label>
+      <label>匯率</label>
       <div class="rate-row"><input type="number" id="nmRate" step="0.0001" value="1" inputmode="decimal"><button class="btn-mini" id="nmRateBtn" onclick="autoRate('nm')">自動更新</button></div>
+      <div class="rate-note">1 當地幣 = ? NT$</div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeTripModal()">取消</button>
@@ -1030,7 +1036,7 @@ function renderRateNote(){
   var el=document.getElementById('setRateNote');
   if(!el) return;
   var t=curTrip();
-  if(!t||!t.rateAt){ el.textContent=''; return; }
+  if(!t||!t.rateAt){ el.textContent='1 當地幣 = ? NT$'; return; }
   var d=new Date(t.rateAt);
   el.textContent='最後更新：'+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()
     +' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
