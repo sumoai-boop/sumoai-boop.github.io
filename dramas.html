@@ -675,8 +675,8 @@ function render(){
     if(fYear&&String(m.year)!==fYear)return false;
     if(fDist&&m.dist!==fDist)return false;
     if(actorTmdbIds!==null){
-      // 演員搜尋模式：比對 tmdbId
-      if(!actorTmdbIds.has(String(m.tmdbId||''))) return false;
+      // 演員搜尋模式：比對片名集合
+      if(!actorTmdbIds._matched.has(m.title)) return false;
     } else if(q){
       if(!m.title.includes(q)&&!(m.orig||'').toLowerCase().includes(q.toLowerCase()))return false;
     }
@@ -1032,7 +1032,10 @@ document.getElementById('searchInput').addEventListener('input', async function(
 
   if(!val){ render(); return; }
 
-  // debounce 500ms 後查 TMDB 演員
+  // 先用片名即時搜尋
+  render();
+
+  // debounce 800ms 後查 TMDB 演員
   clearTimeout(actorSearchTimer);
   actorSearchTimer = setTimeout(async function(){
     if(document.getElementById('searchInput').value.trim() !== val) return;
@@ -1040,32 +1043,50 @@ document.getElementById('searchInput').addEventListener('input', async function(
       const res = await fetch(`https://api.themoviedb.org/3/search/person?api_key=${TMDB}&query=${encodeURIComponent(val)}&language=zh-TW`);
       const json = await res.json();
       const person = json.results && json.results[0];
-      if(person && person.known_for_department){
-        // 找到演員：取得他的完整演出作品
-        const credRes = await fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=${TMDB}&language=zh-TW`);
-        const credJson = await credRes.json();
-        const castIds = new Set([
-          ...(credJson.cast||[]).map(c=>String(c.id)),
-          ...(credJson.crew||[]).map(c=>String(c.id))
-        ]);
-        // 比對你的資料裡有沒有對應的 tmdbId
-        const matched = DATA.filter(m=>castIds.has(String(m.tmdbId||'')));
-        if(matched.length > 0){
-          actorTmdbIds = castIds;
-          actorName = person.name;
-          q = val; // 保留原始搜尋字串
-          render();
-          showToast(`🎬 找到 ${matched.length} 部「${person.name}」的作品`, false);
-          return;
-        }
+      if(!person || !person.known_for_department) return;
+
+      // 找到演員：取得他的完整演出作品
+      const credRes = await fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=${TMDB}&language=zh-TW`);
+      const credJson = await credRes.json();
+
+      // 建立演員片單的片名集合（中文名 + 英文名 + 原文名，全部小寫）
+      const allCredits = [...(credJson.cast||[]), ...(credJson.crew||[])];
+      const creditTitles = new Set();
+      allCredits.forEach(c => {
+        if(c.title) creditTitles.add(c.title.toLowerCase());
+        if(c.name) creditTitles.add(c.name.toLowerCase());
+        if(c.original_title) creditTitles.add(c.original_title.toLowerCase());
+        if(c.original_name) creditTitles.add(c.original_name.toLowerCase());
+      });
+
+      // 用片名比對你的觀影記錄
+      const normalize = s => (s||'').toLowerCase().replace(/\s+/g,' ').trim()
+        .replace(/\s*s\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'');
+
+      const matched = DATA.filter(m => {
+        const t = normalize(m.title);
+        const o = normalize(m.orig);
+        return creditTitles.has(t) || creditTitles.has(o) ||
+               (t && [...creditTitles].some(ct => ct.includes(t) || t.includes(ct))) ||
+               (o && o !== 'nan' && [...creditTitles].some(ct => ct.includes(o) || o.includes(ct)));
+      });
+
+      if(matched.length > 0){
+        // 用演員片單的 ID Set（保留 tmdbId 比對備用）
+        const castIds = new Set(allCredits.map(c=>String(c.id)));
+        actorTmdbIds = castIds;
+        actorName = person.name;
+        // 直接用 matched 設定篩選
+        actorTmdbIds = {
+          _matched: new Set(matched.map(m=>m.title)),
+          has: function(id){ return true; } // 改用 _matched 比對
+        };
+        // 實際上改 filter 邏輯用 _matched
+        render();
+        showToast(`🎬 找到 ${matched.length} 部「${person.name}」的作品`, false);
       }
     }catch(err){ console.warn('actor search:', err); }
-    // 找不到演員或無交集 → 走原本片名搜尋
-    actorTmdbIds = null;
-    render();
-  }, 500);
-
-  render(); // 先用片名即時搜尋
+  }, 800);
 });
 document.getElementById('resetBtn').addEventListener('click',()=>{
   q='';fLang='';fVenue='';fYear='';fDist='';fType='';sort='date-desc';actorTmdbIds=null;actorName='';
