@@ -1287,6 +1287,15 @@ function drawFuelChart(rows){
   });
 }
 
+var fuelPage = 1;
+var FUEL_PAGE_SIZE = 12;
+function fuelGoPage(n){
+  fuelPage = n;
+  renderFuelStats();
+  var el=document.getElementById('fuelStatsWrap');
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 function renderFuelStats(){
   var el=document.getElementById('fuelStatsWrap');
   if(!el) return;
@@ -1332,7 +1341,15 @@ function renderFuelStats(){
       +'<div style="font-size:11px;color:rgba(255,255,255,0.35);text-align:right;margin-top:2px;">虛線為平均值；綠點優於平均，紅點低於平均</div></div>'
     : '';
 
-  var body=rows.slice().reverse().map(function(r){
+  // 新→舊排列後分頁，圖表與上方統計仍然看全部資料
+  var ordered=rows.slice().reverse();
+  var totalPages=Math.max(1, Math.ceil(ordered.length/FUEL_PAGE_SIZE));
+  if(fuelPage>totalPages) fuelPage=totalPages;
+  if(fuelPage<1) fuelPage=1;
+  var start=(fuelPage-1)*FUEL_PAGE_SIZE;
+  var pageRows=ordered.slice(start, start+FUEL_PAGE_SIZE);
+
+  var body=pageRows.map(function(r){
     var na='<span style="color:rgba(255,255,255,0.25);">—</span>';
     var good = r.l100>0 && avgL100>0 && r.l100<=avgL100;
     return '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">'
@@ -1350,6 +1367,23 @@ function renderFuelStats(){
 
   var th=function(t,align){ return '<th style="padding:8px 12px;font-size:12px;color:#00E860;text-align:'+(align||'right')+';font-weight:700;white-space:nowrap;">'+t+'</th>'; };
 
+  var pager='';
+  if(totalPages>1){
+    var nav=function(label,target,disabled){
+      return '<button '+(disabled?'disabled':'onclick="fuelGoPage('+target+')"')
+        +' style="background:rgba(0,200,83,'+(disabled?'0.05':'0.15')+');border:1px solid rgba(0,200,83,'+(disabled?'0.15':'0.4')+');'
+        +'border-radius:6px;color:'+(disabled?'rgba(255,255,255,0.2)':'#00C853')+';font-size:13px;padding:3px 11px;'
+        +'cursor:'+(disabled?'default':'pointer')+';font-family:monospace;">'+label+'</button>';
+    };
+    pager='<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.05);">'
+      +nav('‹', fuelPage-1, fuelPage<=1)
+      +'<span style="font-size:13px;color:#f0dca8;font-family:monospace;min-width:96px;text-align:center;">'
+        +fuelPage+' / '+totalPages
+        +'<span style="color:rgba(255,255,255,0.35);font-size:11px;"> （共 '+ordered.length+' 筆）</span></span>'
+      +nav('›', fuelPage+1, fuelPage>=totalPages)
+      +'</div>';
+  }
+
   el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;overflow:hidden;">'
     +'<div style="padding:12px 16px;font-size:13px;letter-spacing:0.1em;color:#00E860;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.06);">⛽ 油耗紀錄'
       +'<span style="float:right;font-weight:400;font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0;">加滿到加滿計算，共 '+calc.length+' 個區間</span></div>'
@@ -1357,7 +1391,7 @@ function renderFuelStats(){
     +'<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:720px;">'
     +'<thead><tr style="background:rgba(0,200,83,0.04);">'
       +th('日期','left')+th('加油站','left')+th('里程表')+th('里程差')+th('公升')+th('金額')+th('油價')+th('L/100km')+th('km/L')
-    +'</tr></thead><tbody>'+body+'</tbody></table></div></div>';
+    +'</tr></thead><tbody>'+body+'</tbody></table></div>'+pager+'</div>';
 
   drawFuelChart(rows);
 }
