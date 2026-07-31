@@ -503,9 +503,18 @@ body{
         <div class="form-title">＋ 新增每日支出</div>
         <div class="form-grid">
           <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
-          <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="罰鍰/過路費">罰鍰/過路費</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option><option value="車貸">車貸</option></select></div>
+          <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type" onchange="toggleGasFields()"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="罰鍰/過路費">罰鍰/過路費</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option><option value="車貸">車貸</option></select></div>
           <div class="form-group"><label style="font-size:12px">金額 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
           <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="備註說明"></div>
+        </div>
+        <div id="gasFields" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group"><label style="font-size:12px">公升數</label><input class="form-input" style="font-size:15px" type="number" step="0.01" id="fm-liters" placeholder="0.00"></div>
+            <div class="form-group"><label style="font-size:12px">里程表 (km)</label><input class="form-input" style="font-size:15px" type="number" step="1" id="fm-odo" placeholder="加完油當下的總里程"></div>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin:-4px 0 10px;line-height:1.6;">
+            兩者都填才算得出油耗。里程表填「加完油當下」的總里程，並以每次都加滿為前提。
+          </div>
         </div>
         <button class="btn-add" id="monthlyAddBtn" onclick="addMonthly()">新增支出</button>
         <button id="monthlyDeleteBtn" onclick="deleteEditingMonthly()" style="display:none;background:rgba(200,50,30,0.2);color:#FF6B6B;border:1px solid rgba(200,50,30,0.4);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:monospace;font-size:13px;font-weight:700;">🗑 刪除此支出</button>
@@ -533,6 +542,8 @@ body{
       </div>
     </div>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
+    <!-- 油耗紀錄 -->
+    <div id="fuelStatsWrap" style="margin-top:24px;"></div>
     <!-- 加油站統計（移到最下方）-->
     <div id="gasStatsWrap" style="margin-top:24px;"></div>
     </div>
@@ -1117,21 +1128,44 @@ function addMonthly(){
   var type=document.getElementById('fm-type').value;
   var amount=parseFloat(document.getElementById('fm-amount').value)||0;
   var note=document.getElementById('fm-note').value.trim();
+  var liters=parseFloat(document.getElementById('fm-liters').value)||0;
+  var odo=parseFloat(document.getElementById('fm-odo').value)||0;
   if(!date){alert('請選擇日期');return;}
   if(!type){alert('請選擇支出類型');return;}
+  if(type!=='油錢'){ liters=0; odo=0; }
   var m=getData('uberMonthly');
   if(window._editMonthlyId){
     var idx=m.findIndex(x=>x.id===window._editMonthlyId);
-    if(idx!==-1) m.splice(idx,1,{date,type,amount,note,id:window._editMonthlyId});
+    if(idx!==-1) m.splice(idx,1,{date,type,amount,note,liters,odo,id:window._editMonthlyId});
     window._editMonthlyId=null;
     document.getElementById('monthlyAddBtn').textContent='新增支出';
     var mdb=document.getElementById('monthlyDeleteBtn'); if(mdb) mdb.style.display='none';
   } else {
-    m.unshift({date,type,amount,note,id:Date.now()});
+    m.unshift({date,type,amount,note,liters,odo,id:Date.now()});
   }
   saveAndPush('uberMonthly',m);renderMonthly();updateStats();
-  ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
+  ['fm-amount','fm-note','fm-liters','fm-odo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
+  toggleGasFields();
+}
+
+// 只有「油錢」需要公升數與里程表
+function toggleGasFields(){
+  var w=document.getElementById('gasFields');
+  if(!w) return;
+  w.style.display = document.getElementById('fm-type').value==='油錢' ? 'block' : 'none';
+}
+
+// 舊資料的公升數寫在備註裡（例「台亞 內湖站，35.2公升」），沒有欄位就往回相容
+function gasLiters(m){
+  if(m.liters>0) return m.liters;
+  var mt=(m.note||'').match(/([\d.]+)\s*公升/);
+  return mt?parseFloat(mt[1]):0;
+}
+function gasOdo(m){
+  if(m.odo>0) return m.odo;
+  var mt=(m.note||'').match(/([\d.]+)\s*(?:km|公里|里程)/i);
+  return mt?parseFloat(mt[1]):0;
 }
 
 function editMonthly(id){
@@ -1141,6 +1175,9 @@ function editMonthly(id){
   document.getElementById('fm-type').value=m.type||'';
   document.getElementById('fm-amount').value=m.amount||'';
   document.getElementById('fm-note').value=m.note||'';
+  document.getElementById('fm-liters').value=m.liters||'';
+  document.getElementById('fm-odo').value=m.odo||'';
+  toggleGasFields();
   window._editMonthlyId=id;
   document.getElementById('monthlyAddBtn').textContent='✔ 儲存變更';
   var mdb=document.getElementById('monthlyDeleteBtn'); if(mdb) mdb.style.display='inline-block';
@@ -1154,8 +1191,9 @@ function deleteEditingMonthly(){
   window._editMonthlyId=null;
   document.getElementById('monthlyAddBtn').textContent='新增支出';
   var mdb=document.getElementById('monthlyDeleteBtn'); if(mdb) mdb.style.display='none';
-  ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
+  ['fm-amount','fm-note','fm-liters','fm-odo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
+  toggleGasFields();
   saveAndPush('uberMonthly',m);renderMonthly();updateStats();
 }
 function deleteMonthly(id){
@@ -1174,6 +1212,154 @@ function sortGasStats(key){
   if(gasSortKey===key) gasSortAsc=!gasSortAsc;
   else { gasSortKey=key; gasSortAsc=false; }
   renderGasStats();
+  renderFuelStats();
+}
+
+/* ══════════ 油耗紀錄 ══════════
+   採「加滿到加滿」演算法：本次公升數 ÷ (本次里程表 − 上次里程表)。
+   第一筆沒有前一次可比，所以只列出來不計算。 */
+function fuelRecords(){
+  var gas=getData('uberMonthly')
+    .filter(function(m){ return m.type==='油錢' && gasOdo(m)>0 && gasLiters(m)>0; })
+    .map(function(m){
+      return { date:m.date, odo:gasOdo(m), liters:gasLiters(m), amount:m.amount||0,
+               station:(m.note||'').split(/[，,]/)[0].trim() };
+    })
+    .sort(function(a,b){ return a.odo-b.odo; });
+
+  var out=[];
+  for(var i=0;i<gas.length;i++){
+    var r=gas[i], prev=i>0?gas[i-1]:null;
+    var dist=prev?(r.odo-prev.odo):0;
+    var ok=dist>0;
+    out.push({
+      date:r.date, station:r.station, odo:r.odo, liters:r.liters, amount:r.amount,
+      dist:ok?dist:0,
+      l100:ok?(r.liters/dist*100):0,     // 每百公里公升
+      kml:ok?(dist/r.liters):0,          // 每公升可跑幾公里
+      unit:r.liters>0?(r.amount/r.liters):0,   // 油價
+      perKm:ok?(r.amount/dist):0         // 每公里油錢
+    });
+  }
+  return out;
+}
+
+function drawFuelChart(rows){
+  var cv=document.getElementById('fuelChart');
+  if(!cv) return;
+  var pts=rows.filter(function(r){return r.l100>0;});
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth||700, H=170;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var g=cv.getContext('2d'); g.scale(dpr,dpr);
+  g.clearRect(0,0,W,H);
+  if(pts.length<2) return;
+
+  var vals=pts.map(function(p){return p.l100;});
+  var lo=Math.min.apply(null,vals), hi=Math.max.apply(null,vals);
+  var pad=(hi-lo)*0.25||0.5; lo-=pad; hi+=pad;
+  var L=44, R=12, T=14, B=22;
+  var x=function(i){ return L+(W-L-R)*(pts.length===1?0.5:i/(pts.length-1)); };
+  var y=function(v){ return T+(H-T-B)*(1-(v-lo)/(hi-lo||1)); };
+
+  // 格線與刻度
+  g.font='10px monospace'; g.textAlign='right'; g.textBaseline='middle';
+  for(var k=0;k<=3;k++){
+    var v=lo+(hi-lo)*k/3, yy=y(v);
+    g.strokeStyle='rgba(255,255,255,0.06)'; g.beginPath(); g.moveTo(L,yy); g.lineTo(W-R,yy); g.stroke();
+    g.fillStyle='rgba(255,255,255,0.35)'; g.fillText(v.toFixed(2),L-6,yy);
+  }
+
+  // 平均線
+  var avg=vals.reduce(function(a,b){return a+b;},0)/vals.length;
+  g.setLineDash([4,4]); g.strokeStyle='rgba(255,215,0,0.5)';
+  g.beginPath(); g.moveTo(L,y(avg)); g.lineTo(W-R,y(avg)); g.stroke(); g.setLineDash([]);
+
+  // 折線
+  g.strokeStyle='#00C853'; g.lineWidth=2; g.beginPath();
+  pts.forEach(function(p,i){ i?g.lineTo(x(i),y(p.l100)):g.moveTo(x(i),y(p.l100)); });
+  g.stroke();
+
+  // 點
+  pts.forEach(function(p,i){
+    g.fillStyle = p.l100<=avg ? '#00E860' : '#FF6B6B';
+    g.beginPath(); g.arc(x(i),y(p.l100),3,0,Math.PI*2); g.fill();
+  });
+}
+
+function renderFuelStats(){
+  var el=document.getElementById('fuelStatsWrap');
+  if(!el) return;
+  var rows=fuelRecords();
+  var calc=rows.filter(function(r){return r.l100>0;});
+
+  if(!rows.length){
+    el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(0,200,83,0.25);border-radius:14px;padding:18px;font-size:13px;color:rgba(255,255,255,0.45);line-height:1.8;">'
+      +'⛽ <b style="color:#00E860">油耗紀錄</b><br>新增「油錢」支出時填入<b>公升數</b>與<b>里程表</b>，第二次加油之後就會開始計算油耗。</div>';
+    return;
+  }
+
+  // 總平均用「總公升 ÷ 總里程」而不是各次平均，才不會被短程灌歪
+  var totLit=calc.reduce(function(a,r){return a+r.liters;},0);
+  var totDist=calc.reduce(function(a,r){return a+r.dist;},0);
+  var totAmt=calc.reduce(function(a,r){return a+r.amount;},0);
+  var avgL100=totDist>0?(totLit/totDist*100):0;
+  var best=calc.length?Math.min.apply(null,calc.map(function(r){return r.l100;})):0;
+  var worst=calc.length?Math.max.apply(null,calc.map(function(r){return r.l100;})):0;
+  var allLit=rows.reduce(function(a,r){return a+r.liters;},0);
+  var allAmt=rows.reduce(function(a,r){return a+r.amount;},0);
+  var avgUnit=allLit>0?(allAmt/allLit):0;
+
+  var card=function(label,val,unit,color){
+    return '<div style="flex:1;min-width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.18);border-radius:12px;padding:12px 14px;">'
+      +'<div style="font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.08em;margin-bottom:6px;">'+label+'</div>'
+      +'<div style="font-size:22px;font-weight:700;color:'+color+';font-family:monospace;">'+val
+      +'<span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;margin-left:3px;">'+unit+'</span></div></div>';
+  };
+
+  var summary='<div style="display:flex;gap:10px;flex-wrap:wrap;padding:16px;">'
+    +card('平均油耗', avgL100?avgL100.toFixed(2):'—','L/100km','#00E860')
+    +card('等於', avgL100?(100/avgL100).toFixed(2):'—','km/L','#00C853')
+    +card('最佳', best?best.toFixed(2):'—','L/100km','#FFD700')
+    +card('最差', worst?worst.toFixed(2):'—','L/100km','#FF6B6B')
+    +card('累計里程', fmt(Math.round(totDist)),'km','#f0dca8')
+    +card('平均油價', avgUnit?avgUnit.toFixed(2):'—','元/公升','#00C7BE')
+    +card('每公里油錢', totDist>0?(totAmt/totDist).toFixed(2):'—','元/km','#FF9500')
+    +'</div>';
+
+  var chart = calc.length>=2
+    ? '<div style="padding:0 16px 8px;"><canvas id="fuelChart" style="width:100%;height:170px;display:block;"></canvas>'
+      +'<div style="font-size:11px;color:rgba(255,255,255,0.35);text-align:right;margin-top:2px;">虛線為平均值；綠點優於平均，紅點低於平均</div></div>'
+    : '';
+
+  var body=rows.slice().reverse().map(function(r){
+    var na='<span style="color:rgba(255,255,255,0.25);">—</span>';
+    var good = r.l100>0 && avgL100>0 && r.l100<=avgL100;
+    return '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">'
+      +'<td style="padding:9px 12px;font-size:13px;color:rgba(255,255,255,0.75);white-space:nowrap;">'+r.date+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;color:#f0dca8;white-space:nowrap;">'+(r.station||na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:rgba(255,255,255,0.6);text-align:right;white-space:nowrap;">'+fmt(r.odo)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:rgba(255,255,255,0.6);text-align:right;white-space:nowrap;">'+(r.dist?fmt(Math.round(r.dist)):na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:#00C853;text-align:right;white-space:nowrap;">'+r.liters.toFixed(2)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:#FF6B6B;text-align:right;white-space:nowrap;">'+(r.amount?fmt(r.amount):na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:#00C7BE;text-align:right;white-space:nowrap;">'+(r.unit?r.unit.toFixed(2):na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:14px;font-weight:700;text-align:right;white-space:nowrap;color:'+(r.l100?(good?'#00E860':'#FF6B6B'):'inherit')+';">'+(r.l100?r.l100.toFixed(2):na)+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;color:rgba(255,255,255,0.6);text-align:right;white-space:nowrap;">'+(r.kml?r.kml.toFixed(2):na)+'</td>'
+    +'</tr>';
+  }).join('');
+
+  var th=function(t,align){ return '<th style="padding:8px 12px;font-size:12px;color:#00E860;text-align:'+(align||'right')+';font-weight:700;white-space:nowrap;">'+t+'</th>'; };
+
+  el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;overflow:hidden;">'
+    +'<div style="padding:12px 16px;font-size:13px;letter-spacing:0.1em;color:#00E860;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.06);">⛽ 油耗紀錄'
+      +'<span style="float:right;font-weight:400;font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0;">加滿到加滿計算，共 '+calc.length+' 個區間</span></div>'
+    +summary+chart
+    +'<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:720px;">'
+    +'<thead><tr style="background:rgba(0,200,83,0.04);">'
+      +th('日期','left')+th('加油站','left')+th('里程表')+th('里程差')+th('公升')+th('金額')+th('油價')+th('L/100km')+th('km/L')
+    +'</tr></thead><tbody>'+body+'</tbody></table></div></div>';
+
+  drawFuelChart(rows);
 }
 
 function renderGasStats(){
@@ -1188,8 +1374,7 @@ function renderGasStats(){
     var note=m.note||'';
     var nameMatch=note.split(/[，,]/)[0].trim();
     if(!nameMatch) return;
-    var litMatch=note.match(/([\d.]+)\s*公升/);
-    var liters=litMatch?parseFloat(litMatch[1]):0;
+    var liters=gasLiters(m);
     if(!stations[nameMatch]) stations[nameMatch]={name:nameMatch,totalLiters:0,paidAmount:0,count:0};
     var st=stations[nameMatch];
     st.totalLiters+=liters;
@@ -1236,6 +1421,7 @@ function renderGasStats(){
 
 function renderMonthly(){
   renderGasStats();
+  renderFuelStats();
   var now = new Date();
   var targetDate = new Date(now.getFullYear(), now.getMonth() + monthlyPageMonth, 1);
   var yr = targetDate.getFullYear(), mo = targetDate.getMonth();
