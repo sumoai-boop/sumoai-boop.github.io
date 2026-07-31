@@ -45,20 +45,21 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .card-title::after{content:'';flex:1;height:1px;background:var(--border)}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;margin-bottom:1.25rem}
 
-.rank-row{display:flex;align-items:center;gap:12px;padding:6px 0;min-height:88px;border-bottom:1px solid var(--border)}
+.rank-row{display:flex;align-items:center;gap:14px;padding:8px 0;min-height:112px;border-bottom:1px solid var(--border)}
 .rank-row:last-child{border-bottom:none}
 /* 名次：借 Netflix Top 10 自己的視覺語言 —— 巨大的描邊數字，實心留給前三名 */
-.rank-num{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;width:38px;text-align:center;flex-shrink:0;
-  color:transparent;-webkit-text-stroke:1.5px var(--muted2);letter-spacing:-1px;user-select:none}
+.rank-num{font-family:'Bebas Neue',sans-serif;font-size:58px;line-height:1;width:46px;text-align:center;flex-shrink:0;
+  color:transparent;-webkit-text-stroke:1.8px var(--muted2);letter-spacing:-1px;user-select:none}
 .rank-num.gold{color:#FFD700;-webkit-text-stroke:0}
 .rank-num.silver{color:#C0C0C0;-webkit-text-stroke:0}
 .rank-num.bronze{color:#CD7F32;-webkit-text-stroke:0}
 
 /* 海報 */
-.poster{width:46px;height:69px;flex-shrink:0;border-radius:3px;object-fit:cover;
+.poster{width:64px;height:96px;flex-shrink:0;border-radius:4px;object-fit:cover;
   background:linear-gradient(145deg,#1c1c1c,#111);box-shadow:0 3px 12px rgba(0,0,0,.55);
   transition:transform .25s ease}
 .poster.blank{box-shadow:none}
+.ones-row .poster{width:56px;height:84px}
 .rank-row:hover .poster,.ones-row:hover .poster{transform:scale(1.06)}
 @media (prefers-reduced-motion:reduce){.poster{transition:none}.rank-row:hover .poster,.ones-row:hover .poster{transform:none}}
 .rank-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;min-height:52px;}
@@ -75,10 +76,13 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .b-en{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
 .b-nonen{background:rgba(67,160,71,0.15);color:#81c784;border:1px solid rgba(67,160,71,0.3)}
 
-.ones-row{display:flex;align-items:center;gap:12px;padding:6px 0;min-height:88px;border-bottom:1px solid var(--border)}
+.ones-row{display:flex;align-items:center;gap:13px;padding:8px 0;min-height:100px;border-bottom:1px solid var(--border)}
 .ones-row:last-child{border-bottom:none}
 .ones-week{color:var(--muted);font-size:11px;width:130px;flex-shrink:0}
-@media (max-width:640px){.ones-week{width:96px;font-size:10px}.rank-val,.ones-views{width:52px}}
+@media (max-width:640px){.ones-week{width:96px;font-size:10px}.rank-val,.ones-views{width:52px}
+  .poster{width:48px;height:72px}.ones-row .poster{width:44px;height:66px}
+  .rank-row{min-height:92px;gap:10px}.ones-row{min-height:84px;gap:10px}
+  .rank-num{font-size:42px;width:34px}.detail-panel{padding-left:60px}}
 .ones-title{flex:1;color:var(--text);display:flex;flex-direction:column;justify-content:center;min-height:52px;}
 .ones-views{color:var(--muted);font-size:12px;white-space:nowrap;text-align:right;width:62px;flex-shrink:0}
 .chart-wrap{position:relative;width:100%;height:240px;margin-top:8px}
@@ -216,7 +220,7 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 .rec-edit-btn:hover{color:var(--text);}
 .rank-row{cursor:pointer;}
 .rank-row:hover .rank-title-text{color:#E50914;}
-.detail-panel{display:none;padding:8px 0 4px 108px;border-bottom:1px solid var(--border);}
+.detail-panel{display:none;padding:8px 0 4px 138px;border-bottom:1px solid var(--border);}
 @media (max-width:640px){.detail-panel{padding-left:60px}}
 .detail-panel.open{display:block;}
 .detail-week{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.04);}
@@ -920,7 +924,7 @@ function savePosterCache() {
   posterCacheDirty = false;
   try { localStorage.setItem(PCACHE_KEY, JSON.stringify(posterCache)); } catch (e) {}
 }
-function posterUrl(path) { return path ? 'https://image.tmdb.org/t/p/w185' + path : ''; }
+function posterUrl(path) { return path ? 'https://image.tmdb.org/t/p/w342' + path : ''; }
 
 // 已知的海報：優先用資料檔裡的，其次用本機快取
 const _posterInDb = {};
