@@ -105,7 +105,8 @@
   .pm-review-wrap{width:100%;margin-top:14px;border-top:1px solid rgba(232,98,42,0.2);padding-top:14px;display:none;}
   .pm-review-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(232,98,42,0.7);margin-bottom:6px;}
   .pm-review-text{font-size:13px;color:#3D2800;line-height:1.9;white-space:pre-wrap;}
-  .ep-badge{font-size:11px;color:#9FD8A0;font-weight:700;font-family:'Space Mono',monospace;letter-spacing:0.02em;}
+  .ep-badge{font-size:11px;color:#8FB0D8;font-weight:700;font-family:'Space Mono',monospace;letter-spacing:0.02em;}
+  .ep-badge-done{color:#FFD700;text-shadow:0 0 8px rgba(255,215,0,0.35);}
   .ep-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
   .ep-ctrl-label{font-size:10px;letter-spacing:0.1em;color:rgba(90,60,20,0.7);white-space:nowrap;}
   .ep-count-input{width:90px;}
@@ -691,7 +692,8 @@ window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'s
 function epBadge(m){
   if(!m.epCount || !m.eps) return '';
   var done = m.eps.filter(function(x){return x!=null;}).length;
-  return ' <span class="ep-badge">('+done+'/'+m.epCount+')</span>';
+  var cls = (done >= m.epCount) ? 'ep-badge ep-badge-done' : 'ep-badge';
+  return ' <span class="'+cls+'">('+done+'/'+m.epCount+')</span>';
 }
 function render(){
   let data=DATA.filter(m=>{
