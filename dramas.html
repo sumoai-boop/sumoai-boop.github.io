@@ -105,6 +105,7 @@
   .pm-review-wrap{width:100%;margin-top:14px;border-top:1px solid rgba(232,98,42,0.2);padding-top:14px;display:none;}
   .pm-review-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(232,98,42,0.7);margin-bottom:6px;}
   .pm-review-text{font-size:13px;color:#3D2800;line-height:1.9;white-space:pre-wrap;}
+  .ep-badge{font-size:11px;color:#9FD8A0;font-weight:700;font-family:'Space Mono',monospace;letter-spacing:0.02em;}
   .ep-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
   .ep-ctrl-label{font-size:10px;letter-spacing:0.1em;color:rgba(90,60,20,0.7);white-space:nowrap;}
   .ep-count-input{width:90px;}
@@ -687,6 +688,11 @@ window.st = function(s){ return s===0?'—':s===10?'★ 10':s.toFixed(1); };
 function resetPage(){ currentPage=1; render(); }
 
 window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low'; };
+function epBadge(m){
+  if(!m.epCount || !m.eps) return '';
+  var done = m.eps.filter(function(x){return x!=null;}).length;
+  return ' <span class="ep-badge">('+done+'/'+m.epCount+')</span>';
+}
 function render(){
   let data=DATA.filter(m=>{
     if(fLang&&m.lang!==fLang)return false;
@@ -731,7 +737,7 @@ function render(){
       <td style="font-size:20px;text-align:center;line-height:1">${toFlag(m.lang)}</td>
       <td style="text-align:center"><span class="type-badge ${m.type==='影集'?'type-tv':m.type==='動畫'?'type-anime':m.type==='紀錄片'?'type-doc':m.type==='綜藝'?'type-variety':'type-movie'}">${m.type}</span></td>
       <td>
-        <span class="title-cell" data-id="${m.title}">${m.title}</span>
+        <span class="title-cell" data-id="${m.title}">${m.title}</span>${epBadge(m)}
         <div class="orig-cell" style="color:#C8D8FF;font-size:13px">${m.orig!=='nan'?m.orig:''}</div>
       </td>
       <td style="color:#F5D78E;font-size:15px;font-weight:700;text-align:center">${m.year>0?m.year:''}</td>
@@ -892,7 +898,8 @@ async function openPoster(m){
   pmImg.style.display='none';
   pmPlaceholder.style.display='flex';
   pmPlaceholder.textContent='載入中...';
-  document.getElementById('pmTitleZH').textContent=m.title;
+  document.getElementById('pmTitleZH').textContent=m.title +
+    ((m.epCount&&m.eps)?' ('+m.eps.filter(function(x){return x!=null;}).length+'/'+m.epCount+')':'');
   document.getElementById('pmTitleEN').textContent=m.orig!=='nan'?m.orig:'';
   document.getElementById('pmTags').innerHTML='';
   document.getElementById('pmOverview').textContent='';
