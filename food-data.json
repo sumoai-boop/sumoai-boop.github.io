@@ -633,13 +633,13 @@
     "name2": "板橋文化店",
     "type": "快餐",
     "meal": "",
-    "price": 280,
-    "visits": 4,
+    "price": 277,
+    "visits": 5,
     "gscore": 3.9,
     "addr": "220新北市板橋區文化里文化路二段173號",
     "note": "",
     "maps": "https://www.google.com/maps/search/%E9%BA%A5%E7%95%B6%E5%8B%9E/@25.027702,121.4523447,15z?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-07-30",
+    "date": "2026-08-01",
     "score": 4,
     "visitLog": [
       {
@@ -665,6 +665,12 @@
         "meal": "晚餐",
         "price": 288,
         "menu": "蒜香辣雞腿堡"
+      },
+      {
+        "date": "2026-08-01",
+        "meal": "晚餐",
+        "price": 267,
+        "menu": "蒜香雙牛堡"
       }
     ],
     "imgs": [
@@ -672,7 +678,7 @@
     ],
     "img": "https://i.ibb.co/3YPfgXpz/84393b214202.jpg",
     "createdAt": 1781792313054,
-    "updatedAt": 1785415685971
+    "updatedAt": 1785595462742
   },
   {
     "id": "1781700665484",
