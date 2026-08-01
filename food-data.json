@@ -273,7 +273,7 @@
     "addr": "104臺北市中山區松江里錦州街247號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E5%85%A8%E6%99%89%E5%BE%B7%E6%B8%AF%E5%BC%8F%E7%87%92%E8%87%98%E8%88%96/@25.0603293,121.534116,19z/data=!4m6!3m5!1s0x3442a91500161651:0xd0627769d547af4f!8m2!3d25.0604642!4d121.5341197!16s%2Fg%2F11x8zzzz_b?entry=ttu&g_ep=EgoyMDI2MDcwNi4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-08-01",
+    "date": "2026-07-31",
     "score": 3,
     "visitLog": [
       {
@@ -283,7 +283,7 @@
         "menu": "同心雙拼飯"
       },
       {
-        "date": "2026-08-01",
+        "date": "2026-07-31",
         "meal": "午餐",
         "price": 165,
         "menu": "老饕三寶飯"
@@ -294,7 +294,7 @@
     ],
     "img": "https://i.ibb.co/Y4jgL50w/ac70dbc67789.jpg",
     "createdAt": 1783563472729,
-    "updatedAt": 1785545747343
+    "updatedAt": 1785595477935
   },
   {
     "id": "1783347263846",
