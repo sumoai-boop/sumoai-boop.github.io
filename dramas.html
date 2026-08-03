@@ -364,7 +364,7 @@ body::before { background: transparent !important; }
   <div class="stats">
     <div class="stat-card"><div class="stat-label">總觀影</div><div class="stat-val" id="sTotal" style="color:#1A3A6A;">—</div></div>
     <div class="stat-card"><div class="stat-label">平均個人評分</div><div class="stat-val" id="sAvg" style="color:#C05000;">—</div></div>
-    <div class="stat-card"><div class="stat-label">每月平均觀看</div><div class="stat-val" id="sBest" style="color:#1A6A3A;">—</div></div>
+    <div class="stat-card"><div class="stat-label">本月觀看</div><div class="stat-val" id="sBest" style="color:#1A6A3A;">—</div></div>
     <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema" style="color:#5A1A7A;">—</div></div>
   </div>
   <span class="top5-label">— 個人最愛 TOP 5｜電影</span>
@@ -826,16 +826,10 @@ function render(){
     afEl.appendChild(tag);
   });
   const avg=(DATA.reduce((s,m)=>s+m.personal,0)/DATA.length).toFixed(2);
-  // 計算每月平均觀看部數
-  const monthMap={};
-  DATA.forEach(m=>{
-    if(m.date){
-      const ym=m.date.substring(0,7);
-      monthMap[ym]=(monthMap[ym]||0)+1;
-    }
-  });
-  const months=Object.keys(monthMap);
-  const avgPerMonth=months.length>0?(DATA.length/months.length):0;
+  // 本月觀看部數
+  const _now=new Date();
+  const thisYM=_now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  const thisMonthCount=DATA.filter(m=>m.date&&m.date.substring(0,7)===thisYM).length;
   const cin=DATA.filter(m=>m.venue && !m.venue.includes('家庭劇院')).length;
   function countUp(el, target, suffix, decimals=0, duration=900){
     const start=0, step=16;
@@ -849,7 +843,7 @@ function render(){
   }
   countUp(document.getElementById('sTotal'), DATA.length, ' 部');
   countUp(document.getElementById('sAvg'), parseFloat(avg), '', 2, 1000);
-  countUp(document.getElementById('sBest'), avgPerMonth, ' 部', 1, 800);
+  countUp(document.getElementById('sBest'), thisMonthCount, ' 部', 0, 800);
   countUp(document.getElementById('sCinema'), cin, ' 場');
   buildFilters();
 }
