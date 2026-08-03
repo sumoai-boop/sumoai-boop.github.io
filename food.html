@@ -11,23 +11,12 @@
   body::before{content:'';position:fixed;inset:0;
     background-image:
       radial-gradient(ellipse 800px 600px at 15% 10%, rgba(232,98,42,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 700px 500px at 85% 85%, rgba(255,160,60,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 600px 400px at 50% 50%, rgba(120,60,200,0.04) 0%, transparent 70%);
-    pointer-events:none;z-index:0;
-    animation:ambientShift 24s ease-in-out infinite alternate;}
-  @keyframes ambientShift{
-    0%{transform:scale(1) translate(0,0);opacity:1;}
-    50%{transform:scale(1.08) translate(-1.5%,1.5%);opacity:0.85;}
-    100%{transform:scale(1.03) translate(1.5%,-1%);opacity:1;}
-  }
-  /* 細緻雜訊質感 */
-  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
-    opacity:0.028;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-  .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(40px);}
-  .c1{width:520px;height:520px;background:radial-gradient(circle, rgba(232,98,42,0.10), transparent 70%);top:-140px;right:-100px;animation:floatSlow 18s ease-in-out infinite;}
-  .c2{width:380px;height:380px;background:radial-gradient(circle, rgba(180,100,30,0.08), transparent 70%);bottom:-100px;left:-80px;animation:floatSlow 22s ease-in-out infinite reverse;}
-  @keyframes floatSlow{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-24px) scale(1.12);}}
+      radial-gradient(ellipse 700px 500px at 85% 85%, rgba(255,160,60,0.07) 0%, transparent 60%);
+    pointer-events:none;z-index:0;}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;}
+  .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+  .c1{width:520px;height:520px;background:radial-gradient(circle, rgba(232,98,42,0.08), transparent 70%);top:-140px;right:-100px;}
+  .c2{width:380px;height:380px;background:radial-gradient(circle, rgba(180,100,30,0.06), transparent 70%);bottom:-100px;left:-80px;}
 
   /* 自訂捲軸 */
   ::-webkit-scrollbar{width:10px;height:10px;}
@@ -57,7 +46,6 @@
     background:linear-gradient(135deg,rgba(255,255,255,0.045),rgba(255,255,255,0.015));
     border:1px solid rgba(255,180,80,0.10);
     border-radius:16px;padding:18px 8px;
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     box-shadow:0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);}
   .stat-item{display:flex;flex-direction:column;gap:2px;padding:2px 14px;flex:1 1 0;min-width:0;
     transition:transform 0.25s cubic-bezier(0.34,1.4,0.64,1);}
@@ -77,13 +65,11 @@
   .search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:0.4;pointer-events:none;transition:opacity 0.25s;}
   .search-wrap:focus-within svg{opacity:0.9;}
   .search-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,180,80,0.16);border-radius:99px;padding:10px 16px 10px 38px;color:#ffffff;font-family:'Space Mono',monospace;font-size:12px;outline:none;
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     transition:border-color 0.25s, box-shadow 0.25s, background 0.25s;}
   .search-input::placeholder{color:rgba(255,220,160,0.28);}
   .search-input:focus{border-color:rgba(232,98,42,0.65);background:rgba(255,255,255,0.08);
     box-shadow:0 0 0 4px rgba(232,98,42,0.10), 0 4px 20px rgba(232,98,42,0.15);}
   .sort-select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,180,80,0.16);border-radius:99px;padding:10px 14px;color:#ffffff;font-family:'Space Mono',monospace;font-size:11px;outline:none;cursor:pointer;
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     transition:border-color 0.25s, background 0.25s, transform 0.2s;}
   .sort-select:hover{border-color:rgba(232,98,42,0.45);background:rgba(255,255,255,0.08);}
   .sort-select option{background:#17171a;color:#ffffff;}
@@ -207,8 +193,7 @@
     background:rgba(255,255,255,0.04);
     border:1px solid rgba(255,180,80,0.10);
     border-radius:99px;
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  }
+    }
   .tab-btn{
     background:none;border:none;cursor:pointer;position:relative;
     font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
@@ -360,8 +345,7 @@
   
 
     .ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-  .ic-ai{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+  .ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
   .ic-dramas{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
   .ic-food{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
   
@@ -419,7 +403,7 @@
 
 /* ===== 手機版共用修正 ===== */
 @media(max-width:768px){
-  /* Dock 縮小，12 個項目完整顯示 */
+  /* Dock 縮小，11 個項目完整顯示 */
   .global-dock-wrap{max-width:100vw;}
   .global-dock{gap:2px!important;padding:5px 6px!important;border-radius:14px!important;
     max-width:calc(100vw - 12px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -1667,7 +1651,7 @@ function render(){
         const img = document.createElement('img');
         img.src = imgs[0];
         img.alt = item.name;
-        img.loading = 'eager';
+        img.loading = 'lazy'; img.decoding = 'async';
         img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.2s;';
         card.appendChild(img);
         card.appendChild(visitBadge);
@@ -1738,7 +1722,7 @@ function render(){
         if(item.score>0) card.appendChild(scoreBadge);
       }
       card.addEventListener('click',()=>openDetail(item));
-      card.style.animationDelay = Math.min(_cardIdx * 28, 500) + 'ms';
+      if(_cardIdx < 20){ card.style.animationDelay = (_cardIdx * 30) + 'ms'; } else { card.style.animation = 'none'; }
       _cardIdx++;
       grid.appendChild(card);
     });
@@ -1817,6 +1801,34 @@ setInterval(updateTime, 10000);</script>
 // Dock
 </script>
 
-
+<div class="dock-trigger-zone" id="dockTrigger"></div>
+<div class="global-dock-wrap" id="globalDock">
+  <div class="global-dock">
+    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FF6B9D;line-height:1;letter-spacing:-2px;">P</span></div><span class="gd-label">照片</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#A78BFA;line-height:1;letter-spacing:-2px;">D</span></div><span class="gd-label">追劇</span></a>
+    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#38BDF8;line-height:1;letter-spacing:-2px;">F</span></div><span class="gd-label">食記</span><div class="gd-dot"></div></a>
+    <div class="gd-sep"></div>
+    <a href="trips.html" class="gd-item"><div class="gd-icon ic-trips"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="16.5" y="3.5" width="15" height="12" rx="4" fill="none" stroke="#A32D2D" stroke-width="3.6"/><rect x="5.5" y="10" width="37" height="33" rx="5.5" fill="#E24B4A"/><rect x="11.5" y="10" width="3.4" height="33" fill="#A32D2D"/><rect x="33.1" y="10" width="3.4" height="33" fill="#A32D2D"/><text x="24" y="33.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">T</text></svg></div><span class="gd-label">行程記帳</span></a>
+    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FFFFFF;line-height:1;letter-spacing:-2px;">T</span></div><span class="gd-label">Threads</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
+    <a href="weight.html" class="gd-item"><div class="gd-icon ic-weight"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="9" fill="#2DD4BF"/><path d="M14 4.6 A 17.5 17.5 0 0 1 34 4.6 L 31 11.5 A 11 11 0 0 0 17 11.5 Z" fill="#0F766E"/><rect x="19.5" y="6" width="9" height="4.2" rx="1.8" fill="#E6FFFA"/><text x="24" y="34.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">W</text></svg></div><span class="gd-label">體重</span></a>
+    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M6 11.5 L13.5 3.5 L18 8.5 Z" fill="#34D399"/><path d="M42 11.5 L34.5 3.5 L30 8.5 Z" fill="#34D399"/><circle cx="24" cy="25" r="19" fill="#34D399"/><circle cx="24" cy="25" r="14.8" fill="#065F46"/><path d="M10.5 40 L7 45 M37.5 40 L41 45" stroke="#34D399" stroke-width="3" stroke-linecap="round"/><text x="24" y="32.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">R</text></svg></div><span class="gd-label">提醒</span></a>
+    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#E50914;line-height:1;letter-spacing:-2px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
+    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="52" height="52" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#FFFFFF"/><path d="M8 9 A 27 27 0 0 1 8 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M40 9 A 27 27 0 0 0 40 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M9.5 14 l3.4 1.6 M8 19 l3.6 0.9 M8 29 l3.6 -0.9 M9.5 34 l3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><path d="M38.5 14 l-3.4 1.6 M40 19 l-3.6 0.9 M40 29 l-3.6 -0.9 M38.5 34 l-3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><text x="24" y="31.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#0C2340">M</text></svg></div><span class="gd-label">MLB</span></a>
+    <div class="gd-sep"></div>
+    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M24 43.5 L6 25.5 A11.3 11.3 0 0 1 22.1 9.4 L24 11.3 L25.9 9.4 A11.3 11.3 0 0 1 42 25.5 Z" fill="#E879F9"/><text x="24" y="28.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#111">C</text></svg></div><span class="gd-label">Chloe ♥</span></a>
+  </div>
+</div>
+<script>
+// Dock
+(function(){
+  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger)return;
+  var timer;
+  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
+})();
+</script>
 </body>
 </html>
