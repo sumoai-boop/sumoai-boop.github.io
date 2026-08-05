@@ -78,6 +78,8 @@ nav a:hover,nav a.active{background:#F5F5F5;border-color:#F5F5F5;color:#0A0A0C;}
 .th-box p{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:16px;}
 .th-input{width:100%;padding:11px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:9px;color:#F2F2F2;font-family:'Space Mono',monospace;font-size:12.5px;outline:none;box-sizing:border-box;}
 .th-input:focus{border-color:rgba(255,255,255,0.42);}
+.th-lbl{display:block;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin:14px 0 6px;}
+.th-date{position:absolute;top:8px;left:8px;z-index:5;background:rgba(0,0,0,0.62);color:rgba(255,255,255,0.8);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:4px 8px;border-radius:6px;pointer-events:none;}
 .th-err{color:#ff7b7b;font-size:11px;min-height:15px;margin-top:6px;}
 .th-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
 .th-btn{border-radius:9px;font-size:13px;padding:9px 20px;cursor:pointer;font-family:'Space Mono',monospace;border:1px solid rgba(255,255,255,0.16);background:transparent;color:rgba(255,255,255,0.6);}
@@ -294,6 +296,8 @@ blockquote.text-post-media{
     <h2>新增 Threads 貼文</h2>
     <p>貼上貼文網址即可，兩種格式都支援：<br>· .../@moai431711/post/XXXXXXXX<br>· .../share/XXXXXXXX</p>
     <input class="th-input" id="thUrl" type="text" placeholder="貼上 Threads 貼文或分享連結">
+    <label class="th-lbl">發文日期</label>
+    <input class="th-input" id="thDate" type="date">
     <div class="th-err" id="thErr"></div>
     <div class="th-actions">
       <button class="th-btn" id="thCancel">取消</button>
@@ -339,11 +343,25 @@ function showTokenModal(onSuccess){
     return 'https://www.threads.com/@moai431711/post/' + x;   // 舊資料只有 ID
   }
   function slugOf(u){ var p=String(u).replace(/\/+$/,'').split('/'); return p[p.length-1]||'x'; }
+  // 統一成 {u:網址, d:'YYYY-MM-DD'}；相容舊格式（純字串）
+  function toItem(x){
+    if(!x) return null;
+    if(typeof x === 'string'){ var u=toUrl(x); return u?{u:u,d:''}:null; }
+    var u2=toUrl(x.u||x.url); return u2?{u:u2,d:(x.d||x.date||'')}:null;
+  }
+  function byDateDesc(a,b){
+    if(a.d && b.d) return a.d < b.d ? 1 : (a.d > b.d ? -1 : 0);
+    if(a.d && !b.d) return -1;      // 有日期的排前面
+    if(!a.d && b.d) return 1;
+    return 0;                        // 都沒日期就保留原順序
+  }
+  function sortPosts(){ POSTS.sort(byDateDesc); }
   var POSTS=(function(){
     try{ var v=JSON.parse(localStorage.getItem('_threadsData')||'null');
-         return ((v&&v.length)?v:SEED).map(toUrl).filter(Boolean); }
-    catch(e){ return SEED.map(toUrl); }
+         return ((v&&v.length)?v:SEED).map(toItem).filter(Boolean); }
+    catch(e){ return SEED.map(toItem).filter(Boolean); }
   })();
+  sortPosts();
   var pushing=false;
 
   function toast(msg, err){
@@ -360,9 +378,10 @@ function showTokenModal(onSuccess){
   function render(){
     var wrap=document.getElementById('threadsWrap');
     document.getElementById('thEmpty').style.display = POSTS.length ? 'none' : 'block';
-    wrap.innerHTML = POSTS.map(function(url){
-      var id=slugOf(url);
+    wrap.innerHTML = POSTS.map(function(it){
+      var url=it.u, id=slugOf(url);
       return '<div class="thread-embed" data-id="'+id+'">'+
+        (it.d ? '<span class="th-date">'+it.d+'</span>' : '')+
         '<button class="th-del" data-del="'+encodeURIComponent(url)+'">✕</button>'+
         '<blockquote class="text-post-media" data-text-post-permalink="'+url+'" data-text-post-version="0" id="ig-tp-'+id+'" style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;max-width:100%;margin:0;padding:0;width:100%;">'+
         '<a href="'+url+'" target="_blank" style="background:transparent;line-height:0;padding:0;text-align:center;text-decoration:none;width:100%;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">'+
@@ -409,7 +428,7 @@ function showTokenModal(onSuccess){
             console.warn('threads sync: remote('+arr.length+') < local('+POSTS.length+')，保留本機');
             return;
           }
-          POSTS=arr.map(toUrl).filter(Boolean); save(); render();
+          POSTS=arr.map(toItem).filter(Boolean); sortPosts(); save(); render();
         })
         .catch(function(){ tryNext(i+1); });
     })(0);
@@ -428,7 +447,11 @@ function showTokenModal(onSuccess){
   }
 
   var modal=document.getElementById('thModal');
-  function openModal(){ document.getElementById('thUrl').value=''; document.getElementById('thErr').textContent=''; modal.classList.add('open'); setTimeout(function(){ document.getElementById('thUrl').focus(); },80); }
+  function openModal(){
+    document.getElementById('thUrl').value='';
+    document.getElementById('thErr').textContent='';
+    document.getElementById('thDate').value=new Date().toISOString().slice(0,10);
+    modal.classList.add('open'); setTimeout(function(){ document.getElementById('thUrl').focus(); },80); }
   function closeModal(){ modal.classList.remove('open'); }
 
   document.getElementById('thFab').onclick=openModal;
@@ -439,8 +462,9 @@ function showTokenModal(onSuccess){
   document.getElementById('thSave').onclick=function(){
     var url=normalize(document.getElementById('thUrl').value);
     if(!url){ document.getElementById('thErr').textContent='請貼上 Threads 貼文網址（含 /post/ 或 /share/）'; return; }
-    if(POSTS.indexOf(url)>=0){ document.getElementById('thErr').textContent='這篇貼文已經在列表中了'; return; }
-    POSTS.unshift(url); save(); render(); closeModal();
+    if(POSTS.some(function(x){ return x.u===url; })){ document.getElementById('thErr').textContent='這篇貼文已經在列表中了'; return; }
+    var d=(document.getElementById('thDate').value||'').trim();
+    POSTS.push({u:url,d:d}); sortPosts(); save(); render(); closeModal();
     push('新增 Threads 貼文：'+slugOf(url));
   };
 
@@ -449,7 +473,7 @@ function showTokenModal(onSuccess){
     if(!b) return;
     var url=decodeURIComponent(b.getAttribute('data-del'));
     if(!confirm('確定要刪除這篇貼文嗎？')) return;
-    POSTS=POSTS.filter(function(x){ return x!==url; });
+    POSTS=POSTS.filter(function(x){ return x.u!==url; });
     save(); render();
     push('刪除 Threads 貼文：'+slugOf(url));
   });
