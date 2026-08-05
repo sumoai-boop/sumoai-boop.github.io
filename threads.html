@@ -78,6 +78,19 @@ nav a:hover,nav a.active{background:#F5F5F5;border-color:#F5F5F5;color:#0A0A0C;}
 .th-box p{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:16px;}
 .th-input{width:100%;padding:11px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:9px;color:#F2F2F2;font-family:'Space Mono',monospace;font-size:12.5px;outline:none;box-sizing:border-box;}
 .th-input:focus{border-color:rgba(255,255,255,0.42);}
+.th-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:34px;}
+.th-stat{background:rgba(255,255,255,0.045);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:14px 16px;text-align:center;}
+.th-stat-l{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.th-stat-v{font-family:'Cormorant Garamond',serif;font-size:29px;font-weight:600;color:#F5F5F5;line-height:1;}
+.th-stat-s{font-size:10px;color:rgba(255,255,255,0.32);margin-top:6px;}
+.th-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.th-nums span{display:block;font-size:9.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.38);margin-bottom:4px;}
+.th-nums .th-input{padding:8px 9px;font-size:12px;text-align:center;}
+.th-metrics{position:absolute;bottom:8px;left:8px;right:8px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none;}
+.th-m{background:rgba(0,0,0,0.66);color:rgba(255,255,255,0.82);font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:0.04em;padding:3px 7px;border-radius:5px;}
+.th-edit{position:absolute;top:8px;right:38px;z-index:5;background:rgba(60,60,70,0.85);border:none;border-radius:6px;color:#fff;font-size:12px;line-height:1;padding:5px 8px;cursor:pointer;opacity:0;transition:opacity .15s;}
+.thread-embed:hover .th-edit{opacity:1;}
+@media(max-width:700px){.th-stats{grid-template-columns:repeat(2,1fr);}.th-nums{grid-template-columns:repeat(2,1fr);}}
 .th-lbl{display:block;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin:14px 0 6px;}
 .th-date{position:absolute;top:8px;left:8px;z-index:5;background:rgba(0,0,0,0.62);color:rgba(255,255,255,0.8);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:4px 8px;border-radius:6px;pointer-events:none;}
 .th-err{color:#ff7b7b;font-size:11px;min-height:15px;margin-top:6px;}
@@ -255,6 +268,7 @@ blockquote.text-post-media{
   <h1 class="page-title">Threads <em>碎念</em></h1>
   <span class="page-label">— 05 / THREADS · @moai431711</span>
 
+  <div class="th-stats" id="thStats"></div>
   <div class="threads-wrap" id="threadsWrap"></div>
   <div class="th-empty" id="thEmpty" style="display:none;">還沒有貼文，點右下角 ＋ 新增</div>
 </div>
@@ -293,11 +307,18 @@ blockquote.text-post-media{
 <button class="th-fab" id="thFab" title="新增貼文">＋</button>
 <div class="th-modal" id="thModal">
   <div class="th-box">
-    <h2>新增 Threads 貼文</h2>
+    <h2 id="thBoxTitle">新增 Threads 貼文</h2>
     <p>貼上貼文網址即可，兩種格式都支援：<br>· .../@moai431711/post/XXXXXXXX<br>· .../share/XXXXXXXX</p>
     <input class="th-input" id="thUrl" type="text" placeholder="貼上 Threads 貼文或分享連結">
     <label class="th-lbl">發文日期</label>
     <input class="th-input" id="thDate" type="date">
+    <label class="th-lbl">互動數據（選填，之後可再編輯）</label>
+    <div class="th-nums">
+      <div><span>觀看</span><input class="th-input" id="thViews" type="number" min="0" placeholder="—"></div>
+      <div><span>按讚</span><input class="th-input" id="thLikes" type="number" min="0" placeholder="—"></div>
+      <div><span>留言</span><input class="th-input" id="thReplies" type="number" min="0" placeholder="—"></div>
+      <div><span>轉發</span><input class="th-input" id="thReposts" type="number" min="0" placeholder="—"></div>
+    </div>
     <div class="th-err" id="thErr"></div>
     <div class="th-actions">
       <button class="th-btn" id="thCancel">取消</button>
@@ -347,7 +368,11 @@ function showTokenModal(onSuccess){
   function toItem(x){
     if(!x) return null;
     if(typeof x === 'string'){ var u=toUrl(x); return u?{u:u,d:''}:null; }
-    var u2=toUrl(x.u||x.url); return u2?{u:u2,d:(x.d||x.date||'')}:null;
+    var u2=toUrl(x.u||x.url);
+    if(!u2) return null;
+    var o={u:u2,d:(x.d||x.date||'')};
+    ['v','l','r','p'].forEach(function(k){ if(x[k]!=null && x[k]!=='') o[k]=Number(x[k]); });
+    return o;
   }
   function byDateDesc(a,b){
     if(a.d && b.d) return a.d < b.d ? 1 : (a.d > b.d ? -1 : 0);
@@ -375,6 +400,37 @@ function showTokenModal(onSuccess){
 
   function save(){ try{ localStorage.setItem('_threadsData', JSON.stringify(POSTS)); }catch(e){} }
 
+  function fmt(n){
+    if(n==null||isNaN(n)) return '—';
+    if(n>=1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
+    if(n>=1000)    return (n/1000).toFixed(1).replace(/\.0$/,'')+'K';
+    return String(n);
+  }
+  function sumOf(k){
+    var s=0,n=0;
+    POSTS.forEach(function(p){ if(typeof p[k]==='number'&&!isNaN(p[k])){ s+=p[k]; n++; } });
+    return {sum:s, count:n};
+  }
+  function renderStats(){
+    var el=document.getElementById('thStats');
+    var v=sumOf('v'), l=sumOf('l'), r=sumOf('r'), p=sumOf('p');
+    var eng=l.sum+r.sum+p.sum;
+    var engN=Math.max(l.count,r.count,p.count);
+    var avgV = v.count ? Math.round(v.sum/v.count) : null;
+    var rate = (v.sum>0) ? ((eng/v.sum)*100).toFixed(1)+'%' : '—';
+    var cards=[
+      ['貼文數', String(POSTS.length), POSTS.length?('已記錄數據 '+v.count+' 篇'):''],
+      ['總觀看', fmt(v.count?v.sum:null), avgV!=null?('平均 '+fmt(avgV)):'尚未填寫'],
+      ['總互動', fmt(engN?eng:null), engN?('讚 '+fmt(l.sum)+' · 留言 '+fmt(r.sum)+' · 轉發 '+fmt(p.sum)):'尚未填寫'],
+      ['互動率', rate, (v.sum>0)?'互動 ÷ 觀看':'需要觀看數']
+    ];
+    el.innerHTML = cards.map(function(c){
+      return '<div class="th-stat"><div class="th-stat-l">'+c[0]+'</div>'+
+             '<div class="th-stat-v">'+c[1]+'</div>'+
+             (c[2]?'<div class="th-stat-s">'+c[2]+'</div>':'')+'</div>';
+    }).join('');
+  }
+
   function render(){
     var wrap=document.getElementById('threadsWrap');
     document.getElementById('thEmpty').style.display = POSTS.length ? 'none' : 'block';
@@ -382,6 +438,15 @@ function showTokenModal(onSuccess){
       var url=it.u, id=slugOf(url);
       return '<div class="thread-embed" data-id="'+id+'">'+
         (it.d ? '<span class="th-date">'+it.d+'</span>' : '')+
+        '<button class="th-edit" data-edit="'+encodeURIComponent(url)+'" title="編輯數據">✎</button>'+
+        (function(){
+          var m=[];
+          if(typeof it.v==='number') m.push('<span class="th-m">👁 '+fmt(it.v)+'</span>');
+          if(typeof it.l==='number') m.push('<span class="th-m">♥ '+fmt(it.l)+'</span>');
+          if(typeof it.r==='number') m.push('<span class="th-m">💬 '+fmt(it.r)+'</span>');
+          if(typeof it.p==='number') m.push('<span class="th-m">↻ '+fmt(it.p)+'</span>');
+          return m.length ? '<div class="th-metrics">'+m.join('')+'</div>' : '';
+        })()+
         '<button class="th-del" data-del="'+encodeURIComponent(url)+'">✕</button>'+
         '<blockquote class="text-post-media" data-text-post-permalink="'+url+'" data-text-post-version="0" id="ig-tp-'+id+'" style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;max-width:100%;margin:0;padding:0;width:100%;">'+
         '<a href="'+url+'" target="_blank" style="background:transparent;line-height:0;padding:0;text-align:center;text-decoration:none;width:100%;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">'+
@@ -389,6 +454,7 @@ function showTokenModal(onSuccess){
         '<div style="font-size:15px;line-height:21px;color:#000;font-weight:600;">在 Threads 查看</div>'+
         '</div></a></blockquote></div>';
     }).join('');
+    renderStats();
     if(window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
     else{ var s=document.createElement('script'); s.async=true; s.src='https://www.threads.com/embed.js'; document.body.appendChild(s); }
   }
@@ -447,28 +513,68 @@ function showTokenModal(onSuccess){
   }
 
   var modal=document.getElementById('thModal');
-  function openModal(){
-    document.getElementById('thUrl').value='';
+  var editing=null;   // 編輯中的網址；null 代表新增模式
+  function setNums(o){
+    document.getElementById('thViews').value   = (o&&typeof o.v==='number')?o.v:'';
+    document.getElementById('thLikes').value   = (o&&typeof o.l==='number')?o.l:'';
+    document.getElementById('thReplies').value = (o&&typeof o.r==='number')?o.r:'';
+    document.getElementById('thReposts').value = (o&&typeof o.p==='number')?o.p:'';
+  }
+  function readNums(){
+    var o={};
+    [['thViews','v'],['thLikes','l'],['thReplies','r'],['thReposts','p']].forEach(function(pair){
+      var raw=(document.getElementById(pair[0]).value||'').trim();
+      if(raw!=='' && !isNaN(Number(raw))) o[pair[1]]=Number(raw);
+    });
+    return o;
+  }
+  function openModal(item){
+    editing = item ? item.u : null;
+    document.getElementById('thBoxTitle').textContent = item ? '編輯貼文數據' : '新增 Threads 貼文';
+    document.getElementById('thSave').textContent = item ? '✦ 儲存' : '✦ 新增';
+    document.getElementById('thUrl').value = item ? item.u : '';
+    document.getElementById('thUrl').readOnly = !!item;
     document.getElementById('thErr').textContent='';
-    document.getElementById('thDate').value=new Date().toISOString().slice(0,10);
-    modal.classList.add('open'); setTimeout(function(){ document.getElementById('thUrl').focus(); },80); }
+    document.getElementById('thDate').value = item ? (item.d||'') : new Date().toISOString().slice(0,10);
+    setNums(item);
+    modal.classList.add('open'); setTimeout(function(){ document.getElementById(editing?'thViews':'thUrl').focus(); },80); }
   function closeModal(){ modal.classList.remove('open'); }
 
-  document.getElementById('thFab').onclick=openModal;
+  document.getElementById('thFab').onclick=function(){ openModal(null); };
   document.getElementById('thCancel').onclick=closeModal;
   modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
   document.getElementById('thUrl').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('thSave').click(); });
 
   document.getElementById('thSave').onclick=function(){
+    var d=(document.getElementById('thDate').value||'').trim();
+    var nums=readNums();
+    if(editing){
+      var t=POSTS.filter(function(x){ return x.u===editing; })[0];
+      if(t){
+        t.d=d;
+        ['v','l','r','p'].forEach(function(k){ if(k in nums) t[k]=nums[k]; else delete t[k]; });
+      }
+      sortPosts(); save(); render(); closeModal();
+      push('更新 Threads 數據：'+slugOf(editing));
+      return;
+    }
     var url=normalize(document.getElementById('thUrl').value);
     if(!url){ document.getElementById('thErr').textContent='請貼上 Threads 貼文網址（含 /post/ 或 /share/）'; return; }
     if(POSTS.some(function(x){ return x.u===url; })){ document.getElementById('thErr').textContent='這篇貼文已經在列表中了'; return; }
-    var d=(document.getElementById('thDate').value||'').trim();
-    POSTS.push({u:url,d:d}); sortPosts(); save(); render(); closeModal();
+    var item={u:url,d:d};
+    ['v','l','r','p'].forEach(function(k){ if(k in nums) item[k]=nums[k]; });
+    POSTS.push(item); sortPosts(); save(); render(); closeModal();
     push('新增 Threads 貼文：'+slugOf(url));
   };
 
   document.getElementById('threadsWrap').addEventListener('click', function(e){
+    var ed=e.target.closest('[data-edit]');
+    if(ed){
+      var eu=decodeURIComponent(ed.getAttribute('data-edit'));
+      var item=POSTS.filter(function(x){ return x.u===eu; })[0];
+      if(item) openModal(item);
+      return;
+    }
     var b=e.target.closest('[data-del]');
     if(!b) return;
     var url=decodeURIComponent(b.getAttribute('data-del'));
