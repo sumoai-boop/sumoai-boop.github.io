@@ -42,15 +42,15 @@
   .page-label{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,220,160,0.45);display:block;margin-bottom:20px;}
 
   /* ── 統計列 ── */
-  .stats-row{display:flex;gap:0;margin-bottom:28px;flex-wrap:nowrap;overflow-x:auto;
+  .stats-row{display:flex;gap:0;margin-bottom:28px;flex-wrap:nowrap;overflow-x:auto;justify-content:space-between;
     background:linear-gradient(135deg,rgba(255,255,255,0.045),rgba(255,255,255,0.015));
     border:1px solid rgba(255,180,80,0.10);
-    border-radius:16px;padding:18px 8px;
+    border-radius:16px;padding:18px 16px;
     box-shadow:0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);}
-  .stat-item{display:flex;flex-direction:column;gap:2px;padding:2px 14px;flex:1 1 0;min-width:0;
+  .stat-item{display:flex;flex-direction:column;gap:2px;padding:2px 14px;flex:0 0 auto;min-width:0;
     transition:transform 0.25s cubic-bezier(0.34,1.4,0.64,1);}
   .stat-item:hover{transform:translateY(-3px);}
-  .stat-num{font-family:'Noto Sans TC',sans-serif;font-size:clamp(20px,2.4vw,32px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;
+  .stat-num{font-family:'Noto Sans TC',sans-serif;font-size:28px;font-weight:900;line-height:1.1;letter-spacing:-0.03em;
     white-space:nowrap;
     background:linear-gradient(160deg,#ffffff,#e8d9c4);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
