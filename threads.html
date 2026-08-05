@@ -292,8 +292,8 @@ blockquote.text-post-media{
 <div class="th-modal" id="thModal">
   <div class="th-box">
     <h2>新增 Threads 貼文</h2>
-    <p>貼上貼文網址，例如：<br>https://www.threads.com/@moai431711/post/XXXXXXXX</p>
-    <input class="th-input" id="thUrl" type="text" placeholder="https://www.threads.com/@.../post/...">
+    <p>貼上貼文網址即可，兩種格式都支援：<br>· .../@moai431711/post/XXXXXXXX<br>· .../share/XXXXXXXX</p>
+    <input class="th-input" id="thUrl" type="text" placeholder="貼上 Threads 貼文或分享連結">
     <div class="th-err" id="thErr"></div>
     <div class="th-actions">
       <button class="th-btn" id="thCancel">取消</button>
@@ -332,7 +332,18 @@ function showTokenModal(onSuccess){
 (function(){
   var GH_OWNER='sumoai-boop', GH_REPO='sumoai-boop.github.io', GH_BRANCH='main', GH_PATH='threads-data.json';
   var SEED=["DXS6gvJDhgX", "DWkuN1lmqxx", "DWgpeRrDkZx", "DUVaOFpE_et", "DXBQ1wBFG3h"];
-  var POSTS=(function(){ try{ var v=JSON.parse(localStorage.getItem('_threadsData')||'null'); return (v&&v.length)?v:SEED.slice(); }catch(e){ return SEED.slice(); } })();
+  function toUrl(x){
+    if(!x) return null;
+    x = String(x).trim();
+    if(/^https?:\/\//i.test(x)) return x.split('?')[0].replace(/\/+$/,'');
+    return 'https://www.threads.com/@moai431711/post/' + x;   // 舊資料只有 ID
+  }
+  function slugOf(u){ var p=String(u).replace(/\/+$/,'').split('/'); return p[p.length-1]||'x'; }
+  var POSTS=(function(){
+    try{ var v=JSON.parse(localStorage.getItem('_threadsData')||'null');
+         return ((v&&v.length)?v:SEED).map(toUrl).filter(Boolean); }
+    catch(e){ return SEED.map(toUrl); }
+  })();
   var pushing=false;
 
   function toast(msg, err){
@@ -349,10 +360,10 @@ function showTokenModal(onSuccess){
   function render(){
     var wrap=document.getElementById('threadsWrap');
     document.getElementById('thEmpty').style.display = POSTS.length ? 'none' : 'block';
-    wrap.innerHTML = POSTS.map(function(id){
-      var url='https://www.threads.com/@moai431711/post/'+id;
+    wrap.innerHTML = POSTS.map(function(url){
+      var id=slugOf(url);
       return '<div class="thread-embed" data-id="'+id+'">'+
-        '<button class="th-del" data-del="'+id+'">✕</button>'+
+        '<button class="th-del" data-del="'+encodeURIComponent(url)+'">✕</button>'+
         '<blockquote class="text-post-media" data-text-post-permalink="'+url+'" data-text-post-version="0" id="ig-tp-'+id+'" style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;max-width:100%;margin:0;padding:0;width:100%;">'+
         '<a href="'+url+'" target="_blank" style="background:transparent;line-height:0;padding:0;text-align:center;text-decoration:none;width:100%;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">'+
         '<div style="padding:40px;display:flex;flex-direction:column;align-items:center;">'+
@@ -398,15 +409,22 @@ function showTokenModal(onSuccess){
             console.warn('threads sync: remote('+arr.length+') < local('+POSTS.length+')，保留本機');
             return;
           }
-          POSTS=arr; save(); render();
+          POSTS=arr.map(toUrl).filter(Boolean); save(); render();
         })
         .catch(function(){ tryNext(i+1); });
     })(0);
   }
 
-  function extractId(u){
-    var m=(u||'').match(/\/post\/([A-Za-z0-9_-]+)/);
-    return m ? m[1] : null;
+  function normalize(u){
+    u=(u||'').trim();
+    if(!u) return null;
+    if(!/^https?:\/\//i.test(u)){
+      if(/^[A-Za-z0-9_-]+$/.test(u)) return 'https://www.threads.com/@moai431711/post/'+u;
+      return null;
+    }
+    if(!/(^|\.)threads\.(com|net)\//i.test(u)) return null;
+    if(!/\/(post|share)\/[A-Za-z0-9_-]+/.test(u)) return null;
+    return u.split('?')[0].replace(/\/+$/,'');
   }
 
   var modal=document.getElementById('thModal');
@@ -419,21 +437,21 @@ function showTokenModal(onSuccess){
   document.getElementById('thUrl').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('thSave').click(); });
 
   document.getElementById('thSave').onclick=function(){
-    var id=extractId(document.getElementById('thUrl').value.trim());
-    if(!id){ document.getElementById('thErr').textContent='網址格式不正確，請確認包含 /post/'; return; }
-    if(POSTS.indexOf(id)>=0){ document.getElementById('thErr').textContent='這篇貼文已經在列表中了'; return; }
-    POSTS.unshift(id); save(); render(); closeModal();
-    push('新增 Threads 貼文：'+id);
+    var url=normalize(document.getElementById('thUrl').value);
+    if(!url){ document.getElementById('thErr').textContent='請貼上 Threads 貼文網址（含 /post/ 或 /share/）'; return; }
+    if(POSTS.indexOf(url)>=0){ document.getElementById('thErr').textContent='這篇貼文已經在列表中了'; return; }
+    POSTS.unshift(url); save(); render(); closeModal();
+    push('新增 Threads 貼文：'+slugOf(url));
   };
 
   document.getElementById('threadsWrap').addEventListener('click', function(e){
     var b=e.target.closest('[data-del]');
     if(!b) return;
-    var id=b.getAttribute('data-del');
+    var url=decodeURIComponent(b.getAttribute('data-del'));
     if(!confirm('確定要刪除這篇貼文嗎？')) return;
-    POSTS=POSTS.filter(function(x){ return x!==id; });
+    POSTS=POSTS.filter(function(x){ return x!==url; });
     save(); render();
-    push('刪除 Threads 貼文：'+id);
+    push('刪除 Threads 貼文：'+slugOf(url));
   });
 
   render();
