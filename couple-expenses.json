@@ -140,6 +140,15 @@
       "amount": 296,
       "cat": "餐廳",
       "payer": "aaron"
+    },
+    {
+      "id": 1786023626837,
+      "date": "2026-05-02",
+      "desc": "台北松仁威秀",
+      "note": "穿著 PRADA 的惡魔 2",
+      "amount": 780,
+      "cat": "電影",
+      "payer": "aaron"
     }
   ]
 }
