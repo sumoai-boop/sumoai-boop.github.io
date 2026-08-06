@@ -120,6 +120,71 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   .td-group{display:none;}
   .header-photo{width:80px;min-height:100px;}
 }
+
+/* TABS */
+.tab-bar{display:flex;gap:0;margin-bottom:0;border:2px solid #222;border-bottom:none;background:#fff;}
+.tab-btn{flex:1;padding:14px 20px;background:#f5f5f5;border:none;border-right:1px solid #222;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:700;color:#888;transition:all 0.2s;}
+.tab-btn:last-child{border-right:none;}
+.tab-btn.active{background:#fff;color:#1a1a1a;}
+.tab-btn:hover:not(.active){background:#ebebeb;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+/* EXPENSE STYLES */
+.exp-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #222;margin-bottom:-1px;}
+.exp-sum-card{padding:16px;text-align:center;border-right:1px solid #222;}
+.exp-sum-card:last-child{border-right:none;}
+.exp-sum-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:#888;text-transform:uppercase;margin-bottom:6px;}
+.exp-sum-val{font-size:1.3rem;font-weight:700;}
+.exp-sum-val.total{color:#7c3aed;}
+.exp-sum-val.aaron{color:#0ea5e9;}
+.exp-sum-val.chloe{color:#c084b8;}
+.exp-sum-val.diff{color:#f59e0b;font-size:1rem;}
+.exp-add{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fafafa;}
+.exp-add-grid{display:grid;grid-template-columns:110px 1fr 90px 100px 110px auto;gap:8px;align-items:end;}
+.exp-form-group{display:flex;flex-direction:column;gap:4px;}
+.exp-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#888;text-transform:uppercase;}
+.exp-input,.exp-select{background:#fff;border:1px solid #ccc;border-radius:4px;padding:7px 10px;font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;width:100%;}
+.exp-input:focus,.exp-select:focus{border-color:#7c3aed;}
+.exp-add-btn{padding:8px 16px;background:#7c3aed;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;}
+.exp-add-btn:hover{opacity:0.85;}
+.exp-filter{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;margin-bottom:-1px;background:#fff;}
+.exp-filter-btn{padding:4px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:11.5px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.exp-filter-btn.active{background:#7c3aed;border-color:#7c3aed;color:#fff;}
+.exp-chart{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.exp-chart-title{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:12px;}
+.exp-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.exp-bar-label{font-size:11px;color:#555;width:52px;text-align:right;flex-shrink:0;}
+.exp-bar-bg{flex:1;height:14px;background:#f0ede8;border-radius:3px;overflow:hidden;}
+.exp-bar-fill{height:100%;border-radius:3px;}
+.exp-bar-fill.a{background:#0ea5e9;}
+.exp-bar-fill.c{background:#c084b8;}
+.exp-bar-val{font-size:10.5px;color:#888;width:66px;text-align:right;white-space:nowrap;}
+.exp-table-head{display:grid;grid-template-columns:95px 1fr 75px 85px 90px 45px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
+.exp-row{display:grid;grid-template-columns:95px 1fr 75px 85px 90px 45px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
+.exp-row:hover{background:#fafafa;}
+.exp-cat-tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:500;}
+.ecat-餐廳{background:#fff0e6;color:#c2410c;}
+.ecat-禮物{background:#fff0f5;color:#be185d;}
+.ecat-旅遊{background:#f0f9ff;color:#0369a1;}
+.ecat-娛樂{background:#f5f0ff;color:#7c3aed;}
+.ecat-日常{background:#f0fdf4;color:#166534;}
+.ecat-交通{background:#fffbf0;color:#92660a;}
+.ecat-住宿{background:#f0f9ff;color:#0e7490;}
+.ecat-其他{background:#f5f5f5;color:#555;}
+.exp-payer-a{color:#0ea5e9;font-weight:600;}
+.exp-payer-c{color:#c084b8;font-weight:600;}
+.exp-payer-b{color:#7c3aed;font-weight:600;}
+.exp-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:15px;}
+.exp-del:hover{color:#dc2626;}
+.exp-empty{text-align:center;padding:40px;color:#aaa;font-size:13px;border:1px solid #222;background:#fff;}
+@media(max-width:700px){
+  .exp-summary{grid-template-columns:1fr 1fr;}
+  .exp-add-grid{grid-template-columns:1fr 1fr;}
+  .exp-add-btn{grid-column:1/-1;}
+  .exp-chart{grid-template-columns:1fr;}
+  .exp-table-head,.exp-row{grid-template-columns:75px 1fr 65px 70px;}
+  .exp-table-head>:nth-child(5),.exp-table-head>:nth-child(6),.exp-row>:nth-child(5),.exp-row>:nth-child(6){display:none;}
+}
 </style>
 </head>
 <body>
@@ -137,9 +202,14 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 </div>
 
 <div class="page-wrap">
-<div class="resume">
 
-  <div class="resume-title">個人檔案</div>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('profile')">📋 個人檔案</button>
+  <button class="tab-btn" onclick="switchTab('expense')">💰 情侶記帳</button>
+</div>
+
+<div class="tab-content active" id="tab-profile">
+<div class="resume" style="border-top:none">
 
   <!-- 基本資料 + 照片 -->
   <table>
@@ -365,6 +435,68 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <td colspan="2" class="td-val" style="min-height:60px;font-style:italic;color:#888" id="disp-notes">（點右下角編輯按鈕加入備忘…）</td>
     </tr>
   </table>
+
+</div>
+</div>
+
+<!-- 記帳分頁 -->
+<div class="tab-content" id="tab-expense">
+<div class="resume" style="border-top:none;padding:24px">
+
+  <div class="exp-summary">
+    <div class="exp-sum-card"><div class="exp-sum-label">總支出</div><div class="exp-sum-val total" id="s-total">$0</div></div>
+    <div class="exp-sum-card"><div class="exp-sum-label">Aaron 付</div><div class="exp-sum-val aaron" id="s-aaron">$0</div></div>
+    <div class="exp-sum-card"><div class="exp-sum-label">Chloe 付</div><div class="exp-sum-val chloe" id="s-chloe">$0</div></div>
+    <div class="exp-sum-card"><div class="exp-sum-label">差額</div><div class="exp-sum-val diff" id="s-diff">平手</div></div>
+  </div>
+
+  <div class="exp-chart">
+    <div>
+      <div class="exp-chart-title">分類支出</div>
+      <div id="cat-chart"></div>
+    </div>
+    <div>
+      <div class="exp-chart-title">付款比例</div>
+      <div id="payer-chart"></div>
+    </div>
+  </div>
+
+  <div class="exp-add">
+    <div class="exp-add-grid">
+      <div class="exp-form-group"><label class="exp-label">日期</label><input class="exp-input" id="e-date" type="date"></div>
+      <div class="exp-form-group"><label class="exp-label">描述</label><input class="exp-input" id="e-desc" placeholder="吃了什麼、去了哪…"></div>
+      <div class="exp-form-group"><label class="exp-label">金額</label><input class="exp-input" id="e-amount" type="number" placeholder="0" min="0"></div>
+      <div class="exp-form-group"><label class="exp-label">分類</label>
+        <select class="exp-select" id="e-cat">
+          <option>餐廳</option><option>禮物</option><option>旅遊</option><option>娛樂</option>
+          <option>日常</option><option>交通</option><option>住宿</option><option>其他</option>
+        </select>
+      </div>
+      <div class="exp-form-group"><label class="exp-label">誰付</label>
+        <select class="exp-select" id="e-payer">
+          <option value="aaron">Aaron</option><option value="chloe">Chloe</option><option value="both">各半</option>
+        </select>
+      </div>
+      <button class="exp-add-btn" onclick="addExpense()">＋ 新增</button>
+    </div>
+  </div>
+
+  <div class="exp-filter" id="expFilter">
+    <button class="exp-filter-btn active" onclick="setExpFilter('全部',this)">全部</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('餐廳',this)">🍽 餐廳</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('禮物',this)">🎁 禮物</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('旅遊',this)">✈️ 旅遊</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('娛樂',this)">🎬 娛樂</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('日常',this)">🛒 日常</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('交通',this)">🚗 交通</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('住宿',this)">🏨 住宿</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('其他',this)">📦 其他</button>
+  </div>
+
+  <div class="exp-table-head">
+    <div>日期</div><div>描述</div><div>分類</div><div>金額</div><div>誰付</div><div></div>
+  </div>
+  <div id="exp-list"></div>
 
 </div>
 </div>
