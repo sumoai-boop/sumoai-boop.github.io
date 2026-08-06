@@ -85,7 +85,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;opacity:0.7;}
 .lightbox-close:hover{opacity:1;}
 /* FAB */
-.edit-fab{position:fixed;bottom:90px;right:24px;z-index:9990;width:200px;height:250px;border-radius:50%;background:linear-gradient(135deg,#c084b8,#7c3aed);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,58,237,0.4);transition:transform 0.2s;}
+.edit-fab{position:fixed;bottom:90px;right:24px;z-index:9990;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#c084b8,#7c3aed);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,58,237,0.4);transition:transform 0.2s;}
 .edit-fab:hover{transform:scale(1.12);}
 /* MODAL */
 .modal-mask{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
@@ -661,10 +661,11 @@ function mkTags(arr,cls){
   return arr.map(function(t){return '<span class="'+cls+'">'+t+'</span>';}).join(' ');
 }
 
+function setText(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
+function setHTML(id,val){var el=document.getElementById(id);if(el)el.innerHTML=val;}
+
 function applyData(d){
   data=d;
-  function setText(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
-  function setHTML(id,val){var el=document.getElementById(id);if(el)el.innerHTML=val;}
   setText('disp-birthday',d.birthday||'');
   setText('disp-height',d.height||'');
   setText('disp-zodiac',(d.zodiac||'')+(d.zodiac?'':'')+' ♑');
