@@ -167,6 +167,15 @@
       "amount": 780,
       "cat": "電影",
       "payer": "aaron"
+    },
+    {
+      "id": 1786023910041,
+      "date": "2026-03-15",
+      "desc": "Tango Motel 天豪屋",
+      "note": "天閣客房 4H",
+      "amount": 2200,
+      "cat": "住宿",
+      "payer": "aaron"
     }
   ]
 }
