@@ -158,13 +158,17 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-filter-btn.active{background:#7c3aed;border-color:#7c3aed;color:#fff;}
 .exp-chart{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fff;}
 .exp-chart-title{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:12px;}
-.exp-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.exp-bar-label{font-size:11px;color:#555;width:52px;text-align:right;flex-shrink:0;}
-.exp-bar-bg{flex:1;height:14px;background:#f0ede8;border-radius:3px;overflow:hidden;}
+.exp-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.exp-bar-label{font-size:11.5px;color:#444;width:78px;text-align:right;flex-shrink:0;}
+.exp-bar-bg{flex:1;height:18px;background:#f0ede8;border-radius:3px;overflow:hidden;}
 .exp-bar-fill{height:100%;border-radius:3px;}
+.exp-bar-fill.r1{background:linear-gradient(90deg,#f59e0b,#f97316);}
+.exp-bar-fill.r2{background:linear-gradient(90deg,#8b5cf6,#7c3aed);}
+.exp-bar-fill.r3{background:linear-gradient(90deg,#ec4899,#db2777);}
+.exp-bar-fill.rest{background:#94a3b8;}
 .exp-bar-fill.a{background:#0ea5e9;}
 .exp-bar-fill.c{background:#c084b8;}
-.exp-bar-val{font-size:10.5px;color:#888;width:66px;text-align:right;white-space:nowrap;}
+.exp-bar-val{font-size:14px;font-weight:700;color:#1a1a1a;width:92px;text-align:right;white-space:nowrap;letter-spacing:0.01em;}
 .exp-table-head{display:grid;grid-template-columns:100px 1.3fr 1.2fr 90px 110px 50px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
 .exp-row{display:grid;grid-template-columns:100px 1.3fr 1.2fr 90px 110px 50px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
 .exp-row:hover{background:#fafafa;}
@@ -1153,16 +1157,24 @@ function renderExpenses(){
   setText('s-count',scoped.length+' 筆');
   setText('s-avg',fmtMoney(scoped.length?Math.round(total/scoped.length):0));
 
-  var cats=['餐廳','餐飲','禮物','電影','娛樂','日常','交通','住宿','其他'];
-  // 相容舊資料中已不在清單的分類
-  scoped.forEach(function(e){if(e.cat&&cats.indexOf(e.cat)===-1)cats.push(e.cat);});
-  var ct={};cats.forEach(function(x){ct[x]=0;});
-  scoped.forEach(function(e){ct[e.cat]=(ct[e.cat]||0)+parseFloat(e.amount);});
-  var maxC=Math.max.apply(null,Object.values(ct))||1;
+  // 統計所有實際有消費的分類（含舊資料分類）
+  var ct={};
+  scoped.forEach(function(e){
+    var k=e.cat||'其他';
+    ct[k]=(ct[k]||0)+(parseFloat(e.amount)||0);
+  });
+  var ranked=Object.keys(ct).filter(function(k){return ct[k]>0;}).sort(function(a,b){return ct[b]-ct[a];});
+  var maxC=ranked.length?ct[ranked[0]]:1;
+  var rankCls=['r1','r2','r3'];
   var catEl=document.getElementById('cat-chart');
   if(catEl){
-    var h=cats.filter(function(x){return ct[x]>0;}).sort(function(a,b){return ct[b]-ct[a];}).map(function(x){
-      return '<div class="exp-bar-row"><span class="exp-bar-label">'+x+'</span><div class="exp-bar-bg"><div class="exp-bar-fill a" style="width:'+Math.round(ct[x]/maxC*100)+'%"></div></div><span class="exp-bar-val">'+fmtMoney(ct[x])+'</span></div>';
+    var h=ranked.map(function(x,i){
+      var cls=rankCls[i]||'rest';
+      var medal=i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';
+      var pct=Math.round(ct[x]/maxC*100);
+      return '<div class="exp-bar-row"><span class="exp-bar-label">'+medal+x+'</span>'+
+        '<div class="exp-bar-bg"><div class="exp-bar-fill '+cls+'" style="width:'+pct+'%"></div></div>'+
+        '<span class="exp-bar-val">'+fmtMoney(ct[x])+'</span></div>';
     }).join('');
     catEl.innerHTML=h||'<div style="color:#aaa;font-size:12px">尚無資料</div>';
   }
