@@ -288,12 +288,22 @@ async function loadData(){
   try{
     var r=await fetch(RAW+'?t='+Date.now());
     if(r.ok){
-      var d=JSON.parse(await r.text());
-      expenses=d.expenses||[];
-      var r2=await fetch(GH_API+'?t='+Date.now());
-      if(r2.ok){var j2=await r2.json();ghSha=j2.sha;}
+      var text=await r.text();
+      // 確認是 JSON 不是 HTML 錯誤頁
+      if(text.trim().startsWith('{')){
+        var d=JSON.parse(text);
+        expenses=d.expenses||[];
+      }
+      // 取 sha 供儲存用
+      try{
+        var r2=await fetch(GH_API+'?t='+Date.now());
+        if(r2.ok){var j2=await r2.json();ghSha=j2.sha;}
+      }catch(e2){}
     }
-  }catch(e){}
+    // 404 或其他錯誤：空資料，等第一次儲存時自動建立
+  }catch(e){
+    // 檔案不存在沒關係，直接用空資料
+  }
   render();
 }
 
