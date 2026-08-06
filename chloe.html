@@ -173,6 +173,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .ecat-餐飲{background:#fef3c7;color:#a16207;}
 .ecat-禮物{background:#fff0f5;color:#be185d;}
 .ecat-旅遊{background:#f0f9ff;color:#0369a1;}
+.ecat-電影{background:#eef2ff;color:#4338ca;}
 .ecat-娛樂{background:#f5f0ff;color:#7c3aed;}
 .ecat-日常{background:#f0fdf4;color:#166534;}
 .ecat-交通{background:#fffbf0;color:#92660a;}
@@ -487,7 +488,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <div class="exp-form-group"><label class="exp-label">金額</label><input class="exp-input" id="e-amount" type="number" placeholder="0" min="0"></div>
       <div class="exp-form-group"><label class="exp-label">分類</label>
         <select class="exp-select" id="e-cat">
-          <option>餐廳</option><option>餐飲</option><option>禮物</option><option>旅遊</option><option>娛樂</option>
+          <option>餐廳</option><option>餐飲</option><option>禮物</option><option>電影</option><option>娛樂</option>
           <option>日常</option><option>交通</option><option>住宿</option><option>其他</option>
         </select>
       </div>
@@ -507,7 +508,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <button class="exp-filter-btn" onclick="setExpFilter('餐廳',this)">🍽 餐廳</button>
     <button class="exp-filter-btn" onclick="setExpFilter('餐飲',this)">🥤 餐飲</button>
     <button class="exp-filter-btn" onclick="setExpFilter('禮物',this)">🎁 禮物</button>
-    <button class="exp-filter-btn" onclick="setExpFilter('旅遊',this)">✈️ 旅遊</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('電影',this)">🎞 電影</button>
     <button class="exp-filter-btn" onclick="setExpFilter('娛樂',this)">🎬 娛樂</button>
     <button class="exp-filter-btn" onclick="setExpFilter('日常',this)">🛒 日常</button>
     <button class="exp-filter-btn" onclick="setExpFilter('交通',this)">🚗 交通</button>
@@ -1159,7 +1160,9 @@ function renderExpenses(){
   var diff=aT-cT;
   setText('s-diff',Math.abs(diff)<1?'平手':(diff>0?'Chloe 少 '+fmtMoney(diff):'Aaron 少 '+fmtMoney(-diff)));
 
-  var cats=['餐廳','餐飲','禮物','旅遊','娛樂','日常','交通','住宿','其他'];
+  var cats=['餐廳','餐飲','禮物','電影','娛樂','日常','交通','住宿','其他'];
+  // 相容舊資料中已不在清單的分類
+  scoped.forEach(function(e){if(e.cat&&cats.indexOf(e.cat)===-1)cats.push(e.cat);});
   var ct={};cats.forEach(function(x){ct[x]=0;});
   scoped.forEach(function(e){ct[e.cat]=(ct[e.cat]||0)+parseFloat(e.amount);});
   var maxC=Math.max.apply(null,Object.values(ct))||1;
