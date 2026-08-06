@@ -100,10 +100,11 @@
     {
       "id": 1786004632643,
       "date": "2026-07-01",
-      "desc": "Insta360 Snap 手機自拍螢幕 原廠公司貨",
+      "desc": "Insta360",
       "amount": 3035,
       "cat": "禮物",
-      "payer": "aaron"
+      "payer": "aaron",
+      "note": "Snap 手機自拍螢幕 原廠公司貨"
     }
   ]
 }
