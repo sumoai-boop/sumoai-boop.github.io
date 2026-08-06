@@ -131,7 +131,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .tab-content.active{display:block;}
 /* EXPENSE STYLES */
 #tab-expense{width:100%;}
-.exp-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #222;margin-bottom:-1px;}
+.exp-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid #222;margin-bottom:-1px;}
 .exp-sum-card{padding:16px;text-align:center;border-right:1px solid #222;}
 .exp-sum-card:last-child{border-right:none;}
 .exp-sum-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:#888;text-transform:uppercase;margin-bottom:6px;}
@@ -141,7 +141,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-sum-val.chloe{color:#c084b8;}
 .exp-sum-val.diff{color:#f59e0b;font-size:1rem;}
 .exp-add{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fafafa;}
-.exp-add-grid{display:grid;grid-template-columns:110px 1.2fr 1fr 90px 100px 110px auto;gap:8px;align-items:end;}
+.exp-add-grid{display:grid;grid-template-columns:110px 1.2fr 1fr 100px 110px auto;gap:8px;align-items:end;}
 .exp-form-group{display:flex;flex-direction:column;gap:4px;}
 .exp-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#888;text-transform:uppercase;}
 .exp-input,.exp-select{background:#fff;border:1px solid #ccc;border-radius:4px;padding:7px 10px;font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;width:100%;}
@@ -156,7 +156,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-filter{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;margin-bottom:-1px;background:#fff;}
 .exp-filter-btn{padding:4px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:11.5px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
 .exp-filter-btn.active{background:#7c3aed;border-color:#7c3aed;color:#fff;}
-.exp-chart{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.exp-chart{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fff;}
 .exp-chart-title{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:12px;}
 .exp-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .exp-bar-label{font-size:11px;color:#555;width:52px;text-align:right;flex-shrink:0;}
@@ -165,8 +165,8 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-bar-fill.a{background:#0ea5e9;}
 .exp-bar-fill.c{background:#c084b8;}
 .exp-bar-val{font-size:10.5px;color:#888;width:66px;text-align:right;white-space:nowrap;}
-.exp-table-head{display:grid;grid-template-columns:100px 1.3fr 1fr 80px 95px 95px 45px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
-.exp-row{display:grid;grid-template-columns:100px 1.3fr 1fr 80px 95px 95px 45px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
+.exp-table-head{display:grid;grid-template-columns:100px 1.3fr 1.2fr 90px 110px 50px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
+.exp-row{display:grid;grid-template-columns:100px 1.3fr 1.2fr 90px 110px 50px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
 .exp-row:hover{background:#fafafa;}
 .exp-cat-tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:500;}
 .ecat-餐廳{background:#fff0e6;color:#c2410c;}
@@ -196,8 +196,9 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   .exp-add-grid{grid-template-columns:1fr 1fr;}
   .exp-add-btn{grid-column:1/-1;}
   .exp-chart{grid-template-columns:1fr;}
-  .exp-table-head,.exp-row{grid-template-columns:75px 1fr 65px 70px;}
-  .exp-table-head>:nth-child(3),.exp-table-head>:nth-child(6),.exp-table-head>:nth-child(7),.exp-row>:nth-child(3),.exp-row>:nth-child(6),.exp-row>:nth-child(7){display:none;}
+  .exp-summary{grid-template-columns:1fr 1fr;}
+  .exp-table-head,.exp-row{grid-template-columns:75px 1fr 70px 80px;}
+  .exp-table-head>:nth-child(3),.exp-table-head>:nth-child(6),.exp-row>:nth-child(3),.exp-row>:nth-child(6){display:none;}
 }
 </style>
 </head>
@@ -459,19 +460,14 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 
   <div class="exp-summary">
     <div class="exp-sum-card"><div class="exp-sum-label">總支出</div><div class="exp-sum-val total" id="s-total">$0</div></div>
-    <div class="exp-sum-card"><div class="exp-sum-label">Aaron 付</div><div class="exp-sum-val aaron" id="s-aaron">$0</div></div>
-    <div class="exp-sum-card"><div class="exp-sum-label">Chloe 付</div><div class="exp-sum-val chloe" id="s-chloe">$0</div></div>
-    <div class="exp-sum-card"><div class="exp-sum-label">差額</div><div class="exp-sum-val diff" id="s-diff">平手</div></div>
+    <div class="exp-sum-card"><div class="exp-sum-label">筆數</div><div class="exp-sum-val aaron" id="s-count">0</div></div>
+    <div class="exp-sum-card"><div class="exp-sum-label">平均每筆</div><div class="exp-sum-val chloe" id="s-avg">$0</div></div>
   </div>
 
   <div class="exp-chart">
     <div>
       <div class="exp-chart-title">分類支出</div>
       <div id="cat-chart"></div>
-    </div>
-    <div>
-      <div class="exp-chart-title">付款比例</div>
-      <div id="payer-chart"></div>
     </div>
   </div>
 
@@ -490,11 +486,6 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
         <select class="exp-select" id="e-cat">
           <option>餐廳</option><option>餐飲</option><option>禮物</option><option>電影</option><option>娛樂</option>
           <option>日常</option><option>交通</option><option>住宿</option><option>其他</option>
-        </select>
-      </div>
-      <div class="exp-form-group"><label class="exp-label">誰付</label>
-        <select class="exp-select" id="e-payer">
-          <option value="aaron">Aaron</option><option value="chloe">Chloe</option><option value="both">各半</option>
         </select>
       </div>
       <button class="exp-add-btn" id="expSubmitBtn" onclick="addExpense()">＋ 新增</button>
@@ -517,7 +508,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   </div>
 
   <div class="exp-table-head">
-    <div>日期</div><div>描述</div><div>備註</div><div>分類</div><div>金額</div><div>誰付</div><div></div>
+    <div>日期</div><div>描述</div><div>備註</div><div>分類</div><div>金額</div><div></div>
   </div>
   <div id="exp-list"></div>
 
@@ -828,6 +819,12 @@ document.getElementById('photoInput').addEventListener('change',async function(e
 async function saveData(msg){
   var token=localStorage.getItem(LS_TOKEN);
   if(!token){openTokenModal();return;}
+  if(!ghSha){
+    try{
+      var rs=await fetch(GH_API+'?t='+Date.now(),{headers:{'Authorization':'token '+token}});
+      if(rs.ok){var js=await rs.json();ghSha=js.sha;}
+    }catch(e){}
+  }
   var body={message:'Update chloe-data.json',content:toBase64UTF8(JSON.stringify(data,null,2))};
   if(ghSha)body.sha=ghSha;
   try{
@@ -838,22 +835,26 @@ async function saveData(msg){
 }
 async function loadData(){
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main/'+FILE;
+  var loaded=false;
+  // 1) 讀資料（raw，不需 token）
   try{
-    // 先用 raw 讀資料（不需要 token）
     var r=await fetch(RAW+'?t='+Date.now());
     if(r.ok){
-      var d=JSON.parse(await r.text());
-      console.log('JSON loaded OK, visited:', d.visited);
-      applyData(Object.assign({},DEFAULT,d,{photos:d.photos||[],avatar:d.avatar||''}));
-      // 同時取得 sha 供後續儲存用
-      var r2=await fetch(GH_API+'?t='+Date.now());
-      if(r2.ok){var j2=await r2.json();ghSha=j2.sha;}
-    } else {
-      applyData(JSON.parse(JSON.stringify(DEFAULT)));
+      var t=await r.text();
+      if(t.trim().startsWith('{')){
+        var d=JSON.parse(t);
+        applyData(Object.assign({},DEFAULT,d,{photos:d.photos||[],avatar:d.avatar||''}));
+        loaded=true;
+      }
     }
-  }catch(e){console.error('loadData error:',e);applyData(JSON.parse(JSON.stringify(DEFAULT)));}
+  }catch(e){}
+  if(!loaded)applyData(JSON.parse(JSON.stringify(DEFAULT)));
+  // 2) 取 sha（失敗不影響已顯示的資料，只影響儲存前的比對）
+  try{
+    var r2=await fetch(GH_API+'?t='+Date.now());
+    if(r2.ok){var j2=await r2.json();ghSha=j2.sha;}
+  }catch(e2){}
 }
-
 
 // ── 追求者動態欄位 ──
 function addSuitorField(val){
@@ -1047,15 +1048,14 @@ function addExpense(){
   var note=document.getElementById('e-note').value.trim();
   var amount=parseFloat(document.getElementById('e-amount').value);
   var cat=document.getElementById('e-cat').value;
-  var payer=document.getElementById('e-payer').value;
   if(!date||!desc||!amount||amount<=0){showToast('請填寫完整資料');return;}
   var isEdit=editingId!==null;
   if(isEdit){
     expenses.forEach(function(e){
-      if(e.id===editingId){e.date=date;e.desc=desc;e.note=note;e.amount=amount;e.cat=cat;e.payer=payer;}
+      if(e.id===editingId){e.date=date;e.desc=desc;e.note=note;e.amount=amount;e.cat=cat;}
     });
   }else{
-    expenses.unshift({id:Date.now(),date:date,desc:desc,note:note,amount:amount,cat:cat,payer:payer});
+    expenses.unshift({id:Date.now(),date:date,desc:desc,note:note,amount:amount,cat:cat});
   }
   resetExpForm();
   renderExpenses();
@@ -1069,7 +1069,6 @@ function resetExpForm(){
   document.getElementById('e-amount').value='';
   document.getElementById('e-date').value=todayStr();
   document.getElementById('e-cat').selectedIndex=0;
-  document.getElementById('e-payer').selectedIndex=0;
   var b=document.getElementById('expSubmitBtn');if(b)b.textContent='＋ 新增';
   var bar=document.getElementById('expEditBar');if(bar)bar.classList.remove('on');
 }
@@ -1084,7 +1083,6 @@ function editExpense(id){
   document.getElementById('e-note').value=e.note||'';
   document.getElementById('e-amount').value=e.amount||'';
   document.getElementById('e-cat').value=e.cat||'餐廳';
-  document.getElementById('e-payer').value=e.payer||'aaron';
   var b=document.getElementById('expSubmitBtn');if(b)b.textContent='💾 儲存修改';
   var bar=document.getElementById('expEditBar');if(bar)bar.classList.add('on');
   setText('expEditDesc',e.desc||'');
@@ -1149,16 +1147,11 @@ function renderExpenses(){
   var scoped=expMonth==='全部'?expenses:expenses.filter(function(e){return (e.date||'').slice(0,7)===expMonth;});
   var filtered=expFilter==='全部'?scoped:scoped.filter(function(e){return e.cat===expFilter;});
 
-  var total=0,aT=0,cT=0;
-  scoped.forEach(function(e){
-    var a=parseFloat(e.amount);total+=a;
-    if(e.payer==='aaron')aT+=a;else if(e.payer==='chloe')cT+=a;else{aT+=a/2;cT+=a/2;}
-  });
+  var total=0;
+  scoped.forEach(function(e){total+=parseFloat(e.amount)||0;});
   setText('s-total',fmtMoney(total));
-  setText('s-aaron',fmtMoney(aT));
-  setText('s-chloe',fmtMoney(cT));
-  var diff=aT-cT;
-  setText('s-diff',Math.abs(diff)<1?'平手':(diff>0?'Chloe 少 '+fmtMoney(diff):'Aaron 少 '+fmtMoney(-diff)));
+  setText('s-count',scoped.length+' 筆');
+  setText('s-avg',fmtMoney(scoped.length?Math.round(total/scoped.length):0));
 
   var cats=['餐廳','餐飲','禮物','電影','娛樂','日常','交通','住宿','其他'];
   // 相容舊資料中已不在清單的分類
@@ -1173,23 +1166,15 @@ function renderExpenses(){
     }).join('');
     catEl.innerHTML=h||'<div style="color:#aaa;font-size:12px">尚無資料</div>';
   }
-  var pEl=document.getElementById('payer-chart');
-  if(pEl){
-    var maxP=Math.max(aT,cT)||1;
-    pEl.innerHTML=[{l:'Aaron',v:aT,c:'a'},{l:'Chloe',v:cT,c:'c'}].map(function(p){
-      return '<div class="exp-bar-row"><span class="exp-bar-label">'+p.l+'</span><div class="exp-bar-bg"><div class="exp-bar-fill '+p.c+'" style="width:'+Math.round(p.v/maxP*100)+'%"></div></div><span class="exp-bar-val">'+fmtMoney(p.v)+'</span></div>';
-    }).join('');
-  }
 
   var listEl=document.getElementById('exp-list');
   if(!listEl)return;
   if(filtered.length===0){listEl.innerHTML='<div class="exp-empty">'+(expenses.length===0?'還沒有記錄，新增第一筆吧 💑':'這個條件下沒有記錄')+'</div>';return;}
   listEl.innerHTML=filtered.map(function(e){
-    var pl=e.payer==='aaron'?'<span class="exp-payer-a">Aaron</span>':e.payer==='chloe'?'<span class="exp-payer-c">Chloe</span>':'<span class="exp-payer-b">各半</span>';
     return '<div class="exp-row'+(e.id===editingId?' editing':'')+'"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
       '<div style="color:#333;font-size:12.5px">'+(e.note?e.note:'<span style="color:#bbb">—</span>')+'</div>'+
       '<div><span class="exp-cat-tag ecat-'+e.cat+'">'+e.cat+'</span></div>'+
-      '<div style="font-weight:600">'+fmtMoney(e.amount)+'</div><div>'+pl+'</div>'+
+      '<div style="font-weight:600">'+fmtMoney(e.amount)+'</div>'+
       '<div style="text-align:center"><button class="exp-edit" onclick="editExpense('+e.id+')" title="編輯">✏️</button></div></div>';
   }).join('');
 }
