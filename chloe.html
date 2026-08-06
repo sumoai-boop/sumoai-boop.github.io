@@ -1187,7 +1187,7 @@ function renderExpenses(){
   listEl.innerHTML=filtered.map(function(e){
     var pl=e.payer==='aaron'?'<span class="exp-payer-a">Aaron</span>':e.payer==='chloe'?'<span class="exp-payer-c">Chloe</span>':'<span class="exp-payer-b">各半</span>';
     return '<div class="exp-row'+(e.id===editingId?' editing':'')+'"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
-      '<div style="color:#777;font-size:12px">'+(e.note||'—')+'</div>'+
+      '<div style="color:#333;font-size:12.5px">'+(e.note?e.note:'<span style="color:#bbb">—</span>')+'</div>'+
       '<div><span class="exp-cat-tag ecat-'+e.cat+'">'+e.cat+'</span></div>'+
       '<div style="font-weight:600">'+fmtMoney(e.amount)+'</div><div>'+pl+'</div>'+
       '<div style="text-align:center"><button class="exp-edit" onclick="editExpense('+e.id+')" title="編輯">✏️</button></div></div>';
