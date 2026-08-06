@@ -204,8 +204,8 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 <div class="page-wrap">
 
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('profile')">📋 個人檔案</button>
-  <button class="tab-btn" onclick="switchTab('expense')">💰 情侶記帳</button>
+  <button class="tab-btn active" onclick="switchTab('profile',this)">📋 個人檔案</button>
+  <button class="tab-btn" onclick="switchTab('expense',this)">💰 情侶記帳</button>
 </div>
 
 <div class="tab-content active" id="tab-profile">
@@ -605,7 +605,6 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><span style="font-size:15px;font-weight:900;font-family:Arial,sans-serif;color:#fff;line-height:1;letter-spacing:-0.5px">MLB</span></div><span class="gd-label">MLB</span></a>
     <div class="gd-sep"></div>
     <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="gd-label">Chloe</span><div class="gd-dot"></div></a>
-    <a href="couple-expenses.html" class="gd-item"><div class="gd-icon ic-expense"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><span class="gd-label">記帳</span></a>
   </div>
 </div>
 
@@ -975,7 +974,134 @@ document.getElementById('closeImgBB').addEventListener('click',function(){docume
   tick();setInterval(tick,10000);
 })();
 
+
+// ══════ 情侶記帳 ══════
+var EXP_FILE='couple-expenses.json';
+var EXP_RAW='https://raw.githubusercontent.com/'+REPO+'/main/'+EXP_FILE;
+var EXP_API='https://api.github.com/repos/'+REPO+'/contents/'+EXP_FILE;
+var expenses=[];var expSha=null;var expFilter='全部';
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  var target=document.getElementById('tab-'+tab);
+  if(target)target.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(tab==='expense')renderExpenses();
+}
+
+function fmtMoney(n){return '$'+Number(n).toLocaleString();}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+
+async function loadExpenses(){
+  try{
+    var r=await fetch(EXP_RAW+'?t='+Date.now());
+    if(r.ok){
+      var t=await r.text();
+      if(t.trim().startsWith('{')){var d=JSON.parse(t);expenses=d.expenses||[];}
+      try{var r2=await fetch(EXP_API+'?t='+Date.now());if(r2.ok){var j=await r2.json();expSha=j.sha;}}catch(e){}
+    }
+  }catch(e){}
+  renderExpenses();
+}
+
+async function saveExpenses(msg){
+  var token=localStorage.getItem(LS_TOKEN);
+  if(!token){openTokenModal();return;}
+  var body={message:'Update couple-expenses.json',content:toBase64UTF8(JSON.stringify({expenses:expenses},null,2))};
+  if(expSha)body.sha=expSha;
+  try{
+    var r=await fetch(EXP_API,{method:'PUT',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.ok){var j=await r.json();expSha=j.content.sha;showToast(msg||'✅ 已儲存！');}
+    else{var e=await r.json();if(r.status===401){localStorage.removeItem(LS_TOKEN);openTokenModal();}else showToast('❌ '+(e.message||r.status));}
+  }catch(e){showToast('❌ 網路錯誤');}
+}
+
+function addExpense(){
+  var date=document.getElementById('e-date').value;
+  var desc=document.getElementById('e-desc').value.trim();
+  var amount=parseFloat(document.getElementById('e-amount').value);
+  var cat=document.getElementById('e-cat').value;
+  var payer=document.getElementById('e-payer').value;
+  if(!date||!desc||!amount||amount<=0){showToast('請填寫完整資料');return;}
+  expenses.unshift({id:Date.now(),date:date,desc:desc,amount:amount,cat:cat,payer:payer});
+  document.getElementById('e-desc').value='';
+  document.getElementById('e-amount').value='';
+  document.getElementById('e-date').value=todayStr();
+  renderExpenses();
+  saveExpenses('✅ 已新增！');
+}
+
+function delExpense(id){
+  if(!confirm('確定刪除這筆？'))return;
+  expenses=expenses.filter(function(e){return e.id!==id;});
+  renderExpenses();
+  saveExpenses('✅ 已刪除！');
+}
+
+function setExpFilter(f,btn){
+  expFilter=f;
+  document.querySelectorAll('.exp-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderExpenses();
+}
+
+function renderExpenses(){
+  var filtered=expFilter==='全部'?expenses:expenses.filter(function(e){return e.cat===expFilter;});
+  var total=0,aT=0,cT=0;
+  expenses.forEach(function(e){
+    var a=parseFloat(e.amount);total+=a;
+    if(e.payer==='aaron')aT+=a;else if(e.payer==='chloe')cT+=a;else{aT+=a/2;cT+=a/2;}
+  });
+  setText('s-total',fmtMoney(total));
+  setText('s-aaron',fmtMoney(aT));
+  setText('s-chloe',fmtMoney(cT));
+  var diff=aT-cT;
+  setText('s-diff',Math.abs(diff)<1?'平手':(diff>0?'Chloe 少 '+fmtMoney(diff):'Aaron 少 '+fmtMoney(-diff)));
+
+  var cats=['餐廳','禮物','旅遊','娛樂','日常','交通','住宿','其他'];
+  var ct={};cats.forEach(function(x){ct[x]=0;});
+  expenses.forEach(function(e){ct[e.cat]=(ct[e.cat]||0)+parseFloat(e.amount);});
+  var maxC=Math.max.apply(null,Object.values(ct))||1;
+  var catEl=document.getElementById('cat-chart');
+  if(catEl){
+    var h=cats.filter(function(x){return ct[x]>0;}).sort(function(a,b){return ct[b]-ct[a];}).map(function(x){
+      return '<div class="exp-bar-row"><span class="exp-bar-label">'+x+'</span><div class="exp-bar-bg"><div class="exp-bar-fill a" style="width:'+Math.round(ct[x]/maxC*100)+'%"></div></div><span class="exp-bar-val">'+fmtMoney(ct[x])+'</span></div>';
+    }).join('');
+    catEl.innerHTML=h||'<div style="color:#aaa;font-size:12px">尚無資料</div>';
+  }
+  var pEl=document.getElementById('payer-chart');
+  if(pEl){
+    var maxP=Math.max(aT,cT)||1;
+    pEl.innerHTML=[{l:'Aaron',v:aT,c:'a'},{l:'Chloe',v:cT,c:'c'}].map(function(p){
+      return '<div class="exp-bar-row"><span class="exp-bar-label">'+p.l+'</span><div class="exp-bar-bg"><div class="exp-bar-fill '+p.c+'" style="width:'+Math.round(p.v/maxP*100)+'%"></div></div><span class="exp-bar-val">'+fmtMoney(p.v)+'</span></div>';
+    }).join('');
+  }
+
+  var listEl=document.getElementById('exp-list');
+  if(!listEl)return;
+  if(filtered.length===0){listEl.innerHTML='<div class="exp-empty">還沒有記錄，新增第一筆吧 💑</div>';return;}
+  listEl.innerHTML=filtered.map(function(e){
+    var pl=e.payer==='aaron'?'<span class="exp-payer-a">Aaron</span>':e.payer==='chloe'?'<span class="exp-payer-c">Chloe</span>':'<span class="exp-payer-b">各半</span>';
+    return '<div class="exp-row"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
+      '<div><span class="exp-cat-tag ecat-'+e.cat+'">'+e.cat+'</span></div>'+
+      '<div style="font-weight:600">'+fmtMoney(e.amount)+'</div><div>'+pl+'</div>'+
+      '<div style="text-align:center"><button class="exp-del" onclick="delExpense('+e.id+')">✕</button></div></div>';
+  }).join('');
+}
+
+// init
+(function(){
+  var dInp=document.getElementById('e-date');
+  if(dInp)dInp.value=todayStr();
+  var descInp=document.getElementById('e-desc');
+  var amtInp=document.getElementById('e-amount');
+  if(descInp)descInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
+  if(amtInp)amtInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
+})();
+
 loadData();
+loadExpenses();
 </script>
 </body>
 </html>
