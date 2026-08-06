@@ -130,6 +130,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 /* EXPENSE STYLES */
+#tab-expense{width:min(1240px,calc(100vw - 32px));margin-left:50%;transform:translateX(-50%);}
 .exp-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #222;margin-bottom:-1px;}
 .exp-sum-card{padding:16px;text-align:center;border-right:1px solid #222;}
 .exp-sum-card:last-child{border-right:none;}
@@ -140,7 +141,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-sum-val.chloe{color:#c084b8;}
 .exp-sum-val.diff{color:#f59e0b;font-size:1rem;}
 .exp-add{border:1px solid #222;margin-bottom:-1px;padding:16px;background:#fafafa;}
-.exp-add-grid{display:grid;grid-template-columns:110px 1fr 90px 100px 110px auto;gap:8px;align-items:end;}
+.exp-add-grid{display:grid;grid-template-columns:110px 1.2fr 1fr 90px 100px 110px auto;gap:8px;align-items:end;}
 .exp-form-group{display:flex;flex-direction:column;gap:4px;}
 .exp-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#888;text-transform:uppercase;}
 .exp-input,.exp-select{background:#fff;border:1px solid #ccc;border-radius:4px;padding:7px 10px;font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;width:100%;}
@@ -159,11 +160,12 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-bar-fill.a{background:#0ea5e9;}
 .exp-bar-fill.c{background:#c084b8;}
 .exp-bar-val{font-size:10.5px;color:#888;width:66px;text-align:right;white-space:nowrap;}
-.exp-table-head{display:grid;grid-template-columns:95px 1fr 75px 85px 90px 45px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
-.exp-row{display:grid;grid-template-columns:95px 1fr 75px 85px 90px 45px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
+.exp-table-head{display:grid;grid-template-columns:100px 1.3fr 1fr 80px 95px 95px 45px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
+.exp-row{display:grid;grid-template-columns:100px 1.3fr 1fr 80px 95px 95px 45px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
 .exp-row:hover{background:#fafafa;}
 .exp-cat-tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:500;}
 .ecat-餐廳{background:#fff0e6;color:#c2410c;}
+.ecat-餐飲{background:#fef3c7;color:#a16207;}
 .ecat-禮物{background:#fff0f5;color:#be185d;}
 .ecat-旅遊{background:#f0f9ff;color:#0369a1;}
 .ecat-娛樂{background:#f5f0ff;color:#7c3aed;}
@@ -182,8 +184,9 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   .exp-add-grid{grid-template-columns:1fr 1fr;}
   .exp-add-btn{grid-column:1/-1;}
   .exp-chart{grid-template-columns:1fr;}
+  #tab-expense{width:100%;margin-left:0;transform:none;}
   .exp-table-head,.exp-row{grid-template-columns:75px 1fr 65px 70px;}
-  .exp-table-head>:nth-child(5),.exp-table-head>:nth-child(6),.exp-row>:nth-child(5),.exp-row>:nth-child(6){display:none;}
+  .exp-table-head>:nth-child(3),.exp-table-head>:nth-child(6),.exp-table-head>:nth-child(7),.exp-row>:nth-child(3),.exp-row>:nth-child(6),.exp-row>:nth-child(7){display:none;}
 }
 </style>
 </head>
@@ -465,10 +468,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <div class="exp-add-grid">
       <div class="exp-form-group"><label class="exp-label">日期</label><input class="exp-input" id="e-date" type="date"></div>
       <div class="exp-form-group"><label class="exp-label">描述</label><input class="exp-input" id="e-desc" placeholder="吃了什麼、去了哪…"></div>
+      <div class="exp-form-group"><label class="exp-label">備註</label><input class="exp-input" id="e-note" placeholder="選填…"></div>
       <div class="exp-form-group"><label class="exp-label">金額</label><input class="exp-input" id="e-amount" type="number" placeholder="0" min="0"></div>
       <div class="exp-form-group"><label class="exp-label">分類</label>
         <select class="exp-select" id="e-cat">
-          <option>餐廳</option><option>禮物</option><option>旅遊</option><option>娛樂</option>
+          <option>餐廳</option><option>餐飲</option><option>禮物</option><option>旅遊</option><option>娛樂</option>
           <option>日常</option><option>交通</option><option>住宿</option><option>其他</option>
         </select>
       </div>
@@ -484,6 +488,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   <div class="exp-filter" id="expFilter">
     <button class="exp-filter-btn active" onclick="setExpFilter('全部',this)">全部</button>
     <button class="exp-filter-btn" onclick="setExpFilter('餐廳',this)">🍽 餐廳</button>
+    <button class="exp-filter-btn" onclick="setExpFilter('餐飲',this)">🥤 餐飲</button>
     <button class="exp-filter-btn" onclick="setExpFilter('禮物',this)">🎁 禮物</button>
     <button class="exp-filter-btn" onclick="setExpFilter('旅遊',this)">✈️ 旅遊</button>
     <button class="exp-filter-btn" onclick="setExpFilter('娛樂',this)">🎬 娛樂</button>
@@ -494,7 +499,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   </div>
 
   <div class="exp-table-head">
-    <div>日期</div><div>描述</div><div>分類</div><div>金額</div><div>誰付</div><div></div>
+    <div>日期</div><div>描述</div><div>備註</div><div>分類</div><div>金額</div><div>誰付</div><div></div>
   </div>
   <div id="exp-list"></div>
 
@@ -1021,12 +1026,14 @@ async function saveExpenses(msg){
 function addExpense(){
   var date=document.getElementById('e-date').value;
   var desc=document.getElementById('e-desc').value.trim();
+  var note=document.getElementById('e-note').value.trim();
   var amount=parseFloat(document.getElementById('e-amount').value);
   var cat=document.getElementById('e-cat').value;
   var payer=document.getElementById('e-payer').value;
   if(!date||!desc||!amount||amount<=0){showToast('請填寫完整資料');return;}
-  expenses.unshift({id:Date.now(),date:date,desc:desc,amount:amount,cat:cat,payer:payer});
+  expenses.unshift({id:Date.now(),date:date,desc:desc,note:note,amount:amount,cat:cat,payer:payer});
   document.getElementById('e-desc').value='';
+  document.getElementById('e-note').value='';
   document.getElementById('e-amount').value='';
   document.getElementById('e-date').value=todayStr();
   renderExpenses();
@@ -1060,7 +1067,7 @@ function renderExpenses(){
   var diff=aT-cT;
   setText('s-diff',Math.abs(diff)<1?'平手':(diff>0?'Chloe 少 '+fmtMoney(diff):'Aaron 少 '+fmtMoney(-diff)));
 
-  var cats=['餐廳','禮物','旅遊','娛樂','日常','交通','住宿','其他'];
+  var cats=['餐廳','餐飲','禮物','旅遊','娛樂','日常','交通','住宿','其他'];
   var ct={};cats.forEach(function(x){ct[x]=0;});
   expenses.forEach(function(e){ct[e.cat]=(ct[e.cat]||0)+parseFloat(e.amount);});
   var maxC=Math.max.apply(null,Object.values(ct))||1;
@@ -1085,6 +1092,7 @@ function renderExpenses(){
   listEl.innerHTML=filtered.map(function(e){
     var pl=e.payer==='aaron'?'<span class="exp-payer-a">Aaron</span>':e.payer==='chloe'?'<span class="exp-payer-c">Chloe</span>':'<span class="exp-payer-b">各半</span>';
     return '<div class="exp-row"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
+      '<div style="color:#777;font-size:12px">'+(e.note||'—')+'</div>'+
       '<div><span class="exp-cat-tag ecat-'+e.cat+'">'+e.cat+'</span></div>'+
       '<div style="font-weight:600">'+fmtMoney(e.amount)+'</div><div>'+pl+'</div>'+
       '<div style="text-align:center"><button class="exp-del" onclick="delExpense('+e.id+')">✕</button></div></div>';
@@ -1099,6 +1107,8 @@ function renderExpenses(){
   var amtInp=document.getElementById('e-amount');
   if(descInp)descInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
   if(amtInp)amtInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
+  var noteInp=document.getElementById('e-note');
+  if(noteInp)noteInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
 })();
 
 loadData();
