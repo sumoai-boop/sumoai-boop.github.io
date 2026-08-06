@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情侶記帳｜Chloe & Aaron</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f5f4f0;color:#1a1a1a;font-family:'Noto Sans TC',sans-serif;min-height:100vh;padding-top:36px;}
+.global-menubar{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;padding:0 20px;height:32px;font-size:12px;color:#444;}
+.gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;color:#666;}
+.mb-menu{padding:2px 8px;border-radius:4px;cursor:default;}
+.mb-menu:hover{background:rgba(0,0,0,0.07);}
+/* DOCK */
+.global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
+.global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
+.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.88);backdrop-filter:blur(28px);border:1px solid rgba(0,0,0,0.1);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.1);}
+.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
+.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.15);}
+.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
+.gd-label{font-size:9px;letter-spacing:0.05em;color:#fff;text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.7);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;}
+.gd-item:hover .gd-label{opacity:1;}
+.gd-sep{width:1px;height:40px;background:rgba(0,0,0,0.12);margin:0 3px;align-self:center;}
+.gd-dot{width:4px;height:4px;border-radius:50%;background:#888;margin-top:2px;}
+.dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
+.ic-photos{background:linear-gradient(145deg,#FF6B9D,#C8365A);}
+.ic-dramas{background:linear-gradient(145deg,#2D1B69,#7C3AED);}
+.ic-food{background:linear-gradient(145deg,#0EA5E9,#0369A1);}
+.ic-travel{background:linear-gradient(145deg,#FF6B35,#D93A00);}
+.ic-threads{background:linear-gradient(145deg,#3F3F46,#71717A);}
+.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+.ic-reminder{background:linear-gradient(145deg,#34D399,#059669);}
+.ic-netflix{background:linear-gradient(145deg,#E50914,#B20710);}
+.ic-mlb{background:linear-gradient(145deg,#FD5A1E,#C23A0A);}
+.ic-chloe{background:linear-gradient(145deg,#c084b8,#8b5cf6);}
+.ic-expense{background:linear-gradient(145deg,#f59e0b,#d97706);}
+/* PAGE */
+.page-wrap{max-width:860px;margin:0 auto;padding:24px 20px 120px;}
+/* HEADER */
+.page-header{background:#fff;border-radius:14px;padding:24px 28px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #ece9e2;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.page-title{font-size:1.6rem;font-weight:700;color:#1a1a1a;}
+.page-subtitle{font-size:12px;color:#888;margin-top:4px;}
+/* SUMMARY CARDS */
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.sum-card{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #ece9e2;text-align:center;}
+.sum-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px;}
+.sum-val{font-size:1.5rem;font-weight:700;color:#1a1a1a;}
+.sum-val.aaron{color:#0ea5e9;}
+.sum-val.chloe{color:#c084b8;}
+.sum-val.total{color:#7c3aed;}
+.sum-val.diff{color:#f59e0b;}
+/* CATEGORY FILTER */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.filter-btn{padding:5px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:'Noto Sans TC',sans-serif;}
+.filter-btn:hover{border-color:#c084b8;color:#7c3aed;}
+.filter-btn.active{background:#7c3aed;border-color:#7c3aed;color:#fff;}
+/* TABLE */
+.expense-table{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #ece9e2;margin-bottom:16px;}
+.table-head{display:grid;grid-template-columns:100px 1fr 80px 80px 90px 60px;padding:10px 16px;background:#f5f4f0;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#888;text-transform:uppercase;border-bottom:1px solid #ece9e2;}
+.expense-row{display:grid;grid-template-columns:100px 1fr 80px 80px 90px 60px;padding:12px 16px;border-bottom:1px solid #f5f4f0;align-items:center;transition:background 0.15s;}
+.expense-row:hover{background:#fafaf8;}
+.expense-row:last-child{border-bottom:none;}
+.col-date{font-size:12px;color:#888;}
+.col-desc{font-size:13px;font-weight:500;}
+.col-cat{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.col-amount{font-size:13px;font-weight:600;}
+.col-payer{font-size:12px;}
+.payer-aaron{color:#0ea5e9;font-weight:600;}
+.payer-chloe{color:#c084b8;font-weight:600;}
+.payer-both{color:#7c3aed;font-weight:600;}
+.col-del{text-align:center;}
+.del-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px;padding:2px 6px;border-radius:4px;transition:color 0.15s;}
+.del-btn:hover{color:#dc2626;}
+/* CATEGORY COLORS */
+.cat-餐廳{background:#fff0e6;color:#c2410c;}
+.cat-禮物{background:#fff0f5;color:#be185d;}
+.cat-旅遊{background:#f0f9ff;color:#0369a1;}
+.cat-娛樂{background:#f5f0ff;color:#7c3aed;}
+.cat-日常{background:#f0fdf4;color:#166534;}
+.cat-交通{background:#fffbf0;color:#92660a;}
+.cat-住宿{background:#f0f9ff;color:#0e7490;}
+.cat-其他{background:#f5f5f5;color:#555;}
+/* ADD FORM */
+.add-card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #ece9e2;margin-bottom:16px;}
+.add-title{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:14px;}
+.add-grid{display:grid;grid-template-columns:120px 1fr 100px 110px 120px auto;gap:10px;align-items:end;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#888;text-transform:uppercase;}
+.form-input,.form-select{background:#fafaf8;border:1px solid #ddd;border-radius:8px;padding:8px 11px;color:#1a1a1a;font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
+.form-input:focus,.form-select:focus{border-color:#c084b8;background:#fff;}
+.add-btn{padding:9px 18px;background:linear-gradient(135deg,#c084b8,#7c3aed);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;transition:opacity 0.15s;}
+.add-btn:hover{opacity:0.85;}
+/* CHART */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.chart-card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #ece9e2;}
+.chart-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:14px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-label{font-size:12px;color:#555;width:56px;text-align:right;flex-shrink:0;}
+.bar-bg{flex:1;height:18px;background:#f0ede8;border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.4s;}
+.bar-fill.aaron{background:#0ea5e9;}
+.bar-fill.chloe{background:#c084b8;}
+.bar-val{font-size:11px;color:#888;width:60px;text-align:right;white-space:nowrap;}
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:#aaa;font-size:13px;}
+/* TOAST */
+.toast{position:fixed;bottom:160px;right:24px;z-index:10001;background:#222;border-radius:8px;padding:10px 16px;font-size:12px;color:#fff;opacity:0;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s;pointer-events:none;}
+.toast.show{opacity:1;transform:none;}
+/* TOKEN MODAL */
+.modal-mask{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:40px 20px;}
+.modal-mask.open{display:flex;}
+.small-modal{background:#fff;border-radius:12px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid #eee;}
+.modal-head h2{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;color:#aaa;cursor:pointer;font-size:20px;}
+.modal-body{padding:22px;display:flex;flex-direction:column;gap:12px;}
+.modal-foot{padding:14px 22px;border-top:1px solid #eee;display:flex;gap:8px;justify-content:flex-end;}
+.btn{padding:8px 20px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans TC',sans-serif;}
+.btn-cancel{background:#f0f0f0;color:#555;}
+.btn-save{background:linear-gradient(135deg,#c084b8,#7c3aed);color:#fff;}
+@media(max-width:700px){
+  .add-grid{grid-template-columns:1fr 1fr;}.add-btn{grid-column:1/-1;}
+  .table-head,.expense-row{grid-template-columns:80px 1fr 70px 70px;}
+  .col-del,.col-payer{display:none;}
+  .summary-row{grid-template-columns:1fr 1fr;}
+  .chart-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="global-menubar">
+  <div class="gm-left">
+    <span style="font-size:16px">🗿</span>
+    <a href="index.html" style="font-weight:700;color:#1a1a1a;text-decoration:none;">Sumoai's Reel</a>
+    <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span><span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span><span class="mb-menu">視窗</span>
+  </div>
+  <div class="gm-right">
+    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px" alt="TW">
+    <span id="gmbTime"></span>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">💑 情侶記帳</div>
+      <div class="page-subtitle">Aaron & Chloe 共同支出記錄</div>
+    </div>
+    <button onclick="openTokenModal()" style="padding:7px 16px;border:1px solid #ddd;border-radius:8px;background:#fff;font-size:12px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;color:#555;">🔑 GitHub Token</button>
+  </div>
+
+  <!-- 統計 -->
+  <div class="summary-row">
+    <div class="sum-card"><div class="sum-label">總支出</div><div class="sum-val total" id="s-total">$0</div></div>
+    <div class="sum-card"><div class="sum-label">Aaron 付</div><div class="sum-val aaron" id="s-aaron">$0</div></div>
+    <div class="sum-card"><div class="sum-label">Chloe 付</div><div class="sum-val chloe" id="s-chloe">$0</div></div>
+    <div class="sum-card"><div class="sum-label">差額</div><div class="sum-val diff" id="s-diff">平手</div></div>
+  </div>
+
+  <!-- 圖表 -->
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="chart-title">分類支出</div>
+      <div id="cat-chart"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">付款比例</div>
+      <div id="payer-chart"></div>
+    </div>
+  </div>
+
+  <!-- 新增 -->
+  <div class="add-card">
+    <div class="add-title">➕ 新增支出</div>
+    <div class="add-grid">
+      <div class="form-group"><label class="form-label">日期</label><input class="form-input" id="f-date" type="date"></div>
+      <div class="form-group"><label class="form-label">描述</label><input class="form-input" id="f-desc" placeholder="吃了什麼、去了哪裡…"></div>
+      <div class="form-group"><label class="form-label">金額（元）</label><input class="form-input" id="f-amount" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label class="form-label">分類</label>
+        <select class="form-select" id="f-cat">
+          <option>餐廳</option><option>禮物</option><option>旅遊</option>
+          <option>娛樂</option><option>日常</option><option>交通</option>
+          <option>住宿</option><option>其他</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">誰付</label>
+        <select class="form-select" id="f-payer">
+          <option value="aaron">Aaron</option>
+          <option value="chloe">Chloe</option>
+          <option value="both">各付一半</option>
+        </select>
+      </div>
+      <button class="add-btn" onclick="addExpense()">新增</button>
+    </div>
+  </div>
+
+  <!-- 篩選 -->
+  <div class="filter-row" id="filterRow">
+    <button class="filter-btn active" onclick="setFilter('全部')">全部</button>
+    <button class="filter-btn" onclick="setFilter('餐廳')">🍽 餐廳</button>
+    <button class="filter-btn" onclick="setFilter('禮物')">🎁 禮物</button>
+    <button class="filter-btn" onclick="setFilter('旅遊')">✈️ 旅遊</button>
+    <button class="filter-btn" onclick="setFilter('娛樂')">🎬 娛樂</button>
+    <button class="filter-btn" onclick="setFilter('日常')">🛒 日常</button>
+    <button class="filter-btn" onclick="setFilter('交通')">🚗 交通</button>
+    <button class="filter-btn" onclick="setFilter('住宿')">🏨 住宿</button>
+    <button class="filter-btn" onclick="setFilter('其他')">📦 其他</button>
+  </div>
+
+  <!-- 列表 -->
+  <div class="expense-table">
+    <div class="table-head">
+      <div>日期</div><div>描述</div><div>分類</div><div>金額</div><div>誰付</div><div></div>
+    </div>
+    <div id="expense-list"></div>
+  </div>
+
+</div>
+
+<!-- Token Modal -->
+<div class="modal-mask" id="tokenModal">
+  <div class="small-modal">
+    <div class="modal-head"><h2>🔑 GitHub Token</h2><button class="modal-close" onclick="closeTokenModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Personal Access Token</label><input class="form-input" id="tokenInput" type="password" placeholder="ghp_xxxxxxxxxxxx"></div>
+      <p style="font-size:11px;color:#888">Token 僅存於本機 localStorage</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-cancel" onclick="closeTokenModal()">取消</button>
+      <button class="btn btn-save" onclick="saveToken()">確認</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Dock -->
+<div class="dock-trigger-zone" id="dockTrigger"></div>
+<div class="global-dock-wrap" id="globalDock">
+  <div class="global-dock">
+    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/><circle cx="17" cy="9" r="1" fill="#fff"/></svg></div><span class="gd-label">照片</span></a>
+    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><svg width="26" height="30" viewBox="0 0 26 34" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="18" height="32" rx="5"/><line x1="13" y1="6" x2="13" y2="10"/><circle cx="13" cy="13" r="1.5" fill="#fff" stroke="none"/><rect x="7" y="17" width="4" height="4" rx="1"/><rect x="15" y="17" width="4" height="4" rx="1"/><rect x="7" y="24" width="4" height="4" rx="1"/><rect x="15" y="24" width="4" height="4" rx="1"/></svg></div><span class="gd-label">追劇</span></a>
+    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 8H3l4 4-2 7 7-4 7 4-2-7 4-4h-5z"/></svg></div><span class="gd-label">食記</span></a>
+    <div class="gd-sep"></div>
+    <a href="travel.html" class="gd-item"><div class="gd-icon ic-travel"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><span class="gd-label">旅遊足跡</span></a>
+    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M12 8v1M12 15v1"/></svg></div><span class="gd-label">Threads</span></a>
+    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px">U</span></div><span class="gd-label">Uber</span></a>
+    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="gd-label">提醒</span></a>
+    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-family:Arial,sans-serif;font-size:36px;font-weight:900;color:#fff;line-height:1">N</span></div><span class="gd-label">Netflix Top10</span></a>
+    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><span style="font-size:15px;font-weight:900;font-family:Arial,sans-serif;color:#fff;line-height:1;letter-spacing:-0.5px">MLB</span></div><span class="gd-label">MLB</span></a>
+    <div class="gd-sep"></div>
+    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="gd-label">Chloe</span></a>
+    <a href="couple-expenses.html" class="gd-item"><div class="gd-icon ic-expense"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><span class="gd-label">記帳</span><div class="gd-dot"></div></a>
+  </div>
+</div>
+
+<script>
+var REPO='sumoai-boop/sumoai-boop.github.io';
+var FILE='couple-expenses.json';
+var RAW='https://raw.githubusercontent.com/'+REPO+'/main/'+FILE;
+var GH_API='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
+var LS_TOKEN='sumoai_gh_token';
+var ghSha=null;
+var expenses=[];
+var curFilter='全部';
+
+function toBase64UTF8(str){
+  var bytes=new TextEncoder().encode(str);
+  var bin='';bytes.forEach(function(b){bin+=String.fromCharCode(b);});
+  return btoa(bin);
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+function fmt(n){return '$'+Number(n).toLocaleString();}
+function today(){return new Date().toISOString().slice(0,10);}
+
+// Init date
+document.getElementById('f-date').value=today();
+
+// ── LOAD ──
+async function loadData(){
+  try{
+    var r=await fetch(RAW+'?t='+Date.now());
+    if(r.ok){
+      var d=JSON.parse(await r.text());
+      expenses=d.expenses||[];
+      var r2=await fetch(GH_API+'?t='+Date.now());
+      if(r2.ok){var j2=await r2.json();ghSha=j2.sha;}
+    }
+  }catch(e){}
+  render();
+}
+
+// ── SAVE ──
+async function saveData(msg){
+  var token=localStorage.getItem(LS_TOKEN);
+  if(!token){openTokenModal();return;}
+  var json=JSON.stringify({expenses:expenses},null,2);
+  var body={message:'Update couple-expenses.json',content:toBase64UTF8(json)};
+  if(ghSha)body.sha=ghSha;
+  try{
+    var r=await fetch(GH_API,{method:'PUT',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.ok){var j=await r.json();ghSha=j.content.sha;showToast(msg||'✅ 已儲存！');}
+    else{var e=await r.json();if(r.status===401){localStorage.removeItem(LS_TOKEN);openTokenModal();}else showToast('❌ '+(e.message||r.status));}
+  }catch(e){showToast('❌ 網路錯誤');}
+}
+
+// ── ADD ──
+function addExpense(){
+  var date=document.getElementById('f-date').value;
+  var desc=document.getElementById('f-desc').value.trim();
+  var amount=parseFloat(document.getElementById('f-amount').value);
+  var cat=document.getElementById('f-cat').value;
+  var payer=document.getElementById('f-payer').value;
+  if(!date||!desc||!amount||amount<=0){showToast('請填寫完整資料');return;}
+  expenses.unshift({id:Date.now(),date:date,desc:desc,amount:amount,cat:cat,payer:payer});
+  document.getElementById('f-desc').value='';
+  document.getElementById('f-amount').value='';
+  document.getElementById('f-date').value=today();
+  render();
+  saveData('✅ 已新增並儲存！');
+}
+
+// ── DELETE ──
+function delExpense(id){
+  if(!confirm('確定刪除這筆？'))return;
+  expenses=expenses.filter(function(e){return e.id!==id;});
+  render();
+  saveData('✅ 已刪除並儲存！');
+}
+
+// ── FILTER ──
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){
+    b.classList.toggle('active',b.textContent.includes(f)||( f==='全部'&&b.textContent==='全部'));
+  });
+  render();
+}
+
+// ── RENDER ──
+function render(){
+  var filtered=curFilter==='全部'?expenses:expenses.filter(function(e){return e.cat===curFilter;});
+
+  // Stats
+  var total=0,aaronTotal=0,chloeTotal=0;
+  expenses.forEach(function(e){
+    var amt=parseFloat(e.amount);
+    total+=amt;
+    if(e.payer==='aaron')aaronTotal+=amt;
+    else if(e.payer==='chloe')chloeTotal+=amt;
+    else{aaronTotal+=amt/2;chloeTotal+=amt/2;}
+  });
+  document.getElementById('s-total').textContent=fmt(total);
+  document.getElementById('s-aaron').textContent=fmt(aaronTotal);
+  document.getElementById('s-chloe').textContent=fmt(chloeTotal);
+  var diff=aaronTotal-chloeTotal;
+  var diffEl=document.getElementById('s-diff');
+  if(Math.abs(diff)<1){diffEl.textContent='平手';}
+  else if(diff>0){diffEl.textContent='Chloe 少付 '+fmt(diff);}
+  else{diffEl.textContent='Aaron 少付 '+fmt(-diff);}
+
+  // Category chart
+  var cats=['餐廳','禮物','旅遊','娛樂','日常','交通','住宿','其他'];
+  var catTotals={};
+  cats.forEach(function(c){catTotals[c]=0;});
+  expenses.forEach(function(e){catTotals[e.cat]=(catTotals[e.cat]||0)+parseFloat(e.amount);});
+  var maxCat=Math.max.apply(null,Object.values(catTotals))||1;
+  var catHtml=cats.filter(function(c){return catTotals[c]>0;}).sort(function(a,b){return catTotals[b]-catTotals[a];}).map(function(c){
+    var pct=Math.round(catTotals[c]/maxCat*100);
+    return '<div class="bar-row"><span class="bar-label">'+c+'</span><div class="bar-bg"><div class="bar-fill aaron" style="width:'+pct+'%"></div></div><span class="bar-val">'+fmt(catTotals[c])+'</span></div>';
+  }).join('');
+  document.getElementById('cat-chart').innerHTML=catHtml||'<div class="empty">尚無資料</div>';
+
+  // Payer chart
+  var payerData=[{label:'Aaron',val:aaronTotal,cls:'aaron'},{label:'Chloe',val:chloeTotal,cls:'chloe'}];
+  var maxP=Math.max(aaronTotal,chloeTotal)||1;
+  var payerHtml=payerData.map(function(p){
+    var pct=Math.round(p.val/maxP*100);
+    return '<div class="bar-row"><span class="bar-label">'+p.label+'</span><div class="bar-bg"><div class="bar-fill '+p.cls+'" style="width:'+pct+'%"></div></div><span class="bar-val">'+fmt(p.val)+'</span></div>';
+  }).join('');
+  document.getElementById('payer-chart').innerHTML=payerHtml;
+
+  // List
+  var listEl=document.getElementById('expense-list');
+  if(filtered.length===0){
+    listEl.innerHTML='<div class="empty">還沒有記錄，趕快新增第一筆吧 💑</div>';
+    return;
+  }
+  listEl.innerHTML=filtered.map(function(e){
+    var payerLabel=e.payer==='aaron'?'<span class="payer-aaron">Aaron</span>':e.payer==='chloe'?'<span class="payer-chloe">Chloe</span>':'<span class="payer-both">各付一半</span>';
+    return '<div class="expense-row">'+
+      '<div class="col-date">'+e.date+'</div>'+
+      '<div class="col-desc">'+e.desc+'</div>'+
+      '<div><span class="col-cat cat-'+e.cat+'">'+e.cat+'</span></div>'+
+      '<div class="col-amount">'+fmt(e.amount)+'</div>'+
+      '<div class="col-payer">'+payerLabel+'</div>'+
+      '<div class="col-del"><button class="del-btn" onclick="delExpense('+e.id+')">✕</button></div>'+
+      '</div>';
+  }).join('');
+}
+
+// ── TOKEN MODAL ──
+function openTokenModal(){document.getElementById('tokenModal').classList.add('open');}
+function closeTokenModal(){document.getElementById('tokenModal').classList.remove('open');}
+function saveToken(){
+  var t=document.getElementById('tokenInput').value.trim();
+  if(t){localStorage.setItem(LS_TOKEN,t);closeTokenModal();showToast('✅ Token 已儲存');}
+}
+
+// ── DOCK ──
+(function(){
+  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
+  if(!dock||!trigger)return;var timer;
+  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
+  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
+})();
+(function(){
+  function tick(){
+    var el=document.getElementById('gmbTime');if(!el)return;
+    var now=new Date(),d=['日','一','二','三','四','五','六'][now.getDay()];
+    var h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0');
+    el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
+  }
+  tick();setInterval(tick,10000);
+})();
+
+// Enter key to add
+document.getElementById('f-desc').addEventListener('keydown',function(e){if(e.key==='Enter')addExpense();});
+document.getElementById('f-amount').addEventListener('keydown',function(e){if(e.key==='Enter')addExpense();});
+
+loadData();
+</script>
+</body>
+</html>
