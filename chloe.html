@@ -218,11 +218,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 <div class="page-wrap">
 
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('profile',this)">📋 個人檔案</button>
-  <button class="tab-btn" onclick="switchTab('expense',this)">💰 情侶記帳</button>
+  <button class="tab-btn active" onclick="switchTab('expense',this)">💰 情侶記帳</button>
+  <button class="tab-btn" onclick="switchTab('profile',this)">📋 個人檔案</button>
 </div>
 
-<div class="tab-content active" id="tab-profile">
+<div class="tab-content" id="tab-profile">
 <div class="resume" style="border-top:none">
 
   <!-- 基本資料 + 照片 -->
@@ -454,7 +454,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 </div>
 
 <!-- 記帳分頁 -->
-<div class="tab-content" id="tab-expense">
+<div class="tab-content active" id="tab-expense">
 <div class="resume" style="border-top:none;padding:24px">
 
   <div class="exp-summary">
