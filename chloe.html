@@ -148,6 +148,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-input:focus,.exp-select:focus{border-color:#7c3aed;}
 .exp-add-btn{padding:8px 16px;background:#7c3aed;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;}
 .exp-add-btn:hover{opacity:0.85;}
+.exp-month{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;margin-bottom:-1px;background:#fafafa;align-items:center;}
+.exp-month-btn{padding:4px 13px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:11.5px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.exp-month-btn:hover{border-color:#7c3aed;color:#7c3aed;}
+.exp-month-btn.active{background:#222;border-color:#222;color:#fff;font-weight:700;}
+.exp-month-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:#888;text-transform:uppercase;margin-right:4px;}
 .exp-filter{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;margin-bottom:-1px;background:#fff;}
 .exp-filter-btn{padding:4px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:11.5px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
 .exp-filter-btn.active{background:#7c3aed;border-color:#7c3aed;color:#fff;}
@@ -176,8 +181,14 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-payer-a{color:#0ea5e9;font-weight:600;}
 .exp-payer-c{color:#c084b8;font-weight:600;}
 .exp-payer-b{color:#7c3aed;font-weight:600;}
-.exp-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:15px;}
-.exp-del:hover{color:#dc2626;}
+.exp-edit{background:none;border:none;cursor:pointer;color:#bbb;font-size:14px;padding:2px 6px;border-radius:4px;}
+.exp-edit:hover{color:#7c3aed;background:#f5f0ff;}
+.exp-row.editing{background:#f9f5ff;box-shadow:inset 3px 0 0 #7c3aed;}
+.exp-editing-bar{display:none;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:#f5f0ff;border:1px solid #d4c5f0;border-radius:6px;font-size:12px;color:#7c3aed;font-weight:600;}
+.exp-editing-bar.on{display:flex;}
+.exp-btn-ghost{padding:8px 14px;background:#fff;color:#555;border:1px solid #ccc;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;}
+.exp-btn-danger{padding:8px 14px;background:#fff;color:#dc2626;border:1px solid #f5b5b5;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;}
+.exp-btn-danger:hover{background:#fff5f5;}
 .exp-empty{text-align:center;padding:40px;color:#aaa;font-size:13px;border:1px solid #222;background:#fff;}
 @media(max-width:700px){
   .exp-summary{grid-template-columns:1fr 1fr;}
@@ -465,6 +476,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   </div>
 
   <div class="exp-add">
+    <div class="exp-editing-bar" id="expEditBar">
+      <span>✏️ 編輯中：<span id="expEditDesc"></span></span>
+      <button class="exp-btn-ghost" onclick="cancelEditExpense()">取消</button>
+      <button class="exp-btn-danger" onclick="delEditingExpense()">刪除這筆</button>
+    </div>
     <div class="exp-add-grid">
       <div class="exp-form-group"><label class="exp-label">日期</label><input class="exp-input" id="e-date" type="date"></div>
       <div class="exp-form-group"><label class="exp-label">描述</label><input class="exp-input" id="e-desc" placeholder="吃了什麼、去了哪…"></div>
@@ -481,9 +497,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
           <option value="aaron">Aaron</option><option value="chloe">Chloe</option><option value="both">各半</option>
         </select>
       </div>
-      <button class="exp-add-btn" onclick="addExpense()">＋ 新增</button>
+      <button class="exp-add-btn" id="expSubmitBtn" onclick="addExpense()">＋ 新增</button>
     </div>
   </div>
+
+  <div class="exp-month" id="expMonth"></div>
 
   <div class="exp-filter" id="expFilter">
     <button class="exp-filter-btn active" onclick="setExpFilter('全部',this)">全部</button>
@@ -985,7 +1003,7 @@ document.getElementById('closeImgBB').addEventListener('click',function(){docume
 var EXP_FILE='couple-expenses.json';
 var EXP_RAW='https://raw.githubusercontent.com/'+REPO+'/main/'+EXP_FILE;
 var EXP_API='https://api.github.com/repos/'+REPO+'/contents/'+EXP_FILE;
-var expenses=[];var expSha=null;var expFilter='全部';
+var expenses=[];var expSha=null;var expFilter='全部';var expMonth='全部';var editingId=null;
 
 function switchTab(tab,btn){
   document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
@@ -1031,20 +1049,68 @@ function addExpense(){
   var cat=document.getElementById('e-cat').value;
   var payer=document.getElementById('e-payer').value;
   if(!date||!desc||!amount||amount<=0){showToast('請填寫完整資料');return;}
-  expenses.unshift({id:Date.now(),date:date,desc:desc,note:note,amount:amount,cat:cat,payer:payer});
+  var isEdit=editingId!==null;
+  if(isEdit){
+    expenses.forEach(function(e){
+      if(e.id===editingId){e.date=date;e.desc=desc;e.note=note;e.amount=amount;e.cat=cat;e.payer=payer;}
+    });
+  }else{
+    expenses.unshift({id:Date.now(),date:date,desc:desc,note:note,amount:amount,cat:cat,payer:payer});
+  }
+  resetExpForm();
+  renderExpenses();
+  saveExpenses(isEdit?'✅ 已更新！':'✅ 已新增！');
+}
+
+function resetExpForm(){
+  editingId=null;
   document.getElementById('e-desc').value='';
   document.getElementById('e-note').value='';
   document.getElementById('e-amount').value='';
   document.getElementById('e-date').value=todayStr();
-  renderExpenses();
-  saveExpenses('✅ 已新增！');
+  document.getElementById('e-cat').selectedIndex=0;
+  document.getElementById('e-payer').selectedIndex=0;
+  var b=document.getElementById('expSubmitBtn');if(b)b.textContent='＋ 新增';
+  var bar=document.getElementById('expEditBar');if(bar)bar.classList.remove('on');
 }
 
-function delExpense(id){
+function editExpense(id){
+  var e=null;
+  expenses.forEach(function(x){if(x.id===id)e=x;});
+  if(!e)return;
+  editingId=id;
+  document.getElementById('e-date').value=e.date||'';
+  document.getElementById('e-desc').value=e.desc||'';
+  document.getElementById('e-note').value=e.note||'';
+  document.getElementById('e-amount').value=e.amount||'';
+  document.getElementById('e-cat').value=e.cat||'餐廳';
+  document.getElementById('e-payer').value=e.payer||'aaron';
+  var b=document.getElementById('expSubmitBtn');if(b)b.textContent='💾 儲存修改';
+  var bar=document.getElementById('expEditBar');if(bar)bar.classList.add('on');
+  setText('expEditDesc',e.desc||'');
+  renderExpenses();
+  var addEl=document.querySelector('.exp-add');
+  if(addEl)addEl.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function cancelEditExpense(){
+  resetExpForm();
+  renderExpenses();
+}
+
+function delEditingExpense(){
+  if(editingId===null)return;
   if(!confirm('確定刪除這筆？'))return;
-  expenses=expenses.filter(function(e){return e.id!==id;});
+  expenses=expenses.filter(function(e){return e.id!==editingId;});
+  resetExpForm();
   renderExpenses();
   saveExpenses('✅ 已刪除！');
+}
+
+
+function setExpMonth(m){
+  expMonth=m;
+  renderExpenses();
 }
 
 function setExpFilter(f,btn){
@@ -1055,9 +1121,36 @@ function setExpFilter(f,btn){
 }
 
 function renderExpenses(){
-  var filtered=expFilter==='全部'?expenses:expenses.filter(function(e){return e.cat===expFilter;});
-  var total=0,aT=0,cT=0;
+  // 日期新到舊排序
+  expenses.sort(function(a,b){
+    if(a.date===b.date)return (b.id||0)-(a.id||0);
+    return a.date<b.date?1:-1;
+  });
+
+  // 月份清單
+  var months=[];
   expenses.forEach(function(e){
+    var m=(e.date||'').slice(0,7);
+    if(m&&months.indexOf(m)===-1)months.push(m);
+  });
+  months.sort().reverse();
+  if(expMonth!=='全部'&&months.indexOf(expMonth)===-1)expMonth='全部';
+  var mEl=document.getElementById('expMonth');
+  if(mEl){
+    mEl.innerHTML='<span class="exp-month-label">月份</span>'+
+      '<button class="exp-month-btn'+(expMonth==='全部'?' active':'')+'" onclick="setExpMonth(\'全部\')">全部</button>'+
+      months.map(function(m){
+        var p=m.split('-');
+        return '<button class="exp-month-btn'+(expMonth===m?' active':'')+'" onclick="setExpMonth(\''+m+'\')">'+p[0]+' / '+p[1]+'</button>';
+      }).join('');
+  }
+
+  // 月份範圍（統計與圖表跟著月份走）
+  var scoped=expMonth==='全部'?expenses:expenses.filter(function(e){return (e.date||'').slice(0,7)===expMonth;});
+  var filtered=expFilter==='全部'?scoped:scoped.filter(function(e){return e.cat===expFilter;});
+
+  var total=0,aT=0,cT=0;
+  scoped.forEach(function(e){
     var a=parseFloat(e.amount);total+=a;
     if(e.payer==='aaron')aT+=a;else if(e.payer==='chloe')cT+=a;else{aT+=a/2;cT+=a/2;}
   });
@@ -1069,7 +1162,7 @@ function renderExpenses(){
 
   var cats=['餐廳','餐飲','禮物','旅遊','娛樂','日常','交通','住宿','其他'];
   var ct={};cats.forEach(function(x){ct[x]=0;});
-  expenses.forEach(function(e){ct[e.cat]=(ct[e.cat]||0)+parseFloat(e.amount);});
+  scoped.forEach(function(e){ct[e.cat]=(ct[e.cat]||0)+parseFloat(e.amount);});
   var maxC=Math.max.apply(null,Object.values(ct))||1;
   var catEl=document.getElementById('cat-chart');
   if(catEl){
@@ -1088,14 +1181,14 @@ function renderExpenses(){
 
   var listEl=document.getElementById('exp-list');
   if(!listEl)return;
-  if(filtered.length===0){listEl.innerHTML='<div class="exp-empty">還沒有記錄，新增第一筆吧 💑</div>';return;}
+  if(filtered.length===0){listEl.innerHTML='<div class="exp-empty">'+(expenses.length===0?'還沒有記錄，新增第一筆吧 💑':'這個條件下沒有記錄')+'</div>';return;}
   listEl.innerHTML=filtered.map(function(e){
     var pl=e.payer==='aaron'?'<span class="exp-payer-a">Aaron</span>':e.payer==='chloe'?'<span class="exp-payer-c">Chloe</span>':'<span class="exp-payer-b">各半</span>';
-    return '<div class="exp-row"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
+    return '<div class="exp-row'+(e.id===editingId?' editing':'')+'"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
       '<div style="color:#777;font-size:12px">'+(e.note||'—')+'</div>'+
       '<div><span class="exp-cat-tag ecat-'+e.cat+'">'+e.cat+'</span></div>'+
       '<div style="font-weight:600">'+fmtMoney(e.amount)+'</div><div>'+pl+'</div>'+
-      '<div style="text-align:center"><button class="exp-del" onclick="delExpense('+e.id+')">✕</button></div></div>';
+      '<div style="text-align:center"><button class="exp-edit" onclick="editExpense('+e.id+')" title="編輯">✏️</button></div></div>';
   }).join('');
 }
 
