@@ -175,6 +175,19 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-bar-fill.a{background:#0ea5e9;}
 .exp-bar-fill.c{background:#c084b8;}
 .exp-bar-val{font-size:14px;font-weight:700;color:#1a1a1a;width:92px;text-align:right;white-space:nowrap;letter-spacing:0.01em;}
+.exp-search-wrap{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.exp-search{border:1px solid #ccc;border-radius:20px;padding:5px 12px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:190px;background:#fff;}
+.exp-search:focus{border-color:#7c3aed;}
+.exp-search-clear{background:none;border:none;cursor:pointer;color:#bbb;font-size:14px;padding:2px 4px;}
+.exp-search-clear:hover{color:#dc2626;}
+.exp-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;background:#fafafa;margin-bottom:-1px;}
+.exp-pager-info{font-size:11.5px;color:#888;}
+.exp-pager-btns{display:flex;gap:4px;flex-wrap:wrap;}
+.exp-page-btn{min-width:30px;padding:4px 9px;border:1px solid #ddd;background:#fff;border-radius:4px;cursor:pointer;font-size:11.5px;font-family:'Noto Sans TC',sans-serif;}
+.exp-page-btn:hover:not(:disabled){border-color:#7c3aed;color:#7c3aed;}
+.exp-page-btn.active{background:#222;border-color:#222;color:#fff;font-weight:700;}
+.exp-page-btn:disabled{opacity:0.4;cursor:default;}
+.exp-page-dots{padding:4px 2px;color:#bbb;font-size:11.5px;}
 .exp-table-head{display:grid;grid-template-columns:100px 1.3fr 1.2fr 90px 110px 50px;padding:8px 16px;background:#2c2c2c;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;border:1px solid #222;margin-bottom:-1px;}
 .exp-row{display:grid;grid-template-columns:100px 1.3fr 1.2fr 90px 110px 50px;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;align-items:center;background:#fff;font-size:13px;}
 .exp-row:hover{background:#fafafa;}
@@ -515,12 +528,17 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <button class="exp-filter-btn" onclick="setExpFilter('交通',this)">🚗 交通</button>
     <button class="exp-filter-btn" onclick="setExpFilter('住宿',this)">🏨 住宿</button>
     <button class="exp-filter-btn" onclick="setExpFilter('其他',this)">📦 其他</button>
+    <div class="exp-search-wrap">
+      <input class="exp-search" id="expSearch" type="search" placeholder="🔍 搜尋描述、備註…">
+      <button class="exp-search-clear" id="expSearchClear" onclick="clearExpSearch()" style="display:none">✕</button>
+    </div>
   </div>
 
   <div class="exp-table-head">
     <div>日期</div><div>描述</div><div>備註</div><div>分類</div><div>金額</div><div></div>
   </div>
   <div id="exp-list"></div>
+  <div class="exp-pager" id="expPager" style="display:none"></div>
 
 </div>
 </div>
@@ -1014,7 +1032,7 @@ document.getElementById('closeImgBB').addEventListener('click',function(){docume
 var EXP_FILE='couple-expenses.json';
 var EXP_RAW='https://raw.githubusercontent.com/'+REPO+'/main/'+EXP_FILE;
 var EXP_API='https://api.github.com/repos/'+REPO+'/contents/'+EXP_FILE;
-var expenses=[];var expSha=null;var expFilter='全部';var expMonth='全部';var editingId=null;
+var expenses=[];var expSha=null;var expFilter='全部';var expMonth='全部';var editingId=null;var expSearch='';var expPage=1;var EXP_PER_PAGE=25;
 
 function switchTab(tab,btn){
   document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
@@ -1117,8 +1135,22 @@ function delEditingExpense(){
 
 
 function setExpMonth(m){
-  expMonth=m;
+  expMonth=m;expPage=1;
   renderExpenses();
+}
+
+function clearExpSearch(){
+  var i=document.getElementById('expSearch');
+  if(i)i.value='';
+  expSearch='';expPage=1;
+  renderExpenses();
+}
+
+function goExpPage(p){
+  expPage=p;
+  renderExpenses();
+  var head=document.querySelector('.exp-table-head');
+  if(head)head.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function stepExpMonth(dir){
@@ -1137,7 +1169,7 @@ function stepExpMonth(dir){
 }
 
 function setExpFilter(f,btn){
-  expFilter=f;
+  expFilter=f;expPage=1;
   document.querySelectorAll('.exp-filter-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   renderExpenses();
@@ -1178,6 +1210,14 @@ function renderExpenses(){
   // 月份範圍（統計與圖表跟著月份走）
   var scoped=expMonth==='全部'?expenses:expenses.filter(function(e){return (e.date||'').slice(0,7)===expMonth;});
   var filtered=expFilter==='全部'?scoped:scoped.filter(function(e){return e.cat===expFilter;});
+  if(expSearch){
+    var q=expSearch.toLowerCase();
+    filtered=filtered.filter(function(e){
+      return ((e.desc||'')+' '+(e.note||'')+' '+(e.cat||'')+' '+(e.date||'')+' '+e.amount).toLowerCase().indexOf(q)>-1;
+    });
+  }
+  var clrBtn=document.getElementById('expSearchClear');
+  if(clrBtn)clrBtn.style.display=expSearch?'block':'none';
 
   var total=0;
   scoped.forEach(function(e){total+=parseFloat(e.amount)||0;});
@@ -1209,8 +1249,41 @@ function renderExpenses(){
 
   var listEl=document.getElementById('exp-list');
   if(!listEl)return;
-  if(filtered.length===0){listEl.innerHTML='<div class="exp-empty">'+(expenses.length===0?'還沒有記錄，新增第一筆吧 💑':'這個條件下沒有記錄')+'</div>';return;}
-  listEl.innerHTML=filtered.map(function(e){
+  var pagerEl=document.getElementById('expPager');
+  if(filtered.length===0){
+    listEl.innerHTML='<div class="exp-empty">'+(expenses.length===0?'還沒有記錄，新增第一筆吧 💑':(expSearch?'找不到符合「'+expSearch+'」的記錄':'這個條件下沒有記錄'))+'</div>';
+    if(pagerEl)pagerEl.style.display='none';
+    return;
+  }
+
+  var totalPages=Math.ceil(filtered.length/EXP_PER_PAGE);
+  if(expPage>totalPages)expPage=totalPages;
+  if(expPage<1)expPage=1;
+  var start=(expPage-1)*EXP_PER_PAGE;
+  var pageItems=filtered.slice(start,start+EXP_PER_PAGE);
+
+  if(pagerEl){
+    if(totalPages<=1){pagerEl.style.display='none';}
+    else{
+      pagerEl.style.display='flex';
+      var nums=[];
+      for(var p=1;p<=totalPages;p++){
+        if(p===1||p===totalPages||Math.abs(p-expPage)<=2)nums.push(p);
+        else if(nums[nums.length-1]!=='...')nums.push('...');
+      }
+      pagerEl.innerHTML='<span class="exp-pager-info">共 '+filtered.length+' 筆 · 第 '+expPage+' / '+totalPages+' 頁</span>'+
+        '<div class="exp-pager-btns">'+
+        '<button class="exp-page-btn" onclick="goExpPage('+(expPage-1)+')"'+(expPage===1?' disabled':'')+'>‹ 上一頁</button>'+
+        nums.map(function(n){
+          return n==='...'?'<span class="exp-page-dots">…</span>'
+            :'<button class="exp-page-btn'+(n===expPage?' active':'')+'" onclick="goExpPage('+n+')">'+n+'</button>';
+        }).join('')+
+        '<button class="exp-page-btn" onclick="goExpPage('+(expPage+1)+')"'+(expPage===totalPages?' disabled':'')+'>下一頁 ›</button>'+
+        '</div>';
+    }
+  }
+
+  listEl.innerHTML=pageItems.map(function(e){
     return '<div class="exp-row'+(e.id===editingId?' editing':'')+'"><div style="color:#888;font-size:12px">'+e.date+'</div><div style="font-weight:500">'+e.desc+'</div>'+
       '<div style="color:#333;font-size:12.5px">'+(e.note?e.note:'<span style="color:#bbb">—</span>')+'</div>'+
       '<div><span class="exp-cat-tag ecat-'+e.cat+'">'+e.cat+'</span></div>'+
@@ -1227,6 +1300,8 @@ function renderExpenses(){
   var amtInp=document.getElementById('e-amount');
   if(descInp)descInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
   if(amtInp)amtInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
+  var sInp=document.getElementById('expSearch');
+  if(sInp)sInp.addEventListener('input',function(){expSearch=this.value.trim();expPage=1;renderExpenses();});
   var noteInp=document.getElementById('e-note');
   if(noteInp)noteInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
 })();
