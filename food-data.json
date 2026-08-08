@@ -1,5 +1,34 @@
 [
   {
+    "id": "1786156406550",
+    "name": "軟食力 行天宮店",
+    "name1": "軟食力",
+    "name2": "行天宮店",
+    "type": "早午餐",
+    "meal": "",
+    "price": 334,
+    "visits": 1,
+    "gscore": 4.1,
+    "addr": "10491臺北市中山區民權東路二段135巷30弄21號",
+    "note": "公主",
+    "maps": "https://www.google.com.tw/maps/place/%E8%BB%9F%E9%A3%9F%E5%8A%9B+%E8%A1%8C%E5%A4%A9%E5%AE%AE%E5%BA%97/@25.0639311,121.5322165,16z/data=!4m6!3m5!1s0x3442a90a7d9f9083:0x68f6ba9ff0b02f18!8m2!3d25.0642997!4d121.53413!16s%2Fg%2F11jdb0rf0n?entry=ttu&g_ep=EgoyMDI2MDgwNC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-08",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-08-08",
+        "meal": "早餐",
+        "price": 334,
+        "menu": "雙蛋經典+九層塔蛋餅"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/9kn6fNS9/d75fd587efe4.jpg"
+    ],
+    "img": "https://i.ibb.co/9kn6fNS9/d75fd587efe4.jpg",
+    "createdAt": 1786156406550
+  },
+  {
     "id": "1785648399624",
     "name": "德堡牛排 德光店",
     "name1": "德堡牛排",
