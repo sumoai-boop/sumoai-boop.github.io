@@ -67,6 +67,9 @@
   .score-perfect{color:#FFD700;font-size:16px;text-shadow:0 0 8px rgba(255,215,0,0.8);letter-spacing:1px;}
   .score-mid{color:#5FC79A;}
   .score-low{color:#E85555;}
+  .rev-cell{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#7FBF8E;}
+  .rev-cell .rev-na{color:#5E544C;font-weight:400;font-size:11px;}
+  .rev-cell .rev-load{color:#4A423B;font-weight:400;font-size:11px;}
   .venue-cinema{color:#D9C6AE;font-size:10px;font-weight:500;}
   .venue-home{color:#9C8B7A;font-size:10px;}
   .type-movie  {display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;background:#16A34A;color:#fff;font-weight:700;border:none;}
@@ -424,7 +427,7 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
         <th id="thImdb" class="th-sortable">IMDB<span class="sort-arrow"></span></th>
         <th id="thDouban" class="th-sortable">豆瓣<span class="sort-arrow"></span></th>
         <th id="thScore" class="th-sortable">評分<span class="sort-arrow"></span></th>
-        <th>發行</th><th>觀看地點</th>
+        <th>票房</th><th>發行</th><th>觀看地點</th>
       </tr></thead>
       <tbody id="movieBody"></tbody>
     </table>
@@ -699,6 +702,61 @@ window.st = function(s){ return s===0?'—':s===10?'★ 10':s.toFixed(1); };
 function resetPage(){ currentPage=1; render(); }
 
 window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low'; };
+// ── 票房（TMDB revenue，僅電影）──
+var REV_CACHE = (function(){ try{ return JSON.parse(localStorage.getItem('_revCache')||'{}'); }catch(e){ return {}; } })();
+var _rvTimer=null;
+function saveRevCache(){
+  clearTimeout(_rvTimer);
+  _rvTimer=setTimeout(function(){ try{ localStorage.setItem('_revCache', JSON.stringify(REV_CACHE)); }catch(e){} }, 800);
+}
+function fmtRevenue(n){
+  if(n==null) return '<span class="rev-na">—</span>';
+  if(n<=0)    return '<span class="rev-na">無資料</span>';
+  if(n>=1e9)  return '$'+(n/1e9).toFixed(2).replace(/\.?0+$/,'')+'B';
+  if(n>=1e6)  return '$'+(n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
+  if(n>=1e3)  return '$'+(n/1e3).toFixed(0)+'K';
+  return '$'+n;
+}
+function revBadge(m){
+  if(m.type!=='電影') return '<span class="rev-na">—</span>';
+  var v = REV_CACHE[m.title];
+  if(v===undefined) return '<span class="rev-load">···</span>';
+  return fmtRevenue(v);
+}
+// 補抓當前頁面尚未快取的票房
+async function fillRevenues(){
+  var cells = Array.from(document.querySelectorAll('.rev-cell[data-rev-title]'));
+  var todo = [];
+  cells.forEach(function(td){
+    var t = td.getAttribute('data-rev-title');
+    var m = DATA.filter(function(x){ return x.title===t; })[0];
+    if(!m || m.type!=='電影') return;
+    if(REV_CACHE[t]!==undefined){ td.innerHTML = fmtRevenue(REV_CACHE[t]); return; }
+    todo.push({td:td, m:m, t:t});
+  });
+  for(var i=0;i<todo.length;i++){
+    var job = todo[i];
+    try{
+      var id = TMDB_ID_OVERRIDE[job.t] || job.m.tmdbId || null;
+      if(!id){
+        var q = (job.m.orig && job.m.orig!=='nan') ? job.m.orig : job.t;
+        var s = await tmdbFetch('https://api.themoviedb.org/3/search/movie?api_key='+TMDB+'&query='+encodeURIComponent(q)+'&language=zh-TW');
+        var pool = (s.results||[]);
+        var yr = job.m.year;
+        var hit = pool.find(function(r){ return Math.abs(parseInt((r.release_date||'0').slice(0,4))-yr)<=1; }) || pool[0];
+        if(hit) id = hit.id;
+      }
+      if(!id){ REV_CACHE[job.t]=null; }
+      else{
+        var d = await tmdbFetch('https://api.themoviedb.org/3/movie/'+id+'?api_key='+TMDB+'&language=zh-TW');
+        REV_CACHE[job.t] = (typeof d.revenue==='number') ? d.revenue : null;
+      }
+    }catch(e){ REV_CACHE[job.t]=null; }
+    saveRevCache();
+    if(document.body.contains(job.td)) job.td.innerHTML = fmtRevenue(REV_CACHE[job.t]);
+  }
+}
+
 function epBadge(m){
   if(!m.epCount || !m.eps) return '';
   var done = m.eps.filter(function(x){return x!=null;}).length;
@@ -756,6 +814,7 @@ function render(){
       <td style="color:#F5D78E;font-size:15px;font-weight:700;text-align:center">${st(m.imdb)}</td>
       <td style="color:#F5D78E;font-size:15px;font-weight:700;text-align:center">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
+      <td class="rev-cell" data-rev-title="${(m.title||'').replace(/"/g,'&quot;')}" style="text-align:center;white-space:nowrap">${revBadge(m)}</td>
       <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}" style="color:#F5D78E;font-size:14px;font-weight:700">${m.venue}</td>
       <td style="text-align:center;white-space:nowrap"><button class="edit-btn" title="編輯此記錄">✎</button><button class="del-btn" title="刪除此記錄">✕</button></td>`;
@@ -818,6 +877,7 @@ function render(){
   countUp(document.getElementById('sBest'), thisMonthCount, ' 部', 0, 800);
   countUp(document.getElementById('sCinema'), cin, ' 場');
   buildFilters();
+  setTimeout(fillRevenues, 60);
 }
 
 // ── 動態建立篩選選單 ──
