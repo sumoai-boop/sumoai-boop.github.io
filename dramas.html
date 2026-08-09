@@ -427,7 +427,8 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
         <th id="thImdb" class="th-sortable">IMDB<span class="sort-arrow"></span></th>
         <th id="thDouban" class="th-sortable">豆瓣<span class="sort-arrow"></span></th>
         <th id="thScore" class="th-sortable">評分<span class="sort-arrow"></span></th>
-        <th>票房</th><th>發行</th><th>觀看地點</th>
+        <th id="thRev" class="th-sortable">票房<span class="sort-arrow"></span></th>
+        <th>發行</th><th>觀看地點</th>
       </tr></thead>
       <tbody id="movieBody"></tbody>
     </table>
@@ -723,6 +724,41 @@ function revBadge(m){
   if(v===undefined) return '<span class="rev-load">···</span>';
   return fmtRevenue(v);
 }
+// 排序前先把所有電影的票房補齊（首次較久，之後全走快取）
+var _revAllRunning=false;
+async function fetchAllRevenues(){
+  if(_revAllRunning) return;
+  var pend = DATA.filter(function(m){ return m.type==='電影' && REV_CACHE[m.title]===undefined; });
+  if(!pend.length) return;
+  _revAllRunning=true;
+  showToast('正在抓取票房資料（0/'+pend.length+'）…', false);
+  var done=0;
+  for(var i=0;i<pend.length;i++){
+    var m=pend[i];
+    try{
+      var id = TMDB_ID_OVERRIDE[m.title] || m.tmdbId || null;
+      if(!id){
+        var q=(m.orig && m.orig!=='nan') ? m.orig : m.title;
+        var s=await tmdbFetch('https://api.themoviedb.org/3/search/movie?api_key='+TMDB+'&query='+encodeURIComponent(q)+'&language=zh-TW');
+        var pool=(s.results||[]);
+        var hit=pool.find(function(r){ return Math.abs(parseInt((r.release_date||'0').slice(0,4))-m.year)<=1; })||pool[0];
+        if(hit) id=hit.id;
+      }
+      if(!id) REV_CACHE[m.title]=null;
+      else{
+        var d=await tmdbFetch('https://api.themoviedb.org/3/movie/'+id+'?api_key='+TMDB+'&language=zh-TW');
+        REV_CACHE[m.title]=(typeof d.revenue==='number')?d.revenue:null;
+      }
+    }catch(e){ REV_CACHE[m.title]=null; }
+    done++;
+    if(done%25===0){ saveRevCache(); showToast('正在抓取票房資料（'+done+'/'+pend.length+'）…', false); }
+  }
+  saveRevCache();
+  _revAllRunning=false;
+  showToast('✦ 票房資料已更新（'+pend.length+' 部）', false);
+  render();
+}
+
 // 補抓當前頁面尚未快取的票房
 async function fillRevenues(){
   var cells = Array.from(document.querySelectorAll('.rev-cell[data-rev-title]'));
@@ -788,6 +824,17 @@ function render(){
       case 'imdb-asc': return a.imdb-b.imdb;
       case 'douban-desc': return b.douban-a.douban;
       case 'douban-asc': return a.douban-b.douban;
+      case 'rev-desc':
+      case 'rev-asc': {
+        var ra=(a.type==='電影')?REV_CACHE[a.title]:undefined;
+        var rb=(b.type==='電影')?REV_CACHE[b.title]:undefined;
+        var va=(typeof ra==='number'&&ra>0)?ra:null;
+        var vb=(typeof rb==='number'&&rb>0)?rb:null;
+        if(va===null&&vb===null) return 0;
+        if(va===null) return 1;      // 無資料永遠排最後
+        if(vb===null) return -1;
+        return sort==='rev-asc' ? va-vb : vb-va;
+      }
       case 'year-asc': return a.year-b.year;
       case 'year-desc':
       default: return b.year-a.year;
@@ -1235,7 +1282,8 @@ const SORT_COLS = {
   thYear:  {asc:'year-asc',  desc:'year-desc'},
   thImdb:  {asc:'imdb-asc',  desc:'imdb-desc'},
   thDouban:{asc:'douban-asc',desc:'douban-desc'},
-  thScore: {asc:'personal-asc',desc:'personal-desc'}
+  thScore: {asc:'personal-asc',desc:'personal-desc'},
+  thRev:   {asc:'rev-asc',   desc:'rev-desc'}
 };
 function updateSortArrows(){
   Object.keys(SORT_COLS).forEach(id=>{
@@ -1251,6 +1299,7 @@ Object.keys(SORT_COLS).forEach(id=>{
   document.getElementById(id).addEventListener('click', ()=>{
     const cfg=SORT_COLS[id];
     sort = (sort===cfg.desc) ? cfg.asc : cfg.desc;
+    if(id==='thRev') fetchAllRevenues();
     const opts = Array.from(document.getElementById('sortSelect').options);
     document.getElementById('sortSelect').value = opts.some(o=>o.value===sort) ? sort : '';
     updateSortArrows();
