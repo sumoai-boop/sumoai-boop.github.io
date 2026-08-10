@@ -1606,24 +1606,39 @@ function renderMonthIncomeChart(){
   allD.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!mmap[ym])mmap[ym]=0;mmap[ym]+=w.income||0;if(!hmap[ym])hmap[ym]=0;hmap[ym]+=(w.hours||0)*60+(w.mins||0);});
   var now=new Date(),tYM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   var months=[];for(var m=1;m<=12;m++)months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
-  var values=months.map(function(ym){return mmap[ym]||0;}),maxVal=Math.max.apply(null,values.concat([1])),chartH=200,bw=50;
+  var values=months.map(function(ym){return mmap[ym]||0;});
+  var hourVals=months.map(function(ym){return (hmap[ym]||0)/60;});
+  var maxVal=Math.max.apply(null,values.concat([1]));
+  var maxHr=Math.max.apply(null,hourVals.concat([1]));
+  var chartH=200,bw=64,sub=26;
   var bars=months.map(function(ym,i){
-    var iC=(ym===tYM),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
-    var bg=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
-    var lc=iC?'#FFD700':'rgba(240,220,160,0.8)',nc=iC?'#7A5800':'#004D20',label=(i+1)+'月';
-    var mfs=Math.min(Math.floor((bw-10)*0.55),Math.floor(barH*0.22),20);
-    var hrs=(hmap[ym]||0)/60;
-    var hrStr=hrs>0?hrs.toFixed(1)+'h':'';
-    var barText=values[i].toLocaleString()+(hrStr?' / '+hrStr:'');
-    var inner=values[i]>0&&barH>=36?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+barText+'</div></div>':'';
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+bw+'px;">'
-      +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
-        +'<div style="position:relative;width:'+(bw-6)+'px;height:'+barH+'px;background:'+bg+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
+    var iC=(ym===tYM),label=(i+1)+'月';
+    var lc=iC?'#FFD700':'rgba(240,220,160,0.8)';
+    // 金額柱
+    var v=values[i], barH=Math.max(v>0?4:0,Math.round(v/maxVal*chartH));
+    var bgV=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
+    var ncV=iC?'#7A5800':'#004D20';
+    var fsV=Math.min(Math.floor(sub*0.5),Math.floor(barH*0.16),15);
+    var innerV=v>0&&barH>=44?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsV+'px;font-weight:800;color:'+ncV+';white-space:nowrap;line-height:1;">'+v.toLocaleString()+'</div></div>':'';
+    // 時數柱
+    var h=hourVals[i], barHh=Math.max(h>0?4:0,Math.round(h/maxHr*chartH));
+    var bgH=iC?'linear-gradient(to top,#FF9500,#FFC46B)':'linear-gradient(to top,#22D3EE,#7FE9F8)';
+    var ncH=iC?'#6B3D00':'#04414C';
+    var fsH=Math.min(Math.floor(sub*0.5),Math.floor(barHh*0.16),15);
+    var innerH=h>0&&barHh>=44?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsH+'px;font-weight:800;color:'+ncH+';white-space:nowrap;line-height:1;">'+h.toFixed(1)+'h</div></div>':'';
+    return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:'+bw+'px;">'
+      +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;gap:3px;">'
+        +'<div style="position:relative;width:'+sub+'px;height:'+barH+'px;background:'+bgV+';border-radius:4px 4px 0 0;" title="'+label+' 收入 '+v.toLocaleString()+'">'+innerV+'</div>'
+        +'<div style="position:relative;width:'+sub+'px;height:'+barHh+'px;background:'+bgH+';border-radius:4px 4px 0 0;" title="'+label+' 時數 '+h.toFixed(1)+'h">'+innerH+'</div>'
       +'</div>'
       +'<div style="font-size:13px;color:'+lc+';white-space:nowrap;font-weight:'+(iC?'700':'400')+';padding-top:6px;">'+label+'</div>'
     +'</div>';
   }).join('');
-  el.innerHTML='<div style="width:100%;overflow-x:auto;"><div style="min-width:600px;display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div></div>';
+  var legend='<div style="display:flex;gap:14px;align-items:center;justify-content:flex-end;padding:0 2px 6px;font-size:11px;color:rgba(255,255,255,0.55);">'
+    +'<span style="display:flex;align-items:center;gap:5px;"><i style="width:9px;height:9px;border-radius:2px;background:#00C853;display:inline-block;"></i>收入</span>'
+    +'<span style="display:flex;align-items:center;gap:5px;"><i style="width:9px;height:9px;border-radius:2px;background:#22D3EE;display:inline-block;"></i>時數</span>'
+  +'</div>';
+  el.innerHTML=legend+'<div style="width:100%;overflow-x:auto;"><div style="min-width:760px;display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div></div>';
 }
 // 統計
 function updateStats(){
