@@ -62,6 +62,7 @@ body{
 .gd-sep{width:1px;height:48px;background:rgba(255,255,255,0.22);margin:0 4px;align-self:center;}
 .gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
 .ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
+.ic-ai{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
 .ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
 .ic-dramas{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
 .ic-food{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
@@ -502,9 +503,18 @@ body{
         <div class="form-title">＋ 新增每日支出</div>
         <div class="form-grid">
           <div class="form-group"><label style="font-size:12px">日期</label><input class="form-input" style="font-size:15px" type="date" id="fm-date"></div>
-          <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="罰鍰/過路費">罰鍰/過路費</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option><option value="車貸">車貸</option></select></div>
+          <div class="form-group"><label style="font-size:12px">支出類型</label><select class="form-select" style="font-size:15px" id="fm-type" onchange="toggleGasFields()"><option value="">請選擇</option><option value="油錢">油錢</option><option value="保養/維修">保養/維修</option><option value="罰鍰/過路費">罰鍰/過路費</option><option value="停車費">停車費</option><option value="汽車百貨">汽車百貨</option><option value="保險/費用">保險/費用</option><option value="車貸">車貸</option></select></div>
           <div class="form-group"><label style="font-size:12px">金額 (NT$)</label><input class="form-input" style="font-size:15px" type="number" id="fm-amount" placeholder="0"></div>
           <div class="form-group"><label style="font-size:12px">備註</label><input class="form-input" style="font-size:15px" type="text" id="fm-note" placeholder="備註說明"></div>
+        </div>
+        <div id="gasFields" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group"><label style="font-size:12px">公升數</label><input class="form-input" style="font-size:15px" type="number" step="0.01" id="fm-liters" placeholder="0.00"></div>
+            <div class="form-group"><label style="font-size:12px">里程表 (km)</label><input class="form-input" style="font-size:15px" type="number" step="1" id="fm-odo" placeholder="加完油當下的總里程"></div>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin:-4px 0 10px;line-height:1.6;">
+            兩者都填才算得出油耗。里程表填「加完油當下」的總里程，並以每次都加滿為前提。
+          </div>
         </div>
         <button class="btn-add" id="monthlyAddBtn" onclick="addMonthly()">新增支出</button>
         <button id="monthlyDeleteBtn" onclick="deleteEditingMonthly()" style="display:none;background:rgba(200,50,30,0.2);color:#FF6B6B;border:1px solid rgba(200,50,30,0.4);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:monospace;font-size:13px;font-weight:700;">🗑 刪除此支出</button>
@@ -532,6 +542,8 @@ body{
       </div>
     </div>
     <div id="monthlyList"><div class="empty-state"><span class="empty-icon">💰</span>尚無支出記錄</div></div>
+    <!-- 油耗紀錄 -->
+    <div id="fuelStatsWrap" style="margin-top:24px;"></div>
     <!-- 加油站統計（移到最下方）-->
     <div id="gasStatsWrap" style="margin-top:24px;"></div>
     </div>
@@ -539,24 +551,7 @@ body{
 </div>
 
 <!-- Dock -->
-<div class="dock-trigger-zone" id="dockTrigger"></div>
-<div class="global-dock-wrap" id="globalDock">
-  <div class="global-dock">
-    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FF6B9D;line-height:1;letter-spacing:-2px;">P</span></div><span class="gd-label">照片</span></a>
-    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#A78BFA;line-height:1;letter-spacing:-2px;">D</span></div><span class="gd-label">追劇</span></a>
-    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#38BDF8;line-height:1;letter-spacing:-2px;">F</span></div><span class="gd-label">食記</span></a>
-    <div class="gd-sep"></div>
-    <a href="trips.html" class="gd-item"><div class="gd-icon ic-trips"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="16.5" y="3.5" width="15" height="12" rx="4" fill="none" stroke="#A32D2D" stroke-width="3.6"/><rect x="5.5" y="10" width="37" height="33" rx="5.5" fill="#E24B4A"/><rect x="11.5" y="10" width="3.4" height="33" fill="#A32D2D"/><rect x="33.1" y="10" width="3.4" height="33" fill="#A32D2D"/><text x="24" y="33.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">T</text></svg></div><span class="gd-label">行程記帳</span></a>
-    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FFFFFF;line-height:1;letter-spacing:-2px;">T</span></div><span class="gd-label">Threads</span></a>
-    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span><div class="gd-dot"></div></a>
-    <a href="weight.html" class="gd-item"><div class="gd-icon ic-weight"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="9" fill="#2DD4BF"/><path d="M14 4.6 A 17.5 17.5 0 0 1 34 4.6 L 31 11.5 A 11 11 0 0 0 17 11.5 Z" fill="#0F766E"/><rect x="19.5" y="6" width="9" height="4.2" rx="1.8" fill="#E6FFFA"/><text x="24" y="34.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">W</text></svg></div><span class="gd-label">體重</span></a>
-    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M6 11.5 L13.5 3.5 L18 8.5 Z" fill="#34D399"/><path d="M42 11.5 L34.5 3.5 L30 8.5 Z" fill="#34D399"/><circle cx="24" cy="25" r="19" fill="#34D399"/><circle cx="24" cy="25" r="14.8" fill="#065F46"/><path d="M10.5 40 L7 45 M37.5 40 L41 45" stroke="#34D399" stroke-width="3" stroke-linecap="round"/><text x="24" y="32.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">R</text></svg></div><span class="gd-label">提醒</span></a>
-    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#E50914;line-height:1;letter-spacing:-2px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="52" height="52" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#FFFFFF"/><path d="M8 9 A 27 27 0 0 1 8 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M40 9 A 27 27 0 0 0 40 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M9.5 14 l3.4 1.6 M8 19 l3.6 0.9 M8 29 l3.6 -0.9 M9.5 34 l3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><path d="M38.5 14 l-3.4 1.6 M40 19 l-3.6 0.9 M40 29 l-3.6 -0.9 M38.5 34 l-3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><text x="24" y="31.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#0C2340">M</text></svg></div><span class="gd-label">MLB</span></a>
-    <div class="gd-sep"></div>
-    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M24 43.5 L6 25.5 A11.3 11.3 0 0 1 22.1 9.4 L24 11.3 L25.9 9.4 A11.3 11.3 0 0 1 42 25.5 Z" fill="#E879F9"/><text x="24" y="28.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#111">C</text></svg></div><span class="gd-label">Chloe ♥</span></a>
-  </div>
-</div>
+
 
 
 <script>
@@ -617,15 +612,7 @@ function renderTop5(){
     el.textContent='週'+d+' '+(now.getMonth()+1)+'/'+(now.getDate())+' '+h+':'+m;
   }t();setInterval(t,10000);
 })();
-// Dock
-(function(){
-  var dock=document.getElementById('globalDock'),trigger=document.getElementById('dockTrigger');
-  if(!dock||!trigger)return;
-  var timer;
-  trigger.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
-  dock.addEventListener('mouseenter',function(){clearTimeout(timer);dock.classList.add('visible');});
-  dock.addEventListener('mouseleave',function(){timer=setTimeout(function(){dock.classList.remove('visible');},600);});
-})();
+
 // Tab
 function switchTab(id,btn){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -1141,21 +1128,44 @@ function addMonthly(){
   var type=document.getElementById('fm-type').value;
   var amount=parseFloat(document.getElementById('fm-amount').value)||0;
   var note=document.getElementById('fm-note').value.trim();
+  var liters=parseFloat(document.getElementById('fm-liters').value)||0;
+  var odo=parseFloat(document.getElementById('fm-odo').value)||0;
   if(!date){alert('請選擇日期');return;}
   if(!type){alert('請選擇支出類型');return;}
+  if(type!=='油錢'){ liters=0; odo=0; }
   var m=getData('uberMonthly');
   if(window._editMonthlyId){
     var idx=m.findIndex(x=>x.id===window._editMonthlyId);
-    if(idx!==-1) m.splice(idx,1,{date,type,amount,note,id:window._editMonthlyId});
+    if(idx!==-1) m.splice(idx,1,{date,type,amount,note,liters,odo,id:window._editMonthlyId});
     window._editMonthlyId=null;
     document.getElementById('monthlyAddBtn').textContent='新增支出';
     var mdb=document.getElementById('monthlyDeleteBtn'); if(mdb) mdb.style.display='none';
   } else {
-    m.unshift({date,type,amount,note,id:Date.now()});
+    m.unshift({date,type,amount,note,liters,odo,id:Date.now()});
   }
   saveAndPush('uberMonthly',m);renderMonthly();updateStats();
-  ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
+  ['fm-amount','fm-note','fm-liters','fm-odo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
+  toggleGasFields();
+}
+
+// 只有「油錢」需要公升數與里程表
+function toggleGasFields(){
+  var w=document.getElementById('gasFields');
+  if(!w) return;
+  w.style.display = document.getElementById('fm-type').value==='油錢' ? 'block' : 'none';
+}
+
+// 舊資料的公升數寫在備註裡（例「台亞 內湖站，35.2公升」），沒有欄位就往回相容
+function gasLiters(m){
+  if(m.liters>0) return m.liters;
+  var mt=(m.note||'').match(/([\d.]+)\s*公升/);
+  return mt?parseFloat(mt[1]):0;
+}
+function gasOdo(m){
+  if(m.odo>0) return m.odo;
+  var mt=(m.note||'').match(/([\d.]+)\s*(?:km|公里|里程)/i);
+  return mt?parseFloat(mt[1]):0;
 }
 
 function editMonthly(id){
@@ -1165,6 +1175,9 @@ function editMonthly(id){
   document.getElementById('fm-type').value=m.type||'';
   document.getElementById('fm-amount').value=m.amount||'';
   document.getElementById('fm-note').value=m.note||'';
+  document.getElementById('fm-liters').value=m.liters||'';
+  document.getElementById('fm-odo').value=m.odo||'';
+  toggleGasFields();
   window._editMonthlyId=id;
   document.getElementById('monthlyAddBtn').textContent='✔ 儲存變更';
   var mdb=document.getElementById('monthlyDeleteBtn'); if(mdb) mdb.style.display='inline-block';
@@ -1178,8 +1191,9 @@ function deleteEditingMonthly(){
   window._editMonthlyId=null;
   document.getElementById('monthlyAddBtn').textContent='新增支出';
   var mdb=document.getElementById('monthlyDeleteBtn'); if(mdb) mdb.style.display='none';
-  ['fm-amount','fm-note'].forEach(id=>document.getElementById(id).value='');
+  ['fm-amount','fm-note','fm-liters','fm-odo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
+  toggleGasFields();
   saveAndPush('uberMonthly',m);renderMonthly();updateStats();
 }
 function deleteMonthly(id){
@@ -1198,6 +1212,188 @@ function sortGasStats(key){
   if(gasSortKey===key) gasSortAsc=!gasSortAsc;
   else { gasSortKey=key; gasSortAsc=false; }
   renderGasStats();
+  renderFuelStats();
+}
+
+/* ══════════ 油耗紀錄 ══════════
+   採「加滿到加滿」演算法：本次公升數 ÷ (本次里程表 − 上次里程表)。
+   第一筆沒有前一次可比，所以只列出來不計算。 */
+function fuelRecords(){
+  var gas=getData('uberMonthly')
+    .filter(function(m){ return m.type==='油錢' && gasOdo(m)>0 && gasLiters(m)>0; })
+    .map(function(m){
+      return { date:m.date, odo:gasOdo(m), liters:gasLiters(m), amount:m.amount||0,
+               station:(m.note||'').split(/[，,]/)[0].trim() };
+    })
+    .sort(function(a,b){ return a.odo-b.odo; });
+
+  var out=[];
+  for(var i=0;i<gas.length;i++){
+    var r=gas[i], prev=i>0?gas[i-1]:null;
+    var dist=prev?(r.odo-prev.odo):0;
+    var ok=dist>0;
+    out.push({
+      date:r.date, station:r.station, odo:r.odo, liters:r.liters, amount:r.amount,
+      dist:ok?dist:0,
+      l100:ok?(r.liters/dist*100):0,     // 每百公里公升
+      kml:ok?(dist/r.liters):0,          // 每公升可跑幾公里
+      unit:r.liters>0?(r.amount/r.liters):0,   // 油價
+      perKm:ok?(r.amount/dist):0         // 每公里油錢
+    });
+  }
+  return out;
+}
+
+function drawFuelChart(rows){
+  var cv=document.getElementById('fuelChart');
+  if(!cv) return;
+  var pts=rows.filter(function(r){return r.l100>0;});
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth||700, H=170;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var g=cv.getContext('2d'); g.scale(dpr,dpr);
+  g.clearRect(0,0,W,H);
+  if(pts.length<2) return;
+
+  var vals=pts.map(function(p){return p.l100;});
+  var lo=Math.min.apply(null,vals), hi=Math.max.apply(null,vals);
+  var pad=(hi-lo)*0.25||0.5; lo-=pad; hi+=pad;
+  var L=44, R=12, T=14, B=22;
+  var x=function(i){ return L+(W-L-R)*(pts.length===1?0.5:i/(pts.length-1)); };
+  var y=function(v){ return T+(H-T-B)*(1-(v-lo)/(hi-lo||1)); };
+
+  // 格線與刻度
+  g.font='10px monospace'; g.textAlign='right'; g.textBaseline='middle';
+  for(var k=0;k<=3;k++){
+    var v=lo+(hi-lo)*k/3, yy=y(v);
+    g.strokeStyle='rgba(255,255,255,0.06)'; g.beginPath(); g.moveTo(L,yy); g.lineTo(W-R,yy); g.stroke();
+    g.fillStyle='rgba(255,255,255,0.35)'; g.fillText(v.toFixed(2),L-6,yy);
+  }
+
+  // 平均線
+  var avg=vals.reduce(function(a,b){return a+b;},0)/vals.length;
+  g.setLineDash([4,4]); g.strokeStyle='rgba(255,215,0,0.5)';
+  g.beginPath(); g.moveTo(L,y(avg)); g.lineTo(W-R,y(avg)); g.stroke(); g.setLineDash([]);
+
+  // 折線
+  g.strokeStyle='#00C853'; g.lineWidth=2; g.beginPath();
+  pts.forEach(function(p,i){ i?g.lineTo(x(i),y(p.l100)):g.moveTo(x(i),y(p.l100)); });
+  g.stroke();
+
+  // 點
+  pts.forEach(function(p,i){
+    g.fillStyle = p.l100<=avg ? '#00E860' : '#FF6B6B';
+    g.beginPath(); g.arc(x(i),y(p.l100),3,0,Math.PI*2); g.fill();
+  });
+}
+
+var fuelPage = 1;
+var FUEL_PAGE_SIZE = 12;
+function fuelGoPage(n){
+  fuelPage = n;
+  renderFuelStats();
+  var el=document.getElementById('fuelStatsWrap');
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderFuelStats(){
+  var el=document.getElementById('fuelStatsWrap');
+  if(!el) return;
+  var rows=fuelRecords();
+  var calc=rows.filter(function(r){return r.l100>0;});
+
+  if(!rows.length){
+    el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(0,200,83,0.25);border-radius:14px;padding:18px;font-size:13px;color:rgba(255,255,255,0.45);line-height:1.8;">'
+      +'⛽ <b style="color:#00E860">油耗紀錄</b><br>新增「油錢」支出時填入<b>公升數</b>與<b>里程表</b>，第二次加油之後就會開始計算油耗。</div>';
+    return;
+  }
+
+  // 總平均用「總公升 ÷ 總里程」而不是各次平均，才不會被短程灌歪
+  var totLit=calc.reduce(function(a,r){return a+r.liters;},0);
+  var totDist=calc.reduce(function(a,r){return a+r.dist;},0);
+  var totAmt=calc.reduce(function(a,r){return a+r.amount;},0);
+  var avgL100=totDist>0?(totLit/totDist*100):0;
+  var best=calc.length?Math.min.apply(null,calc.map(function(r){return r.l100;})):0;
+  var worst=calc.length?Math.max.apply(null,calc.map(function(r){return r.l100;})):0;
+  var allLit=rows.reduce(function(a,r){return a+r.liters;},0);
+  var allAmt=rows.reduce(function(a,r){return a+r.amount;},0);
+  var avgUnit=allLit>0?(allAmt/allLit):0;
+
+  var card=function(label,val,unit,color){
+    return '<div style="flex:1;min-width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.18);border-radius:12px;padding:12px 14px;">'
+      +'<div style="font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.08em;margin-bottom:6px;">'+label+'</div>'
+      +'<div style="font-size:22px;font-weight:700;color:'+color+';font-family:monospace;">'+val
+      +'<span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:400;margin-left:3px;">'+unit+'</span></div></div>';
+  };
+
+  var summary='<div style="display:flex;gap:10px;flex-wrap:wrap;padding:16px;">'
+    +card('平均油耗', avgL100?avgL100.toFixed(2):'—','L/100km','#00E860')
+    +card('等於', avgL100?(100/avgL100).toFixed(2):'—','km/L','#00C853')
+    +card('最佳', best?best.toFixed(2):'—','L/100km','#FFD700')
+    +card('最差', worst?worst.toFixed(2):'—','L/100km','#FF6B6B')
+    +card('累計里程', fmt(Math.round(totDist)),'km','#f0dca8')
+    +card('平均油價', avgUnit?avgUnit.toFixed(2):'—','元/公升','#00C7BE')
+    +card('每公里油錢', totDist>0?(totAmt/totDist).toFixed(2):'—','元/km','#FF9500')
+    +'</div>';
+
+  var chart = calc.length>=2
+    ? '<div style="padding:0 16px 8px;"><canvas id="fuelChart" style="width:100%;height:170px;display:block;"></canvas>'
+      +'<div style="font-size:11px;color:rgba(255,255,255,0.35);text-align:right;margin-top:2px;">虛線為平均值；綠點優於平均，紅點低於平均</div></div>'
+    : '';
+
+  // 新→舊排列後分頁，圖表與上方統計仍然看全部資料
+  var ordered=rows.slice().reverse();
+  var totalPages=Math.max(1, Math.ceil(ordered.length/FUEL_PAGE_SIZE));
+  if(fuelPage>totalPages) fuelPage=totalPages;
+  if(fuelPage<1) fuelPage=1;
+  var start=(fuelPage-1)*FUEL_PAGE_SIZE;
+  var pageRows=ordered.slice(start, start+FUEL_PAGE_SIZE);
+
+  var body=pageRows.map(function(r){
+    var na='<span style="color:rgba(255,255,255,0.25);">—</span>';
+    var good = r.l100>0 && avgL100>0 && r.l100<=avgL100;
+    return '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">'
+      +'<td style="padding:9px 12px;font-size:13px;color:rgba(255,255,255,0.75);white-space:nowrap;">'+r.date+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;color:#f0dca8;white-space:nowrap;">'+(r.station||na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:rgba(255,255,255,0.6);text-align:right;white-space:nowrap;">'+fmt(r.odo)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:rgba(255,255,255,0.6);text-align:right;white-space:nowrap;">'+(r.dist?fmt(Math.round(r.dist)):na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:#00C853;text-align:right;white-space:nowrap;">'+r.liters.toFixed(2)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:#FF6B6B;text-align:right;white-space:nowrap;">'+(r.amount?fmt(r.amount):na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:13px;color:#00C7BE;text-align:right;white-space:nowrap;">'+(r.unit?r.unit.toFixed(2):na)+'</td>'
+      +'<td style="padding:9px 8px;font-size:14px;font-weight:700;text-align:right;white-space:nowrap;color:'+(r.l100?(good?'#00E860':'#FF6B6B'):'inherit')+';">'+(r.l100?r.l100.toFixed(2):na)+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;color:rgba(255,255,255,0.6);text-align:right;white-space:nowrap;">'+(r.kml?r.kml.toFixed(2):na)+'</td>'
+    +'</tr>';
+  }).join('');
+
+  var th=function(t,align){ return '<th style="padding:8px 12px;font-size:12px;color:#00E860;text-align:'+(align||'right')+';font-weight:700;white-space:nowrap;">'+t+'</th>'; };
+
+  var pager='';
+  if(totalPages>1){
+    var nav=function(label,target,disabled){
+      return '<button '+(disabled?'disabled':'onclick="fuelGoPage('+target+')"')
+        +' style="background:rgba(0,200,83,'+(disabled?'0.05':'0.15')+');border:1px solid rgba(0,200,83,'+(disabled?'0.15':'0.4')+');'
+        +'border-radius:6px;color:'+(disabled?'rgba(255,255,255,0.2)':'#00C853')+';font-size:13px;padding:3px 11px;'
+        +'cursor:'+(disabled?'default':'pointer')+';font-family:monospace;">'+label+'</button>';
+    };
+    pager='<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.05);">'
+      +nav('‹', fuelPage-1, fuelPage<=1)
+      +'<span style="font-size:13px;color:#f0dca8;font-family:monospace;min-width:96px;text-align:center;">'
+        +fuelPage+' / '+totalPages
+        +'<span style="color:rgba(255,255,255,0.35);font-size:11px;"> （共 '+ordered.length+' 筆）</span></span>'
+      +nav('›', fuelPage+1, fuelPage>=totalPages)
+      +'</div>';
+  }
+
+  el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;overflow:hidden;">'
+    +'<div style="padding:12px 16px;font-size:13px;letter-spacing:0.1em;color:#00E860;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.06);">⛽ 油耗紀錄'
+      +'<span style="float:right;font-weight:400;font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0;">加滿到加滿計算，共 '+calc.length+' 個區間</span></div>'
+    +summary+chart
+    +'<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:720px;">'
+    +'<thead><tr style="background:rgba(0,200,83,0.04);">'
+      +th('日期','left')+th('加油站','left')+th('里程表')+th('里程差')+th('公升')+th('金額')+th('油價')+th('L/100km')+th('km/L')
+    +'</tr></thead><tbody>'+body+'</tbody></table></div>'+pager+'</div>';
+
+  drawFuelChart(rows);
 }
 
 function renderGasStats(){
@@ -1212,8 +1408,7 @@ function renderGasStats(){
     var note=m.note||'';
     var nameMatch=note.split(/[，,]/)[0].trim();
     if(!nameMatch) return;
-    var litMatch=note.match(/([\d.]+)\s*公升/);
-    var liters=litMatch?parseFloat(litMatch[1]):0;
+    var liters=gasLiters(m);
     if(!stations[nameMatch]) stations[nameMatch]={name:nameMatch,totalLiters:0,paidAmount:0,count:0};
     var st=stations[nameMatch];
     st.totalLiters+=liters;
@@ -1260,6 +1455,7 @@ function renderGasStats(){
 
 function renderMonthly(){
   renderGasStats();
+  renderFuelStats();
   var now = new Date();
   var targetDate = new Date(now.getFullYear(), now.getMonth() + monthlyPageMonth, 1);
   var yr = targetDate.getFullYear(), mo = targetDate.getMonth();
@@ -1410,39 +1606,24 @@ function renderMonthIncomeChart(){
   allD.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!mmap[ym])mmap[ym]=0;mmap[ym]+=w.income||0;if(!hmap[ym])hmap[ym]=0;hmap[ym]+=(w.hours||0)*60+(w.mins||0);});
   var now=new Date(),tYM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   var months=[];for(var m=1;m<=12;m++)months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
-  var values=months.map(function(ym){return mmap[ym]||0;});
-  var hourVals=months.map(function(ym){return (hmap[ym]||0)/60;});
-  var maxVal=Math.max.apply(null,values.concat([1]));
-  var maxHr=Math.max.apply(null,hourVals.concat([1]));
-  var chartH=200,bw=64,sub=26;
+  var values=months.map(function(ym){return mmap[ym]||0;}),maxVal=Math.max.apply(null,values.concat([1])),chartH=200,bw=50;
   var bars=months.map(function(ym,i){
-    var iC=(ym===tYM),label=(i+1)+'月';
-    var lc=iC?'#FFD700':'rgba(240,220,160,0.8)';
-    // 金額柱
-    var v=values[i], barH=Math.max(v>0?4:0,Math.round(v/maxVal*chartH));
-    var bgV=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
-    var ncV=iC?'#7A5800':'#004D20';
-    var fsV=Math.min(Math.floor(sub*0.5),Math.floor(barH*0.16),15);
-    var innerV=v>0&&barH>=44?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsV+'px;font-weight:800;color:'+ncV+';white-space:nowrap;line-height:1;">'+v.toLocaleString()+'</div></div>':'';
-    // 時數柱
-    var h=hourVals[i], barHh=Math.max(h>0?4:0,Math.round(h/maxHr*chartH));
-    var bgH=iC?'linear-gradient(to top,#FF9500,#FFC46B)':'linear-gradient(to top,#22D3EE,#7FE9F8)';
-    var ncH=iC?'#6B3D00':'#04414C';
-    var fsH=Math.min(Math.floor(sub*0.5),Math.floor(barHh*0.16),15);
-    var innerH=h>0&&barHh>=44?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsH+'px;font-weight:800;color:'+ncH+';white-space:nowrap;line-height:1;">'+h.toFixed(1)+'h</div></div>':'';
-    return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:'+bw+'px;">'
-      +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;gap:3px;">'
-        +'<div style="position:relative;width:'+sub+'px;height:'+barH+'px;background:'+bgV+';border-radius:4px 4px 0 0;" title="'+label+' 收入 '+v.toLocaleString()+'">'+innerV+'</div>'
-        +'<div style="position:relative;width:'+sub+'px;height:'+barHh+'px;background:'+bgH+';border-radius:4px 4px 0 0;" title="'+label+' 時數 '+h.toFixed(1)+'h">'+innerH+'</div>'
+    var iC=(ym===tYM),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
+    var bg=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
+    var lc=iC?'#FFD700':'rgba(240,220,160,0.8)',nc=iC?'#7A5800':'#004D20',label=(i+1)+'月';
+    var mfs=Math.min(Math.floor((bw-10)*0.55),Math.floor(barH*0.22),20);
+    var hrs=(hmap[ym]||0)/60;
+    var hrStr=hrs>0?hrs.toFixed(1)+'h':'';
+    var barText=values[i].toLocaleString()+(hrStr?' / '+hrStr:'');
+    var inner=values[i]>0&&barH>=36?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;"><div style="writing-mode:vertical-rl;font-size:'+mfs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+barText+'</div></div>':'';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:'+bw+'px;">'
+      +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;">'
+        +'<div style="position:relative;width:'+(bw-6)+'px;height:'+barH+'px;background:'+bg+';border-radius:4px 4px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
       +'</div>'
       +'<div style="font-size:13px;color:'+lc+';white-space:nowrap;font-weight:'+(iC?'700':'400')+';padding-top:6px;">'+label+'</div>'
     +'</div>';
   }).join('');
-  var legend='<div style="display:flex;gap:14px;align-items:center;justify-content:flex-end;padding:0 2px 6px;font-size:11px;color:rgba(255,255,255,0.55);">'
-    +'<span style="display:flex;align-items:center;gap:5px;"><i style="width:9px;height:9px;border-radius:2px;background:#00C853;display:inline-block;"></i>收入</span>'
-    +'<span style="display:flex;align-items:center;gap:5px;"><i style="width:9px;height:9px;border-radius:2px;background:#22D3EE;display:inline-block;"></i>時數</span>'
-  +'</div>';
-  el.innerHTML=legend+'<div style="width:100%;overflow-x:auto;"><div style="min-width:760px;display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div></div>';
+  el.innerHTML='<div style="width:100%;overflow-x:auto;"><div style="min-width:600px;display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div></div>';
 }
 // 統計
 function updateStats(){
