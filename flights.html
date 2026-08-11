@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>機票追蹤 · Sumoai's Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF6EE; --card:#fff; --ink:#3B2F2A; --sub:#8A7B72; --line:#EADFD3;
+  --orange:#FF6B35; --green:#2E9E5B; --red:#E23B3B; --blue:#3B86D6; --amber:#EBA908;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;}
+.num{font-family:'Space Mono',monospace}
+
+/* ===== shared menubar ===== */
+.global-menubar{position:fixed;top:0;left:0;right:0;height:28px;z-index:9999;display:flex;align-items:center;
+  gap:14px;padding:0 12px;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  color:#fff;font-size:12.5px;user-select:none}
+.global-menubar a{color:#fff;text-decoration:none;font-weight:700}
+.gmb-menu{opacity:.82}
+.gmb-right{margin-left:auto;display:flex;align-items:center;gap:10px;opacity:.92}
+.gmb-right img{height:11px;border-radius:1px;display:block}
+@media(max-width:720px){.gmb-menu{display:none}}
+
+/* ===== layout ===== */
+.wrap{display:flex;min-height:100vh;padding-top:28px}
+aside{width:288px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;position:sticky;top:28px;height:calc(100vh - 28px)}
+.side-head{padding:16px 16px 10px}
+.side-head h1{margin:0;font-size:19px;letter-spacing:.5px}
+.side-head p{margin:3px 0 0;font-size:11.5px;color:var(--sub)}
+.sb-scroll{flex:1;overflow-y:auto;padding:6px 10px 10px}
+.sb-scroll::-webkit-scrollbar{width:7px}
+.sb-scroll::-webkit-scrollbar-thumb{background:#E2D5C7;border-radius:4px}
+
+.wt{position:relative;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:62px;
+  padding:9px 12px;margin-bottom:7px;border-radius:12px;border:1px solid var(--line);background:#fff;
+  cursor:pointer;overflow:hidden;transition:transform .12s,box-shadow .12s}
+.wt:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(59,47,42,.10)}
+.wt.on{border-color:var(--orange);box-shadow:0 6px 18px rgba(255,107,53,.20)}
+.wt .flagbg{position:absolute;inset:0;background-position:left center;background-size:auto 100%;
+  background-repeat:no-repeat;opacity:.9}
+.wt .fade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.15) 0%,rgba(255,255,255,.86) 42%,#fff 72%)}
+.wt .t{position:relative;text-align:right}
+.wt-route{font-size:14.5px;font-weight:700;text-shadow:0 1px 0 #fff}
+.wt-when{font-size:11px;color:var(--sub);text-shadow:0 1px 0 #fff}
+.wt-price{font-size:15px;font-weight:700}
+.wt-price.hit{color:var(--green)}
+.wt-price.none{color:var(--sub);font-weight:400;font-size:12px}
+.wt.off{opacity:.5}
+
+.side-foot{border-top:1px solid var(--line);padding:10px 12px;font-size:11.5px;color:var(--sub);
+  display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.dot.dirty{background:var(--orange);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+main{flex:1;padding:22px 26px 60px;max-width:1040px}
+.mhead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.mhead h2{margin:0;font-size:26px;letter-spacing:.5px}
+.mhead .sub{font-size:12.5px;color:var(--sub);margin-left:2px}
+.mhead .sp{flex:1}
+
+button{font:inherit;cursor:pointer}
+.btn{border:none;border-radius:9px;padding:8px 15px;font-size:13px;font-weight:700;background:var(--orange);
+  color:#fff;box-shadow:0 3px 8px rgba(255,107,53,.28);transition:transform .1s,box-shadow .12s}
+.btn:hover{box-shadow:0 5px 14px rgba(255,107,53,.36)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:#D9C8B8}
+.btn.sm{padding:6px 11px;font-size:12px}
+.btn.danger{background:var(--red);box-shadow:0 3px 8px rgba(226,59,59,.25)}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;
+  box-shadow:0 2px 8px rgba(59,47,42,.05)}
+.stat-card .k{font-size:11.5px;color:var(--sub);margin-bottom:5px}
+.stat-card .v{font-size:22px;font-weight:700;line-height:1.15}
+.stat-card .n{font-size:11px;color:var(--sub);margin-top:3px}
+.v.good{color:var(--green)} .v.bad{color:var(--red)} .v.mute{color:var(--sub);font-size:15px}
+
+.chart-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px 10px;margin-bottom:18px;
+  box-shadow:0 2px 8px rgba(59,47,42,.05)}
+.chart-box h3{margin:0 0 12px;font-size:14px;letter-spacing:.4px;display:flex;align-items:center;gap:8px}
+.chart-box h3 .tip{font-size:11px;font-weight:400;color:var(--sub)}
+.empty{color:var(--sub);font-size:12.5px;padding:16px 2px}
+
+.bars{display:flex;flex-direction:column;gap:5px;max-height:330px;overflow-y:auto;padding-right:4px}
+.bars::-webkit-scrollbar{width:7px}
+.bars::-webkit-scrollbar-thumb{background:#E2D5C7;border-radius:4px}
+.bar{display:flex;align-items:center;gap:9px;font-size:12px;text-decoration:none;color:inherit;border-radius:7px;
+  padding:2px 4px}
+.bar:hover{background:#FFF3EC}
+.bar .d{width:74px;flex-shrink:0;color:var(--sub)}
+.bar .track{flex:1;height:17px;background:#F4EBE1;border-radius:5px;overflow:hidden}
+.bar .fill{height:100%;background:#F6C9B4;border-radius:5px}
+.bar.best .fill{background:var(--orange)}
+.bar .p{width:82px;text-align:right;flex-shrink:0;font-weight:700}
+.bar.best .p{color:var(--orange)}
+.bar .x{width:52px;text-align:right;flex-shrink:0;color:var(--sub);font-size:11px}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:11px;color:var(--sub);font-weight:400}
+td.r,th.r{text-align:right}
+
+/* modal */
+.mask{position:fixed;inset:0;background:rgba(59,47,42,.42);backdrop-filter:blur(3px);z-index:9000;
+  display:none;align-items:center;justify-content:center;padding:16px}
+.mask.on{display:flex}
+.modal{background:#fff;border-radius:16px;width:min(560px,100%);max-height:88vh;overflow-y:auto;padding:20px 22px;
+  box-shadow:0 24px 60px rgba(59,47,42,.28);animation:pop .18s ease-out}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{margin:0 0 14px;font-size:17px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f.full{grid-column:1/-1}
+.f label{font-size:11.5px;color:var(--sub)}
+.f input,.f select{font:inherit;font-size:13.5px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;
+  background:#FFFDFB;color:var(--ink);width:100%}
+.f input:focus,.f select:focus{outline:none;border-color:var(--orange)}
+.mfoot{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.mfoot .sp{flex:1}
+.hint{font-size:11.5px;color:var(--sub);line-height:1.6;margin:10px 0 0}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#3B2F2A;color:#fff;
+  padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:9999}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#err{display:none;background:#FDE7E7;border:1px solid #F3B9B9;color:#9B2222;border-radius:12px;padding:11px 14px;
+  font-size:12.5px;margin-bottom:16px;line-height:1.6}
+
+@media(max-width:860px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .wrap{flex-direction:column}
+  aside{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--line)}
+  .sb-scroll{max-height:230px}
+  main{padding:16px 14px 50px}
+  .grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="global-menubar">
+  <span>🗿</span><a href="index.html">Sumoai's Reel</a>
+  <span class="gmb-menu">檔案</span><span class="gmb-menu">編輯</span><span class="gmb-menu">顯示方式</span>
+  <span class="gmb-menu">前往</span><span class="gmb-menu">視窗</span><span class="gmb-menu">輔助說明</span>
+  <span class="gmb-right">
+    <img src="https://flagcdn.com/tw.svg" alt="TW">
+    <span id="gmbTime" class="num"></span>
+  </span>
+</div>
+
+<div class="wrap">
+  <aside>
+    <div class="side-head">
+      <h1>機票追蹤</h1>
+      <p>盯著每條路線的最低價，跌破就通知</p>
+    </div>
+    <div class="sb-scroll" id="wlist"></div>
+    <div style="padding:0 12px 10px;display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn sm" onclick="openWatch()">＋ 新增路線</button>
+      <button class="btn sm ghost" onclick="openSettings()">設定</button>
+    </div>
+    <div class="side-foot">
+      <span class="dot" id="syncDot"></span>
+      <span id="syncTxt">載入中…</span>
+      <button class="btn sm ghost" style="margin-left:auto" onclick="pushToGitHub()">同步</button>
+    </div>
+  </aside>
+
+  <main>
+    <div id="err"></div>
+    <div id="content"></div>
+  </main>
+</div>
+
+<div class="mask" id="mWatch"><div class="modal">
+  <h3 id="wTitle">新增路線</h3>
+  <div class="grid">
+    <div class="f"><label>出發地</label>
+      <input id="fOrigin" list="cityList" placeholder="台北 桃園 TPE" autocomplete="off"></div>
+    <div class="f"><label>目的地</label>
+      <input id="fDest" list="cityList" placeholder="東京 TYO" autocomplete="off"></div>
+    <div class="f"><label>出發日 · 最早</label><input type="date" id="fFrom"></div>
+    <div class="f"><label>出發日 · 最晚</label><input type="date" id="fTo"></div>
+    <div class="f"><label>行程型態</label>
+      <select id="fTrip" onchange="tripToggle()">
+        <option value="rt">來回</option><option value="ow">單程</option>
+      </select></div>
+    <div class="f" id="wrapDays"><label>停留天數（最少 ~ 最多）</label>
+      <div style="display:flex;gap:7px">
+        <input type="number" id="fMinD" min="1" max="60" value="4" class="num">
+        <input type="number" id="fMaxD" min="1" max="60" value="7" class="num">
+      </div></div>
+    <div class="f"><label>目標價（NT$，跌破就推 LINE）</label><input type="number" id="fTarget" class="num" placeholder="9000"></div>
+    <div class="f"><label>只看直飛</label>
+      <select id="fDirect"><option value="0">不限</option><option value="1">只要直飛</option></select></div>
+    <div class="f full"><label>備註名稱（可留白）</label><input id="fName" placeholder="例：秋天東京"></div>
+  </div>
+  <p class="hint">日期區間可以拉長一點——整個月都在監控，系統會挑出區間裡最便宜的那一天。</p>
+  <div class="mfoot">
+    <button class="btn ghost danger" id="wDel" style="background:#fff;color:var(--red);border:1px solid #F3B9B9;box-shadow:none" onclick="delWatch()">刪除</button>
+    <span class="sp"></span>
+    <button class="btn ghost" onclick="closeMask('mWatch')">取消</button>
+    <button class="btn" onclick="saveWatch()">儲存</button>
+  </div>
+</div></div>
+
+<div class="mask" id="mSet"><div class="modal">
+  <h3>設定</h3>
+  <div class="grid">
+    <div class="f full"><label>Worker 網址</label><input id="sWorker" placeholder="https://flight-watch.xxx.workers.dev"></div>
+    <div class="f full"><label>Worker 金鑰（SYNC_KEY）</label><input id="sKey" type="password" placeholder="手動查價時要帶"></div>
+    <div class="f"><label>Aviasales marker（可留白）</label><input id="sMarker" placeholder="聯盟編號"></div>
+    <div class="f"><label>幣別</label>
+      <select id="sCur"><option value="twd">TWD</option><option value="usd">USD</option><option value="jpy">JPY</option></select></div>
+    <div class="f full"><label>GitHub Token</label><input id="sToken" type="password" placeholder="存起來才能同步"></div>
+  </div>
+  <p class="hint">Worker 網址與金鑰只存在這台裝置的 localStorage，不會寫進 GitHub。</p>
+  <div class="mfoot">
+    <button class="btn ghost" onclick="closeMask('mSet')">取消</button>
+    <button class="btn" onclick="saveSettings()">儲存</button>
+  </div>
+</div></div>
+
+<datalist id="cityList"></datalist>
+<div id="toast"></div>
+
+<script>
+/* ============ 常數 ============ */
+const REPO_USER='sumoai-boop', REPO_NAME='sumoai-boop.github.io', BRANCH='main', FILE='flights-data.json';
+const RAW_URL=`https://raw.githubusercontent.com/${REPO_USER}/${REPO_NAME}/${BRANCH}/${FILE}`;
+const API_URL=`https://api.github.com/repos/${REPO_USER}/${REPO_NAME}/contents/${FILE}`;
+const TOKEN_KEY='sumoai_gh_token', SHA_KEY='gh_json_sha_flights';
+const LS_DB='flights_db', LS_DIRTY='flights_dirty';
+const LS_WORKER='fw_worker_url', LS_WKEY='fw_worker_key';
+
+/* ============ 城市表（中文 / IATA / 國旗） ============ */
+const CITIES=[
+["TPE","台北桃園","tw"],["TSA","台北松山","tw"],["KHH","高雄","tw"],["RMQ","台中","tw"],
+["TYO","東京","jp"],["NRT","東京成田","jp"],["HND","東京羽田","jp"],["OSA","大阪","jp"],["KIX","大阪關西","jp"],
+["NGO","名古屋","jp"],["FUK","福岡","jp"],["CTS","札幌","jp"],["OKA","沖繩","jp"],["SDJ","仙台","jp"],
+["HIJ","廣島","jp"],["KMJ","熊本","jp"],["KOJ","鹿兒島","jp"],["TAK","高松","jp"],["KMQ","小松","jp"],
+["SEL","首爾","kr"],["ICN","首爾仁川","kr"],["PUS","釜山","kr"],["CJU","濟州","kr"],["TAE","大邱","kr"],
+["HKG","香港","hk"],["MFM","澳門","mo"],
+["BKK","曼谷","th"],["HKT","普吉","th"],["CNX","清邁","th"],
+["SIN","新加坡","sg"],["KUL","吉隆坡","my"],["PEN","檳城","my"],
+["SGN","胡志明市","vn"],["HAN","河內","vn"],["DAD","峴港","vn"],["PQC","富國島","vn"],
+["MNL","馬尼拉","ph"],["CEB","宿霧","ph"],
+["DPS","峇里島","id"],["CGK","雅加達","id"],
+["SHA","上海","cn"],["PVG","上海浦東","cn"],["PEK","北京","cn"],["CAN","廣州","cn"],["XMN","廈門","cn"],["CTU","成都","cn"],
+["SYD","雪梨","au"],["MEL","墨爾本","au"],["BNE","布里斯本","au"],["AKL","奧克蘭","nz"],
+["LAX","洛杉磯","us"],["SFO","舊金山","us"],["SEA","西雅圖","us"],["NYC","紐約","us"],["LAS","拉斯維加斯","us"],
+["HNL","檀香山","us"],["ORD","芝加哥","us"],["YVR","溫哥華","ca"],["YYZ","多倫多","ca"],
+["LON","倫敦","gb"],["PAR","巴黎","fr"],["AMS","阿姆斯特丹","nl"],["FRA","法蘭克福","de"],["MUC","慕尼黑","de"],
+["ZRH","蘇黎世","ch"],["VIE","維也納","at"],["ROM","羅馬","it"],["MXP","米蘭","it"],["BCN","巴塞隆納","es"],
+["MAD","馬德里","es"],["PRG","布拉格","cz"],["IST","伊斯坦堡","tr"],["HEL","赫爾辛基","fi"],["CPH","哥本哈根","dk"],
+["ARN","斯德哥爾摩","se"],["OSL","奧斯陸","no"],["LIS","里斯本","pt"],
+["DXB","杜拜","ae"],["DOH","杜哈","qa"],["DEL","德里","in"],["KTM","加德滿都","np"],
+["CAI","開羅","eg"],["JNB","約翰尼斯堡","za"]
+];
+const CITY_BY_IATA={}; CITIES.forEach(c=>CITY_BY_IATA[c[0]]=c);
+document.getElementById('cityList').innerHTML=CITIES.map(c=>`<option value="${c[1]} ${c[0]}">`).join('');
+
+function parseCity(s){
+  s=(s||'').trim().toUpperCase();
+  const m=s.match(/\b([A-Z]{3})\b/);
+  if(m&&CITY_BY_IATA[m[1]]) return CITY_BY_IATA[m[1]];
+  if(m) return [m[1],m[1],''];
+  const hit=CITIES.find(c=>c[1]===(s||'').trim());
+  return hit||null;
+}
+const zhOf=i=>CITY_BY_IATA[i]?CITY_BY_IATA[i][1]:i;
+const ccOf=i=>CITY_BY_IATA[i]?CITY_BY_IATA[i][2]:'';
+
+/* ============ 小工具 ============ */
+let DB={version:1,updated:'',settings:{marker:'',currency:'twd',market:'tw'},watches:[]};
+let curId=null, dirty=+(localStorage.getItem(LS_DIRTY)||0), fileSha=localStorage.getItem(SHA_KEY)||null;
+let editId=null;
+
+const $=id=>document.getElementById(id);
+const money=n=>(n==null||isNaN(n))?'—':'NT$'+Math.round(n).toLocaleString('en-US');
+const uid=()=>'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200);}
+function showErr(msg){const e=$('err');e.style.display='block';e.innerHTML=msg+' <button class="btn sm ghost" style="margin-left:8px" onclick="init()">重新載入</button>';}
+function hideErr(){$('err').style.display='none';}
+function dstr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function md(s){return s?s.slice(5).replace('-','/'):'';}
+function wdOf(s){const d=new Date(s+'T00:00:00');return '日一二三四五六'[d.getDay()];}
+function ago(iso){
+  if(!iso)return '尚未查價';
+  const m=Math.floor((Date.now()-new Date(iso))/60000);
+  if(m<60)return m+' 分鐘前'; if(m<1440)return Math.floor(m/60)+' 小時前';
+  return Math.floor(m/1440)+' 天前';
+}
+function ticketUrl(link){
+  if(!link) return 'https://www.aviasales.com/';
+  let u = link.startsWith('/search/') ? 'https://www.aviasales.com'+link
+        : 'https://www.aviasales.com/search'+(link.startsWith('/')?link:'/'+link);
+  const mk=(DB.settings&&DB.settings.marker)||'';
+  if(mk) u+=(u.indexOf('?')<0?'?':'&')+'marker='+encodeURIComponent(mk);
+  return u;
+}
+/* base64（中文安全） */
+function b64enc(str){
+  const bytes=new TextEncoder().encode(str); let bin='';
+  for(let i=0;i<bytes.length;i+=0x8000) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));
+  return btoa(bin);
+}
+function b64dec(b64){
+  const bin=atob(b64.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+/* ============ 時鐘 ============ */
+(function clock(){
+  const t=new Date();
+  $('gmbTime').textContent='週'+'日一二三四五六'[t.getDay()]+' '+(t.getMonth()+1)+'/'+t.getDate()+' '+
+    String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+  setTimeout(clock,10000);
+})();
+
+/* ============ 讀寫 GitHub ============ */
+async function ghFetch(url,opt,tries){
+  tries=tries||2;
+  for(let i=0;i<tries;i++){
+    try{const r=await fetch(url,opt); return r;}
+    catch(e){ if(i===tries-1) throw new Error('連不上 '+url.split('?')[0]+'（'+e.message+'）'); await new Promise(r=>setTimeout(r,700)); }
+  }
+}
+async function ghRead(){
+  // 1) raw（無 token、無 1MB 上限、CORS 友善）
+  try{
+    const r=await ghFetch(RAW_URL+'?t='+Date.now(),{cache:'no-store'});
+    if(r.ok){const j=await r.json(); if(j&&Array.isArray(j.watches)) return j;}
+    if(r.status===404) return null; // 檔案還沒建立
+  }catch(e){ /* 落到 Worker */ }
+  // 2) Worker /data 備援
+  const wk=localStorage.getItem(LS_WORKER);
+  if(wk){
+    try{const r=await ghFetch(wk.replace(/\/$/,'')+'/data');
+      if(r.ok){const j=await r.json(); if(j&&Array.isArray(j.watches)) return j;}
+    }catch(e){}
+  }
+  throw new Error('讀不到 '+FILE+'：raw 與 Worker 都失敗');
+}
+async function ghFileInfo(token){
+  const r=await ghFetch(API_URL+'?ref='+BRANCH,{headers:{Authorization:'token '+token,Accept:'application/vnd.github+json'}});
+  if(r.status===404) return null;
+  if(!r.ok) throw new Error('取得檔案資訊失敗（HTTP '+r.status+'）');
+  const j=await r.json(); return j.sha;
+}
+function requireToken(){
+  let t=localStorage.getItem(TOKEN_KEY);
+  if(!t){t=prompt('請輸入 GitHub Token：'); if(t){t=t.trim(); localStorage.setItem(TOKEN_KEY,t);} }
+  return t;
+}
+async function pushToGitHub(){
+  const token=requireToken(); if(!token) return;
+  try{
+    // 先合併遠端（Worker 也會寫這個檔，查價結果以遠端為準）
+    let remote=null; try{remote=await ghRead();}catch(e){}
+    if(remote&&Array.isArray(remote.watches)){
+      const rm={}; remote.watches.forEach(w=>rm[w.id]=w);
+      DB.watches.forEach(w=>{
+        const r=rm[w.id]; if(!r) return;
+        w.latest=r.latest||w.latest; w.best=r.best||w.best; w.byDate=r.byDate||w.byDate;
+        w.notified=r.notified||w.notified;
+        if(Array.isArray(r.history)&&r.history.length>=((w.history||[]).length)) w.history=r.history;
+      });
+    }
+    DB.updated=new Date().toISOString();
+    const sha=await ghFileInfo(token);
+    const body={message:'update flights-data.json ('+DB.watches.length+' watches)',
+      content:b64enc(JSON.stringify(DB)),branch:BRANCH};
+    if(sha) body.sha=sha;
+    const r=await ghFetch(API_URL,{method:'PUT',headers:{Authorization:'token '+token,
+      Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){const t=await r.text(); throw new Error('HTTP '+r.status+' '+t.slice(0,160));}
+    const j=await r.json(); if(j.content&&j.content.sha) localStorage.setItem(SHA_KEY,j.content.sha);
+    dirty=0; localStorage.setItem(LS_DIRTY,'0'); saveLocal(); renderSync(); render();
+    toast('已同步到 GitHub');
+  }catch(e){ toast('同步失敗：'+e.message); }
+}
+function saveLocal(){ localStorage.setItem(LS_DB,JSON.stringify(DB)); }
+function markDirty(){ dirty++; localStorage.setItem(LS_DIRTY,String(dirty)); saveLocal(); renderSync(); }
+function renderSync(){
+  $('syncDot').className='dot'+(dirty?' dirty':'');
+  $('syncTxt').textContent=dirty?(dirty+' 筆未同步'):'已同步';
+}
+window.addEventListener('beforeunload',e=>{ if(dirty){e.preventDefault();e.returnValue='';} });
+
+/* ============ 手動查價 ============ */
+async function runNow(id){
+  const wk=(localStorage.getItem(LS_WORKER)||'').replace(/\/$/,'');
+  if(!wk){ toast('先到「設定」填 Worker 網址'); return openSettings(); }
+  const key=localStorage.getItem(LS_WKEY)||'';
+  toast('查價中…');
+  try{
+    const u=wk+'/run?key='+encodeURIComponent(key)+(id?('&id='+encodeURIComponent(id)):'');
+    const r=await fetch(u); const j=await r.json();
+    if(!r.ok||j.error) throw new Error(j.error||('HTTP '+r.status));
+    const fresh=await ghRead();
+    if(fresh&&Array.isArray(fresh.watches)){ mergeRemote(fresh); saveLocal(); render(); }
+    toast('查價完成：'+(j.checked||0)+' 條路線'+(j.notified?('，'+j.notified+' 則通知'):''));
+  }catch(e){ toast('查價失敗：'+e.message); }
+}
+function mergeRemote(remote){
+  const rm={}; remote.watches.forEach(w=>rm[w.id]=w);
+  DB.watches.forEach(w=>{ const r=rm[w.id]; if(!r)return;
+    w.latest=r.latest; w.best=r.best; w.byDate=r.byDate; w.history=r.history; w.notified=r.notified; });
+  DB.updated=remote.updated||DB.updated;
+}
+
+/* ============ 監控清單 ============ */
+function renderList(){
+  const box=$('wlist');
+  if(!DB.watches.length){ box.innerHTML='<p class="empty" style="padding:14px 6px">還沒有監控路線。按下方「＋ 新增路線」開始。</p>'; return; }
+  box.innerHTML=DB.watches.map(w=>{
+    const cc=ccOf(w.dest);
+    const flag=cc?`<div class="flagbg" style="background-image:url(https://flagcdn.com/256x192/${cc}.png)"></div><div class="fade"></div>`:'';
+    const p=w.latest&&w.latest.price;
+    const hit=w.target&&p&&p<=w.target;
+    const priceHtml=p?`<div class="wt-price num ${hit?'hit':''}">${money(p)}${hit?' ✓':''}</div>`
+                     :`<div class="wt-price none">尚未查價</div>`;
+    return `<div class="wt ${w.id===curId?'on':''} ${w.active===false?'off':''}" onclick="select('${w.id}')">
+      ${flag}
+      <div class="t">
+        <div class="wt-route">${zhOf(w.dest)} <span style="color:var(--sub);font-weight:400">${w.origin}→${w.dest}</span></div>
+        <div class="wt-when num">${md(w.from)}–${md(w.to)}${w.trip==='ow'?' 單程':' 停留'+w.minD+'-'+w.maxD+'天'}</div>
+        ${priceHtml}
+      </div></div>`;
+  }).join('');
+}
+function select(id){ curId=id; render(); }
+
+/* ============ 主畫面 ============ */
+function render(){
+  renderList(); renderSync();
+  const c=$('content');
+  if(!DB.watches.length){
+    c.innerHTML=`<div class="mhead"><h2>還沒有在盯的航線</h2></div>
+      <div class="chart-box"><p class="empty">新增一條路線：選出發地、目的地、一段出發日期區間，再填一個你願意出手的目標價。
+      Worker 每天定時查一次，區間裡最便宜的那天跌破目標價就推 LINE 給你。</p>
+      <button class="btn" onclick="openWatch()">＋ 新增路線</button></div>`;
+    return;
+  }
+  if(!curId||!DB.watches.some(w=>w.id===curId)) curId=DB.watches[0].id;
+  const w=DB.watches.find(x=>x.id===curId);
+  const p=w.latest&&w.latest.price, best=w.best&&w.best.price;
+  const gap=(w.target&&p)?(p-w.target):null;
+  const prev=(w.history||[]).length>1?w.history[w.history.length-2].price:null;
+  const diff=(prev&&p)?(p-prev):null;
+
+  c.innerHTML=`
+  <div class="mhead">
+    <h2>${zhOf(w.origin)} → ${zhOf(w.dest)}</h2>
+    <span class="sub num">${w.origin}–${w.dest} ／ ${w.from} ~ ${w.to} ／ ${w.trip==='ow'?'單程':'來回 停留 '+w.minD+'-'+w.maxD+' 天'}${w.direct?' ／ 只看直飛':''}</span>
+    <span class="sp"></span>
+    <button class="btn sm" onclick="runNow('${w.id}')">立即查價</button>
+    <button class="btn sm ghost" onclick="openWatch('${w.id}')">編輯</button>
+    <button class="btn sm ghost" onclick="toggleActive('${w.id}')">${w.active===false?'恢復監控':'暫停監控'}</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card"><div class="k">目前最低</div>
+      <div class="v num ${w.target&&p&&p<=w.target?'good':''}">${money(p)}</div>
+      <div class="n">${w.latest?(md(w.latest.date)+' ('+wdOf(w.latest.date)+') 出發'):'尚無資料'}</div></div>
+    <div class="stat-card"><div class="k">歷史最低</div>
+      <div class="v num">${money(best)}</div>
+      <div class="n">${w.best?ago(w.best.at)+'　'+md(w.best.date)+' 出發':'—'}</div></div>
+    <div class="stat-card"><div class="k">目標價</div>
+      <div class="v num ${gap!=null?(gap<=0?'good':'bad'):'mute'}">${w.target?money(w.target):'未設定'}</div>
+      <div class="n">${gap==null?'設定後跌破會推 LINE':(gap<=0?'已達標 ✓':'還差 '+money(gap))}</div></div>
+    <div class="stat-card"><div class="k">上次查價</div>
+      <div class="v mute">${ago(w.latest&&w.latest.at)}</div>
+      <div class="n">${diff==null?'—':(diff<0?'↓ 比上次少 '+money(-diff):(diff>0?'↑ 比上次多 '+money(diff):'與上次持平'))}</div></div>
+  </div>
+
+  <div class="chart-box"><h3>價格走勢 <span class="tip">每次查價的區間最低價</span></h3>${trendSVG(w)}</div>
+
+  <div class="chart-box"><h3>區間內每日最低價 <span class="tip">點一下開 Aviasales 訂票頁</span></h3>${byDateHTML(w)}</div>
+
+  <div class="chart-box"><h3>查價紀錄</h3>${histHTML(w)}
+    <p class="hint">價格來自 Aviasales 快取（最近 7 天內其他使用者搜到的票價），適合看趨勢；真的要下訂前，務必到訂票頁確認當下票價。</p>
+  </div>`;
+}
+
+function trendSVG(w){
+  const h=(w.history||[]).filter(x=>x&&x.price);
+  if(h.length<2) return '<p class="empty">至少要兩次查價才畫得出走勢。</p>';
+  const W=640,H=200,PL=54,PR=14,PT=16,PB=26;
+  const ps=h.map(x=>x.price), tg=w.target||null;
+  let lo=Math.min.apply(null,ps), hi=Math.max.apply(null,ps);
+  if(tg){lo=Math.min(lo,tg);hi=Math.max(hi,tg);}
+  const pad=(hi-lo)*0.15||Math.max(hi*0.05,100); lo-=pad; hi+=pad;
+  const X=i=>PL+(W-PL-PR)*(h.length===1?0.5:i/(h.length-1));
+  const Y=v=>PT+(H-PT-PB)*(1-(v-lo)/(hi-lo||1));
+  const pts=h.map((x,i)=>X(i)+','+Y(x.price));
+  const area=`M${X(0)},${H-PB} L`+pts.join(' L')+` L${X(h.length-1)},${H-PB} Z`;
+  const minI=ps.indexOf(Math.min.apply(null,ps));
+  let g='';
+  for(let i=0;i<4;i++){const v=lo+(hi-lo)*i/3, y=Y(v);
+    g+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#EFE4D8" stroke-width="1"/>
+        <text x="${PL-7}" y="${y+4}" text-anchor="end" font-size="10" fill="#8A7B72" font-family="Space Mono">${Math.round(v/1000)}k</text>`;}
+  const tline=tg?`<line x1="${PL}" y1="${Y(tg)}" x2="${W-PR}" y2="${Y(tg)}" stroke="#2E9E5B" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="${W-PR}" y="${Y(tg)-6}" text-anchor="end" font-size="10" fill="#2E9E5B" font-family="Space Mono">目標 ${Math.round(tg).toLocaleString()}</text>`:'';
+  const labs=h.map((x,i)=> (i===0||i===h.length-1||i===minI)
+    ? `<text x="${X(i)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#8A7B72" font-family="Space Mono">${(x.at||'').slice(5,10)}</text>`:'').join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+    ${g}<path d="${area}" fill="rgba(255,107,53,.10)"/>
+    <polyline points="${pts.join(' ')}" fill="none" stroke="#FF6B35" stroke-width="2.2" stroke-linejoin="round"/>
+    ${tline}
+    ${h.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x.price)}" r="${i===minI?4.5:2.6}" fill="${i===minI?'#2E9E5B':'#FF6B35'}"><title>${(x.at||'').slice(0,10)}　${money(x.price)}</title></circle>`).join('')}
+    <text x="${X(minI)}" y="${Y(ps[minI])-10}" text-anchor="middle" font-size="10.5" fill="#2E9E5B" font-family="Space Mono">${Math.round(ps[minI]).toLocaleString()}</text>
+    ${labs}</svg>`;
+}
+
+function byDateHTML(w){
+  const bd=w.byDate||{};
+  const keys=Object.keys(bd).filter(k=>k>=w.from&&k<=w.to).sort();
+  if(!keys.length) return '<p class="empty">還沒有這個區間的每日票價。按右上「立即查價」抓一次。</p>';
+  const vals=keys.map(k=>bd[k].p), mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
+  return '<div class="bars">'+keys.map(k=>{
+    const d=bd[k], pc=mx===mn?100:(28+72*(d.p-mn)/(mx-mn));
+    return `<a class="bar ${d.p===mn?'best':''}" href="${ticketUrl(d.l)}" target="_blank" rel="noopener">
+      <span class="d num">${md(k)} (${wdOf(k)})</span>
+      <span class="track"><span class="fill" style="width:${pc}%"></span></span>
+      <span class="p num">${money(d.p)}</span>
+      <span class="x">${d.a||''}${d.t?' ·'+d.t+'轉':' ·直飛'}</span></a>`;
+  }).join('')+'</div>';
+}
+
+function histHTML(w){
+  const h=(w.history||[]).slice().reverse().slice(0,20);
+  if(!h.length) return '<p class="empty">尚無查價紀錄。</p>';
+  return `<table><tr><th>查價時間</th><th>最便宜出發日</th><th>航空</th><th class="r">價格</th><th class="r">變化</th></tr>`+
+    h.map((x,i)=>{
+      const nx=h[i+1]; const d=nx?x.price-nx.price:null;
+      return `<tr><td class="num">${(x.at||'').replace('T',' ').slice(0,16)}</td>
+        <td class="num">${md(x.date)} (${x.date?wdOf(x.date):''})</td>
+        <td>${x.airline||'—'}</td>
+        <td class="r num">${money(x.price)}</td>
+        <td class="r num" style="color:${d==null?'#8A7B72':(d<0?'#2E9E5B':(d>0?'#E23B3B':'#8A7B72'))}">${d==null?'—':(d>0?'+':'')+Math.round(d).toLocaleString()}</td></tr>`;
+    }).join('')+'</table>';
+}
+
+/* ============ 新增 / 編輯 ============ */
+function openMask(id){$(id).classList.add('on')}
+function closeMask(id){$(id).classList.remove('on')}
+function tripToggle(){ $('wrapDays').style.display = $('fTrip').value==='ow'?'none':'flex'; }
+function openWatch(id){
+  editId=id||null;
+  $('wTitle').textContent=id?'編輯路線':'新增路線';
+  $('wDel').style.display=id?'inline-block':'none';
+  const w=id?DB.watches.find(x=>x.id===id):null;
+  const t=new Date(), plus=new Date(Date.now()+90*864e5);
+  $('fOrigin').value=w?(zhOf(w.origin)+' '+w.origin):'台北桃園 TPE';
+  $('fDest').value=w?(zhOf(w.dest)+' '+w.dest):'';
+  $('fFrom').value=w?w.from:dstr(plus);
+  $('fTo').value=w?w.to:dstr(new Date(plus.getTime()+29*864e5));
+  $('fTrip').value=w?w.trip:'rt';
+  $('fMinD').value=w?w.minD:4; $('fMaxD').value=w?w.maxD:7;
+  $('fTarget').value=w&&w.target?w.target:'';
+  $('fDirect').value=w&&w.direct?'1':'0';
+  $('fName').value=w?(w.name||''):'';
+  tripToggle(); openMask('mWatch');
+}
+function saveWatch(){
+  const o=parseCity($('fOrigin').value), d=parseCity($('fDest').value);
+  if(!o||!d) return toast('出發地／目的地請選清單裡的城市，或直接輸入 3 碼 IATA');
+  const from=$('fFrom').value, to=$('fTo').value;
+  if(!from||!to||to<from) return toast('日期區間怪怪的，最晚不能早於最早');
+  const w={
+    id:editId||uid(), name:$('fName').value.trim(),
+    origin:o[0], dest:d[0], from, to,
+    trip:$('fTrip').value, minD:+$('fMinD').value||4, maxD:+$('fMaxD').value||7,
+    target:$('fTarget').value?+$('fTarget').value:null,
+    direct:$('fDirect').value==='1', active:true,
+    latest:null,best:null,byDate:{},history:[],notified:null,created:new Date().toISOString()
+  };
+  if(w.maxD<w.minD) w.maxD=w.minD;
+  if(editId){
+    const old=DB.watches.find(x=>x.id===editId);
+    w.latest=old.latest; w.best=old.best; w.byDate=old.byDate; w.history=old.history;
+    w.notified=old.notified; w.active=old.active!==false; w.created=old.created;
+    // 路線或區間改了，舊的每日價就不準了
+    if(old.origin!==w.origin||old.dest!==w.dest) { w.byDate={}; w.history=[]; w.latest=null; w.best=null; }
+    DB.watches=DB.watches.map(x=>x.id===editId?w:x);
+  } else DB.watches.push(w);
+  const wasEdit=!!editId;
+  curId=w.id; editId=null; markDirty(); closeMask('mWatch'); render();
+  toast(wasEdit?'已更新':'已新增，按「立即查價」抓第一筆');
+}
+function delWatch(){
+  if(!editId) return;
+  if(!confirm('刪掉這條路線？連同它的查價紀錄一起。')) return;
+  DB.watches=DB.watches.filter(x=>x.id!==editId);
+  if(curId===editId) curId=null;
+  editId=null; markDirty(); closeMask('mWatch'); render();
+}
+function toggleActive(id){
+  const w=DB.watches.find(x=>x.id===id); w.active=(w.active===false);
+  markDirty(); render(); toast(w.active?'恢復監控':'已暫停，定時查價會略過');
+}
+
+/* ============ 設定 ============ */
+function openSettings(){
+  $('sWorker').value=localStorage.getItem(LS_WORKER)||'';
+  $('sKey').value=localStorage.getItem(LS_WKEY)||'';
+  $('sMarker').value=(DB.settings&&DB.settings.marker)||'';
+  $('sCur').value=(DB.settings&&DB.settings.currency)||'twd';
+  $('sToken').value=localStorage.getItem(TOKEN_KEY)||'';
+  openMask('mSet');
+}
+function saveSettings(){
+  localStorage.setItem(LS_WORKER,$('sWorker').value.trim().replace(/\/$/,''));
+  localStorage.setItem(LS_WKEY,$('sKey').value.trim());
+  if($('sToken').value.trim()) localStorage.setItem(TOKEN_KEY,$('sToken').value.trim());
+  DB.settings=DB.settings||{};
+  DB.settings.marker=$('sMarker').value.trim();
+  DB.settings.currency=$('sCur').value;
+  DB.settings.market='tw';
+  markDirty(); closeMask('mSet'); render(); toast('設定已儲存');
+}
+
+/* ============ 啟動 ============ */
+async function init(){
+  hideErr();
+  const local=localStorage.getItem(LS_DB);
+  if(local){ try{const j=JSON.parse(local); if(j&&Array.isArray(j.watches)) DB=j;}catch(e){} }
+  render();
+  try{
+    const remote=await ghRead();
+    if(remote){
+      if(dirty>0){ mergeRemote(remote); }            // 本機有未同步編輯 → 只取查價結果
+      else if(Array.isArray(remote.watches)) DB=remote;
+      saveLocal();
+    }
+  }catch(e){ showErr('讀取失敗：'+e.message+'（先用本機資料顯示）'); }
+  render();
+}
+init();
+</script>
+</body>
+</html>
