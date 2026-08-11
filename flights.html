@@ -415,7 +415,12 @@ async function runNow(id){
     if(!r.ok||j.error) throw new Error(j.error||('HTTP '+r.status));
     const fresh=await ghRead();
     if(fresh&&Array.isArray(fresh.watches)){ mergeRemote(fresh); saveLocal(); render(); }
-    toast('查價完成：'+(j.checked||0)+' 條路線'+(j.notified?('，'+j.notified+' 則通知'):''));
+    if(!j.checked&&j.failed){
+      const d=(j.details||[]).map(x=>x.route+'：'+(x.error||x.note||'無資料')).join('｜');
+      toast('查到 0 筆票價（'+j.failed+' 條沒資料）'+(d?'　'+d:''));
+    } else {
+      toast('查價完成：'+(j.checked||0)+' 條路線'+(j.failed?('，'+j.failed+' 條沒資料'):'')+(j.notified?('，'+j.notified+' 則通知'):''));
+    }
   }catch(e){ toast('查價失敗：'+e.message); }
 }
 function mergeRemote(remote){
@@ -597,8 +602,20 @@ function saveWatch(){
     const old=DB.watches.find(x=>x.id===editId);
     w.latest=old.latest; w.best=old.best; w.byDate=old.byDate; w.history=old.history;
     w.notified=old.notified; w.active=old.active!==false; w.created=old.created;
-    // 路線或區間改了，舊的每日價就不準了
-    if(old.origin!==w.origin||old.dest!==w.dest) { w.byDate={}; w.history=[]; w.latest=null; w.best=null; }
+    // 換了路線 → 舊資料全部作廢
+    if(old.origin!==w.origin||old.dest!==w.dest){ w.byDate={}; w.history=[]; w.latest=null; w.best=null; }
+    // 只是改了日期區間 → 保留區間內的每日價，重算最低價（舊的走勢是別的區間量出來的，清掉）
+    else if(old.from!==w.from||old.to!==w.to||old.trip!==w.trip||old.minD!==w.minD||old.maxD!==w.maxD||old.direct!==w.direct){
+      const bd={}; Object.keys(w.byDate||{}).forEach(k=>{ if(k>=w.from&&k<=w.to) bd[k]=w.byDate[k]; });
+      w.byDate=bd; w.history=[]; w.latest=null; w.best=null;
+      const ks=Object.keys(bd);
+      if(ks.length){
+        let b=ks[0]; ks.forEach(k=>{ if(bd[k].p<bd[b].p) b=k; });
+        const at=(old.latest&&old.latest.at)||new Date().toISOString();
+        w.latest={price:bd[b].p,date:b,ret:bd[b].r||'',airline:bd[b].a||'',transfers:bd[b].t||0,link:bd[b].l||'',at};
+        w.best={price:bd[b].p,date:b,at};
+      }
+    }
     DB.watches=DB.watches.map(x=>x.id===editId?w:x);
   } else DB.watches.push(w);
   const wasEdit=!!editId;
