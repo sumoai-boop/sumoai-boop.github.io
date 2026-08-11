@@ -662,9 +662,19 @@ async function init(){
   render();
   try{
     const remote=await ghRead();
-    if(remote){
+    if(remote&&Array.isArray(remote.watches)){
       if(dirty>0){ mergeRemote(remote); }            // 本機有未同步編輯 → 只取查價結果
-      else if(Array.isArray(remote.watches)) DB=remote;
+      else {
+        // 遠端沒有、但本機有的路線要留著，不能重整就人間蒸發
+        const rid=new Set(remote.watches.map(x=>x.id));
+        const only=(DB.watches||[]).filter(x=>!rid.has(x.id));
+        DB=remote;
+        if(only.length){
+          DB.watches=DB.watches.concat(only);
+          dirty+=only.length; localStorage.setItem(LS_DIRTY,String(dirty));
+          toast(only.length+' 條路線還沒推上 GitHub，請按同步');
+        }
+      }
       saveLocal();
     }
   }catch(e){ showErr('讀取失敗：'+e.message+'（先用本機資料顯示）'); }
