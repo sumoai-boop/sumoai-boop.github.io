@@ -402,6 +402,12 @@ async function runNow(id){
   const wk=(localStorage.getItem(LS_WORKER)||'').replace(/\/$/,'');
   if(!wk){ toast('先到「設定」填 Worker 網址'); return openSettings(); }
   const key=localStorage.getItem(LS_WKEY)||'';
+  // Worker 是讀 GitHub 上的 flights-data.json，本機新增的路線要先推上去它才看得到
+  if(dirty>0){
+    toast('先同步路線設定…');
+    await pushToGitHub();
+    if(dirty>0){ toast('同步沒成功，Worker 看不到新路線'); return; }
+  }
   toast('查價中…');
   try{
     const u=wk+'/run?key='+encodeURIComponent(key)+(id?('&id='+encodeURIComponent(id)):'');
