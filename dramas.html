@@ -67,9 +67,10 @@
   .score-perfect{color:#FFD700;font-size:16px;text-shadow:0 0 8px rgba(255,215,0,0.8);letter-spacing:1px;}
   .score-mid{color:#5FC79A;}
   .score-low{color:#E85555;}
-  .rev-cell{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#7FBF8E;}
-  .rev-cell .rev-na{color:#5E544C;font-weight:400;font-size:11px;}
-  .rev-cell .rev-load{color:#4A423B;font-weight:400;font-size:11px;}
+  .rev-cell{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#5FE39B;letter-spacing:0.01em;text-shadow:0 0 10px rgba(95,227,155,0.28);}
+  .rev-cell .rev-na{color:#6E635A;font-weight:400;font-size:12px;text-shadow:none;}
+  .rev-cell .rev-load{color:#8A7B6E;font-weight:400;font-size:12px;text-shadow:none;}
+  .rev-cell .rev-big{color:#FFD34E;text-shadow:0 0 12px rgba(255,211,78,0.4);}
   .venue-cinema{color:#D9C6AE;font-size:10px;font-weight:500;}
   .venue-home{color:#9C8B7A;font-size:10px;}
   .type-movie  {display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;background:#16A34A;color:#fff;font-weight:700;border:none;}
@@ -704,16 +705,37 @@ function resetPage(){ currentPage=1; render(); }
 
 window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low'; };
 // ── 票房（TMDB revenue，僅電影）──
-var REV_CACHE = (function(){ try{ return JSON.parse(localStorage.getItem('_revCache')||'{}'); }catch(e){ return {}; } })();
+var REV_TTL = 7*24*60*60*1000;   // 票房資料保留 7 天，過期自動重抓
+var REV_RAW = (function(){ try{ return JSON.parse(localStorage.getItem('_revCache')||'{}'); }catch(e){ return {}; } })();
+// 舊格式（純數字）自動升級成 {v:值, t:時間}
+(function(){
+  var now=Date.now();
+  Object.keys(REV_RAW).forEach(function(k){
+    var e=REV_RAW[k];
+    if(e===null || typeof e==='number') REV_RAW[k]={v:e, t:now};
+  });
+})();
+// 對外仍用 REV_CACHE[title] 取值，過期視為未抓過
+var REV_CACHE = new Proxy({}, {
+  get: function(_, k){
+    if(typeof k!=='string') return undefined;
+    var e=REV_RAW[k];
+    if(!e) return undefined;
+    if(Date.now()-(e.t||0) > REV_TTL) return undefined;   // 過期 → 當作沒抓過
+    return e.v;
+  },
+  set: function(_, k, v){ REV_RAW[k]={v:v, t:Date.now()}; return true; },
+  has: function(_, k){ return REV_CACHE[k]!==undefined; }
+});
 var _rvTimer=null;
 function saveRevCache(){
   clearTimeout(_rvTimer);
-  _rvTimer=setTimeout(function(){ try{ localStorage.setItem('_revCache', JSON.stringify(REV_CACHE)); }catch(e){} }, 800);
+  _rvTimer=setTimeout(function(){ try{ localStorage.setItem('_revCache', JSON.stringify(REV_RAW)); }catch(e){} }, 800);
 }
 function fmtRevenue(n){
   if(n==null) return '<span class="rev-na">—</span>';
   if(n<=0)    return '<span class="rev-na">無資料</span>';
-  if(n>=1e9)  return '$'+(n/1e9).toFixed(2).replace(/\.?0+$/,'')+'B';
+  if(n>=1e9)  return '<span class="rev-big">$'+(n/1e9).toFixed(2).replace(/\.?0+$/,'')+'B</span>';
   if(n>=1e6)  return '$'+(n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
   if(n>=1e3)  return '$'+(n/1e3).toFixed(0)+'K';
   return '$'+n;
