@@ -1,5 +1,35 @@
 [
   {
+    "id": "1786551839486",
+    "name": "大戶屋 南港車站店",
+    "name1": "大戶屋",
+    "name2": "南港車站店",
+    "type": "日本",
+    "meal": "",
+    "price": 880,
+    "visits": 1,
+    "gscore": 4.1,
+    "addr": "115臺北市南港區新光里忠孝東路七段369號7樓",
+    "note": "李孟錦",
+    "maps": "https://www.google.com.tw/maps/place/%E5%A4%A7%E6%88%B6%E5%B1%8B%E5%8D%97%E6%B8%AF%E8%BB%8A%E7%AB%99%E5%BA%97/@25.0526701,121.6046877,20z/data=!4m6!3m5!1s0x3442ab6767d0746d:0x55e2fe0d3aaedccd!8m2!3d25.0524563!4d121.6044202!16s%2Fg%2F11ckvn_hkh?entry=ttu&g_ep=EgoyMDI2MDgwOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-12",
+    "score": 4.2,
+    "visitLog": [
+      {
+        "date": "2026-08-12",
+        "meal": "午餐",
+        "price": 880,
+        "menu": "蛤蜊蒸籠飯與鹽麴雞肉野菜鍋定食"
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/sdMpC7DJ/f30d04ed414a.jpg",
+      "https://i.ibb.co/fzDNKzDD/48b690efe902.jpg"
+    ],
+    "img": "https://i.ibb.co/sdMpC7DJ/f30d04ed414a.jpg",
+    "createdAt": 1786551839486
+  },
+  {
     "id": "1786461097022",
     "name": "三媽臭臭鍋 農安店",
     "name1": "三媽臭臭鍋",
