@@ -1,5 +1,37 @@
 [
   {
+    "id": "1786629866036",
+    "name": "三山燒肉 朝富店",
+    "name1": "三山燒肉",
+    "name2": "朝富店",
+    "type": "燒肉",
+    "meal": "",
+    "price": 3588,
+    "visits": 1,
+    "gscore": 5,
+    "addr": "407臺中市西屯區潮洋里朝富路258號",
+    "note": "公主",
+    "maps": "https://www.google.com.tw/maps/place/%E4%B8%89%E5%B1%B1%E7%87%92%E8%82%89+%E6%9C%9D%E5%AF%8C%E5%BA%97/@24.163217,120.6325727,17z/data=!4m14!1m7!3m6!1s0x34693db0f5baed43:0x7ecb4ee82d606a57!2z5LiJ5bGx54eS6IKJIOacneWvjOW6lw!8m2!3d24.1632121!4d120.635153!16s%2Fg%2F11x_5p0f0p!3m5!1s0x34693db0f5baed43:0x7ecb4ee82d606a57!8m2!3d24.1632121!4d120.635153!16s%2Fg%2F11x_5p0f0p?entry=ttu&g_ep=EgoyMDI2MDgxMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-13",
+    "score": 5,
+    "visitLog": [
+      {
+        "date": "2026-08-13",
+        "meal": "午餐",
+        "price": 3588,
+        "menu": "日美澳牛肉雙人套餐",
+        "score": 5
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/RGKys8T7/ff579bb898d3.jpg",
+      "https://i.ibb.co/6cSzkdjD/fa9a7f02401d.jpg",
+      "https://i.ibb.co/zwY09HD/d8e73ecbf80b.jpg"
+    ],
+    "img": "https://i.ibb.co/RGKys8T7/ff579bb898d3.jpg",
+    "createdAt": 1786629866036
+  },
+  {
     "id": "1786551839486",
     "name": "大戶屋 南港車站店",
     "name1": "大戶屋",
