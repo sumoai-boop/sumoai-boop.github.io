@@ -11352,6 +11352,16 @@
   ],
   "uberWeekly": [
     {
+      "date": "2026-08-14",
+      "income": 1085,
+      "tripCount": 5,
+      "hours": 2,
+      "mins": 16,
+      "points": 15,
+      "note": "",
+      "id": 1786716244547
+    },
+    {
       "date": "2026-08-11",
       "income": 229,
       "tripCount": 2,
