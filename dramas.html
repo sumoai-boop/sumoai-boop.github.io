@@ -67,7 +67,7 @@
   .score-perfect{color:#FFD700;font-size:16px;text-shadow:0 0 8px rgba(255,215,0,0.8);letter-spacing:1px;}
   .score-mid{color:#5FC79A;}
   .score-low{color:#E85555;}
-  .rev-cell{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:#5FE39B;letter-spacing:0.01em;text-shadow:0 0 10px rgba(95,227,155,0.28);}
+  .rev-cell{cursor:pointer;font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:#5FE39B;letter-spacing:0.01em;text-shadow:0 0 10px rgba(95,227,155,0.28);}
   .rev-cell .rev-na{color:#6E635A;font-weight:400;font-size:12px;text-shadow:none;}
   .rev-cell .rev-load{color:#8A7B6E;font-weight:400;font-size:12px;text-shadow:none;}
   .rev-cell .rev-big{color:#FFD34E;text-shadow:0 0 12px rgba(255,211,78,0.4);}
@@ -705,28 +705,30 @@ function resetPage(){ currentPage=1; render(); }
 
 window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low'; };
 // ── 票房（TMDB revenue，僅電影）──
-var REV_TTL = 7*24*60*60*1000;   // 票房資料保留 7 天，過期自動重抓
+var REV_TTL_OLD = 7*24*60*60*1000;   // 舊片：7 天
+var REV_TTL_HOT = 24*60*60*1000;     // 檔期內新片：1 天（票房天天在跳）
+var REV_TTL_NONE= 12*60*60*1000;     // 查無資料：12 小時後重試（可能只是還沒上映）
 var REV_RAW = (function(){ try{ return JSON.parse(localStorage.getItem('_revCache')||'{}'); }catch(e){ return {}; } })();
-// 舊格式（純數字）自動升級成 {v:值, t:時間}
+// 舊格式（純數字）視為已過期，下次瀏覽時重抓
 (function(){
-  var now=Date.now();
   Object.keys(REV_RAW).forEach(function(k){
     var e=REV_RAW[k];
-    if(e===null || typeof e==='number') REV_RAW[k]={v:e, t:now};
+    if(e===null || typeof e==='number') REV_RAW[k]={v:e, t:0};
   });
 })();
-// 對外仍用 REV_CACHE[title] 取值，過期視為未抓過
-var REV_CACHE = new Proxy({}, {
-  get: function(_, k){
-    if(typeof k!=='string') return undefined;
-    var e=REV_RAW[k];
-    if(!e) return undefined;
-    if(Date.now()-(e.t||0) > REV_TTL) return undefined;   // 過期 → 當作沒抓過
-    return e.v;
-  },
-  set: function(_, k, v){ REV_RAW[k]={v:v, t:Date.now()}; return true; },
-  has: function(_, k){ return REV_CACHE[k]!==undefined; }
-});
+function revTTL(entry, year){
+  if(entry.v===null || entry.v===0) return REV_TTL_NONE;
+  var nowY=new Date().getFullYear();
+  if(year && year>=nowY-1) return REV_TTL_HOT;
+  return REV_TTL_OLD;
+}
+function revGet(m){
+  var e=REV_RAW[m.title];
+  if(!e) return undefined;
+  if(Date.now()-(e.t||0) > revTTL(e, m.year)) return undefined;
+  return e.v;
+}
+function revSet(m, v){ REV_RAW[m.title]={v:v, t:Date.now()}; }
 var _rvTimer=null;
 function saveRevCache(){
   clearTimeout(_rvTimer);
@@ -742,7 +744,7 @@ function fmtRevenue(n){
 }
 function revBadge(m){
   if(m.type!=='電影') return '<span class="rev-na">—</span>';
-  var v = REV_CACHE[m.title];
+  var v = revGet(m);
   if(v===undefined) return '<span class="rev-load">···</span>';
   return fmtRevenue(v);
 }
@@ -750,7 +752,7 @@ function revBadge(m){
 var _revAllRunning=false;
 async function fetchAllRevenues(){
   if(_revAllRunning) return;
-  var pend = DATA.filter(function(m){ return m.type==='電影' && REV_CACHE[m.title]===undefined; });
+  var pend = DATA.filter(function(m){ return m.type==='電影' && revGet(m)===undefined; });
   if(!pend.length) return;
   _revAllRunning=true;
   showToast('正在抓取票房資料（0/'+pend.length+'）…', false);
@@ -766,12 +768,12 @@ async function fetchAllRevenues(){
         var hit=pool.find(function(r){ return Math.abs(parseInt((r.release_date||'0').slice(0,4))-m.year)<=1; })||pool[0];
         if(hit) id=hit.id;
       }
-      if(!id) REV_CACHE[m.title]=null;
+      if(!id) revSet(m, null);
       else{
         var d=await tmdbFetch('https://api.themoviedb.org/3/movie/'+id+'?api_key='+TMDB+'&language=zh-TW');
-        REV_CACHE[m.title]=(typeof d.revenue==='number')?d.revenue:null;
+        revSet(m, (typeof d.revenue==='number')?d.revenue:null);
       }
-    }catch(e){ REV_CACHE[m.title]=null; }
+    }catch(e){ revSet(m, null); }
     done++;
     if(done%25===0){ saveRevCache(); showToast('正在抓取票房資料（'+done+'/'+pend.length+'）…', false); }
   }
@@ -781,6 +783,35 @@ async function fetchAllRevenues(){
   render();
 }
 
+// 點票房欄位 → 立即重新抓取該片（忽略快取）
+async function refreshOneRevenue(td){
+  var t=td.getAttribute('data-rev-title');
+  var m=DATA.filter(function(x){ return x.title===t; })[0];
+  if(!m || m.type!=='電影') return;
+  td.innerHTML='<span class="rev-load">···</span>';
+  try{
+    var id = TMDB_ID_OVERRIDE[t] || m.tmdbId || null;
+    if(!id){
+      var q=(m.orig && m.orig!=='nan') ? m.orig : t;
+      var s=await tmdbFetch('https://api.themoviedb.org/3/search/movie?api_key='+TMDB+'&query='+encodeURIComponent(q)+'&language=zh-TW');
+      var pool=(s.results||[]);
+      var hit=pool.find(function(r){ return Math.abs(parseInt((r.release_date||'0').slice(0,4))-m.year)<=1; })||pool[0];
+      if(hit) id=hit.id;
+    }
+    if(!id) revSet(m, null);
+    else{
+      var d=await tmdbFetch('https://api.themoviedb.org/3/movie/'+id+'?api_key='+TMDB+'&language=zh-TW');
+      revSet(m, (typeof d.revenue==='number')?d.revenue:null);
+    }
+  }catch(e){ revSet(m, null); }
+  saveRevCache();
+  td.innerHTML=fmtRevenue(revGet(m));
+}
+document.addEventListener('click', function(e){
+  var td=e.target.closest && e.target.closest('.rev-cell[data-rev-title]');
+  if(td) refreshOneRevenue(td);
+});
+
 // 補抓當前頁面尚未快取的票房
 async function fillRevenues(){
   var cells = Array.from(document.querySelectorAll('.rev-cell[data-rev-title]'));
@@ -789,7 +820,8 @@ async function fillRevenues(){
     var t = td.getAttribute('data-rev-title');
     var m = DATA.filter(function(x){ return x.title===t; })[0];
     if(!m || m.type!=='電影') return;
-    if(REV_CACHE[t]!==undefined){ td.innerHTML = fmtRevenue(REV_CACHE[t]); return; }
+    var cv = revGet(m);
+    if(cv!==undefined){ td.innerHTML = fmtRevenue(cv); return; }
     todo.push({td:td, m:m, t:t});
   });
   for(var i=0;i<todo.length;i++){
@@ -804,14 +836,14 @@ async function fillRevenues(){
         var hit = pool.find(function(r){ return Math.abs(parseInt((r.release_date||'0').slice(0,4))-yr)<=1; }) || pool[0];
         if(hit) id = hit.id;
       }
-      if(!id){ REV_CACHE[job.t]=null; }
+      if(!id){ revSet(job.m, null); }
       else{
         var d = await tmdbFetch('https://api.themoviedb.org/3/movie/'+id+'?api_key='+TMDB+'&language=zh-TW');
-        REV_CACHE[job.t] = (typeof d.revenue==='number') ? d.revenue : null;
+        revSet(job.m, (typeof d.revenue==='number') ? d.revenue : null);
       }
-    }catch(e){ REV_CACHE[job.t]=null; }
+    }catch(e){ revSet(job.m, null); }
     saveRevCache();
-    if(document.body.contains(job.td)) job.td.innerHTML = fmtRevenue(REV_CACHE[job.t]);
+    if(document.body.contains(job.td)) job.td.innerHTML = fmtRevenue(revGet(job.m));
   }
 }
 
@@ -848,8 +880,8 @@ function render(){
       case 'douban-asc': return a.douban-b.douban;
       case 'rev-desc':
       case 'rev-asc': {
-        var ra=(a.type==='電影')?REV_CACHE[a.title]:undefined;
-        var rb=(b.type==='電影')?REV_CACHE[b.title]:undefined;
+        var ra=(a.type==='電影')?revGet(a):undefined;
+        var rb=(b.type==='電影')?revGet(b):undefined;
         var va=(typeof ra==='number'&&ra>0)?ra:null;
         var vb=(typeof rb==='number'&&rb>0)?rb:null;
         if(va===null&&vb===null) return 0;
@@ -883,7 +915,7 @@ function render(){
       <td style="color:#F5D78E;font-size:15px;font-weight:700;text-align:center">${st(m.imdb)}</td>
       <td style="color:#F5D78E;font-size:15px;font-weight:700;text-align:center">${st(m.douban)}</td>
       <td><span class="score-badge ${sc(m.personal)}">${st(m.personal)}</span></td>
-      <td class="rev-cell" data-rev-title="${(m.title||'').replace(/"/g,'&quot;')}" style="text-align:center;white-space:nowrap">${revBadge(m)}</td>
+      <td class="rev-cell" title="點一下重新抓取票房" data-rev-title="${(m.title||'').replace(/"/g,'&quot;')}" style="text-align:center;white-space:nowrap">${revBadge(m)}</td>
       <td style="text-align:center;min-width:64px;line-height:1">${toDistLogo(m.dist)}</td>
       <td class="${ic?'venue-cinema':'venue-home'}" style="color:#F5D78E;font-size:14px;font-weight:700">${m.venue}</td>
       <td style="text-align:center;white-space:nowrap"><button class="edit-btn" title="編輯此記錄">✎</button><button class="del-btn" title="刪除此記錄">✕</button></td>`;
@@ -1838,9 +1870,9 @@ render();
 
   // ── 從 dramas-data.json 讀取最新資料（直接用 Raw URL，繞過 Contents API）──
   (function(){
-    // 先用 jsDelivr CDN（穩定、快），失敗再 fallback 到 raw.githubusercontent.com
-    var rawUrl = 'https://cdn.jsdelivr.net/gh/' + GH_OWNER + '/' + GH_REPO + '@' + GH_BRANCH + '/' + GH_DATA_PATH;
-    var fallbackUrl = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_DATA_PATH;
+    // 先用 raw.githubusercontent.com（即時，無 CDN 快取），失敗再退回 jsDelivr
+    var rawUrl = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_DATA_PATH;
+    var fallbackUrl = 'https://cdn.jsdelivr.net/gh/' + GH_OWNER + '/' + GH_REPO + '@' + GH_BRANCH + '/' + GH_DATA_PATH;
 
     function applyData(text){
       try{
@@ -1850,6 +1882,11 @@ render();
           return;
         }
         var arr = JSON.parse(text);
+        if(typeof filterTombs === 'function'){
+          var before = arr.length;
+          arr = filterTombs(arr);
+          if(arr.length < before) console.log('dramas sync: 過濾掉 ' + (before-arr.length) + ' 筆已刪除記錄（遠端尚未更新）');
+        }
         var localCount = DATA.length;
         // ⚠️ 安全網：若遠端筆數比本機少，代表可能被誤覆蓋或 CDN 快取未更新，跳過套用而非靜默覆蓋
         if(localCount > 0 && arr.length < localCount){
@@ -1881,7 +1918,7 @@ render();
       .then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
       .then(applyData)
       .catch(function(){
-        // jsDelivr 失敗，改用 raw.githubusercontent.com
+        // raw 失敗，改用 jsDelivr CDN 備援
         fetch(fallbackUrl + '?t=' + Date.now())
           .then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
           .then(applyData)
@@ -1934,6 +1971,26 @@ render();
   }
 
   // ── GitHub API：取得檔案 SHA 並推送更新 ──
+  // ── 刪除墓碑：48 小時內，遠端若還帶著這筆（CDN 快取未更新）就過濾掉 ──
+  var TOMB_TTL = 48*60*60*1000;
+  function loadTombs(){
+    var t={}; try{ t=JSON.parse(localStorage.getItem('_dramasTombs')||'{}'); }catch(e){}
+    var now=Date.now(), changed=false;
+    Object.keys(t).forEach(function(k){ if(now-t[k]>TOMB_TTL){ delete t[k]; changed=true; } });
+    if(changed){ try{ localStorage.setItem('_dramasTombs', JSON.stringify(t)); }catch(e){} }
+    return t;
+  }
+  function tombKey(m){ return (m.title||'')+'|'+(m.date||'')+'|'+(m.personal!=null?m.personal:''); }
+  window.addTombstone = function(m){
+    var t=loadTombs(); t[tombKey(m)]=Date.now();
+    try{ localStorage.setItem('_dramasTombs', JSON.stringify(t)); }catch(e){}
+  };
+  window.filterTombs = function(arr){
+    var t=loadTombs();
+    if(!Object.keys(t).length) return arr;
+    return arr.filter(function(m){ return !t[tombKey(m)]; });
+  };
+
   var _dramaPushing = false;
   async function pushToGitHub(newRecord){
     if(_dramaPushing){ showToast('⏳ 推送中，請稍候...', false); return false; }
@@ -2197,6 +2254,8 @@ render();
     const idx = DATA.findIndex(m => m.title === target.title && m.date === target.date && m.personal === target.personal);
     if(idx === -1){ alert('找不到該記錄'); return; }
     DATA.splice(idx, 1);
+    try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch(e){}
+    addTombstone(target);          // 記下「已刪除」，防止舊的遠端資料把它復活
     render();
     if(typeof buildTop5 === 'function') buildTop5();
     requireToken(async function(token){
