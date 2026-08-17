@@ -4620,62 +4620,77 @@
     "name2": "",
     "type": "豬腳",
     "meal": "",
-    "price": 133,
-    "visits": 8,
+    "price": 132,
+    "visits": 9,
     "gscore": 3.9,
     "addr": "104臺北市中山區恆安里雙城街3-3號1樓",
     "note": "",
     "maps": "https://www.google.com/maps/place/%E5%AF%8C%E7%88%B8%E7%88%B8%E8%B1%AC%E8%85%B3%E5%A4%A7%E7%8E%8B/@25.063468,121.524471,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a944bf2f634d:0xac69b2dbec666a4c!8m2!3d25.063468!4d121.524471!16s%2Fg%2F1tkln7d6?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-08-07",
-    "score": 4.2,
+    "date": "2026-08-17",
+    "score": 4,
     "visitLog": [
       {
         "date": "2026-04-21",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-04-27",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-06-05",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-06-08",
         "meal": "午餐",
         "price": 150,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-06-30",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-07-09",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-07-28",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
       },
       {
         "date": "2026-08-07",
         "meal": "午餐",
         "price": 130,
-        "menu": "腿庫便當"
+        "menu": "腿庫便當",
+        "score": null
+      },
+      {
+        "date": "2026-08-17",
+        "meal": "午餐",
+        "price": 130,
+        "menu": "腿庫便當",
+        "score": 4
       }
     ],
     "imgs": [
@@ -4683,7 +4698,7 @@
     ],
     "img": "https://i.ibb.co/fYhH6BHL/58abe2be8d2f.jpg",
     "createdAt": 1779374603647,
-    "updatedAt": 1786094432196
+    "updatedAt": 1786975888939
   },
   {
     "id": "1779373162069",
