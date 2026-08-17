@@ -573,6 +573,7 @@ body{
       <select class="form-input" id="heatMode" onchange="renderHeatmap()" style="width:130px;padding:8px 12px;">
         <option value="from">上車熱區</option>
         <option value="to">下車熱區</option>
+        <option value="all">上下車合計</option>
       </select>
       <select class="form-input" id="heatCat" onchange="renderHeatmap()" style="width:120px;padding:8px 12px;">
         <option value="">全部分類</option>
@@ -580,15 +581,17 @@ body{
         <option value="55688">55688</option>
       </select>
       <select class="form-input" id="heatLayer" onchange="renderHeatmap()" style="width:120px;padding:8px 12px;">
+        <option value="circle">只看範圍</option>
         <option value="both">熱力+範圍</option>
         <option value="heat">只看熱力</option>
-        <option value="circle">只看範圍</option>
       </select>
     </div>
     <div id="heatSummary" style="font-size:13px;color:rgba(240,220,160,0.7);"></div>
   </div>
   <div class="chart-card" style="padding:0;overflow:hidden;">
     <div id="heatMap" style="width:100%;height:520px;background:#1a2030;"></div>
+    <div id="heatLegend" style="display:flex;align-items:center;gap:0;padding:11px 14px;
+      border-top:1px solid rgba(0,200,83,0.18);background:rgba(0,0,0,0.25);flex-wrap:wrap;"></div>
   </div>
   <div class="chart-card" style="margin-top:16px;">
     <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">區域排行</div>
@@ -1926,12 +1929,14 @@ function renderHeatFallback(){
   if(!el) return;
   var mode=document.getElementById('heatMode').value;
   var cat=document.getElementById('heatCat').value;
-  var key = mode==='from' ? 'fd' : 'td';
   var trips=getData('uberTrips');
   if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
   var counts={};
-  trips.forEach(function(t){ var d=(t[key]||'').trim(); if(d) counts[d]=(counts[d]||0)+1; });
-  var entries=Object.keys(counts).filter(function(k){return DISTRICT_COORD[k];})
+  var keys = mode==='all' ? ['fd','td'] : [mode==='from'?'fd':'td'];
+  trips.forEach(function(t){
+    keys.forEach(function(k){ var d=(t[k]||'').trim(); if(d) counts[d]=(counts[d]||0)+1; });
+  });
+  var entries=Object.keys(counts).filter(function(k){return DISTRICT_BOUNDS[k]||DISTRICT_COORD[k];})
     .map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];});
   var total=entries.reduce(function(s,e){return s+e[1];},0);
   var maxC=entries.length?entries[0][1]:1;
@@ -1958,11 +1963,20 @@ function renderHeatFallback(){
   function px(lng){ return offX+(lng-minLng)*s; }
   function py(lat){ return H-offY-(lat-minLat)*s; }
   function heatColor(ratio){
-    if(ratio>0.75) return '#FF3B30';
-    if(ratio>0.5)  return '#FF9500';
-    if(ratio>0.25) return '#FFD700';
-    if(ratio>0.08) return '#69F0AE';
-    return '#00C853';
+    if(ratio>0.80) return '#E1006A';
+    if(ratio>0.55) return '#FF4D1C';
+    if(ratio>0.32) return '#FFD400';
+    if(ratio>0.16) return '#2ECC40';
+    if(ratio>0.06) return '#00C8D7';
+    return '#2C6FD1';
+  }
+  function heatOpacity(ratio){
+    if(ratio>0.80) return 0.78;
+    if(ratio>0.55) return 0.68;
+    if(ratio>0.32) return 0.58;
+    if(ratio>0.16) return 0.46;
+    if(ratio>0.06) return 0.36;
+    return 0.28;
   }
 
   var polys='',labels='';
@@ -1971,8 +1985,8 @@ function renderHeatFallback(){
     var b=DISTRICT_BOUNDS[name];
     if(b){
       var d=b.map(function(p,i){ return (i?'L':'M')+px(p[1]).toFixed(1)+' '+py(p[0]).toFixed(1); }).join('')+'Z';
-      polys+='<path d="'+d+'" fill="'+col+'" fill-opacity="'+(0.12+ratio*0.5).toFixed(2)
-        +'" stroke="'+col+'" stroke-width="1.4" stroke-opacity="0.9"><title>'+name+'：'+n+' 趟（'+(n/total*100).toFixed(1)+'%）</title></path>';
+      polys+='<path d="'+d+'" fill="'+col+'" fill-opacity="'+heatOpacity(ratio).toFixed(2)
+        +'" stroke="'+col+'" stroke-width="'+(ratio>0.55?2.2:1.4)+'" stroke-opacity="1"><title>'+name+'：'+n+' 趟（'+(n/total*100).toFixed(1)+'%）</title></path>';
       var cx=0,cy=0;
       b.forEach(function(p){ cx+=px(p[1]); cy+=py(p[0]); });
       cx/=b.length; cy/=b.length;
@@ -1986,8 +2000,9 @@ function renderHeatFallback(){
     +'<text x="12" y="'+(H-12)+'" font-size="11" fill="rgba(255,255,255,0.3)" font-family="monospace">行政區範圍（簡易模式）</text>'
     +'</svg>';
 
+  renderHeatLegend(maxC);
   var sum=document.getElementById('heatSummary');
-  if(sum) sum.textContent=entries.length+' 個區域 · '+total+' 趟';
+  if(sum) sum.textContent=entries.length+' 個區域 · '+total+(mode==='all'?' 次':' 趟');
   var rank=document.getElementById('heatRank');
   if(rank){
     rank.innerHTML=entries.map(function(e,i){
@@ -2002,6 +2017,29 @@ function renderHeatFallback(){
   }
 }
 
+
+function renderHeatLegend(maxC){
+  var box=document.getElementById('heatLegend');
+  if(!box) return;
+  var steps=[
+    ['#2C6FD1', 0,    0.06],
+    ['#00C8D7', 0.06, 0.16],
+    ['#2ECC40', 0.16, 0.32],
+    ['#FFD400', 0.32, 0.55],
+    ['#FF4D1C', 0.55, 0.80],
+    ['#E1006A', 0.80, 1]
+  ];
+  var html='<span style="font-size:11px;color:rgba(255,255,255,0.45);margin-right:10px;letter-spacing:0.08em;">趟數</span>';
+  steps.forEach(function(s,i){
+    var lo=Math.round(s[1]*maxC), hi=Math.round(s[2]*maxC);
+    var label = i===0 ? '≤'+hi : (i===steps.length-1 ? '>'+lo : (lo+1)+'–'+hi);
+    html+='<div style="display:flex;align-items:center;gap:5px;margin-right:14px;">'
+      +'<i style="width:15px;height:15px;border-radius:3px;background:'+s[0]+';display:inline-block;border:1px solid rgba(255,255,255,0.25);"></i>'
+      +'<span style="font-size:11px;color:rgba(240,220,160,0.8);font-family:monospace;">'+label+'</span>'
+    +'</div>';
+  });
+  box.innerHTML=html;
+}
 function renderHeatmap(){
   var el=document.getElementById('heatMap');
   if(!el) return;
@@ -2010,16 +2048,17 @@ function renderHeatmap(){
   var mode=document.getElementById('heatMode').value;      // from / to
   var cat=document.getElementById('heatCat').value;         // '' / uber / 55688
   var layerMode=document.getElementById('heatLayer').value; // both / heat / circle
-  var key = mode==='from' ? 'fd' : 'td';
-
   var trips=getData('uberTrips');
   if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
 
-  // 統計各區次數
+  // 統計各區次數（all = 上車+下車都計）
   var counts={};
+  var keys = mode==='all' ? ['fd','td'] : [mode==='from'?'fd':'td'];
   trips.forEach(function(t){
-    var d=(t[key]||'').trim();
-    if(d) counts[d]=(counts[d]||0)+1;
+    keys.forEach(function(k){
+      var d=(t[k]||'').trim();
+      if(d) counts[d]=(counts[d]||0)+1;
+    });
   });
   var entries=Object.keys(counts).map(function(k){return [k,counts[k]];})
     .sort(function(a,b){return b[1]-a[1];});
@@ -2038,11 +2077,20 @@ function renderHeatmap(){
 
   var pts=[], shapes=[], bounds=[], missing=[];
   function heatColor(ratio){
-    if(ratio>0.75) return '#FF3B30';
-    if(ratio>0.5)  return '#FF9500';
-    if(ratio>0.25) return '#FFD700';
-    if(ratio>0.08) return '#69F0AE';
-    return '#00C853';
+    if(ratio>0.80) return '#E1006A';
+    if(ratio>0.55) return '#FF4D1C';
+    if(ratio>0.32) return '#FFD400';
+    if(ratio>0.16) return '#2ECC40';
+    if(ratio>0.06) return '#00C8D7';
+    return '#2C6FD1';
+  }
+  function heatOpacity(ratio){
+    if(ratio>0.80) return 0.78;
+    if(ratio>0.55) return 0.68;
+    if(ratio>0.32) return 0.58;
+    if(ratio>0.16) return 0.46;
+    if(ratio>0.06) return 0.36;
+    return 0.28;
   }
   entries.forEach(function(e){
     var name=e[0], n=e[1], ratio=n/maxC, col=heatColor(ratio);
@@ -2050,8 +2098,8 @@ function renderHeatmap(){
     if(poly){
       poly.forEach(function(pt){ bounds.push(pt); });
       shapes.push(L.polygon(poly,{
-        color:col, weight:1.6, opacity:0.9,
-        fillColor:col, fillOpacity:0.12+ratio*0.5
+        color:col, weight:ratio>0.55?2.6:1.8, opacity:1,
+        fillColor:col, fillOpacity:heatOpacity(ratio)
       }).bindTooltip('<b>'+name+'</b><br>'+n+' 趟（'+(n/total*100).toFixed(1)+'%）',
         {direction:'top',sticky:true}));
       // 熱力點用區域中心
@@ -2067,8 +2115,8 @@ function renderHeatmap(){
   });
 
   if((layerMode==='both'||layerMode==='heat') && pts.length && L.heatLayer){
-    _heatLayer=L.heatLayer(pts,{radius:46,blur:36,maxZoom:14,minOpacity:0.28,
-      gradient:{0.2:'#00C853',0.45:'#FFD700',0.7:'#FF9500',1:'#FF3B30'}}).addTo(_heatMap);
+    _heatLayer=L.heatLayer(pts,{radius:44,blur:34,maxZoom:14,minOpacity:0.14,
+      gradient:{0.15:'#2C6FD1',0.35:'#00C8D7',0.55:'#2ECC40',0.72:'#FFD400',0.87:'#FF4D1C',1:'#E1006A'}}).addTo(_heatMap);
   }
   if(layerMode==='both'||layerMode==='circle'){
     _circleLayer=L.layerGroup(shapes).addTo(_heatMap);
@@ -2077,8 +2125,9 @@ function renderHeatmap(){
   setTimeout(function(){ _heatMap.invalidateSize(); },80);
 
   // 摘要
+  renderHeatLegend(maxC);
   var sum=document.getElementById('heatSummary');
-  if(sum) sum.textContent = entries.length+' 個區域 · '+total+' 趟'+(missing.length?'（'+missing.length+' 個無座標）':'');
+  if(sum) sum.textContent = entries.length+' 個區域 · '+total+(mode==='all'?' 次':' 趟')+(missing.length?'（'+missing.length+' 個無座標）':'');
 
   // 排行
   var rank=document.getElementById('heatRank');
