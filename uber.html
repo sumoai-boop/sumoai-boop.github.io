@@ -235,6 +235,9 @@ body{
   button{transition:filter 0.15s,transform 0.1s;}
   button:active{transform:scale(0.96);}
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 </head>
 <body>
 <div id="loadingOverlay" style="position:fixed;inset:0;z-index:99999;background:rgba(10,15,20,0.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 0.35s;">
@@ -289,6 +292,7 @@ body{
       <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
       <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
       <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
+      <button class="tab-btn" onclick="switchTab('heat',this)">熱區地圖</button>
     </div>
     <div id="total-net-display" style="text-align:right;line-height:1.2;">
       <div style="font-size:20px;color:#ffffff;letter-spacing:0.05em;font-weight:600;">總淨利</div>
@@ -561,6 +565,37 @@ body{
     <div id="gasStatsWrap" style="margin-top:24px;"></div>
     </div>
   </div>
+
+<!-- 熱區地圖 -->
+<div class="tab-panel" id="tab-heat">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <select class="form-input" id="heatMode" onchange="renderHeatmap()" style="width:130px;padding:8px 12px;">
+        <option value="from">上車熱區</option>
+        <option value="to">下車熱區</option>
+      </select>
+      <select class="form-input" id="heatCat" onchange="renderHeatmap()" style="width:120px;padding:8px 12px;">
+        <option value="">全部分類</option>
+        <option value="uber">uber</option>
+        <option value="55688">55688</option>
+      </select>
+      <select class="form-input" id="heatLayer" onchange="renderHeatmap()" style="width:120px;padding:8px 12px;">
+        <option value="both">熱力+圓點</option>
+        <option value="heat">只看熱力</option>
+        <option value="circle">只看圓點</option>
+      </select>
+    </div>
+    <div id="heatSummary" style="font-size:13px;color:rgba(240,220,160,0.7);"></div>
+  </div>
+  <div class="chart-card" style="padding:0;overflow:hidden;">
+    <div id="heatMap" style="width:100%;height:520px;background:#1a2030;"></div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;">
+    <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">區域排行</div>
+    <div id="heatRank" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;"></div>
+  </div>
+</div>
+
 </div>
 
 <!-- Dock -->
@@ -634,6 +669,7 @@ function switchTab(id,btn){
   btn.classList.add('active');
   var netEl = document.getElementById('total-net-display');
   if(netEl) netEl.style.display = id==='overview' ? 'block' : 'none';
+  if(id==='heat') setTimeout(renderHeatmap, 60);
 }
 // 資料
 // ── GitHub 設定 ──
@@ -1856,6 +1892,177 @@ document.addEventListener('keydown', function(e){
   items.forEach(function(it,i){ it.classList.toggle('sel', i===cur); });
   if(items[cur]) items[cur].scrollIntoView({block:'nearest'});
 });
+
+
+// ── 熱區地圖 ──
+var DISTRICT_COORD = {
+  // 台北市
+  '中山區':[25.0685,121.5265], '大安區':[25.0263,121.5436], '信義區':[25.0330,121.5654],
+  '松山區':[25.0500,121.5577], '大同區':[25.0630,121.5130], '中正區':[25.0324,121.5180],
+  '內湖區':[25.0836,121.5943], '萬華區':[25.0286,121.4996], '士林區':[25.0929,121.5240],
+  '南港區':[25.0553,121.6069], '文山區':[24.9889,121.5705], '北投區':[25.1320,121.4986],
+  // 新北市
+  '板橋區':[25.0143,121.4672], '土城區':[24.9723,121.4437], '中和區':[24.9931,121.4989],
+  '新莊區':[25.0359,121.4506], '三重區':[25.0614,121.4877], '新店區':[24.9678,121.5416],
+  '永和區':[25.0078,121.5158], '樹林區':[24.9905,121.4207], '汐止區':[25.0656,121.6410],
+  '蘆洲區':[25.0847,121.4739], '三峽區':[24.9345,121.3689], '五股區':[25.0827,121.4380],
+  '林口區':[25.0777,121.3915], '泰山區':[25.0588,121.4300], '鶯歌區':[24.9538,121.3540],
+  '淡水區':[25.1697,121.4406], '八里區':[25.1465,121.3983], '深坑區':[25.0022,121.6156],
+  '瑞芳區':[25.1089,121.8097], '金山區':[25.2218,121.6367], '萬里區':[25.1766,121.6889],
+  // 桃園市
+  '龜山區':[25.0000,121.3600], '桃園區':[24.9937,121.3010], '蘆竹區':[25.0455,121.2925],
+  '中壢區':[24.9537,121.2251], '八德區':[24.9285,121.2847], '大溪區':[24.8803,121.2870],
+  '平鎮區':[24.9188,121.2168], '大園區':[25.0640,121.1965], '龍潭區':[24.8637,121.2160],
+  // 基隆
+  '仁愛區':[25.1258,121.7392], '信義區(基隆)':[25.1276,121.7621], '中正區(基隆)':[25.1382,121.7556]
+};
+var _heatMap=null, _heatLayer=null, _circleLayer=null;
+
+
+// 備援：Leaflet 載入失敗時，自繪 SVG 地理散點圖
+function renderHeatFallback(){
+  var el=document.getElementById('heatMap');
+  if(!el) return;
+  var mode=document.getElementById('heatMode').value;
+  var cat=document.getElementById('heatCat').value;
+  var key = mode==='from' ? 'fd' : 'td';
+  var trips=getData('uberTrips');
+  if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
+  var counts={};
+  trips.forEach(function(t){ var d=(t[key]||'').trim(); if(d) counts[d]=(counts[d]||0)+1; });
+  var entries=Object.keys(counts).filter(function(k){return DISTRICT_COORD[k];})
+    .map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var total=entries.reduce(function(s,e){return s+e[1];},0);
+  var maxC=entries.length?entries[0][1]:1;
+
+  if(!entries.length){ el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);font-size:14px;">尚無資料</div>'; return; }
+
+  // 經緯度範圍
+  var lats=entries.map(function(e){return DISTRICT_COORD[e[0]][0];});
+  var lngs=entries.map(function(e){return DISTRICT_COORD[e[0]][1];});
+  var minLat=Math.min.apply(null,lats), maxLat=Math.max.apply(null,lats);
+  var minLng=Math.min.apply(null,lngs), maxLng=Math.max.apply(null,lngs);
+  var padLat=(maxLat-minLat)*0.14||0.02, padLng=(maxLng-minLng)*0.14||0.02;
+  minLat-=padLat; maxLat+=padLat; minLng-=padLng; maxLng+=padLng;
+  var W=900,H=520;
+  function px(lng){ return (lng-minLng)/(maxLng-minLng)*W; }
+  function py(lat){ return H-(lat-minLat)/(maxLat-minLat)*H; }
+
+  var blobs='',dots='',labels='';
+  entries.slice().reverse().forEach(function(e){
+    var name=e[0],n=e[1],co=DISTRICT_COORD[name];
+    var x=px(co[1]),y=py(co[0]),ratio=n/maxC;
+    var col = ratio>0.66?'#FF3B30' : ratio>0.33?'#FF9500' : '#00C853';
+    var rr=18+Math.sqrt(ratio)*62;
+    blobs+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="url(#g'+(ratio>0.66?'3':ratio>0.33?'2':'1')+')"/>';
+    var r=7+Math.sqrt(ratio)*17;
+    dots+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+col+'" fill-opacity="0.5" stroke="'+col+'" stroke-width="2"><title>'+name+'：'+n+' 趟（'+(n/total*100).toFixed(1)+'%）</title></circle>';
+    if(ratio>0.16) labels+='<text x="'+x.toFixed(1)+'" y="'+(y-r-7).toFixed(1)+'" text-anchor="middle" font-size="12" fill="#f0dca8" font-family="monospace">'+name+' '+n+'</text>';
+  });
+
+  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:100%;display:block;background:#141926;">'
+    +'<defs>'
+    +'<radialGradient id="g1"><stop offset="0%" stop-color="#00C853" stop-opacity="0.5"/><stop offset="100%" stop-color="#00C853" stop-opacity="0"/></radialGradient>'
+    +'<radialGradient id="g2"><stop offset="0%" stop-color="#FF9500" stop-opacity="0.55"/><stop offset="100%" stop-color="#FF9500" stop-opacity="0"/></radialGradient>'
+    +'<radialGradient id="g3"><stop offset="0%" stop-color="#FF3B30" stop-opacity="0.6"/><stop offset="100%" stop-color="#FF3B30" stop-opacity="0"/></radialGradient>'
+    +'</defs>'
+    +blobs+dots+labels
+    +'<text x="12" y="'+(H-12)+'" font-size="11" fill="rgba(255,255,255,0.3)" font-family="monospace">依經緯度分布（簡易模式）</text>'
+    +'</svg>';
+
+  var sum=document.getElementById('heatSummary');
+  if(sum) sum.textContent=entries.length+' 個區域 · '+total+' 趟';
+  var rank=document.getElementById('heatRank');
+  if(rank){
+    rank.innerHTML=entries.map(function(e,i){
+      var name=e[0],n=e[1],ratio=n/maxC;
+      var col = ratio>0.66?'#FF3B30' : ratio>0.33?'#FF9500' : '#00C853';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.12);border-radius:8px;">'
+        +'<span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);min-width:20px;">'+(i+1)+'</span>'
+        +'<span style="flex:1;font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+name+'</span>'
+        +'<span style="font-size:14px;font-weight:700;color:'+col+';">'+n+'</span>'
+      +'</div>';
+    }).join('');
+  }
+}
+
+function renderHeatmap(){
+  var el=document.getElementById('heatMap');
+  if(!el) return;
+  if(typeof L==='undefined' || !L.map){ renderHeatFallback(); return; }
+
+  var mode=document.getElementById('heatMode').value;      // from / to
+  var cat=document.getElementById('heatCat').value;         // '' / uber / 55688
+  var layerMode=document.getElementById('heatLayer').value; // both / heat / circle
+  var key = mode==='from' ? 'fd' : 'td';
+
+  var trips=getData('uberTrips');
+  if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
+
+  // 統計各區次數
+  var counts={};
+  trips.forEach(function(t){
+    var d=(t[key]||'').trim();
+    if(d) counts[d]=(counts[d]||0)+1;
+  });
+  var entries=Object.keys(counts).map(function(k){return [k,counts[k]];})
+    .sort(function(a,b){return b[1]-a[1];});
+  var total=entries.reduce(function(s,e){return s+e[1];},0);
+  var maxC=entries.length?entries[0][1]:1;
+
+  // 初始化地圖
+  if(!_heatMap){
+    _heatMap=L.map('heatMap',{zoomControl:true,attributionControl:false}).setView([25.03,121.52],11);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+      maxZoom:18, subdomains:'abcd'
+    }).addTo(_heatMap);
+  }
+  if(_heatLayer){ _heatMap.removeLayer(_heatLayer); _heatLayer=null; }
+  if(_circleLayer){ _heatMap.removeLayer(_circleLayer); _circleLayer=null; }
+
+  var pts=[], circles=[], bounds=[], missing=[];
+  entries.forEach(function(e){
+    var name=e[0], n=e[1], co=DISTRICT_COORD[name];
+    if(!co){ missing.push(name); return; }
+    bounds.push(co);
+    pts.push([co[0],co[1], n/maxC]);
+    var ratio=n/maxC;
+    var r=10+Math.sqrt(ratio)*26;
+    var col = ratio>0.66?'#FF3B30' : ratio>0.33?'#FF9500' : '#00C853';
+    circles.push(L.circleMarker(co,{
+      radius:r, color:col, weight:2, fillColor:col, fillOpacity:0.28
+    }).bindTooltip(name+'：'+n+' 趟（'+(n/total*100).toFixed(1)+'%）',{direction:'top'}));
+  });
+
+  if((layerMode==='both'||layerMode==='heat') && pts.length && L.heatLayer){
+    _heatLayer=L.heatLayer(pts,{radius:42,blur:32,maxZoom:14,minOpacity:0.32,
+      gradient:{0.2:'#00C853',0.45:'#FFD700',0.7:'#FF9500',1:'#FF3B30'}}).addTo(_heatMap);
+  }
+  if(layerMode==='both'||layerMode==='circle'){
+    _circleLayer=L.layerGroup(circles).addTo(_heatMap);
+  }
+  if(bounds.length) _heatMap.fitBounds(bounds,{padding:[45,45],maxZoom:12});
+  setTimeout(function(){ _heatMap.invalidateSize(); },80);
+
+  // 摘要
+  var sum=document.getElementById('heatSummary');
+  if(sum) sum.textContent = entries.length+' 個區域 · '+total+' 趟'+(missing.length?'（'+missing.length+' 個無座標）':'');
+
+  // 排行
+  var rank=document.getElementById('heatRank');
+  if(rank){
+    rank.innerHTML=entries.map(function(e,i){
+      var name=e[0], n=e[1], ratio=n/maxC;
+      var col = ratio>0.66?'#FF3B30' : ratio>0.33?'#FF9500' : '#00C853';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;'
+        +'background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.12);border-radius:8px;">'
+        +'<span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);min-width:20px;">'+(i+1)+'</span>'
+        +'<span style="flex:1;font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+name+'</span>'
+        +'<span style="font-size:14px;font-weight:700;color:'+col+';">'+n+'</span>'
+      +'</div>';
+    }).join('') || '<div style="color:rgba(255,255,255,0.25);font-size:13px;">尚無資料</div>';
+  }
+}
 
 function sortDistrictDropdowns(){
   var trips=getData('uberTrips');
