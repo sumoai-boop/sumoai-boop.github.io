@@ -1920,6 +1920,71 @@ function saveRoadGeo(name, lat, lng){
   localStorage.setItem('uberRoadGeo', JSON.stringify(saved));
 }
 
+
+// ── 道路線段幾何（Overpass API / OpenStreetMap）──
+function getRoadGeom(){
+  try{ return JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){ return {}; }
+}
+function saveRoadGeom(name, lines){
+  var g=getRoadGeom();
+  g[name]=lines;
+  try{ localStorage.setItem('uberRoadGeom', JSON.stringify(g)); }catch(e){}
+}
+// 幾何簡化（每條線最多保留 N 點）
+function thinLine(pts, maxN){
+  if(pts.length<=maxN) return pts;
+  var step=Math.ceil(pts.length/maxN), out=[];
+  for(var i=0;i<pts.length;i+=step) out.push(pts[i]);
+  if(out[out.length-1]!==pts[pts.length-1]) out.push(pts[pts.length-1]);
+  return out;
+}
+
+var _gmQueue=[], _gmRunning=false, _gmFailed={};
+function queueRoadGeom(names){
+  var g=getRoadGeom();
+  names.forEach(function(nm){
+    if(!g[nm] && !_gmFailed[nm] && _gmQueue.indexOf(nm)===-1) _gmQueue.push(nm);
+  });
+  if(!_gmRunning) runRoadGeom();
+}
+function runRoadGeom(){
+  var st=document.getElementById('geoStatus');
+  if(!_gmQueue.length){
+    _gmRunning=false;
+    if(st) st.textContent='';
+    if(window._gmDirty && typeof saveAndPush==='function'){
+      window._gmDirty=false;
+      try{ saveAndPush('uberRoadGeom', getRoadGeom()); }catch(e){}
+    }
+    return;
+  }
+  _gmRunning=true;
+  var name=_gmQueue.shift();
+  if(st) st.textContent='抓取道路… 剩 '+(_gmQueue.length+1)+' 條';
+  // 北北基桃宜範圍內找同名道路
+  var q='[out:json][timeout:25];way["name"="'+name.replace(/"/g,'')+'"]["highway"](24.55,120.95,25.45,122.15);out geom;';
+  fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(j){
+      var lines=[];
+      (j.elements||[]).forEach(function(w){
+        if(!w.geometry||w.geometry.length<2) return;
+        var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(5), +p.lon.toFixed(5)]; });
+        lines.push(thinLine(pts,40));
+      });
+      if(lines.length){
+        if(lines.length>60) lines=lines.slice(0,60);
+        saveRoadGeom(name, lines);
+        window._gmDirty=true;
+        var hp=document.getElementById('tab-heat');
+        if(hp&&hp.classList.contains('active')) renderHeatmap();
+      } else { _gmFailed[name]=1; }
+    })
+    .catch(function(){ _gmFailed[name]=1; })
+    .finally(function(){ setTimeout(runRoadGeom, 1800); });
+}
+
 // ── 背景自動地理編碼（OpenStreetMap Nominatim，免費、1秒1筆）──
 var _geoQueue=[], _geoRunning=false, _geoFailed={};
 function queueGeocode(names){
@@ -2006,12 +2071,14 @@ function renderHeatFallback(){
     });
   });
   var _rg2 = level==='road' ? getRoadGeo() : null;
+  var _gm2 = level==='road' ? getRoadGeom() : null;
   if(level==='road'){
     queueGeocode(Object.keys(counts).filter(function(k){return !_rg2[k];})
       .map(function(k){return {name:k, dist:roadDist[k]||''};}).slice(0,400));
+    queueRoadGeom(Object.keys(counts).filter(function(k){return !_gm2[k];}).slice(0,400));
   }
   var entries=Object.keys(counts).filter(function(k){
-      return level==='road' ? !!_rg2[k] : (DISTRICT_BOUNDS[k]||DISTRICT_COORD[k]); })
+      return level==='road' ? (!!_rg2[k]||!!_gm2[k]) : (DISTRICT_BOUNDS[k]||DISTRICT_COORD[k]); })
     .map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];});
   var total=entries.reduce(function(s,e){return s+e[1];},0);
   var maxC=entries.length?entries[0][1]:1;
@@ -2021,7 +2088,12 @@ function renderHeatFallback(){
   // 以所有區域界線計算經緯度範圍
   var allPts=[];
   entries.forEach(function(e){
-    if(level==='road'){ if(_rg2[e[0]]) allPts.push(_rg2[e[0]]); return; }
+    if(level==='road'){
+      var g=_gm2[e[0]];
+      if(g){ g.forEach(function(ln){ ln.forEach(function(p){ allPts.push(p); }); }); }
+      else if(_rg2[e[0]]) allPts.push(_rg2[e[0]]);
+      return;
+    }
     var b=DISTRICT_BOUNDS[e[0]];
     if(b) b.forEach(function(p){ allPts.push(p); });
     else if(DISTRICT_COORD[e[0]]) allPts.push(DISTRICT_COORD[e[0]]);
@@ -2059,11 +2131,23 @@ function renderHeatFallback(){
   entries.slice().reverse().forEach(function(e){
     var name=e[0],n=e[1],ratio=n/maxC,col=heatColor(ratio);
     if(level==='road'){
+      var g=_gm2[name], ttl=name+'：'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
+      if(g && g.length){
+        var w=(2+Math.sqrt(ratio)*9).toFixed(1), lx=0,ly=0,cnt=0;
+        g.forEach(function(ln){
+          var d=ln.map(function(p,i){ return (i?'L':'M')+px(p[1]).toFixed(1)+' '+py(p[0]).toFixed(1); }).join('');
+          polys+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+w
+            +'" stroke-opacity="'+(0.45+ratio*0.5).toFixed(2)+'" stroke-linecap="round" stroke-linejoin="round"><title>'+ttl+'</title></path>';
+          var mid=ln[Math.floor(ln.length/2)];
+          lx+=px(mid[1]); ly+=py(mid[0]); cnt++;
+        });
+        if(ratio>0.3&&cnt) labels+='<text x="'+(lx/cnt).toFixed(1)+'" y="'+(ly/cnt-7).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.75);stroke-width:3;">'+name+'</text>';
+        return;
+      }
       var rc=_rg2[name]; if(!rc) return;
-      var x=px(rc[1]), y=py(rc[0]), r=5+Math.sqrt(ratio)*20;
+      var x=px(rc[1]), y=py(rc[0]), r=5+Math.sqrt(ratio)*18;
       polys+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+col
-        +'" fill-opacity="'+heatOpacity(ratio).toFixed(2)+'" stroke="'+col+'" stroke-width="1.6"><title>'
-        +name+'：'+n+' 次（'+(n/total*100).toFixed(1)+'%）</title></circle>';
+        +'" fill-opacity="'+heatOpacity(ratio).toFixed(2)+'" stroke="'+col+'" stroke-width="1.6"><title>'+ttl+'</title></circle>';
       if(ratio>0.3) labels+='<text x="'+x.toFixed(1)+'" y="'+(y-r-5).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.7);stroke-width:3;">'+name+'</text>';
       return;
     }
@@ -2181,20 +2265,34 @@ function renderHeatmap(){
     return 0.28;
   }
   var _rg = level==='road' ? getRoadGeo() : null;
+  var _gm = level==='road' ? getRoadGeom() : null;
   if(level==='road'){
     queueGeocode(entries.filter(function(e){return !_rg[e[0]];})
       .map(function(e){return {name:e[0], dist:roadDist[e[0]]||''};}).slice(0,400));
+    queueRoadGeom(entries.filter(function(e){return !_gm[e[0]];})
+      .map(function(e){return e[0];}).slice(0,400));
   }
   entries.forEach(function(e){
     var name=e[0], n=e[1], ratio=n/maxC, col=heatColor(ratio);
     if(level==='road'){
+      var lines=_gm[name];
+      var tip='<b>'+name+'</b><br>'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
+      if(lines && lines.length){
+        var w=3+Math.sqrt(ratio)*13;
+        lines.forEach(function(ln){
+          ln.forEach(function(p){ bounds.push(p); });
+          pts.push([ln[Math.floor(ln.length/2)][0], ln[Math.floor(ln.length/2)][1], ratio]);
+          shapes.push(L.polyline(ln,{color:col,weight:w,opacity:0.45+ratio*0.5,
+            lineCap:'round',lineJoin:'round'}).bindTooltip(tip,{sticky:true}));
+        });
+        return;
+      }
       var rc=_rg[name];
       if(!rc){ missing.push(name); return; }
       bounds.push(rc);
       pts.push([rc[0],rc[1],ratio]);
-      shapes.push(L.circleMarker(rc,{radius:6+Math.sqrt(ratio)*24,color:col,weight:2,
-        fillColor:col,fillOpacity:heatOpacity(ratio)})
-        .bindTooltip('<b>'+name+'</b><br>'+n+' 次（'+(n/total*100).toFixed(1)+'%）',{direction:'top'}));
+      shapes.push(L.circleMarker(rc,{radius:6+Math.sqrt(ratio)*20,color:col,weight:2,
+        fillColor:col,fillOpacity:heatOpacity(ratio)}).bindTooltip(tip,{direction:'top'}));
       return;
     }
     var poly=DISTRICT_BOUNDS[name], co=DISTRICT_COORD[name];
