@@ -585,6 +585,8 @@ body{
         <option value="road">路名/地點</option>
       </select>
       <span id="geoStatus" style="font-size:11px;color:#FFD400;"></span>
+      <button onclick="toggleHeatDiag()" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:6px;color:#00C853;font-size:11px;padding:6px 10px;cursor:pointer;font-family:monospace;">診斷</button>
+      <button onclick="retryFailedRoads()" style="background:rgba(255,180,0,0.12);border:1px solid rgba(255,180,0,0.35);border-radius:6px;color:#FFD400;font-size:11px;padding:6px 10px;cursor:pointer;font-family:monospace;">重試失敗</button>
       <select class="form-input" id="heatLayer" onchange="renderHeatmap()" style="width:120px;padding:8px 12px;">
         <option value="circle">只看範圍</option>
         <option value="both">熱力+範圍</option>
@@ -598,6 +600,7 @@ body{
     <div id="heatLegend" style="display:flex;align-items:center;gap:0;padding:11px 14px;
       border-top:1px solid rgba(0,200,83,0.18);background:rgba(0,0,0,0.25);flex-wrap:wrap;"></div>
   </div>
+  <div id="heatDiag" class="chart-card" style="margin-top:16px;display:none;"></div>
   <div class="chart-card" style="margin-top:16px;">
     <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">區域排行</div>
     <div id="heatRank" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;"></div>
@@ -1902,6 +1905,70 @@ document.addEventListener('keydown', function(e){
 });
 
 
+
+// ── 熱區診斷：列出沒有道路線形的地點與原因 ──
+function toggleHeatDiag(){
+  var box=document.getElementById('heatDiag');
+  if(!box) return;
+  if(box.style.display!=='none'){ box.style.display='none'; return; }
+  box.style.display='block';
+  renderHeatDiag();
+}
+function renderHeatDiag(){
+  var box=document.getElementById('heatDiag');
+  if(!box || box.style.display==='none') return;
+  var mode=document.getElementById('heatMode').value;
+  var cat=document.getElementById('heatCat').value;
+  var trips=getData('uberTrips');
+  if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
+  var counts={};
+  var pairs = mode==='all' ? [['fd','fr'],['td','tr']] : (mode==='from'?[['fd','fr']]:[['td','tr']]);
+  trips.forEach(function(t){
+    pairs.forEach(function(p){
+      var d=(t[p[0]]||'').trim(), r=(t[p[1]]||'').trim();
+      if(r) { var k=(d? d+'|'+r : r); counts[k]=(counts[k]||0)+1; }
+    });
+  });
+  var gm=getRoadGeom(), rg=getRoadGeo();
+  var line=[],dot=[],none=[];
+  Object.keys(counts).forEach(function(k){
+    var o={k:k,n:counts[k]};
+    if(gm[k]) line.push(o);
+    else if(rg[k]) dot.push(o);
+    else none.push(o);
+  });
+  var bySort=function(a,b){return b.n-a.n;};
+  dot.sort(bySort); none.sort(bySort);
+  var inQ=_gmQueue.length;
+
+  function chip(o,reason){
+    return '<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 9px;background:rgba(255,255,255,0.04);border-radius:6px;font-size:12px;">'
+      +'<span style="color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+keyLabel(o.k)
+      +'<span style="color:rgba(255,255,255,0.3);font-size:10px;"> '+keyDist(o.k)+'</span></span>'
+      +'<span style="color:'+(reason==='fail'?'#FF6B6B':'#22D3EE')+';flex-shrink:0;">'+o.n+'</span></div>';
+  }
+  box.innerHTML='<div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">熱區診斷</div>'
+    +'<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px;font-size:13px;">'
+      +'<span style="color:#00E860;">✔ 有道路線形：<b>'+line.length+'</b></span>'
+      +'<span style="color:#22D3EE;">● 只有座標（畫圓點）：<b>'+dot.length+'</b></span>'
+      +'<span style="color:#FF6B6B;">✕ 完全沒有：<b>'+none.length+'</b></span>'
+      +'<span style="color:rgba(255,255,255,0.5);">佇列中：'+inQ+'</span>'
+      +'<span style="color:rgba(255,255,255,0.5);">已標記失敗：'+Object.keys(_gmFailed).length+'</span>'
+    +'</div>'
+    +(dot.length?'<div style="margin-bottom:10px;"><div style="font-size:12px;color:#22D3EE;margin-bottom:6px;">畫成圓點的地點（多為車站、商場、地標，非道路）</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;max-height:260px;overflow:auto;">'
+      +dot.slice(0,120).map(function(o){return chip(o,'dot');}).join('')+'</div></div>':'')
+    +(none.length?'<div><div style="font-size:12px;color:#FF6B6B;margin-bottom:6px;">尚無任何座標</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;max-height:200px;overflow:auto;">'
+      +none.slice(0,80).map(function(o){return chip(o,'fail');}).join('')+'</div></div>':'');
+}
+// 清空失敗記錄並重新排隊
+function retryFailedRoads(){
+  _gmFailed={}; _geoFailed={}; _gmBackoff=1800;
+  renderHeatmap();
+  var st=document.getElementById('geoStatus');
+  if(st) st.textContent='已重新排入佇列…';
+}
 // ── 熱區地圖 ──
 var ROAD_GEO_SEED = {"大安區|忠孝東路四段":[25.04155,121.55051],"中正區|台北車站":[25.04744,121.5171],"信義區|忠孝東路五段":[25.04088,121.57344],"信義區|光復南路":[25.03819,121.5576],"中山區|林森北路":[25.05782,121.52551],"信義區|松壽路":[25.03588,121.56474],"新莊區|中正路":[25.03267,121.43532],"板橋區|板橋車站":[25.01419,121.46354],"中山區|松江路":[25.05837,121.53321],"大安區|敦化南路一段":[25.03878,121.54861],"大同區|南京西路":[25.05405,121.51396],"信義區|松仁路":[25.03192,121.56829],"松山區|八德路四段":[25.04938,121.56906],"板橋區|中山路一段":[25.01185,121.46552],"中正區|中華路一段":[25.04266,121.50863],"中山區|民族東路":[25.06818,121.53318],"中山區|民權東路三段":[25.06228,121.54079],"中山區|北安路":[25.07966,121.54287],"中山區|中山北路二段":[25.05813,121.52278],"內湖區|民權東路六段":[25.06909,121.58915],"內湖區|舊宗路一段":[25.06155,121.57819],"松山區|敦化北路":[25.05577,121.54922],"大同區|民生西路":[25.05704,121.51581],"板橋區|新站路":[25.01415,121.46567],"板橋區|南雅南路二段":[24.99885,121.45267],"大安區|延吉街":[25.03894,121.5551],"信義區|信義路五段":[25.03292,121.56712],"大安區|信義路四段":[25.03334,121.55092],"大同區|承德路一段":[25.05092,121.51694],"信義區|基隆路一段":[25.0411,121.56454],"土城區|金城路二段":[24.98184,121.45494],"中山區|南京東路二段":[25.05225,121.53217],"大同區|民權西路":[25.06315,121.51398],"中和區|中山路二段":[25.00302,121.49187],"土城區|金城路三段":[24.98885,121.46992],"大安區|四維路":[25.03098,121.548],"大安區|大安路一段":[25.0394,121.54607],"信義區|永吉路":[25.04552,121.57355],"信義區|松高路":[25.0391,121.56648],"中山區|吉林路":[25.05815,121.5302],"松山區|復興北路":[25.05769,121.54424],"中山區|中山北路一段":[25.05003,121.5216],"大安區|仁愛路四段":[25.03788,121.55116],"大安區|敦化南路二段":[25.02701,121.54899],"內湖區|內湖路一段":[25.08206,121.56854],"大安區|復興南路二段":[25.02722,121.54355],"大安區|基隆路二段":[25.02464,121.55281],"信義區|松德路":[25.03457,121.57465],"萬華區|艋舺大道":[25.03731,121.49987],"板橋區|府中路":[25.00959,121.45658],"中山區|長春路":[25.05482,121.53317],"大安區|安和路二段":[25.029,121.55083],"中山區|濱江街":[25.07234,121.53929],"大同區|長安西路":[25.05162,121.51389],"大安區|信義路二段":[25.03384,121.5285],"大同區|重慶北路二段":[25.05881,121.51371],"南港區|南港LaLaport":[25.05935,121.61758],"松山區|南京東路五段":[25.05134,121.56398],"大同區|延平北路二段":[25.0583,121.5115],"松山區|南京東路四段":[25.05158,121.55289]};
 // 已查過的地點座標（localStorage 快取，會同步到 GitHub）
@@ -2035,7 +2102,7 @@ function pruneRoadGeom(limitKB){
   }
   try{ localStorage.setItem('uberRoadGeom', JSON.stringify(g)); }catch(e){}
 }
-var _gmQueue=[], _gmRunning=false, _gmFailed={};
+var _gmQueue=[], _gmRunning=false, _gmFailed={}, _gmBackoff=1800;
 function queueRoadGeom(items){
   var g=getRoadGeom();
   items.forEach(function(it){
@@ -2078,7 +2145,11 @@ function runRoadGeom(){
   }
   fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),
     headers:{'Content-Type':'application/x-www-form-urlencoded'}})
-    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(r){
+      if(r.status===429 || r.status===504 || r.status===503){ var e=new Error('rate'); e._retryable=1; throw e; }
+      if(!r.ok) throw new Error(r.status);
+      return r.json();
+    })
     .then(function(j){
       var lines=[];
       (j.elements||[]).forEach(function(w){
@@ -2091,6 +2162,7 @@ function runRoadGeom(){
       if(lines.length){
         if(lines.length>20) lines=mergeShortLines(lines,20);
         saveRoadGeom(key, lines);
+        _gmBackoff=1800;
         window._gmDirty=true;
         var hp=document.getElementById('tab-heat');
         if(hp&&hp.classList.contains('active')) renderHeatmap();
@@ -2100,10 +2172,16 @@ function runRoadGeom(){
         item._origDist=dist;
         item.dist='';
         _gmQueue.unshift(item);
-      } else { _gmFailed[key]=1; }
+      } else { _gmFailed[key]='查無道路'; }
     })
-    .catch(function(){ _gmFailed[key]=1; })
-    .finally(function(){ setTimeout(runRoadGeom, 1800); });
+    .catch(function(err){
+      if(err && err._retryable && (item._netRetry||0)<3){
+        item._netRetry=(item._netRetry||0)+1;
+        _gmQueue.push(item);          // 排到隊尾稍後重試
+        _gmBackoff=Math.min((_gmBackoff||1800)*2, 15000);
+      } else { _gmFailed[key]=(err&&err.message)||'錯誤'; }
+    })
+    .finally(function(){ setTimeout(runRoadGeom, _gmBackoff||1800); });
 }
 
 // ── 背景自動地理編碼（OpenStreetMap Nominatim，免費、1秒1筆）──
@@ -2300,6 +2378,7 @@ function renderHeatFallback(){
     +'</svg>';
 
   renderHeatLegend(maxC);
+  if(typeof renderHeatDiag==='function') renderHeatDiag();
   var sum=document.getElementById('heatSummary');
   if(sum) sum.textContent=entries.length+(level==='road'?' 個地點':' 個區域')+' · '+total+(mode==='all'?' 次':' 趟');
   var rank=document.getElementById('heatRank');
@@ -2461,6 +2540,7 @@ function renderHeatmap(){
 
   // 摘要
   renderHeatLegend(maxC);
+  if(typeof renderHeatDiag==='function') renderHeatDiag();
   var sum=document.getElementById('heatSummary');
   if(sum){
     if(level==='road'){
