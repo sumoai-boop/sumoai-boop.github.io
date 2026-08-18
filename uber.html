@@ -2017,9 +2017,21 @@ function runRoadGeom(){
   if(st) st.textContent='抓取道路… 剩 '+(_gmQueue.length+1)+' 條';
   // 有區域時限定該行政區內，避免全台同名路都抓進來
   var bbox=NORTH_BOUND.minLat+','+NORTH_BOUND.minLng+','+NORTH_BOUND.maxLat+','+NORTH_BOUND.maxLng;
-  var q = dist
-    ? '[out:json][timeout:25];area["name"="'+dist+'"]["boundary"="administrative"]->.a;way(area.a)["name"="'+name+'"]["highway"];out geom;'
-    : '[out:json][timeout:25];way["name"="'+name+'"]["highway"]('+bbox+');out geom;';
+  var q;
+  if(dist){
+    q='[out:json][timeout:25];area["name"="'+dist+'"]["boundary"="administrative"]->.a;way(area.a)["name"="'+name+'"]["highway"];out geom;';
+  } else {
+    // 無區域或重試：若知道原本的區，用該區中心附近的小框；否則用北部全域
+    var od=item._origDist, bb=bbox;
+    var ctr = od ? DISTRICT_COORD[od] : null;
+    if(!ctr && od && DISTRICT_BOUNDS[od]){
+      var pl=DISTRICT_BOUNDS[od], sy=0, sx=0;
+      pl.forEach(function(p){ sy+=p[0]; sx+=p[1]; });
+      ctr=[sy/pl.length, sx/pl.length];
+    }
+    if(ctr) bb=(ctr[0]-0.06)+','+(ctr[1]-0.06)+','+(ctr[0]+0.06)+','+(ctr[1]+0.06);
+    q='[out:json][timeout:25];way["name"="'+name+'"]["highway"]('+bb+');out geom;';
+  }
   fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),
     headers:{'Content-Type':'application/x-www-form-urlencoded'}})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
@@ -2038,6 +2050,12 @@ function runRoadGeom(){
         window._gmDirty=true;
         var hp=document.getElementById('tab-heat');
         if(hp&&hp.classList.contains('active')) renderHeatmap();
+      } else if(dist && !item._retried){
+        // 限定行政區查不到 → 退回北部全域再試一次（路可能跨區或 OSM 區界名不同）
+        item._retried=1;
+        item._origDist=dist;
+        item.dist='';
+        _gmQueue.unshift(item);
       } else { _gmFailed[key]=1; }
     })
     .catch(function(){ _gmFailed[key]=1; })
@@ -2400,7 +2418,17 @@ function renderHeatmap(){
   // 摘要
   renderHeatLegend(maxC);
   var sum=document.getElementById('heatSummary');
-  if(sum) sum.textContent = (entries.length-missing.length)+(level==='road'?' 個地點':' 個區域')+' · '+total+(mode==='all'?' 次':' 趟')+(missing.length?'（'+missing.length+' 筆待定位）':'')+(missing.length?'（'+missing.length+' 個無座標）':'');
+  if(sum){
+    if(level==='road'){
+      var nLine=0,nDot=0;
+      entries.forEach(function(e){ if(_gm[e[0]]) nLine++; else if(_rg[e[0]]) nDot++; });
+      sum.textContent=nLine+' 條路線 · '+nDot+' 個地標 · '+total+(mode==='all'?' 次':' 趟')
+        +(missing.length?'（'+missing.length+' 筆待定位）':'');
+    } else {
+      sum.textContent=(entries.length-missing.length)+' 個區域 · '+total+(mode==='all'?' 次':' 趟')
+        +(missing.length?'（'+missing.length+' 筆待定位）':'');
+    }
+  }+(missing.length?'（'+missing.length+' 個無座標）':'');
 
   // 排行
   var rank=document.getElementById('heatRank');
