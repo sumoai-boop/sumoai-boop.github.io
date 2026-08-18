@@ -1903,7 +1903,7 @@ document.addEventListener('keydown', function(e){
 
 
 // ── 熱區地圖 ──
-var ROAD_GEO_SEED = {"忠孝東路四段":[25.04155,121.55051],"台北車站":[25.04744,121.5171],"忠孝東路五段":[25.04088,121.57344],"光復南路":[25.03819,121.5576],"林森北路":[25.05782,121.52551],"松壽路":[25.03588,121.56474],"中正路":[25.03267,121.43532],"板橋車站":[25.01419,121.46354],"松江路":[25.05837,121.53321],"敦化南路一段":[25.03878,121.54861],"南京西路":[25.05405,121.51396],"松仁路":[25.03192,121.56829],"八德路四段":[25.04938,121.56906],"中山路一段":[25.01185,121.46552],"中華路一段":[25.04266,121.50863],"民族東路":[25.06818,121.53318],"民權東路三段":[25.06228,121.54079],"北安路":[25.07966,121.54287],"中山北路二段":[25.05813,121.52278],"民權東路六段":[25.06909,121.58915],"舊宗路一段":[25.06155,121.57819],"敦化北路":[25.05577,121.54922],"民生西路":[25.05704,121.51581],"新站路":[25.01415,121.46567],"南雅南路二段":[24.99885,121.45267],"延吉街":[25.03894,121.5551],"信義路五段":[25.03292,121.56712],"信義路四段":[25.03334,121.55092],"承德路一段":[25.05092,121.51694],"基隆路一段":[25.0411,121.56454],"金城路二段":[24.98184,121.45494],"南京東路二段":[25.05225,121.53217],"民權西路":[25.06315,121.51398],"中山路二段":[25.00302,121.49187],"金城路三段":[24.98885,121.46992],"四維路":[25.03098,121.548],"大安路一段":[25.0394,121.54607],"永吉路":[25.04552,121.57355],"松高路":[25.0391,121.56648],"吉林路":[25.05815,121.5302],"復興北路":[25.05769,121.54424],"中山北路一段":[25.05003,121.5216],"仁愛路四段":[25.03788,121.55116],"敦化南路二段":[25.02701,121.54899],"內湖路一段":[25.08206,121.56854],"復興南路二段":[25.02722,121.54355],"基隆路二段":[25.02464,121.55281],"松德路":[25.03457,121.57465],"艋舺大道":[25.03731,121.49987],"府中路":[25.00959,121.45658],"長春路":[25.05482,121.53317],"安和路二段":[25.029,121.55083],"濱江街":[25.07234,121.53929],"長安西路":[25.05162,121.51389],"信義路二段":[25.03384,121.5285],"重慶北路二段":[25.05881,121.51371],"南港LaLaport":[25.05935,121.61758],"南京東路五段":[25.05134,121.56398],"延平北路二段":[25.0583,121.5115],"南京東路四段":[25.05158,121.55289]};
+var ROAD_GEO_SEED = {"大安區|忠孝東路四段":[25.04155,121.55051],"中正區|台北車站":[25.04744,121.5171],"信義區|忠孝東路五段":[25.04088,121.57344],"信義區|光復南路":[25.03819,121.5576],"中山區|林森北路":[25.05782,121.52551],"信義區|松壽路":[25.03588,121.56474],"新莊區|中正路":[25.03267,121.43532],"板橋區|板橋車站":[25.01419,121.46354],"中山區|松江路":[25.05837,121.53321],"大安區|敦化南路一段":[25.03878,121.54861],"大同區|南京西路":[25.05405,121.51396],"信義區|松仁路":[25.03192,121.56829],"松山區|八德路四段":[25.04938,121.56906],"板橋區|中山路一段":[25.01185,121.46552],"中正區|中華路一段":[25.04266,121.50863],"中山區|民族東路":[25.06818,121.53318],"中山區|民權東路三段":[25.06228,121.54079],"中山區|北安路":[25.07966,121.54287],"中山區|中山北路二段":[25.05813,121.52278],"內湖區|民權東路六段":[25.06909,121.58915],"內湖區|舊宗路一段":[25.06155,121.57819],"松山區|敦化北路":[25.05577,121.54922],"大同區|民生西路":[25.05704,121.51581],"板橋區|新站路":[25.01415,121.46567],"板橋區|南雅南路二段":[24.99885,121.45267],"大安區|延吉街":[25.03894,121.5551],"信義區|信義路五段":[25.03292,121.56712],"大安區|信義路四段":[25.03334,121.55092],"大同區|承德路一段":[25.05092,121.51694],"信義區|基隆路一段":[25.0411,121.56454],"土城區|金城路二段":[24.98184,121.45494],"中山區|南京東路二段":[25.05225,121.53217],"大同區|民權西路":[25.06315,121.51398],"中和區|中山路二段":[25.00302,121.49187],"土城區|金城路三段":[24.98885,121.46992],"大安區|四維路":[25.03098,121.548],"大安區|大安路一段":[25.0394,121.54607],"信義區|永吉路":[25.04552,121.57355],"信義區|松高路":[25.0391,121.56648],"中山區|吉林路":[25.05815,121.5302],"松山區|復興北路":[25.05769,121.54424],"中山區|中山北路一段":[25.05003,121.5216],"大安區|仁愛路四段":[25.03788,121.55116],"大安區|敦化南路二段":[25.02701,121.54899],"內湖區|內湖路一段":[25.08206,121.56854],"大安區|復興南路二段":[25.02722,121.54355],"大安區|基隆路二段":[25.02464,121.55281],"信義區|松德路":[25.03457,121.57465],"萬華區|艋舺大道":[25.03731,121.49987],"板橋區|府中路":[25.00959,121.45658],"中山區|長春路":[25.05482,121.53317],"大安區|安和路二段":[25.029,121.55083],"中山區|濱江街":[25.07234,121.53929],"大同區|長安西路":[25.05162,121.51389],"大安區|信義路二段":[25.03384,121.5285],"大同區|重慶北路二段":[25.05881,121.51371],"南港區|南港LaLaport":[25.05935,121.61758],"松山區|南京東路五段":[25.05134,121.56398],"大同區|延平北路二段":[25.0583,121.5115],"松山區|南京東路四段":[25.05158,121.55289]};
 // 已查過的地點座標（localStorage 快取，會同步到 GitHub）
 function getRoadGeo(){
   var m=Object.assign({}, ROAD_GEO_SEED);
@@ -1911,6 +1911,10 @@ function getRoadGeo(){
     var saved=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}');
     Object.keys(saved).forEach(function(k){ m[k]=saved[k]; });
   }catch(e){}
+  // 過濾越界（防止舊資料殘留）
+  Object.keys(m).forEach(function(k){
+    if(!m[k] || !inNorth(m[k][0], m[k][1])) delete m[k];
+  });
   return m;
 }
 function saveRoadGeo(name, lat, lng){
@@ -1921,9 +1925,57 @@ function saveRoadGeo(name, lat, lng){
 }
 
 
+
+
+// 複合鍵工具："大安區|忠孝東路四段" → ["大安區","忠孝東路四段"]
+function splitKey(k){
+  var i=k.indexOf('|');
+  return i===-1 ? ['', k] : [k.slice(0,i), k.slice(i+1)];
+}
+function keyLabel(k){ return splitKey(k)[1]; }
+function keyDist(k){ return splitKey(k)[0]; }
+// 北部範圍（北北基桃宜）：超出此範圍的定位結果視為誤判
+var NORTH_BOUND = {minLat:24.60, maxLat:25.40, minLng:121.00, maxLng:122.10};
+function inNorth(lat,lng){
+  return lat>=NORTH_BOUND.minLat && lat<=NORTH_BOUND.maxLat
+      && lng>=NORTH_BOUND.minLng && lng<=NORTH_BOUND.maxLng;
+}
+// 清除既有快取中越界的錯誤資料
+function purgeOutOfBounds(){
+  var removed=0;
+  try{
+    var g=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'), ng={};
+    Object.keys(g).forEach(function(k){
+      if(inNorth(g[k][0],g[k][1])) ng[k]=g[k]; else removed++;
+    });
+    localStorage.setItem('uberRoadGeo', JSON.stringify(ng));
+  }catch(e){}
+  try{
+    var gm=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'), ngm={};
+    Object.keys(gm).forEach(function(k){
+      var lines=(gm[k]||[]).filter(function(ln){
+        var m=ln[Math.floor(ln.length/2)];
+        return m && inNorth(m[0],m[1]);
+      });
+      if(lines.length) ngm[k]=lines; else removed++;
+    });
+    localStorage.setItem('uberRoadGeom', JSON.stringify(ngm));
+  }catch(e){}
+  return removed;
+}
 // ── 道路線段幾何（Overpass API / OpenStreetMap）──
 function getRoadGeom(){
-  try{ return JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){ return {}; }
+  var g={};
+  try{ g=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){ return {}; }
+  var out={};
+  Object.keys(g).forEach(function(k){
+    var lines=(g[k]||[]).filter(function(ln){
+      var m=ln[Math.floor(ln.length/2)];
+      return m && inNorth(m[0],m[1]);
+    });
+    if(lines.length) out[k]=lines;
+  });
+  return out;
 }
 function saveRoadGeom(name, lines){
   var g=getRoadGeom();
@@ -1940,10 +1992,11 @@ function thinLine(pts, maxN){
 }
 
 var _gmQueue=[], _gmRunning=false, _gmFailed={};
-function queueRoadGeom(names){
+function queueRoadGeom(items){
   var g=getRoadGeom();
-  names.forEach(function(nm){
-    if(!g[nm] && !_gmFailed[nm] && _gmQueue.indexOf(nm)===-1) _gmQueue.push(nm);
+  items.forEach(function(it){
+    var kk=it.key||it.name;
+    if(!g[kk] && !_gmFailed[kk] && !_gmQueue.some(function(q){return (q.key||q.name)===kk;})) _gmQueue.push(it);
   });
   if(!_gmRunning) runRoadGeom();
 }
@@ -1959,10 +2012,14 @@ function runRoadGeom(){
     return;
   }
   _gmRunning=true;
-  var name=_gmQueue.shift();
+  var item=_gmQueue.shift();
+  var key=item.key||item.name, name=(item.name||'').replace(/"/g,''), dist=(item.dist||'').replace(/"/g,'');
   if(st) st.textContent='抓取道路… 剩 '+(_gmQueue.length+1)+' 條';
-  // 北北基桃宜範圍內找同名道路
-  var q='[out:json][timeout:25];way["name"="'+name.replace(/"/g,'')+'"]["highway"](24.55,120.95,25.45,122.15);out geom;';
+  // 有區域時限定該行政區內，避免全台同名路都抓進來
+  var bbox=NORTH_BOUND.minLat+','+NORTH_BOUND.minLng+','+NORTH_BOUND.maxLat+','+NORTH_BOUND.maxLng;
+  var q = dist
+    ? '[out:json][timeout:25];area["name"="'+dist+'"]["boundary"="administrative"]->.a;way(area.a)["name"="'+name+'"]["highway"];out geom;'
+    : '[out:json][timeout:25];way["name"="'+name+'"]["highway"]('+bbox+');out geom;';
   fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),
     headers:{'Content-Type':'application/x-www-form-urlencoded'}})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
@@ -1971,17 +2028,19 @@ function runRoadGeom(){
       (j.elements||[]).forEach(function(w){
         if(!w.geometry||w.geometry.length<2) return;
         var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(5), +p.lon.toFixed(5)]; });
+        var mid=pts[Math.floor(pts.length/2)];
+        if(!inNorth(mid[0],mid[1])) return;   // 越界略過
         lines.push(thinLine(pts,40));
       });
       if(lines.length){
         if(lines.length>60) lines=lines.slice(0,60);
-        saveRoadGeom(name, lines);
+        saveRoadGeom(key, lines);
         window._gmDirty=true;
         var hp=document.getElementById('tab-heat');
         if(hp&&hp.classList.contains('active')) renderHeatmap();
-      } else { _gmFailed[name]=1; }
+      } else { _gmFailed[key]=1; }
     })
-    .catch(function(){ _gmFailed[name]=1; })
+    .catch(function(){ _gmFailed[key]=1; })
     .finally(function(){ setTimeout(runRoadGeom, 1800); });
 }
 
@@ -1990,7 +2049,8 @@ var _geoQueue=[], _geoRunning=false, _geoFailed={};
 function queueGeocode(names){
   var g=getRoadGeo();
   names.forEach(function(x){
-    if(!g[x.name] && !_geoFailed[x.name] && _geoQueue.indexOf(x.name)===-1){
+    var kk=x.key||x.name;
+    if(!g[kk] && !_geoFailed[kk] && !_geoQueue.some(function(q){return (q.key||q.name)===kk;})){
       _geoQueue.push(x);
     }
   });
@@ -2011,17 +2071,24 @@ function runGeocode(){
   var item=_geoQueue.shift();
   var st=document.getElementById('geoStatus');
   if(st) st.textContent='定位中… 剩 '+(_geoQueue.length+1)+' 筆';
-  var q=encodeURIComponent((item.dist? item.dist+' ':'')+item.name+' 台灣');
-  fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=tw&q='+q)
+  var q=encodeURIComponent((item.dist? item.dist+' ':'')+item.name);
+  var vb='&viewbox='+NORTH_BOUND.minLng+','+NORTH_BOUND.maxLat+','+NORTH_BOUND.maxLng+','+NORTH_BOUND.minLat+'&bounded=1';
+  fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=tw'+vb+'&q='+q)
     .then(function(r){ return r.json(); })
     .then(function(j){
-      if(j && j.length){
-        saveRoadGeo(item.name, parseFloat(j[0].lat), parseFloat(j[0].lon));
+      var hit=null;
+      (j||[]).forEach(function(x){
+        if(hit) return;
+        var la=parseFloat(x.lat), lo=parseFloat(x.lon);
+        if(inNorth(la,lo)) hit=[la,lo];
+      });
+      if(hit){
+        saveRoadGeo(item.key||item.name, hit[0], hit[1]);
         window._geoDirty=true;
         if(document.getElementById('tab-heat').classList.contains('active')) renderHeatmap();
-      } else { _geoFailed[item.name]=1; }
+      } else { _geoFailed[item.key||item.name]=1; }
     })
-    .catch(function(){ _geoFailed[item.name]=1; })
+    .catch(function(){ _geoFailed[item.key||item.name]=1; })
     .finally(function(){ setTimeout(runGeocode, 1100); });
 }
 
@@ -2064,18 +2131,18 @@ function renderHeatFallback(){
   trips.forEach(function(t){
     pairs.forEach(function(p){
       var dist=(t[p[0]]||'').trim(), road=(t[p[1]]||'').trim();
-      var kk = level==='road' ? road : dist;
+      var kk = level==='road' ? (dist? dist+'|'+road : road) : dist;
       if(!kk) return;
       counts[kk]=(counts[kk]||0)+1;
-      if(level==='road' && dist && !roadDist[road]) roadDist[road]=dist;
     });
   });
   var _rg2 = level==='road' ? getRoadGeo() : null;
   var _gm2 = level==='road' ? getRoadGeom() : null;
   if(level==='road'){
     queueGeocode(Object.keys(counts).filter(function(k){return !_rg2[k];})
-      .map(function(k){return {name:k, dist:roadDist[k]||''};}).slice(0,400));
-    queueRoadGeom(Object.keys(counts).filter(function(k){return !_gm2[k];}).slice(0,400));
+      .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,400));
+    queueRoadGeom(Object.keys(counts).filter(function(k){return !_gm2[k];})
+      .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,400));
   }
   var entries=Object.keys(counts).filter(function(k){
       return level==='road' ? (!!_rg2[k]||!!_gm2[k]) : (DISTRICT_BOUNDS[k]||DISTRICT_COORD[k]); })
@@ -2131,7 +2198,8 @@ function renderHeatFallback(){
   entries.slice().reverse().forEach(function(e){
     var name=e[0],n=e[1],ratio=n/maxC,col=heatColor(ratio);
     if(level==='road'){
-      var g=_gm2[name], ttl=name+'：'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
+      var _lb2=keyLabel(name), _dt2=keyDist(name);
+      var g=_gm2[name], ttl=(_dt2?_dt2+' ':'')+_lb2+'：'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
       if(g && g.length){
         var w=(2+Math.sqrt(ratio)*9).toFixed(1), lx=0,ly=0,cnt=0;
         g.forEach(function(ln){
@@ -2141,14 +2209,14 @@ function renderHeatFallback(){
           var mid=ln[Math.floor(ln.length/2)];
           lx+=px(mid[1]); ly+=py(mid[0]); cnt++;
         });
-        if(ratio>0.3&&cnt) labels+='<text x="'+(lx/cnt).toFixed(1)+'" y="'+(ly/cnt-7).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.75);stroke-width:3;">'+name+'</text>';
+        if(ratio>0.3&&cnt) labels+='<text x="'+(lx/cnt).toFixed(1)+'" y="'+(ly/cnt-7).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.75);stroke-width:3;">'+_lb2+'</text>';
         return;
       }
       var rc=_rg2[name]; if(!rc) return;
       var x=px(rc[1]), y=py(rc[0]), r=5+Math.sqrt(ratio)*18;
       polys+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+col
         +'" fill-opacity="'+heatOpacity(ratio).toFixed(2)+'" stroke="'+col+'" stroke-width="1.6"><title>'+ttl+'</title></circle>';
-      if(ratio>0.3) labels+='<text x="'+x.toFixed(1)+'" y="'+(y-r-5).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.7);stroke-width:3;">'+name+'</text>';
+      if(ratio>0.3) labels+='<text x="'+x.toFixed(1)+'" y="'+(y-r-5).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.7);stroke-width:3;">'+_lb2+'</text>';
       return;
     }
     var b=DISTRICT_BOUNDS[name];
@@ -2177,9 +2245,13 @@ function renderHeatFallback(){
     rank.innerHTML=entries.map(function(e,i){
       var name=e[0],n=e[1],ratio=n/maxC;
       var col = ratio>0.66?'#FF3B30' : ratio>0.33?'#FF9500' : '#00C853';
+      var lb=keyLabel(name), dt=keyDist(name);
       return '<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.12);border-radius:8px;">'
         +'<span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);min-width:20px;">'+(i+1)+'</span>'
-        +'<span style="flex:1;font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+name+'</span>'
+        +'<span style="flex:1;overflow:hidden;">'
+          +'<span style="font-size:13px;color:#f0dca8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+lb+'</span>'
+          +(dt&&level==='road'?'<span style="font-size:10px;color:rgba(255,255,255,0.35);">'+dt+'</span>':'')
+        +'</span>'
         +'<span style="font-size:14px;font-weight:700;color:'+col+';">'+n+'</span>'
       +'</div>';
     }).join('');
@@ -2226,10 +2298,9 @@ function renderHeatmap(){
   trips.forEach(function(t){
     pairs.forEach(function(p){
       var dist=(t[p[0]]||'').trim(), road=(t[p[1]]||'').trim();
-      var kk = level==='road' ? road : dist;
+      var kk = level==='road' ? (dist? dist+'|'+road : road) : dist;
       if(!kk) return;
       counts[kk]=(counts[kk]||0)+1;
-      if(level==='road' && dist && !roadDist[road]) roadDist[road]=dist;
     });
   });
   var entries=Object.keys(counts).map(function(k){return [k,counts[k]];})
@@ -2268,15 +2339,16 @@ function renderHeatmap(){
   var _gm = level==='road' ? getRoadGeom() : null;
   if(level==='road'){
     queueGeocode(entries.filter(function(e){return !_rg[e[0]];})
-      .map(function(e){return {name:e[0], dist:roadDist[e[0]]||''};}).slice(0,400));
+      .map(function(e){var p=splitKey(e[0]); return {key:e[0], name:p[1], dist:p[0]};}).slice(0,400));
     queueRoadGeom(entries.filter(function(e){return !_gm[e[0]];})
-      .map(function(e){return e[0];}).slice(0,400));
+      .map(function(e){var p=splitKey(e[0]); return {key:e[0], name:p[1], dist:p[0]};}).slice(0,400));
   }
   entries.forEach(function(e){
     var name=e[0], n=e[1], ratio=n/maxC, col=heatColor(ratio);
     if(level==='road'){
       var lines=_gm[name];
-      var tip='<b>'+name+'</b><br>'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
+      var _lb=keyLabel(name), _dt=keyDist(name);
+      var tip='<b>'+_lb+'</b>'+(_dt?' <span style="opacity:.7">'+_dt+'</span>':'')+'<br>'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
       if(lines && lines.length){
         var w=3+Math.sqrt(ratio)*13;
         lines.forEach(function(ln){
@@ -2336,10 +2408,14 @@ function renderHeatmap(){
     rank.innerHTML=entries.map(function(e,i){
       var name=e[0], n=e[1], ratio=n/maxC;
       var col = ratio>0.66?'#FF3B30' : ratio>0.33?'#FF9500' : '#00C853';
+      var lb=keyLabel(name), dt=keyDist(name);
       return '<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;'
         +'background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.12);border-radius:8px;">'
         +'<span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);min-width:20px;">'+(i+1)+'</span>'
-        +'<span style="flex:1;font-size:13px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+name+'</span>'
+        +'<span style="flex:1;overflow:hidden;">'
+          +'<span style="font-size:13px;color:#f0dca8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+lb+'</span>'
+          +(dt&&level==='road'?'<span style="font-size:10px;color:rgba(255,255,255,0.35);">'+dt+'</span>':'')
+        +'</span>'
         +'<span style="font-size:14px;font-weight:700;color:'+col+';">'+n+'</span>'
       +'</div>';
     }).join('') || '<div style="color:rgba(255,255,255,0.25);font-size:13px;">尚無資料</div>';
@@ -2409,6 +2485,7 @@ document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   t.forEach(function(x){ if(x.cat==='56688'){ x.cat='55688'; changed=true; } });
   if(changed) saveAndPush('uberTrips',t);
 })();
+if(typeof purgeOutOfBounds==='function') purgeOutOfBounds();
 renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 </script>
 </body>
