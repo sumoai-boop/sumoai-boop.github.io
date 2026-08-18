@@ -2123,65 +2123,93 @@ function runRoadGeom(){
     return;
   }
   _gmRunning=true;
-  var item=_gmQueue.shift();
-  var key=item.key||item.name, name=(item.name||'').replace(/"/g,''), dist=(item.dist||'').replace(/"/g,'');
-  if(st) st.textContent='抓取道路… 剩 '+(_gmQueue.length+1)+' 條';
-  // 有區域時限定該行政區內，避免全台同名路都抓進來
+
+  // ── 批次取出（一次查 25 條路）──
+  var BATCH_N=25;
+  var batch=_gmQueue.splice(0, BATCH_N);
+  if(st) st.textContent='抓取道路… 剩 '+_gmQueue.length+' 條';
+
+  // 用 regex 一次比對多個路名
+  var names=[], seen={};
+  batch.forEach(function(it){
+    var nm=(it.name||'').replace(/["\\|(){}\[\]^$.*+?]/g,'');
+    if(nm && !seen[nm]){ seen[nm]=1; names.push(nm); }
+  });
+  if(!names.length){ setTimeout(runRoadGeom, 50); return; }
+
   var bbox=NORTH_BOUND.minLat+','+NORTH_BOUND.minLng+','+NORTH_BOUND.maxLat+','+NORTH_BOUND.maxLng;
-  var q;
-  if(dist){
-    q='[out:json][timeout:25];area["name"="'+dist+'"]["boundary"="administrative"]->.a;way(area.a)["name"="'+name+'"]["highway"];out geom;';
-  } else {
-    // 無區域或重試：若知道原本的區，用該區中心附近的小框；否則用北部全域
-    var od=item._origDist, bb=bbox;
-    var ctr = od ? DISTRICT_COORD[od] : null;
-    if(!ctr && od && DISTRICT_BOUNDS[od]){
-      var pl=DISTRICT_BOUNDS[od], sy=0, sx=0;
-      pl.forEach(function(p){ sy+=p[0]; sx+=p[1]; });
-      ctr=[sy/pl.length, sx/pl.length];
-    }
-    if(ctr) bb=(ctr[0]-0.06)+','+(ctr[1]-0.06)+','+(ctr[0]+0.06)+','+(ctr[1]+0.06);
-    q='[out:json][timeout:25];way["name"="'+name+'"]["highway"]('+bb+');out geom;';
-  }
-  fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),
+  var q='[out:json][timeout:90];way["name"~"^('+names.join('|')+')$"]["highway"]('+bbox+');out geom;';
+
+  fetch('https://overpass-api.de/api/interpreter',{method:'POST',
+    body:'data='+encodeURIComponent(q),
     headers:{'Content-Type':'application/x-www-form-urlencoded'}})
     .then(function(r){
-      if(r.status===429 || r.status===504 || r.status===503){ var e=new Error('rate'); e._retryable=1; throw e; }
+      if(r.status===429||r.status===503||r.status===504){ var e=new Error('rate'); e._retryable=1; throw e; }
       if(!r.ok) throw new Error(r.status);
       return r.json();
     })
     .then(function(j){
-      var lines=[];
+      // 依路名 + 所屬行政區分組
+      var byKey={};
       (j.elements||[]).forEach(function(w){
-        if(!w.geometry||w.geometry.length<2) return;
+        if(!w.geometry||w.geometry.length<2||!w.tags||!w.tags.name) return;
         var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(4), +p.lon.toFixed(4)]; });
         var mid=pts[Math.floor(pts.length/2)];
-        if(!inNorth(mid[0],mid[1])) return;   // 越界略過
-        var tl=dedupeLine(thinLine(pts,18)); if(tl.length>=2) lines.push(tl);
+        if(!inNorth(mid[0],mid[1])) return;
+        var dist=districtOfPoint(mid[0],mid[1]);
+        var key=(dist? dist+'|' : '')+w.tags.name;
+        var tl=dedupeLine(thinLine(pts,18));
+        if(tl.length>=2){ (byKey[key]=byKey[key]||[]).push(tl); }
       });
-      if(lines.length){
-        if(lines.length>20) lines=mergeShortLines(lines,20);
-        saveRoadGeom(key, lines);
-        _gmBackoff=1800;
+      // 存入這批要的 key
+      var got=0;
+      batch.forEach(function(it){
+        var key=it.key||it.name;
+        var lines=byKey[key];
+        if(!lines){
+          // 該區找不到 → 用同名路的任一結果（跨區或區界判定誤差）
+          var alt=Object.keys(byKey).filter(function(k){ return keyLabel(k)===it.name; });
+          if(alt.length) lines=byKey[alt[0]];
+        }
+        if(lines && lines.length){
+          if(lines.length>20) lines=mergeShortLines(lines,20);
+          saveRoadGeom(key, lines);
+          got++;
+        } else { _gmFailed[key]='查無道路'; }
+      });
+      if(got){
+        _gmBackoff=1500;
         window._gmDirty=true;
         var hp=document.getElementById('tab-heat');
         if(hp&&hp.classList.contains('active')) renderHeatmap();
-      } else if(dist && !item._retried){
-        // 限定行政區查不到 → 退回北部全域再試一次（路可能跨區或 OSM 區界名不同）
-        item._retried=1;
-        item._origDist=dist;
-        item.dist='';
-        _gmQueue.unshift(item);
-      } else { _gmFailed[key]='查無道路'; }
+      }
     })
     .catch(function(err){
-      if(err && err._retryable && (item._netRetry||0)<3){
-        item._netRetry=(item._netRetry||0)+1;
-        _gmQueue.push(item);          // 排到隊尾稍後重試
-        _gmBackoff=Math.min((_gmBackoff||1800)*2, 15000);
-      } else { _gmFailed[key]=(err&&err.message)||'錯誤'; }
+      if(err && err._retryable && (batch[0]._netRetry||0)<3){
+        batch.forEach(function(it){ it._netRetry=(it._netRetry||0)+1; _gmQueue.push(it); });
+        _gmBackoff=Math.min((_gmBackoff||1500)*2, 20000);
+      } else {
+        batch.forEach(function(it){ _gmFailed[it.key||it.name]=(err&&err.message)||'錯誤'; });
+      }
     })
-    .finally(function(){ setTimeout(runRoadGeom, _gmBackoff||1800); });
+    .finally(function(){ setTimeout(runRoadGeom, _gmBackoff||1500); });
+}
+
+// 判斷座標落在哪個行政區（point-in-polygon）
+function districtOfPoint(lat,lng){
+  var names=Object.keys(DISTRICT_BOUNDS);
+  for(var i=0;i<names.length;i++){
+    if(pointInPoly(lat,lng,DISTRICT_BOUNDS[names[i]])) return names[i];
+  }
+  return '';
+}
+function pointInPoly(lat,lng,poly){
+  var inside=false;
+  for(var i=0,j=poly.length-1;i<poly.length;j=i++){
+    var yi=poly[i][0], xi=poly[i][1], yj=poly[j][0], xj=poly[j][1];
+    if(((yi>lat)!==(yj>lat)) && (lng < (xj-xi)*(lat-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
 }
 
 // ── 背景自動地理編碼（OpenStreetMap Nominatim，免費、1秒1筆）──
@@ -2279,10 +2307,10 @@ function renderHeatFallback(){
   var _rg2 = level==='road' ? getRoadGeo() : null;
   var _gm2 = level==='road' ? getRoadGeom() : null;
   if(level==='road'){
-    queueGeocode(Object.keys(counts).filter(function(k){return !_rg2[k];})
-      .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,400));
     queueRoadGeom(Object.keys(counts).filter(function(k){return !_gm2[k];})
-      .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,400));
+      .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,600));
+    queueGeocode(Object.keys(counts).filter(function(k){return !_rg2[k] && !_gm2[k];})
+      .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,300));
   }
   var entries=Object.keys(counts).filter(function(k){
       return level==='road' ? (!!_rg2[k]||!!_gm2[k]) : (DISTRICT_BOUNDS[k]||DISTRICT_COORD[k]); })
@@ -2479,10 +2507,11 @@ function renderHeatmap(){
   var _rg = level==='road' ? getRoadGeo() : null;
   var _gm = level==='road' ? getRoadGeom() : null;
   if(level==='road'){
-    queueGeocode(entries.filter(function(e){return !_rg[e[0]];})
-      .map(function(e){var p=splitKey(e[0]); return {key:e[0], name:p[1], dist:p[0]};}).slice(0,400));
+    // 先批次抓道路線形（快），沒抓到的才個別定位
     queueRoadGeom(entries.filter(function(e){return !_gm[e[0]];})
-      .map(function(e){var p=splitKey(e[0]); return {key:e[0], name:p[1], dist:p[0]};}).slice(0,400));
+      .map(function(e){var p=splitKey(e[0]); return {key:e[0], name:p[1], dist:p[0]};}).slice(0,600));
+    queueGeocode(entries.filter(function(e){return !_rg[e[0]] && !_gm[e[0]];})
+      .map(function(e){var p=splitKey(e[0]); return {key:e[0], name:p[1], dist:p[0]};}).slice(0,300));
   }
   entries.forEach(function(e){
     var name=e[0], n=e[1], ratio=n/maxC, col=heatColor(ratio);
