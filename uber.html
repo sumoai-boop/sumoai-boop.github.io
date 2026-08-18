@@ -1978,9 +1978,27 @@ function getRoadGeom(){
   return out;
 }
 function saveRoadGeom(name, lines){
-  var g=getRoadGeom();
+  var g={};
+  try{ g=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
   g[name]=lines;
-  try{ localStorage.setItem('uberRoadGeom', JSON.stringify(g)); }catch(e){}
+  try{ localStorage.setItem('uberRoadGeom', JSON.stringify(g)); }
+  catch(e){ pruneRoadGeom(900); try{ localStorage.setItem('uberRoadGeom', JSON.stringify(g)); }catch(e2){} }
+  if(Math.random()<0.05) pruneRoadGeom(1200);
+}
+
+// 線段過多時只保留最長的 N 段（幹道常被切成很多小段）
+function mergeShortLines(lines, maxN){
+  if(lines.length<=maxN) return lines;
+  return lines.slice().sort(function(a,b){ return b.length-a.length; }).slice(0,maxN);
+}
+// 移除連續重複點，進一步縮小體積
+function dedupeLine(pts){
+  var out=[];
+  for(var i=0;i<pts.length;i++){
+    var p=pts[i], q=out[out.length-1];
+    if(!q || p[0]!==q[0] || p[1]!==q[1]) out.push(p);
+  }
+  return out;
 }
 // 幾何簡化（每條線最多保留 N 點）
 function thinLine(pts, maxN){
@@ -1991,6 +2009,32 @@ function thinLine(pts, maxN){
   return out;
 }
 
+
+// 快取容量守門：超過上限時，移除趟數最少的路線形
+function pruneRoadGeom(limitKB){
+  var g;
+  try{ g=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){ return; }
+  var size=JSON.stringify(g).length/1024;
+  if(size<=limitKB) return;
+  // 依趟數排序，少的先刪
+  var counts={};
+  try{
+    var trips=getData('uberTrips');
+    trips.forEach(function(t){
+      [['fd','fr'],['td','tr']].forEach(function(p){
+        var d=(t[p[0]]||'').trim(), r2=(t[p[1]]||'').trim();
+        if(r2) { var k=(d? d+'|'+r2 : r2); counts[k]=(counts[k]||0)+1; }
+      });
+    });
+  }catch(e){}
+  var keys=Object.keys(g).sort(function(a,b){ return (counts[a]||0)-(counts[b]||0); });
+  var i=0;
+  while(size>limitKB && i<keys.length){
+    delete g[keys[i]]; i++;
+    size=JSON.stringify(g).length/1024;
+  }
+  try{ localStorage.setItem('uberRoadGeom', JSON.stringify(g)); }catch(e){}
+}
 var _gmQueue=[], _gmRunning=false, _gmFailed={};
 function queueRoadGeom(items){
   var g=getRoadGeom();
@@ -2039,13 +2083,13 @@ function runRoadGeom(){
       var lines=[];
       (j.elements||[]).forEach(function(w){
         if(!w.geometry||w.geometry.length<2) return;
-        var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(5), +p.lon.toFixed(5)]; });
+        var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(4), +p.lon.toFixed(4)]; });
         var mid=pts[Math.floor(pts.length/2)];
         if(!inNorth(mid[0],mid[1])) return;   // 越界略過
-        lines.push(thinLine(pts,40));
+        var tl=dedupeLine(thinLine(pts,18)); if(tl.length>=2) lines.push(tl);
       });
       if(lines.length){
-        if(lines.length>60) lines=lines.slice(0,60);
+        if(lines.length>20) lines=mergeShortLines(lines,20);
         saveRoadGeom(key, lines);
         window._gmDirty=true;
         var hp=document.getElementById('tab-heat');
