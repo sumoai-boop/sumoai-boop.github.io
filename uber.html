@@ -1962,7 +1962,7 @@ function renderHeatDiag(){
 }
 // 清空失敗記錄並重新排隊
 function retryFailedRoads(){
-  _gmFailed={}; _geoFailed={}; _gmBackoff=1800;
+  _gmFailed={}; _geoFailed={}; _gmBackoff=1500; _gm2Queue=[];
   renderHeatmap();
   var st=document.getElementById('geoStatus');
   if(st) st.textContent='已重新排入佇列…';
@@ -2112,6 +2112,7 @@ function queueRoadGeom(items){
 function runRoadGeom(){
   var st=document.getElementById('geoStatus');
   if(!_gmQueue.length){
+    if(_gm2Queue.length){ _gmRunning=false; runRoadGeom2(); return; }
     _gmRunning=false;
     if(st) st.textContent='';
     if(window._gmDirty && typeof saveAndPush==='function'){
@@ -2173,7 +2174,8 @@ function runRoadGeom(){
           if(lines.length>20) lines=mergeShortLines(lines,20);
           saveRoadGeom(key, lines);
           got++;
-        } else { _gmFailed[key]='查無道路'; }
+        } else if(!it._pass2){ it._pass2=1; _gm2Queue.push(it); }
+        else { _gmFailed[key]='查無道路'; }
       });
       if(got){
         _gmBackoff=1500;
@@ -2187,12 +2189,85 @@ function runRoadGeom(){
         batch.forEach(function(it){ it._netRetry=(it._netRetry||0)+1; _gmQueue.push(it); });
         _gmBackoff=Math.min((_gmBackoff||1500)*2, 20000);
       } else {
-        batch.forEach(function(it){ _gmFailed[it.key||it.name]=(err&&err.message)||'錯誤'; });
+        batch.forEach(function(it){
+          if(!it._pass2){ it._pass2=1; _gm2Queue.push(it); }
+          else { _gmFailed[it.key||it.name]=(err&&err.message)||'錯誤'; }
+        });
       }
     })
     .finally(function(){ setTimeout(runRoadGeom, _gmBackoff||1500); });
 }
 
+
+// ── 第二輪：寬鬆比對（完全比對失敗的才進來）──
+var _gm2Queue=[], _gm2Running=false;
+function runRoadGeom2(){
+  var st=document.getElementById('geoStatus');
+  if(!_gm2Queue.length){
+    _gm2Running=false;
+    if(st) st.textContent='';
+    if(window._gmDirty && typeof saveAndPush==='function'){
+      window._gmDirty=false;
+      try{ saveAndPush('uberRoadGeom', getRoadGeom()); }catch(e){}
+    }
+    return;
+  }
+  _gm2Running=true;
+  var it=_gm2Queue.shift();
+  var key=it.key||it.name, name=(it.name||'').replace(/["\\|(){}\[\]^$.*+?]/g,''), dist=it.dist||'';
+  if(st) st.textContent='補抓道路… 剩 '+(_gm2Queue.length+1)+' 條';
+
+  // 以該地點座標為中心找附近同名路（±0.03 度 ≈ 3 公里）
+  var rg=getRoadGeo(), co=rg[key];
+  var bb;
+  if(co){
+    bb=(co[0]-0.03)+','+(co[1]-0.03)+','+(co[0]+0.03)+','+(co[1]+0.03);
+  } else {
+    bb=NORTH_BOUND.minLat+','+NORTH_BOUND.minLng+','+NORTH_BOUND.maxLat+','+NORTH_BOUND.maxLng;
+  }
+  // 寬鬆：名稱「包含」即可，並比對 name / name:zh / alt_name
+  var q='[out:json][timeout:40];('
+    +'way["name"~"'+name+'"]["highway"]('+bb+');'
+    +'way["name:zh"~"'+name+'"]["highway"]('+bb+');'
+    +'way["alt_name"~"'+name+'"]["highway"]('+bb+');'
+    +');out geom;';
+
+  fetch('https://overpass-api.de/api/interpreter',{method:'POST',
+    body:'data='+encodeURIComponent(q),
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}})
+    .then(function(r){
+      if(r.status===429||r.status===503||r.status===504){ var e=new Error('rate'); e._retryable=1; throw e; }
+      if(!r.ok) throw new Error(r.status);
+      return r.json();
+    })
+    .then(function(j){
+      var lines=[];
+      (j.elements||[]).forEach(function(w){
+        if(!w.geometry||w.geometry.length<2) return;
+        var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(4), +p.lon.toFixed(4)]; });
+        var mid=pts[Math.floor(pts.length/2)];
+        if(!inNorth(mid[0],mid[1])) return;
+        var tl=dedupeLine(thinLine(pts,18));
+        if(tl.length>=2) lines.push(tl);
+      });
+      if(lines.length){
+        if(lines.length>20) lines=mergeShortLines(lines,20);
+        saveRoadGeom(key, lines);
+        window._gmDirty=true;
+        _gmBackoff=1500;
+        var hp=document.getElementById('tab-heat');
+        if(hp&&hp.classList.contains('active')) renderHeatmap();
+      } else { _gmFailed[key]='OSM 無此道路'; }
+    })
+    .catch(function(err){
+      if(err && err._retryable && (it._netRetry2||0)<2){
+        it._netRetry2=(it._netRetry2||0)+1;
+        _gm2Queue.push(it);
+        _gmBackoff=Math.min((_gmBackoff||1500)*2, 20000);
+      } else { _gmFailed[key]=(err&&err.message)||'錯誤'; }
+    })
+    .finally(function(){ setTimeout(runRoadGeom2, _gmBackoff||1500); });
+}
 // 判斷座標落在哪個行政區（point-in-polygon）
 function districtOfPoint(lat,lng){
   var names=Object.keys(DISTRICT_BOUNDS);
