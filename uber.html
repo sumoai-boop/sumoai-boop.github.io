@@ -717,11 +717,17 @@ function getToken(){
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 // 頁面載入時從 GitHub 讀取最新資料
+// ── 同步守門：GitHub 資料載入完成前，禁止任何推送（避免舊資料覆蓋新資料）──
+var _syncReady=false, _pendingPush=false;
+function markSyncReady(){
+  _syncReady=true;
+  if(_pendingPush){ _pendingPush=false; pushToGitHub(); }
+}
 function loadFromGitHub(){
   var token=localStorage.getItem(GH_TOKEN_KEY);
   if(!token){
     token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
-    if(!token){ hideLoading(); return; }
+    if(!token){ hideLoading(); showSyncWarn('未輸入 Token，資料只存在本機且不會同步'); return; }
     localStorage.setItem(GH_TOKEN_KEY, token.trim());
     token=token.trim();
   }
@@ -731,6 +737,7 @@ function loadFromGitHub(){
       if(!r.ok){
         if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效，請重新輸入');}
         hideLoading();
+        showSyncWarn('雲端載入失敗（'+r.status+'），為避免覆蓋雲端資料，本機修改暫不同步');
         return null;
       }
       return r.json();
@@ -742,15 +749,37 @@ function loadFromGitHub(){
       if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
       if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
       if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
+      // 地理快取：合併雲端與本地（兩邊都保留）
+      if(json.uberRoadGeo){
+        var lg={}; try{ lg=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
+        localStorage.setItem('uberRoadGeo', JSON.stringify(Object.assign({}, json.uberRoadGeo, lg)));
+      }
+      if(json.uberRoadGeom){
+        var lm={}; try{ lm=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
+        localStorage.setItem('uberRoadGeom', JSON.stringify(Object.assign({}, json.uberRoadGeom, lm)));
+      }
       invalidateCache();
       // 儲存 SHA 供推送使用
       if(fi.sha) localStorage.setItem('gh_json_sha', fi.sha);
-      if(typeof renderTrips==='function') renderTrips();
-      if(typeof updateStats==='function') updateStats();
-      if(typeof renderWeekly==='function') renderWeekly();
-      if(typeof renderMonthly==='function') renderMonthly();
+      markSyncReady();                      // ← 此時才允許推送
+      if(typeof runDataMigrations==='function') runDataMigrations();
+      else if(typeof renderAll==='function') renderAll();
       hideLoading();
-    }).catch(e=>{console.warn('載入失敗:',e);hideLoading();});
+    }).catch(e=>{
+      console.warn('載入失敗:',e); hideLoading();
+      showSyncWarn('雲端載入失敗，為避免覆蓋雲端資料，本機修改暫不同步');
+    });
+}
+function showSyncWarn(msg){
+  var id='syncWarnBar', el=document.getElementById(id);
+  if(!el){
+    el=document.createElement('div');
+    el.id=id;
+    el.style.cssText='position:fixed;top:28px;left:0;right:0;z-index:9998;background:rgba(200,60,30,0.92);'
+      +'color:#fff;font-family:monospace;font-size:12px;padding:8px 14px;text-align:center;letter-spacing:0.04em;';
+    document.body.appendChild(el);
+  }
+  el.textContent='⚠ '+msg;
 }
 function hideLoading(){
   var el=document.getElementById('loadingOverlay');
@@ -782,7 +811,11 @@ async function pushToGitHub(){
       var fi=await r.json();
       sha=fi.sha;
     }
-    var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly};
+    var rgeo={},rgeom={};
+    try{ rgeo=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
+    try{ rgeom=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
+    var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly,
+                 uberRoadGeo:rgeo, uberRoadGeom:rgeom};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
     showToast('⏳ 推送中...',false);
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
@@ -800,7 +833,11 @@ async function pushToGitHub(){
     }
   }finally{_pushing=false;}
 }
-async function saveAndPush(key,data){saveData(key,data);await pushToGitHub();}
+async function saveAndPush(key,data){
+  saveData(key,data);
+  if(!_syncReady){ _pendingPush=true; return; }   // 尚未載入完成 → 不推送
+  await pushToGitHub();
+}
 // 千分點格式化
 function fmt(n){return Number(n).toLocaleString('zh-TW');}
 // 行程
@@ -2759,21 +2796,25 @@ function updateDistricts(type){
 }
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-// 舊資料轉換：交通罰鍰 → 罰鍰/過路費
-(function(){
-  var m=getData('uberMonthly'),changed=false;
+// 資料整理：只在 GitHub 載入完成後執行（避免舊資料覆蓋雲端新資料）
+function runDataMigrations(){
+  var changed=false;
+  var m=getData('uberMonthly');
   m.forEach(function(x){ if(x.type==='交通罰鍰'){ x.type='罰鍰/過路費'; changed=true; } });
-  if(changed) saveAndPush('uberMonthly',m);
-})();
-// 舊資料轉換：行程分類 56688 → 55688
-(function(){
-  var t=getData('uberTrips'),changed=false;
-  t.forEach(function(x){ if(x.cat==='56688'){ x.cat='55688'; changed=true; } });
-  if(changed) saveAndPush('uberTrips',t);
-})();
-if(typeof purgeOutOfBounds==='function') purgeOutOfBounds();
-if(typeof purgeMisplacedGeom==='function') purgeMisplacedGeom();
-renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
+  if(changed){ saveData('uberMonthly',m); }
+  var t=getData('uberTrips'), changed2=false;
+  t.forEach(function(x){ if(x.cat==='56688'){ x.cat='55688'; changed2=true; } });
+  if(changed2){ saveData('uberTrips',t); }
+  if(typeof purgeOutOfBounds==='function') purgeOutOfBounds();
+  if(typeof purgeMisplacedGeom==='function') purgeMisplacedGeom();
+  if((changed||changed2) && _syncReady) pushToGitHub();
+  renderAll();
+}
+function renderAll(){
+  renderTrips();renderWeekly();renderMonthly();updateStats();
+  renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
+}
+renderAll();   // 先用本地快取畫一次（載入完成後會再畫）
 </script>
 </body>
 </html>
