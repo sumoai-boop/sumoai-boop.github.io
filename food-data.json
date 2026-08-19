@@ -1,5 +1,35 @@
 [
   {
+    "id": "1787149781695",
+    "name": "GET POWER 給力盒子 民生店",
+    "name1": "GET POWER 給力盒子",
+    "name2": "民生店",
+    "type": "便當",
+    "meal": "",
+    "price": 135,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "105臺北市松山區精忠里民生東路四段99號1樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%B0%91%E7%94%9F%E9%A4%90%E7%9B%92GET+POWER+%E7%B5%A6%E5%8A%9B%E7%9B%92%E5%AD%90+%E6%B0%91%E7%94%9F%E5%BA%97/@25.0582088,121.5496627,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abbea7dd5687:0x62a28f29ab971a1d!8m2!3d25.058204!4d121.552243!16s%2Fg%2F11qr9hzf4w?entry=ttu&g_ep=EgoyMDI2MDgxNi4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-19",
+    "score": 3.3,
+    "visitLog": [
+      {
+        "date": "2026-08-19",
+        "meal": "午餐",
+        "price": 135,
+        "menu": "義式香草雞腿排",
+        "score": 3.3
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/S4wzNxFx/9dc1172a0bcd.jpg"
+    ],
+    "img": "https://i.ibb.co/S4wzNxFx/9dc1172a0bcd.jpg",
+    "createdAt": 1787149781695
+  },
+  {
     "id": "1786629866036",
     "name": "三山燒肉 朝富店",
     "name1": "三山燒肉",
