@@ -1963,6 +1963,7 @@ function renderHeatDiag(){
 // 清空失敗記錄並重新排隊
 function retryFailedRoads(){
   _gmFailed={}; _geoFailed={}; _gmBackoff=1500; _gm2Queue=[];
+  if(typeof purgeMisplacedGeom==='function') purgeMisplacedGeom();
   renderHeatmap();
   var st=document.getElementById('geoStatus');
   if(st) st.textContent='已重新排入佇列…';
@@ -2004,6 +2005,30 @@ var NORTH_BOUND = {minLat:24.60, maxLat:25.40, minLng:121.00, maxLng:122.10};
 function inNorth(lat,lng){
   return lat>=NORTH_BOUND.minLat && lat<=NORTH_BOUND.maxLat
       && lng>=NORTH_BOUND.minLng && lng<=NORTH_BOUND.maxLng;
+}
+
+// 清除「線段離所屬行政區太遠」的錯誤資料（例如新店區中興路抓到桃園）
+function purgeMisplacedGeom(){
+  var g;
+  try{ g=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){ return 0; }
+  var removed=0, out={};
+  Object.keys(g).forEach(function(k){
+    var dist=keyDist(k), ctr=dist? districtCenter(dist) : null;
+    if(!ctr){ out[k]=g[k]; return; }
+    var poly=DISTRICT_BOUNDS[dist];
+    var keep=(g[k]||[]).filter(function(ln){
+      var mid=ln[Math.floor(ln.length/2)];
+      if(!mid) return false;
+      if(poly && pointInPoly(mid[0],mid[1],poly)) return true;
+      return kmDist(mid,ctr)<=6.0;
+    });
+    if(keep.length) out[k]=keep;
+    else removed++;
+  });
+  if(removed){
+    try{ localStorage.setItem('uberRoadGeom', JSON.stringify(out)); }catch(e){}
+  }
+  return removed;
 }
 // 清除既有快取中越界的錯誤資料
 function purgeOutOfBounds(){
@@ -2148,31 +2173,37 @@ function runRoadGeom(){
       return r.json();
     })
     .then(function(j){
-      // 依路名 + 所屬行政區分組
-      var byKey={};
+      // 依「路名」收集所有線段（保留中點供後續位置驗證）
+      var byName={};
       (j.elements||[]).forEach(function(w){
         if(!w.geometry||w.geometry.length<2||!w.tags||!w.tags.name) return;
         var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(4), +p.lon.toFixed(4)]; });
         var mid=pts[Math.floor(pts.length/2)];
         if(!inNorth(mid[0],mid[1])) return;
-        var dist=districtOfPoint(mid[0],mid[1]);
-        var key=(dist? dist+'|' : '')+w.tags.name;
         var tl=dedupeLine(thinLine(pts,18));
-        if(tl.length>=2){ (byKey[key]=byKey[key]||[]).push(tl); }
+        if(tl.length>=2){ (byName[w.tags.name]=byName[w.tags.name]||[]).push({line:tl, mid:mid}); }
       });
-      // 存入這批要的 key
-      var got=0;
+      // 逐筆比對：只收「位置吻合」的線段
+      var got=0, rgNow=getRoadGeo();
       batch.forEach(function(it){
-        var key=it.key||it.name;
-        var lines=byKey[key];
-        if(!lines){
-          // 該區找不到 → 用同名路的任一結果（跨區或區界判定誤差）
-          var alt=Object.keys(byKey).filter(function(k){ return keyLabel(k)===it.name; });
-          if(alt.length) lines=byKey[alt[0]];
+        var key=it.key||it.name, dist=it.dist||'';
+        var cands=byName[it.name]||[];
+        var poly=dist? DISTRICT_BOUNDS[dist] : null;
+        var ctr=dist? districtCenter(dist) : null;
+        var co=rgNow[key];                       // Nominatim 定位（若有）
+        var picked=cands.filter(function(o){
+          if(poly && pointInPoly(o.mid[0],o.mid[1],poly)) return true;   // 落在該區內
+          if(co && kmDist(o.mid,co)<=2.0) return true;                   // 距已知座標 2km 內
+          if(!poly && ctr && kmDist(o.mid,ctr)<=4.0) return true;         // 無界線時用中心 4km
+          return false;
+        }).map(function(o){ return o.line; });
+        // 若該區有界線卻完全沒命中，再放寬到中心 6km（避免區界簡化誤差）
+        if(!picked.length && ctr){
+          picked=cands.filter(function(o){ return kmDist(o.mid,ctr)<=6.0; }).map(function(o){ return o.line; });
         }
-        if(lines && lines.length){
-          if(lines.length>20) lines=mergeShortLines(lines,20);
-          saveRoadGeom(key, lines);
+        if(picked.length){
+          if(picked.length>20) picked=mergeShortLines(picked,20);
+          saveRoadGeom(key, picked);
           got++;
         } else if(!it._pass2){ it._pass2=1; _gm2Queue.push(it); }
         else { _gmFailed[key]='查無道路'; }
@@ -2242,11 +2273,20 @@ function runRoadGeom2(){
     })
     .then(function(j){
       var lines=[];
+      var poly2=dist? DISTRICT_BOUNDS[dist] : null;
+      var ctr2=dist? districtCenter(dist) : null;
       (j.elements||[]).forEach(function(w){
         if(!w.geometry||w.geometry.length<2) return;
         var pts=w.geometry.map(function(p){ return [+p.lat.toFixed(4), +p.lon.toFixed(4)]; });
         var mid=pts[Math.floor(pts.length/2)];
         if(!inNorth(mid[0],mid[1])) return;
+        // 位置驗證：該區內、或距已知座標/區中心夠近
+        var ok=false;
+        if(poly2 && pointInPoly(mid[0],mid[1],poly2)) ok=true;
+        else if(co && kmDist(mid,co)<=2.5) ok=true;
+        else if(ctr2 && kmDist(mid,ctr2)<=6.0) ok=true;
+        else if(!dist && co) ok=false;
+        if(!ok) return;
         var tl=dedupeLine(thinLine(pts,18));
         if(tl.length>=2) lines.push(tl);
       });
@@ -2267,6 +2307,22 @@ function runRoadGeom2(){
       } else { _gmFailed[key]=(err&&err.message)||'錯誤'; }
     })
     .finally(function(){ setTimeout(runRoadGeom2, _gmBackoff||1500); });
+}
+
+// 兩點距離（公里，約略）
+function kmDist(a,b){
+  var dLat=(a[0]-b[0])*111, dLng=(a[1]-b[1])*101;
+  return Math.sqrt(dLat*dLat+dLng*dLng);
+}
+// 行政區中心（快取）
+var _distCtr={};
+function districtCenter(d){
+  if(_distCtr[d]!==undefined) return _distCtr[d];
+  var poly=DISTRICT_BOUNDS[d];
+  if(!poly){ return (_distCtr[d]=DISTRICT_COORD[d]||null); }
+  var y=0,x=0;
+  poly.forEach(function(p){ y+=p[0]; x+=p[1]; });
+  return (_distCtr[d]=[y/poly.length, x/poly.length]);
 }
 // 判斷座標落在哪個行政區（point-in-polygon）
 function districtOfPoint(lat,lng){
@@ -2716,6 +2772,7 @@ document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   if(changed) saveAndPush('uberTrips',t);
 })();
 if(typeof purgeOutOfBounds==='function') purgeOutOfBounds();
+if(typeof purgeMisplacedGeom==='function') purgeMisplacedGeom();
 renderTrips();renderWeekly();renderMonthly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 </script>
 </body>
