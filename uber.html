@@ -188,6 +188,8 @@ body{
   /* 星期平均卡片：橫向捲動 */
   #weekdayAvgWrap > div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
   #weekdayAvgWrap > div:last-child > div{min-width:96px;flex-shrink:0;}
+  /* 熱區地圖：手機上高度收斂 */
+  #heatMap{height:clamp(380px, calc(100vh - 260px), 560px)!important;}
   /* 圓餅圖：縮放並改直排 */
   #monthlyPieChart{width:100%!important;max-width:280px;height:auto!important;}
   #expenseChartWrap{padding:14px!important;min-width:0!important;}
@@ -592,7 +594,7 @@ body{
     <div id="heatSummary" style="font-size:13px;color:rgba(240,220,160,0.7);"></div>
   </div>
   <div class="chart-card" style="padding:0;overflow:hidden;">
-    <div id="heatMap" style="width:100%;height:520px;background:#1a2030;"></div>
+    <div id="heatMap" style="width:100%;height:clamp(560px, calc(100vh - 300px), 820px);background:#1a2030;"></div>
     <div id="heatLegend" style="display:flex;align-items:center;gap:0;padding:11px 14px;
       border-top:1px solid rgba(0,200,83,0.18);background:rgba(0,0,0,0.25);flex-wrap:wrap;"></div>
   </div>
@@ -2332,7 +2334,7 @@ function renderHeatFallback(){
   var minLng=Math.min.apply(null,lngs), maxLng=Math.max.apply(null,lngs);
   var padLat=(maxLat-minLat)*0.05||0.01, padLng=(maxLng-minLng)*0.05||0.01;
   minLat-=padLat; maxLat+=padLat; minLng-=padLng; maxLng+=padLng;
-  var W=900,H=560;
+  var W=900,H=680;
   // 等比例縮放，避免變形
   var sx=W/(maxLng-minLng), sy=H/(maxLat-minLat), s=Math.min(sx,sy);
   var offX=(W-(maxLng-minLng)*s)/2, offY=(H-(maxLat-minLat)*s)/2;
