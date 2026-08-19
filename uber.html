@@ -580,16 +580,12 @@ body{
         <option value="uber">uber</option>
         <option value="55688">55688</option>
       </select>
-      <select class="form-input" id="heatLevel" onchange="renderHeatmap()" style="width:110px;padding:8px 12px;">
-        <option value="dist">行政區</option>
-        <option value="road">路名/地點</option>
-      </select>
       <span id="geoStatus" style="font-size:11px;color:#FFD400;"></span>
       <button onclick="toggleHeatDiag()" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:6px;color:#00C853;font-size:11px;padding:6px 10px;cursor:pointer;font-family:monospace;">診斷</button>
       <button onclick="retryFailedRoads()" style="background:rgba(255,180,0,0.12);border:1px solid rgba(255,180,0,0.35);border-radius:6px;color:#FFD400;font-size:11px;padding:6px 10px;cursor:pointer;font-family:monospace;">重試失敗</button>
       <select class="form-input" id="heatLayer" onchange="renderHeatmap()" style="width:120px;padding:8px 12px;">
-        <option value="circle">只看範圍</option>
-        <option value="both">熱力+範圍</option>
+        <option value="circle">只看路線</option>
+        <option value="both">熱力+路線</option>
         <option value="heat">只看熱力</option>
       </select>
     </div>
@@ -602,7 +598,7 @@ body{
   </div>
   <div id="heatDiag" class="chart-card" style="margin-top:16px;display:none;"></div>
   <div class="chart-card" style="margin-top:16px;">
-    <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">區域排行</div>
+    <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">地點排行</div>
     <div id="heatRank" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;"></div>
   </div>
 </div>
@@ -2291,7 +2287,7 @@ function renderHeatFallback(){
   if(!el) return;
   var mode=document.getElementById('heatMode').value;
   var cat=document.getElementById('heatCat').value;
-  var level=document.getElementById('heatLevel')?document.getElementById('heatLevel').value:'dist';
+  var level='road';
   var trips=getData('uberTrips');
   if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
   var counts={}, roadDist={};
@@ -2313,7 +2309,7 @@ function renderHeatFallback(){
       .map(function(k){var p=splitKey(k); return {key:k, name:p[1], dist:p[0]};}).slice(0,300));
   }
   var entries=Object.keys(counts).filter(function(k){
-      return level==='road' ? (!!_rg2[k]||!!_gm2[k]) : (DISTRICT_BOUNDS[k]||DISTRICT_COORD[k]); })
+      return !!_rg2[k]||!!_gm2[k]; })
     .map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];});
   var total=entries.reduce(function(s,e){return s+e[1];},0);
   var maxC=entries.length?entries[0][1]:1;
@@ -2329,9 +2325,6 @@ function renderHeatFallback(){
       else if(_rg2[e[0]]) allPts.push(_rg2[e[0]]);
       return;
     }
-    var b=DISTRICT_BOUNDS[e[0]];
-    if(b) b.forEach(function(p){ allPts.push(p); });
-    else if(DISTRICT_COORD[e[0]]) allPts.push(DISTRICT_COORD[e[0]]);
   });
   if(!allPts.length){ el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);font-size:14px;">無座標資料</div>'; return; }
   var lats=allPts.map(function(p){return p[0];}), lngs=allPts.map(function(p){return p[1];});
@@ -2387,28 +2380,17 @@ function renderHeatFallback(){
       if(ratio>0.3) labels+='<text x="'+x.toFixed(1)+'" y="'+(y-r-5).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" font-family="monospace" style="paint-order:stroke;stroke:rgba(0,0,0,0.7);stroke-width:3;">'+_lb2+'</text>';
       return;
     }
-    var b=DISTRICT_BOUNDS[name];
-    if(b){
-      var d=b.map(function(p,i){ return (i?'L':'M')+px(p[1]).toFixed(1)+' '+py(p[0]).toFixed(1); }).join('')+'Z';
-      polys+='<path d="'+d+'" fill="'+col+'" fill-opacity="'+heatOpacity(ratio).toFixed(2)
-        +'" stroke="'+col+'" stroke-width="'+(ratio>0.55?2.2:1.4)+'" stroke-opacity="1"><title>'+name+'：'+n+' 趟（'+(n/total*100).toFixed(1)+'%）</title></path>';
-      var cx=0,cy=0;
-      b.forEach(function(p){ cx+=px(p[1]); cy+=py(p[0]); });
-      cx/=b.length; cy/=b.length;
-      if(ratio>0.12) labels+='<text x="'+cx.toFixed(1)+'" y="'+cy.toFixed(1)+'" text-anchor="middle" font-size="11" fill="#fff" font-family="monospace" font-weight="700" style="paint-order:stroke;stroke:rgba(0,0,0,0.6);stroke-width:3;">'+name+'</text>'
-        +'<text x="'+cx.toFixed(1)+'" y="'+(cy+13).toFixed(1)+'" text-anchor="middle" font-size="11" fill="'+col+'" font-family="monospace" font-weight="700" style="paint-order:stroke;stroke:rgba(0,0,0,0.6);stroke-width:3;">'+n+'</text>';
-    }
   });
 
   el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:100%;display:block;background:#141926;">'
     +polys+labels
-    +'<text x="12" y="'+(H-12)+'" font-size="11" fill="rgba(255,255,255,0.3)" font-family="monospace">'+(level==='road'?'路名/地點分布':'行政區範圍')+'（簡易模式）</text>'
+    +'<text x="12" y="'+(H-12)+'" font-size="11" fill="rgba(255,255,255,0.3)" font-family="monospace">路名/地點分布（簡易模式）</text>'
     +'</svg>';
 
   renderHeatLegend(maxC);
   if(typeof renderHeatDiag==='function') renderHeatDiag();
   var sum=document.getElementById('heatSummary');
-  if(sum) sum.textContent=entries.length+(level==='road'?' 個地點':' 個區域')+' · '+total+(mode==='all'?' 次':' 趟');
+  if(sum) sum.textContent=entries.length+' 個地點 · '+total+(mode==='all'?' 次':' 趟');
   var rank=document.getElementById('heatRank');
   if(rank){
     rank.innerHTML=entries.map(function(e,i){
@@ -2419,7 +2401,7 @@ function renderHeatFallback(){
         +'<span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);min-width:20px;">'+(i+1)+'</span>'
         +'<span style="flex:1;overflow:hidden;">'
           +'<span style="font-size:13px;color:#f0dca8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+lb+'</span>'
-          +(dt&&level==='road'?'<span style="font-size:10px;color:rgba(255,255,255,0.35);">'+dt+'</span>':'')
+          +(dt?'<span style="font-size:10px;color:rgba(255,255,255,0.35);">'+dt+'</span>':'')
         +'</span>'
         +'<span style="font-size:14px;font-weight:700;color:'+col+';">'+n+'</span>'
       +'</div>';
@@ -2458,7 +2440,7 @@ function renderHeatmap(){
   var mode=document.getElementById('heatMode').value;      // from / to
   var cat=document.getElementById('heatCat').value;         // '' / uber / 55688
   var layerMode=document.getElementById('heatLayer').value; // both / heat / circle
-  var level=document.getElementById('heatLevel')?document.getElementById('heatLevel').value:'dist';
+  var level='road';
   var trips=getData('uberTrips');
   if(cat) trips=trips.filter(function(t){return (t.cat||'uber')===cat;});
 
@@ -2537,24 +2519,7 @@ function renderHeatmap(){
         fillColor:col,fillOpacity:heatOpacity(ratio)}).bindTooltip(tip,{direction:'top'}));
       return;
     }
-    var poly=DISTRICT_BOUNDS[name], co=DISTRICT_COORD[name];
-    if(poly){
-      poly.forEach(function(pt){ bounds.push(pt); });
-      shapes.push(L.polygon(poly,{
-        color:col, weight:ratio>0.55?2.6:1.8, opacity:1,
-        fillColor:col, fillOpacity:heatOpacity(ratio)
-      }).bindTooltip('<b>'+name+'</b><br>'+n+' 趟（'+(n/total*100).toFixed(1)+'%）',
-        {direction:'top',sticky:true}));
-      // 熱力點用區域中心
-      var cx=0,cy=0;
-      poly.forEach(function(pt){ cx+=pt[0]; cy+=pt[1]; });
-      pts.push([cx/poly.length, cy/poly.length, ratio]);
-    } else if(co){
-      bounds.push(co);
-      pts.push([co[0],co[1],ratio]);
-      shapes.push(L.circleMarker(co,{radius:10+Math.sqrt(ratio)*22,color:col,weight:2,
-        fillColor:col,fillOpacity:0.3}).bindTooltip(name+'：'+n+' 趟',{direction:'top'}));
-    } else { missing.push(name); }
+    missing.push(name);
   });
 
   if((layerMode==='both'||layerMode==='heat') && pts.length && L.heatLayer){
@@ -2572,15 +2537,10 @@ function renderHeatmap(){
   if(typeof renderHeatDiag==='function') renderHeatDiag();
   var sum=document.getElementById('heatSummary');
   if(sum){
-    if(level==='road'){
-      var nLine=0,nDot=0;
-      entries.forEach(function(e){ if(_gm[e[0]]) nLine++; else if(_rg[e[0]]) nDot++; });
-      sum.textContent=nLine+' 條路線 · '+nDot+' 個地標 · '+total+(mode==='all'?' 次':' 趟')
-        +(missing.length?'（'+missing.length+' 筆待定位）':'');
-    } else {
-      sum.textContent=(entries.length-missing.length)+' 個區域 · '+total+(mode==='all'?' 次':' 趟')
-        +(missing.length?'（'+missing.length+' 筆待定位）':'');
-    }
+    var nLine=0,nDot=0;
+    entries.forEach(function(e){ if(_gm[e[0]]) nLine++; else if(_rg[e[0]]) nDot++; });
+    sum.textContent=nLine+' 條路線 · '+nDot+' 個地標 · '+total+(mode==='all'?' 次':' 趟')
+      +(missing.length?'（'+missing.length+' 筆待定位）':'');
   }+(missing.length?'（'+missing.length+' 個無座標）':'');
 
   // 排行
@@ -2595,7 +2555,7 @@ function renderHeatmap(){
         +'<span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);min-width:20px;">'+(i+1)+'</span>'
         +'<span style="flex:1;overflow:hidden;">'
           +'<span style="font-size:13px;color:#f0dca8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+lb+'</span>'
-          +(dt&&level==='road'?'<span style="font-size:10px;color:rgba(255,255,255,0.35);">'+dt+'</span>':'')
+          +(dt?'<span style="font-size:10px;color:rgba(255,255,255,0.35);">'+dt+'</span>':'')
         +'</span>'
         +'<span style="font-size:14px;font-weight:700;color:'+col+';">'+n+'</span>'
       +'</div>';
