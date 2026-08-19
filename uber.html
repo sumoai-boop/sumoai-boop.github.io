@@ -2348,6 +2348,12 @@ function renderHeatFallback(){
     if(ratio>0.06) return '#00C8D7';
     return '#2C6FD1';
   }
+  function roadWidth(ratio){
+    if(ratio<=0.10) return 3 + (ratio/0.10)*4.1;          // 0→3px, 10%→7.1px
+    if(ratio<=0.25) return 7.1;                            // 10~25% 固定 7.1px
+    if(ratio<=0.50) return 7.1 + ((ratio-0.25)/0.25)*2.9;  // 25%→7.1, 50%→10px
+    return 10 + ((ratio-0.50)/0.50)*3;                     // 50%→10, 100%→13px
+  }
   function heatOpacity(ratio){
     if(ratio>0.80) return 0.78;
     if(ratio>0.55) return 0.68;
@@ -2364,7 +2370,7 @@ function renderHeatFallback(){
       var _lb2=keyLabel(name), _dt2=keyDist(name);
       var g=_gm2[name], ttl=(_dt2?_dt2+' ':'')+_lb2+'：'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
       if(g && g.length){
-        var w=(2+Math.sqrt(ratio)*9).toFixed(1), lx=0,ly=0,cnt=0;
+        var w=(roadWidth(ratio)*0.85).toFixed(1), lx=0,ly=0,cnt=0;
         g.forEach(function(ln){
           var d=ln.map(function(p,i){ return (i?'L':'M')+px(p[1]).toFixed(1)+' '+py(p[0]).toFixed(1); }).join('');
           polys+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+w
@@ -2480,6 +2486,12 @@ function renderHeatmap(){
     if(ratio>0.06) return '#00C8D7';
     return '#2C6FD1';
   }
+  function roadWidth(ratio){
+    if(ratio<=0.10) return 3 + (ratio/0.10)*4.1;          // 0→3px, 10%→7.1px
+    if(ratio<=0.25) return 7.1;                            // 10~25% 固定 7.1px
+    if(ratio<=0.50) return 7.1 + ((ratio-0.25)/0.25)*2.9;  // 25%→7.1, 50%→10px
+    return 10 + ((ratio-0.50)/0.50)*3;                     // 50%→10, 100%→13px
+  }
   function heatOpacity(ratio){
     if(ratio>0.80) return 0.78;
     if(ratio>0.55) return 0.68;
@@ -2504,7 +2516,7 @@ function renderHeatmap(){
       var _lb=keyLabel(name), _dt=keyDist(name);
       var tip='<b>'+_lb+'</b>'+(_dt?' <span style="opacity:.7">'+_dt+'</span>':'')+'<br>'+n+' 次（'+(n/total*100).toFixed(1)+'%）';
       if(lines && lines.length){
-        var w=3+Math.sqrt(ratio)*13;
+        var w=roadWidth(ratio);
         lines.forEach(function(ln){
           ln.forEach(function(p){ bounds.push(p); });
           pts.push([ln[Math.floor(ln.length/2)][0], ln[Math.floor(ln.length/2)][1], ratio]);
