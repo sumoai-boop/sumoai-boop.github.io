@@ -191,7 +191,7 @@ body{
   /* 熱區地圖：手機上高度收斂 */
   #heatMap{height:clamp(380px, calc(100vh - 260px), 560px)!important;}
   /* 圓餅圖：縮放並改直排 */
-  #monthlyPieChart{width:100%!important;max-width:280px;height:auto!important;}
+  #monthlyPieChart,#ovExpPie,#ovIncPie{width:100%!important;max-width:260px;height:auto!important;}
   #expenseChartWrap{padding:14px!important;min-width:0!important;}
   #expenseChartWrap > div:last-child{flex-direction:column!important;gap:16px!important;}
   #pieLegend{width:100%;}
@@ -318,6 +318,29 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
 
   <!-- 總覽 -->
   <div class="tab-panel active" id="tab-overview">
+
+    <!-- 本月收支圓餅圖 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+      <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;">本月收支</div>
+      <div id="ovNet" style="font-size:13px;color:rgba(240,220,160,0.75);"></div>
+    </div>
+    <div class="chart-grid" style="margin-bottom:26px;">
+      <div class="chart-card" style="display:flex;flex-direction:column;">
+        <div id="ovExpTitle" style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:14px;">本月支出</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:34px;flex:1;flex-wrap:wrap;">
+          <canvas id="ovExpPie" width="300" height="300" style="flex-shrink:0;"></canvas>
+          <div id="ovExpLegend" style="min-width:190px;"></div>
+        </div>
+      </div>
+      <div class="chart-card" style="display:flex;flex-direction:column;">
+        <div id="ovIncTitle" style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:14px;">本月收入</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:34px;flex:1;flex-wrap:wrap;">
+          <canvas id="ovIncPie" width="300" height="300" style="flex-shrink:0;"></canvas>
+          <div id="ovIncLegend" style="min-width:190px;"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="stats-grid">
       <!-- Row 1: 公里 + 薪資 -->
       <div class="stat-card"><div class="stat-label">本月公里數</div><div class="stat-val" id="s-month-km"><em class="num">0</em> <em class="unit">km</em></div></div>
@@ -740,6 +763,7 @@ function switchTab(id,btn){
   var netEl = document.getElementById('total-net-display');
   if(netEl) netEl.style.display = id==='overview' ? 'block' : 'none';
   if(id==='heat') setTimeout(renderHeatmap, 60);
+  if(id==='overview') setTimeout(renderOverviewPies, 30);
 }
 // 資料
 // ── GitHub 設定 ──
@@ -1177,7 +1201,7 @@ function addWeekly(){
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
   w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
-  saveAndPush('uberWeekly',w);renderWeekly();updateStats();renderWeekIncomeChart();renderMonthIncomeChart();
+  saveAndPush('uberWeekly',w);renderWeekly();updateStats();renderOverviewPies();renderWeekIncomeChart();renderMonthIncomeChart();
   ['fw-income','fw-trips','fw-hours','fw-mins','fw-points','fw-note'].forEach(id=>document.getElementById(id).value='');
 }
 function deleteWeekly(id){
@@ -1309,7 +1333,7 @@ function addMonthly(){
   } else {
     m.unshift({date,type,amount,note,liters,odo,id:Date.now()});
   }
-  saveAndPush('uberMonthly',m);renderMonthly();updateStats();
+  saveAndPush('uberMonthly',m);renderMonthly();updateStats();renderOverviewPies();
   ['fm-amount','fm-note','fm-liters','fm-odo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
   toggleGasFields();
@@ -1360,7 +1384,7 @@ function deleteEditingMonthly(){
   ['fm-amount','fm-note','fm-liters','fm-odo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fm-type').value='';
   toggleGasFields();
-  saveAndPush('uberMonthly',m);renderMonthly();updateStats();
+  saveAndPush('uberMonthly',m);renderMonthly();updateStats();renderOverviewPies();
 }
 function deleteMonthly(id){
   if(!confirm('確定刪除這筆支出？'))return;
@@ -2023,6 +2047,97 @@ document.addEventListener('keydown', function(e){
 
 
 
+
+// ── 通用圓餅圖（canvas + 圖例）──
+function drawPie(canvasId, legendId, dataMap, colorMap, totalLabel){
+  var canvas=document.getElementById(canvasId);
+  var leg=document.getElementById(legendId);
+  if(!canvas||!leg) return 0;
+  var keys=Object.keys(dataMap).filter(function(k){ return (dataMap[k]||0)>0; })
+    .sort(function(a,b){ return dataMap[b]-dataMap[a]; });
+  var grand=keys.reduce(function(s,k){ return s+dataMap[k]; },0);
+  var W=canvas.width, cx=W/2, cy=W/2, r=W/2-20;
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,W);
+  if(!grand){
+    leg.innerHTML='<div style="color:rgba(255,255,255,0.25);font-size:13px;">本月尚無資料</div>';
+    return 0;
+  }
+  var start=-Math.PI/2;
+  keys.forEach(function(k,i){
+    var col=(colorMap&&colorMap[k])||PIE_COLORS[i%PIE_COLORS.length];
+    var slice=(dataMap[k]/grand)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start,start+slice); ctx.closePath();
+    ctx.fillStyle=col; ctx.fill();
+    ctx.strokeStyle='rgba(30,33,48,0.8)'; ctx.lineWidth=2; ctx.stroke();
+    var pct=dataMap[k]/grand*100;
+    if(pct>=8){
+      var mid=start+slice/2;
+      ctx.fillStyle='#000'; ctx.font='bold 12px monospace';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(pct.toFixed(1)+'%', cx+r*0.65*Math.cos(mid), cy+r*0.65*Math.sin(mid));
+    }
+    start+=slice;
+  });
+  leg.innerHTML=keys.map(function(k,i){
+    var col=(colorMap&&colorMap[k])||PIE_COLORS[i%PIE_COLORS.length];
+    var pct=(dataMap[k]/grand*100).toFixed(1);
+    return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;">'
+      +'<div style="display:flex;align-items:center;gap:9px;">'
+      +'<div style="width:13px;height:13px;border-radius:3px;background:'+col+';flex-shrink:0;"></div>'
+      +'<span style="font-size:15px;color:'+col+';font-weight:600;">'+k+'</span></div>'
+      +'<div style="text-align:right;white-space:nowrap;">'
+      +'<div style="font-size:15px;color:#E8EAF0;font-weight:700;">'+dataMap[k].toLocaleString()+'</div>'
+      +'<div style="font-size:12px;color:rgba(255,255,255,0.45);">'+pct+'%</div>'
+      +'</div></div>';
+  }).join('')
+  +'<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
+  +'<span style="font-size:14px;color:rgba(255,255,255,0.5);">'+(totalLabel||'總額')+'</span>'
+  +'<span style="font-size:18px;color:#E8EAF0;font-weight:700;">'+grand.toLocaleString()+' $</span></div>';
+  return grand;
+}
+
+// ── 總覽：本月支出 / 本月收入 圓餅圖 ──
+const INCOME_COLOR={'Uber 收入':'#00C853','55688 收入':'#FFD400','本薪':'#22D3EE','獎金':'#C084FC','業外收入':'#FF9500'};
+function renderOverviewPies(){
+  var now=new Date();
+  var ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var label=(now.getMonth()+1)+' 月';
+
+  // 本月支出（依類別）
+  var expMap={};
+  getData('uberMonthly').forEach(function(m){
+    if(!m.date||m.date.slice(0,7)!==ym) return;
+    var t=m.type||'其他';
+    expMap[t]=(expMap[t]||0)+(m.amount||0);
+  });
+  var expTotal=drawPie('ovExpPie','ovExpLegend',expMap,TYPE_COLOR,'本月支出');
+
+  // 本月收入（Uber + 本業各類別）
+  var incMap={};
+  var uberInc=0;
+  getData('uberWeekly').forEach(function(w){
+    if(w.date && w.date.slice(0,7)===ym) uberInc+=(w.income||0);
+  });
+  if(uberInc>0) incMap['Uber 收入']=uberInc;
+  getData('uberSalary').forEach(function(s){
+    if(!s.date||s.date.slice(0,7)!==ym) return;
+    var t=s.type||'本薪';
+    incMap[t]=(incMap[t]||0)+(s.amount||0);
+  });
+  var incTotal=drawPie('ovIncPie','ovIncLegend',incMap,INCOME_COLOR,'本月收入');
+
+  var t1=document.getElementById('ovExpTitle');
+  if(t1) t1.textContent=label+' 支出';
+  var t2=document.getElementById('ovIncTitle');
+  if(t2) t2.textContent=label+' 收入';
+  var net=document.getElementById('ovNet');
+  if(net){
+    var n=incTotal-expTotal;
+    net.innerHTML='本月淨利 <b style="color:'+(n>=0?'#00E860':'#FF6B6B')+';font-size:20px;">NT$'+fmt(n)+'</b>';
+  }
+}
 // ── 本業收入 ──
 const SALARY_COLOR={'本薪':'#00C853','獎金':'#FFD400','業外收入':'#22D3EE'};
 
@@ -2045,7 +2160,7 @@ function addSalary(){
     all.unshift({date,type,amount,note,id:Date.now()});
   }
   saveAndPush('uberSalary',all);
-  renderSalary();
+  renderSalary();renderOverviewPies();
   document.getElementById('fs-amount').value='';
   document.getElementById('fs-type').value='';
   document.getElementById('fs-note').value='';
@@ -2082,7 +2197,7 @@ function deleteEditingSalary(){
   document.getElementById('fs-type').value='';
   document.getElementById('fs-note').value='';
   saveAndPush('uberSalary',all);
-  renderSalary();
+  renderSalary();renderOverviewPies();
 }
 
 function renderSalary(){
@@ -3027,7 +3142,7 @@ function runDataMigrations(){
   renderAll();
 }
 function renderAll(){
-  renderTrips();renderWeekly();renderMonthly();renderSalary();updateStats();
+  renderTrips();renderWeekly();renderMonthly();renderSalary();updateStats();renderOverviewPies();
   renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 }
 renderAll();   // 先用本地快取畫一次（載入完成後會再畫）
