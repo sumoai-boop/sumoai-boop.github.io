@@ -875,10 +875,42 @@ function hideLoading(){
 }
 window.addEventListener('DOMContentLoaded', loadFromGitHub);
 
-var _pushing=false;
+var _pushing=false, _pushAgain=false;
+var _pushAgain=false;
+// ── 未同步指示器 ──
+var _dirty=false;
+function markDirty(v){
+  _dirty=v;
+  var el=document.getElementById('syncDot');
+  if(!el){
+    el=document.createElement('div');
+    el.id='syncDot';
+    el.style.cssText='position:fixed;right:14px;bottom:96px;z-index:9990;font-family:monospace;font-size:12px;'
+      +'padding:8px 14px;border-radius:99px;cursor:pointer;transition:all .25s;display:none;';
+    el.onclick=function(){ pushToGitHub(); };
+    document.body.appendChild(el);
+  }
+  if(v){
+    el.style.display='block';
+    el.style.background='rgba(255,180,0,0.9)'; el.style.color='#000';
+    el.textContent='● 同步中…';
+  } else {
+    el.style.background='rgba(0,200,83,0.85)'; el.style.color='#000';
+    el.textContent='✓ 已同步';
+    setTimeout(function(){ if(!_dirty) el.style.display='none'; }, 2500);
+  }
+}
+// 有未同步資料時離開頁面 → 提醒
+window.addEventListener('beforeunload', function(e){
+  if(_dirty || _pushAgain || _pushing){
+    e.preventDefault(); e.returnValue='資料尚未同步完成，確定要離開嗎？';
+    return e.returnValue;
+  }
+});
 async function pushToGitHub(){
-  if(_pushing){showToast('⏳ 推送中，請稍候...',false);return;}
+  if(_pushing){ _pushAgain=true; return; }   // 排隊，結束後自動補推（不再丟棄）
   _pushing=true;
+  markDirty(true);
   try{
     var token=getToken();if(!token)return;
     var trips=getData('uberTrips'),weekly=getData('uberWeekly'),monthly=getData('uberMonthly'),salary=getData('uberSalary');
@@ -909,15 +941,22 @@ async function pushToGitHub(){
       var e2=await pr.json();
       localStorage.removeItem('gh_json_sha'); // 清除快取，下次重抓
       showToast('❌ 推送失敗：'+(e2.message||pr.status),true);
+      var sd=document.getElementById('syncDot');
+      if(sd){ sd.style.display='block'; sd.style.background='rgba(220,60,40,0.95)'; sd.style.color='#fff';
+              sd.textContent='⚠ 未同步（點此重試）'; }
     } else {
       // 推送成功：從回應直接取新 SHA，不需要再發請求
       var prData=await pr.json();
       var newSha=prData.content && prData.content.sha;
       if(newSha) localStorage.setItem('gh_json_sha', newSha);
       else localStorage.removeItem('gh_json_sha');
+      markDirty(false);
       showToast('✦ 已儲存至 GitHub',false);
     }
-  }finally{_pushing=false;}
+  }finally{
+    _pushing=false;
+    if(_pushAgain){ _pushAgain=false; setTimeout(pushToGitHub, 400); }
+  }
 }
 async function saveAndPush(key,data){
   saveData(key,data);
