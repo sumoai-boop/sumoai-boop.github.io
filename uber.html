@@ -226,9 +226,10 @@ body{
 /* Col 3: 總計 → 橘 */
 #s-total-km em.num,#s-total-pax em.num,#s-total-trips em.num,#s-total-hours em.num{color:#FF8C00!important;text-shadow:0 0 22px rgba(255,140,0,0.45)!important;}
 /* Col 4: 薪資/費用/收支(本月) → 紫 */
-#s-hourly em,#s-avg-detail em,#s-income em,#s-fuel em{color:#C084FC!important;text-shadow:0 0 22px rgba(192,132,252,0.45)!important;}
+#s-hourly em,#s-avg-detail em,#s-total-income em{color:#C084FC!important;text-shadow:0 0 22px rgba(192,132,252,0.45)!important;}
 /* Col 5: 薪資/費用/收支(總) → 黃 */
-#s-avg-month-income em,#s-avg-fare em,#s-total-income em,#s-total-exp em{color:#FFD700!important;text-shadow:0 0 22px rgba(255,215,0,0.45)!important;}
+#s-avg-month-income em,#s-avg-fare em,#s-total-exp em{color:#FFD700!important;text-shadow:0 0 22px rgba(255,215,0,0.45)!important;}
+#s-net-card em{color:#00E860!important;text-shadow:0 0 26px rgba(0,232,96,0.5)!important;}
 
   .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;transition:color 0.15s,background 0.15s;}
   .del-btn:hover{color:#ff6b6b;background:rgba(255,100,100,0.12);}
@@ -310,10 +311,6 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
       <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
       <button class="tab-btn" onclick="switchTab('heat',this)">熱區地圖</button>
     </div>
-    <div id="total-net-display" style="text-align:right;line-height:1.2;">
-      <div style="font-size:20px;color:#ffffff;letter-spacing:0.05em;font-weight:600;">總淨利</div>
-      <div style="font-size:30px;font-weight:700;color:#ffffff;">NT$<span id="s-total-net">—</span></div>
-    </div>
   </div>
 
   <!-- 總覽 -->
@@ -358,8 +355,8 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
       <div class="stat-card"><div class="stat-label">本月趟數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均趟數</div><div class="stat-val" id="s-avg-day-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">總趟數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
-      <div class="stat-card"><div class="stat-label">本月收入</div><div class="stat-val" id="s-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
       <!-- Row 4: 時數 + 支出 -->
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均時數</div><div class="stat-val" id="s-avg-day-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
@@ -367,8 +364,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <div class="stat-label">總時數</div>
         <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
       </div>
-      <div class="stat-card"><div class="stat-label">本月支出</div><div class="stat-val" id="s-fuel"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card" style="grid-column:span 2;"><div class="stat-label">總淨利</div><div class="stat-val" id="s-net-card"><span class="stat-unit">NT$</span><em>0</em></div></div>
     </div>
 
     <!-- TOP5 區域 -->
@@ -760,8 +756,6 @@ function switchTab(id,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
-  var netEl = document.getElementById('total-net-display');
-  if(netEl) netEl.style.display = id==='overview' ? 'block' : 'none';
   if(id==='heat') setTimeout(renderHeatmap, 60);
   if(id==='overview') setTimeout(renderOverviewPies, 30);
 }
@@ -1988,7 +1982,8 @@ function updateStats(){
   document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
   document.getElementById('s-total-hours').innerHTML='<em class="num">'+totalHours.toFixed(1)+'</em> <em class="unit">hr</em>';
   var totalNet=totalIncome-totalExp;
-  document.getElementById('s-total-net').textContent=fmt(totalNet);
+  var netCard=document.getElementById('s-net-card');
+  if(netCard) netCard.innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalNet)+'</em>';
   // 平均公里數
   // 有收入的天數（作為所有平均的分母）
   // 本月載客數
@@ -2048,10 +2043,8 @@ function updateStats(){
   document.getElementById('s-total-trips').innerHTML='<em class="num">'+fmt(totalTrips)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-month-km').innerHTML='<em class="num">'+monthKm.toFixed(1)+'</em> <em class="unit">km</em>';
   document.getElementById('s-avg-detail').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgDetail)+'</em>';
-  document.getElementById('s-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(income)+'</em>';
   document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalIncome)+'</em>';
   document.getElementById('s-avg-pax').innerHTML='<em class="num">'+avgPax2+'</em> <em class="unit">人</em>';
-  document.getElementById('s-fuel').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(exp)+'</em>';
   document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
 }
 // 縣市分區資料
