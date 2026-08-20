@@ -430,7 +430,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
         <div class="form-group" style="position:relative;"><label>乘客</label><input class="form-input" type="text" id="f-guest" placeholder="客人名字" autocomplete="off" oninput="acShow(this,'f-guest')" onfocus="acShow(this,'f-guest')" onblur="acHide('f-guest')"><div id="ac-f-guest" class="ac-list"></div></div>
-        <div class="form-group"><label>國籍</label><select class="form-input" id="f-nat"><option value="">—</option><option value="本國">本國</option><option value="外國">外國</option></select></div>
+        <div class="form-group"><label>國籍</label><select class="form-input" id="f-nat"><option value="本國">本國</option><option value="外國">外國</option></select></div>
         <div class="form-group"><label>備註</label><input class="form-input" type="text" id="f-note" placeholder="備註說明"></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
@@ -989,7 +989,7 @@ function addTrip(){
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
   var guest=document.getElementById('f-guest').value.trim();
-  var nat=document.getElementById('f-nat').value;
+  var nat=document.getElementById('f-nat').value||'本國';
   var note=document.getElementById('f-note').value.trim();
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
@@ -1002,7 +1002,7 @@ function addTrip(){
     document.getElementById('tripDeleteBtn').style.display='none';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
     ['f-from-road','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note','f-guest'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('f-nat').value='';
+    document.getElementById('f-nat').value='本國';
     document.getElementById('f-category').value='uber';
     document.getElementById('f-pax').value='1';
     ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
@@ -1012,7 +1012,7 @@ function addTrip(){
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note','f-guest'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-nat').value='';
+  document.getElementById('f-nat').value='本國';
   document.getElementById('f-category').value='uber';
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
@@ -1027,7 +1027,7 @@ function deleteEditingTrip(){
   document.getElementById('tripAddBtn').textContent='新增行程';
   document.getElementById('tripDeleteBtn').style.display='none';
   ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note','f-guest'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-nat').value='';
+  document.getElementById('f-nat').value='本國';
   document.getElementById('f-category').value='uber';
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value='';});
@@ -1058,7 +1058,7 @@ function editTrip(id){
   document.getElementById('f-detail').value    = t.detail||'';
   document.getElementById('f-pax').value       = t.pax||1;
   document.getElementById('f-guest').value     = t.guest||'';
-  document.getElementById('f-nat').value       = t.nat||'';
+  document.getElementById('f-nat').value       = t.nat||'本國';
   document.getElementById('f-note').value      = t.note||'';
   // 設定編輯模式
   window._editTripId = id;
@@ -3173,7 +3173,10 @@ function runDataMigrations(){
   m.forEach(function(x){ if(x.type==='交通罰鍰'){ x.type='罰鍰/過路費'; changed=true; } });
   if(changed){ saveData('uberMonthly',m); }
   var t=getData('uberTrips'), changed2=false;
-  t.forEach(function(x){ if(x.cat==='56688'){ x.cat='55688'; changed2=true; } });
+  t.forEach(function(x){
+    if(x.cat==='56688'){ x.cat='55688'; changed2=true; }
+    if(!x.nat){ x.nat='本國'; changed2=true; }      // 未填國籍 → 預設本國
+  });
   if(changed2){ saveData('uberTrips',t); }
   if(typeof purgeOutOfBounds==='function') purgeOutOfBounds();
   if(typeof purgeMisplacedGeom==='function') purgeMisplacedGeom();
