@@ -238,8 +238,8 @@ body{
   button:active{transform:scale(0.96);}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 </head>
 <body>
 <div id="loadingOverlay" style="position:fixed;inset:0;z-index:99999;background:rgba(10,15,20,0.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 0.35s;">
@@ -802,17 +802,60 @@ function getToken(){
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
 // 頁面載入時從 GitHub 讀取最新資料
+
+// ── 合併同步：以 id 為準聯集，刪除用墓碑記錄 ──
+function getTombs(){
+  try{ return JSON.parse(localStorage.getItem('uberDeleted')||'{}'); }catch(e){ return {}; }
+}
+function addTomb(key,id){
+  var t=getTombs();
+  (t[key]=t[key]||{})[id]=Date.now();
+  localStorage.setItem('uberDeleted', JSON.stringify(t));
+}
+// 聯集兩份陣列（同 id 取較新的一筆），並排除已刪除的
+function mergeById(local, remote, key, tombs){
+  var map={}, tomb=(tombs&&tombs[key])||{};
+  function put(arr, isLocal){
+    (arr||[]).forEach(function(x){
+      if(!x || x.id===undefined) return;
+      if(tomb[x.id]) return;                       // 已刪除 → 不還原
+      var ex=map[x.id];
+      if(!ex){ map[x.id]=x; return; }
+      // 同 id：以本機為準（使用者剛編輯過的那台）
+      if(isLocal) map[x.id]=x;
+    });
+  }
+  put(remote,false);
+  put(local,true);
+  return Object.keys(map).map(function(k){ return map[k]; });
+}
+function mergeAllData(json){
+  var tombs=getTombs();
+  var sets=[['uberTrips'],['uberWeekly'],['uberMonthly'],['uberSalary']];
+  var report={};
+  sets.forEach(function(s){
+    var k=s[0];
+    var local=getData(k), remote=json[k]||[];
+    var merged=mergeById(local, remote, k, tombs);
+    report[k]={local:local.length, remote:remote.length, merged:merged.length};
+    localStorage.setItem(k, JSON.stringify(merged));
+  });
+  invalidateCache();
+  return report;
+}
 // ── 同步守門：GitHub 資料載入完成前，禁止任何推送（避免舊資料覆蓋新資料）──
-var _syncReady=false, _pendingPush=false;
+var _syncReady=false, _pendingPush=false, _loadStarted=false;
 function markSyncReady(){
   _syncReady=true;
   if(_pendingPush){ _pendingPush=false; pushToGitHub(); }
 }
 function loadFromGitHub(){
+  if(_loadStarted) return; _loadStarted=true;
   var token=localStorage.getItem(GH_TOKEN_KEY);
   if(!token){
     token=prompt('請輸入 GitHub Personal Access Token（需有 repo 寫入權限）：\n\n此 Token 僅儲存在你的瀏覽器本地。');
-    if(!token){ hideLoading(); showSyncWarn('未輸入 Token，資料只存在本機且不會同步'); return; }
+    if(!token){ hideLoading(); showSyncWarn('未輸入 Token，資料只存在本機且不會同步');
+      if(typeof runDataMigrations==='function') runDataMigrations(); return; }
     localStorage.setItem(GH_TOKEN_KEY, token.trim());
     token=token.trim();
   }
@@ -823,18 +866,21 @@ function loadFromGitHub(){
         if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 無效，請重新輸入');}
         hideLoading();
         showSyncWarn('雲端載入失敗（'+r.status+'），為避免覆蓋雲端資料，本機修改暫不同步');
+        if(typeof runDataMigrations==='function') runDataMigrations();
         return null;
       }
       return r.json();
     })
     .then(fi=>{
-      if(!fi||!fi.content){ hideLoading(); return; }
+      if(!fi||!fi.content){ hideLoading(); if(typeof runDataMigrations==='function') runDataMigrations(); return; }
       var raw=atob(fi.content.split('\n').join(''));
       var json=JSON.parse(decodeURIComponent(escape(raw)));
-      if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
-      if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
-      if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
-      if(json.uberSalary) localStorage.setItem('uberSalary',JSON.stringify(json.uberSalary));
+      // 合併雲端與本機（不再直接覆蓋，避免另一台的資料消失）
+      var _mrep = mergeAllData(json);
+      var _added = Object.keys(_mrep).filter(function(k){ return _mrep[k].merged>_mrep[k].remote; });
+      if(_added.length){
+        window._needPushAfterMerge = true;   // 本機有雲端沒有的資料 → 稍後補推
+      }
       // 地理快取：合併雲端與本地（兩邊都保留）
       if(json.uberRoadGeo){
         var lg={}; try{ lg=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
@@ -848,12 +894,14 @@ function loadFromGitHub(){
       // 儲存 SHA 供推送使用
       if(fi.sha) localStorage.setItem('gh_json_sha', fi.sha);
       markSyncReady();                      // ← 此時才允許推送
+      if(window._needPushAfterMerge){ window._needPushAfterMerge=false; setTimeout(pushToGitHub, 600); }
       if(typeof runDataMigrations==='function') runDataMigrations();
       else if(typeof renderAll==='function') renderAll();
       hideLoading();
     }).catch(e=>{
       console.warn('載入失敗:',e); hideLoading();
       showSyncWarn('雲端載入失敗，為避免覆蓋雲端資料，本機修改暫不同步');
+      if(typeof runDataMigrations==='function') runDataMigrations();
     });
 }
 function showSyncWarn(msg){
@@ -873,7 +921,16 @@ function hideLoading(){
   el.style.opacity='0';
   setTimeout(function(){ el.style.display='none'; }, 350);
 }
-window.addEventListener('DOMContentLoaded', loadFromGitHub);
+// 立即載入，不等外部資源（Leaflet 等 CDN 可能很慢）
+if(document.readyState==='loading'){
+  // DOM 尚未就緒 → 用 readystatechange（比 DOMContentLoaded 早）
+  document.addEventListener('readystatechange', function once(){
+    if(document.readyState!=='loading'){ document.removeEventListener('readystatechange', once); loadFromGitHub(); }
+  });
+  setTimeout(function(){ if(!_syncReady && !_loadStarted) loadFromGitHub(); }, 800);  // 保險
+} else {
+  loadFromGitHub();
+}
 
 var _pushing=false, _pushAgain=false;
 var _pushAgain=false;
@@ -1021,6 +1078,7 @@ function addTrip(){
 function deleteEditingTrip(){
   if(!window._editTripId) return;
   if(!confirm('確定要刪除這筆行程記錄？')) return;
+  addTomb('uberTrips', window._editTripId);
   var trips = getData('uberTrips').filter(function(t){ return t.id !== window._editTripId; });
   window._editTripId = null;
   document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
@@ -1071,7 +1129,7 @@ function editTrip(id){
 
 function deleteTrip(id){
   if(!confirm('確定刪除這筆行程？'))return;
-  saveAndPush('uberTrips',getData('uberTrips').filter(t=>t.id!==id));
+  addTomb('uberTrips',id);saveAndPush('uberTrips',getData('uberTrips').filter(t=>t.id!==id));
   renderTrips();updateStats();
 }
 
@@ -1245,7 +1303,7 @@ function addWeekly(){
 }
 function deleteWeekly(id){
   if(!confirm('確定刪除這筆記錄？'))return;
-  saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
+  addTomb('uberWeekly',id);saveAndPush('uberWeekly',getData('uberWeekly').filter(w=>w.id!==id));
   renderWeekly();updateStats();
 }
 var weeklyPageMonth = 0;
@@ -1416,6 +1474,7 @@ function editMonthly(id){
 function deleteEditingMonthly(){
   if(!window._editMonthlyId) return;
   if(!confirm('確定刪除這筆支出？')) return;
+  addTomb('uberMonthly', window._editMonthlyId);
   var m=getData('uberMonthly').filter(x=>x.id!==window._editMonthlyId);
   window._editMonthlyId=null;
   document.getElementById('monthlyAddBtn').textContent='新增支出';
@@ -1426,6 +1485,7 @@ function deleteEditingMonthly(){
   saveAndPush('uberMonthly',m);renderMonthly();updateStats();renderOverviewPies();
 }
 function deleteMonthly(id){
+  addTomb('uberMonthly',id);
   if(!confirm('確定刪除這筆支出？'))return;
   saveAndPush('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
@@ -2221,12 +2281,13 @@ function editSalary(id){
 
 function deleteSalary(id){
   if(!confirm('確定刪除這筆收入？')) return;
-  saveAndPush('uberSalary', getData('uberSalary').filter(x=>x.id!==id));
+  addTomb('uberSalary',id);saveAndPush('uberSalary', getData('uberSalary').filter(x=>x.id!==id));
   renderSalary();
 }
 function deleteEditingSalary(){
   if(!window._editSalaryId) return;
   if(!confirm('確定刪除這筆收入？')) return;
+  addTomb('uberSalary', window._editSalaryId);
   var all=getData('uberSalary').filter(x=>x.id!==window._editSalaryId);
   window._editSalaryId=null;
   document.getElementById('salaryFormTitle').textContent='＋ 新增本業收入';
@@ -3188,6 +3249,17 @@ function renderAll(){
   renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 }
 renderAll();   // 先用本地快取畫一次（載入完成後會再畫）
+
+// 保險：若因故未執行轉換，載入後補跑一次（只改本機，不推送）
+setTimeout(function(){
+  try{
+    var t=getData('uberTrips');
+    if(t.some(function(x){ return !x.nat; })){
+      if(typeof runDataMigrations==='function') runDataMigrations();
+    }
+  }catch(e){}
+}, 3000);
+
 </script>
 </body>
 </html>
