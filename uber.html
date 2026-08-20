@@ -292,6 +292,7 @@ body{
     <div class="tabs" style="margin-bottom:0;">
       <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
       <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
+      <button class="tab-btn" onclick="switchTab('salary',this)">本業收入</button>
       <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
       <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
       <button class="tab-btn" onclick="switchTab('heat',this)">熱區地圖</button>
@@ -392,6 +393,8 @@ body{
         <div class="form-group"><label>服務費</label><input class="form-input" type="number" id="f-service" placeholder="0"></div>
         <div class="form-group"><label>費用明細</label><input class="form-input" type="number" id="f-detail" placeholder="0"></div>
         <div class="form-group"><label>人數</label><input class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
+        <div class="form-group" style="position:relative;"><label>乘客</label><input class="form-input" type="text" id="f-guest" placeholder="客人名字" autocomplete="off" oninput="acShow(this,'f-guest')" onfocus="acShow(this,'f-guest')" onblur="acHide('f-guest')"><div id="ac-f-guest" class="ac-list"></div></div>
+        <div class="form-group"><label>國籍</label><select class="form-input" id="f-nat"><option value="">—</option><option value="本國">本國</option><option value="外國">外國</option></select></div>
         <div class="form-group"><label>備註</label><input class="form-input" type="text" id="f-note" placeholder="備註說明"></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
@@ -432,6 +435,8 @@ body{
           <col style="width:58px">     <!-- 服務費 -->
           <col style="width:72px">     <!-- 費用明細 -->
           <col style="width:44px">     <!-- 人數 -->
+          <col style="width:90px">     <!-- 乘客 -->
+          <col style="width:56px">     <!-- 國籍 -->
           <col style="width:210px">    <!-- 備註 -->
           <col style="width:64px">     <!-- 操作 -->
         </colgroup>
@@ -453,6 +458,8 @@ body{
             <th onclick="sortTrips('service')" style="cursor:pointer;text-align:center">服務<br>費 ↕</th>
             <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">費用<br>明細 ↕</th>
             <th style="text-align:center">人數</th>
+            <th onclick="sortTrips('guest')" style="cursor:pointer;text-align:center">乘客 ↕</th>
+            <th onclick="sortTrips('nat')" style="cursor:pointer;text-align:center">國籍 ↕</th>
             <th style="text-align:center">備註</th>
             <th style="text-align:center"></th>
           </tr>
@@ -471,12 +478,54 @@ body{
             <td id="foot-service" style="padding:14px 4px;color:#FFD700;font-size:14px;font-weight:800;text-align:center;"></td>
             <td id="foot-detail" style="padding:14px 4px;color:#FFD700;font-size:14px;font-weight:800;text-align:center;"></td>
             <td id="foot-pax" style="padding:14px 4px;color:#FFD700;font-size:14px;font-weight:800;text-align:center;"></td>
+            <td id="foot-guest" style="padding:14px 4px;color:#FFD700;font-size:12px;font-weight:700;text-align:center;"></td>
+            <td id="foot-nat" style="padding:14px 4px;color:#FFD700;font-size:12px;font-weight:700;text-align:center;"></td>
             <td></td>
             <td></td>
           </tr>
         </tfoot>
       </table>
     </div>
+  </div>
+
+  <!-- 本業收入 -->
+  <div class="tab-panel" id="tab-salary">
+    <div class="form-section">
+      <div class="form-title" id="salaryFormTitle">＋ 新增本業收入</div>
+      <div class="form-grid">
+        <div class="form-group"><label>日期</label><input class="form-input" type="date" id="fs-date"></div>
+        <div class="form-group"><label>類別</label><select class="form-input" id="fs-type">
+          <option value="">請選擇</option>
+          <option value="本薪">本薪</option>
+          <option value="獎金">獎金</option>
+          <option value="分紅">分紅</option>
+          <option value="業外收入">業外收入</option>
+        </select></div>
+        <div class="form-group"><label>金額 (NT$)</label><input class="form-input" type="number" id="fs-amount" placeholder="0"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn-add" id="salaryAddBtn" onclick="addSalary()">新增收入</button>
+        <button id="salaryDeleteBtn" onclick="deleteEditingSalary()" style="display:none;background:rgba(200,50,30,0.2);color:#FF6B6B;border:1px solid rgba(200,50,30,0.4);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:monospace;font-size:13px;font-weight:700;">🗑 刪除此筆</button>
+      </div>
+    </div>
+
+    <!-- 統計卡 -->
+    <div id="salaryStats" class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select class="form-input" id="salaryFilterType" onchange="renderSalary()" style="width:130px;padding:8px 12px;">
+          <option value="">全部類別</option>
+          <option value="本薪">本薪</option>
+          <option value="獎金">獎金</option>
+          <option value="分紅">分紅</option>
+          <option value="業外收入">業外收入</option>
+        </select>
+        <select class="form-input" id="salaryYear" onchange="renderSalary()" style="width:110px;padding:8px 12px;"></select>
+      </div>
+      <div id="salaryTotal" style="font-size:14px;color:#f0dca8;"></div>
+    </div>
+    <div id="salaryList"></div>
   </div>
 
 <div class="tab-panel" id="tab-weekly">
@@ -749,6 +798,7 @@ function loadFromGitHub(){
       if(json.uberTrips) localStorage.setItem('uberTrips',JSON.stringify(json.uberTrips));
       if(json.uberWeekly) localStorage.setItem('uberWeekly',JSON.stringify(json.uberWeekly));
       if(json.uberMonthly) localStorage.setItem('uberMonthly',JSON.stringify(json.uberMonthly));
+      if(json.uberSalary) localStorage.setItem('uberSalary',JSON.stringify(json.uberSalary));
       // 地理快取：合併雲端與本地（兩邊都保留）
       if(json.uberRoadGeo){
         var lg={}; try{ lg=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
@@ -795,7 +845,7 @@ async function pushToGitHub(){
   _pushing=true;
   try{
     var token=getToken();if(!token)return;
-    var trips=getData('uberTrips'),weekly=getData('uberWeekly'),monthly=getData('uberMonthly');
+    var trips=getData('uberTrips'),weekly=getData('uberWeekly'),monthly=getData('uberMonthly'),salary=getData('uberSalary');
     var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
     var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
     showToast('⏳ 連線 GitHub...',false);
@@ -814,7 +864,7 @@ async function pushToGitHub(){
     var rgeo={},rgeom={};
     try{ rgeo=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
     try{ rgeom=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
-    var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly,
+    var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly,uberSalary:salary,
                  uberRoadGeo:rgeo, uberRoadGeom:rgeom};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
     showToast('⏳ 推送中...',false);
@@ -863,27 +913,31 @@ function addTrip(){
   var service=parseFloat(document.getElementById('f-service').value)||0;
   var detail=parseFloat(document.getElementById('f-detail').value)||0;
   var pax=parseInt(document.getElementById('f-pax').value)||1;
+  var guest=document.getElementById('f-guest').value.trim();
+  var nat=document.getElementById('f-nat').value;
   var note=document.getElementById('f-note').value.trim();
   if(!d){alert('請填寫日期');return;}
   var trips=getData('uberTrips');
   if(window._editTripId){
     var idx=trips.findIndex(t=>t.id===window._editTripId);
-    if(idx!==-1) trips.splice(idx,1,{d,cat,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,note,id:window._editTripId});
+    if(idx!==-1) trips.splice(idx,1,{d,cat,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,guest,nat,note,id:window._editTripId});
     window._editTripId=null;
     document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
     document.getElementById('tripAddBtn').textContent='新增行程';
     document.getElementById('tripDeleteBtn').style.display='none';
     saveAndPush('uberTrips',trips);renderTrips();updateStats();renderTop5();sortDistrictDropdowns();
-    ['f-from-road','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note'].forEach(i=>document.getElementById(i).value='');
+    ['f-from-road','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note','f-guest'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('f-nat').value='';
     document.getElementById('f-category').value='uber';
     document.getElementById('f-pax').value='1';
     ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
     return;
   }
-  trips.push({d,cat,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,note,id:Date.now()});
+  trips.push({d,cat,tm,fd,fr,td:td2,tr:tr2,km,fare,bonus,toll,tip,service,detail,pax,guest,nat,note,id:Date.now()});
   saveAndPush('uberTrips',trips);
   renderTrips();updateStats();
-  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note','f-guest'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-nat').value='';
   document.getElementById('f-category').value='uber';
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value=''});
@@ -897,7 +951,8 @@ function deleteEditingTrip(){
   document.getElementById('tripFormTitle').textContent='＋ 新增行程明細';
   document.getElementById('tripAddBtn').textContent='新增行程';
   document.getElementById('tripDeleteBtn').style.display='none';
-  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-from-dist','f-from-road','f-to-dist','f-to-road','f-km','f-fare','f-bonus','f-toll','f-tip','f-service','f-detail','f-note','f-guest'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-nat').value='';
   document.getElementById('f-category').value='uber';
   document.getElementById('f-pax').value='1';
   ['f-time-h','f-time-m','f-time-s'].forEach(function(id){document.getElementById(id).value='';});
@@ -927,6 +982,8 @@ function editTrip(id){
   document.getElementById('f-service').value   = t.service||'';
   document.getElementById('f-detail').value    = t.detail||'';
   document.getElementById('f-pax').value       = t.pax||1;
+  document.getElementById('f-guest').value     = t.guest||'';
+  document.getElementById('f-nat').value       = t.nat||'';
   document.getElementById('f-note').value      = t.note||'';
   // 設定編輯模式
   window._editTripId = id;
@@ -1034,6 +1091,8 @@ function renderTrips(){
       <td style="color:rgba(240,220,160,0.9);font-size:15px;font-weight:600;text-align:center">${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-size:15px;font-weight:700;text-align:center">${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:15px;font-weight:600">${t.pax||1}</td>
+      <td style="text-align:center;font-size:13px;color:#f0dca8">${t.guest||''}</td>
+      <td style="text-align:center;font-size:12px">${t.nat?`<span style="padding:2px 7px;border-radius:9px;font-weight:700;${t.nat==='外國'?'background:rgba(100,160,255,0.18);color:#7AB8FF;':'background:rgba(0,200,83,0.16);color:#00E860;'}">${t.nat}</span>`:''}</td>
       <td style="color:rgba(240,220,160,0.6);white-space:normal;vertical-align:middle;"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-all;line-height:1.3;">${t.note||'—'}</div></td>
       <td style="white-space:nowrap;text-align:center;"><span onclick="editTrip(${t.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:14px;padding:2px 4px;border-radius:4px;margin-right:2px;" onmouseover="this.style.color='#60A0FF'" onmouseout="this.style.color='rgba(100,160,255,0.7)'">✎</span><span onclick="deleteTrip(${t.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:14px;padding:2px 4px;border-radius:4px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
     </tr>`;
@@ -1054,8 +1113,8 @@ function renderTrips(){
 function exportCSV(){
   var trips=getData('uberTrips');
   if(!trips.length){alert('尚無資料可匯出');return;}
-  var header='筆數,日期,分類,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,加成費用,過路費,小費,服務費,費用明細,人數,備註';
-  var rows=trips.map((t,i)=>[i+1,t.d,t.cat||'uber',t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.bonus||0,t.toll||0,t.tip||0,t.service||0,t.detail||0,t.pax||1,t.note||''].join(','));
+  var header='筆數,日期,分類,上車區域,上車地點,下車區域,下車地點,公里數,行程費用,加成費用,過路費,小費,服務費,費用明細,人數,乘客,國籍,備註';
+  var rows=trips.map((t,i)=>[i+1,t.d,t.cat||'uber',t.fd,t.fr,t.td,t.tr,(t.km||0).toFixed(2),t.fare||0,t.bonus||0,t.toll||0,t.tip||0,t.service||0,t.detail||0,t.pax||1,t.guest||'',t.nat||'',t.note||''].join(','));
   var csv=header+'\n'+rows.join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
@@ -1871,6 +1930,16 @@ const DISTRICTS = {
 // ── 地點自動完成 ──
 var _acIdx={};
 function acPool(which){
+  // 乘客名字：從歷史記錄的 guest 欄位取候選
+  if(which==='f-guest'){
+    var gc={};
+    getData('uberTrips').forEach(function(t){
+      var g=(t.guest||'').trim();
+      if(g) gc[g]=(gc[g]||0)+1;
+    });
+    return Object.keys(gc).map(function(k){return [k,gc[k]];})
+      .sort(function(a,b){return b[1]-a[1];});
+  }
   // which: 'f-from-road' 用上車地點 fr、'f-to-road' 用下車地點 tr
   var key = which==='f-from-road' ? 'fr' : 'tr';
   var counts={};
@@ -1920,7 +1989,7 @@ function acHide(which){
 // 鍵盤上下選取 + Enter 確認
 document.addEventListener('keydown', function(e){
   var id=document.activeElement && document.activeElement.id;
-  if(id!=='f-from-road' && id!=='f-to-road') return;
+  if(id!=='f-from-road' && id!=='f-to-road' && id!=='f-guest') return;
   var box=document.getElementById('ac-'+id);
   if(!box || !box.classList.contains('show')) return;
   var items=box.querySelectorAll('.ac-item');
@@ -1941,6 +2010,134 @@ document.addEventListener('keydown', function(e){
 
 
 
+
+// ── 本業收入 ──
+const SALARY_COLOR={'本薪':'#00C853','獎金':'#FFD400','分紅':'#C084FC','業外收入':'#22D3EE'};
+
+function addSalary(){
+  var date=document.getElementById('fs-date').value;
+  var type=document.getElementById('fs-type').value;
+  var amount=parseFloat(document.getElementById('fs-amount').value)||0;
+  if(!date){alert('請選擇日期');return;}
+  if(!type){alert('請選擇類別');return;}
+  var all=getData('uberSalary');
+  if(window._editSalaryId){
+    var idx=all.findIndex(x=>x.id===window._editSalaryId);
+    if(idx!==-1) all.splice(idx,1,{date,type,amount,id:window._editSalaryId});
+    window._editSalaryId=null;
+    document.getElementById('salaryFormTitle').textContent='＋ 新增本業收入';
+    document.getElementById('salaryAddBtn').textContent='新增收入';
+    document.getElementById('salaryDeleteBtn').style.display='none';
+  } else {
+    all.unshift({date,type,amount,id:Date.now()});
+  }
+  saveAndPush('uberSalary',all);
+  renderSalary();
+  document.getElementById('fs-amount').value='';
+  document.getElementById('fs-type').value='';
+}
+
+function editSalary(id){
+  var s=getData('uberSalary').find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('fs-date').value=s.date||'';
+  document.getElementById('fs-type').value=s.type||'';
+  document.getElementById('fs-amount').value=s.amount||'';
+  window._editSalaryId=id;
+  document.getElementById('salaryFormTitle').textContent='✎ 編輯本業收入';
+  document.getElementById('salaryAddBtn').textContent='✔ 儲存變更';
+  document.getElementById('salaryDeleteBtn').style.display='inline-block';
+  document.getElementById('fs-date').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function deleteSalary(id){
+  if(!confirm('確定刪除這筆收入？')) return;
+  saveAndPush('uberSalary', getData('uberSalary').filter(x=>x.id!==id));
+  renderSalary();
+}
+function deleteEditingSalary(){
+  if(!window._editSalaryId) return;
+  if(!confirm('確定刪除這筆收入？')) return;
+  var all=getData('uberSalary').filter(x=>x.id!==window._editSalaryId);
+  window._editSalaryId=null;
+  document.getElementById('salaryFormTitle').textContent='＋ 新增本業收入';
+  document.getElementById('salaryAddBtn').textContent='新增收入';
+  document.getElementById('salaryDeleteBtn').style.display='none';
+  document.getElementById('fs-amount').value='';
+  document.getElementById('fs-type').value='';
+  saveAndPush('uberSalary',all);
+  renderSalary();
+}
+
+function renderSalary(){
+  var el=document.getElementById('salaryList');
+  if(!el) return;
+  var all=getData('uberSalary');
+
+  // 年份選單
+  var ySel=document.getElementById('salaryYear');
+  if(ySel){
+    var years={};
+    all.forEach(function(s){ if(s.date) years[s.date.slice(0,4)]=1; });
+    var ys=Object.keys(years).sort().reverse();
+    var cur=ySel.value;
+    var opts='<option value="">全部年份</option>'+ys.map(function(y){return '<option value="'+y+'">'+y+' 年</option>';}).join('');
+    if(ySel.innerHTML!==opts){ ySel.innerHTML=opts; ySel.value = cur || (ys[0]||''); }
+  }
+  var fy=ySel?ySel.value:'';
+  var ft=document.getElementById('salaryFilterType')?document.getElementById('salaryFilterType').value:'';
+
+  var list=all.filter(function(s){
+    if(fy && (s.date||'').slice(0,4)!==fy) return false;
+    if(ft && s.type!==ft) return false;
+    return true;
+  }).sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+
+  // 統計卡
+  var stats=document.getElementById('salaryStats');
+  if(stats){
+    var byType={'本薪':0,'獎金':0,'分紅':0,'業外收入':0};
+    var scope=all.filter(function(s){ return !fy || (s.date||'').slice(0,4)===fy; });
+    scope.forEach(function(s){ if(byType[s.type]!==undefined) byType[s.type]+=(s.amount||0); });
+    stats.innerHTML=Object.keys(byType).map(function(t){
+      return '<div class="stat-card"><div class="stat-label">'+t+'</div>'
+        +'<div class="stat-val"><span class="stat-unit">NT$</span>'
+        +'<em style="color:'+SALARY_COLOR[t]+';text-shadow:0 0 22px '+SALARY_COLOR[t]+'55;">'+fmt(byType[t])+'</em></div></div>';
+    }).join('');
+  }
+
+  var total=list.reduce(function(s,x){ return s+(x.amount||0); },0);
+  var tEl=document.getElementById('salaryTotal');
+  if(tEl) tEl.innerHTML='合計 '+list.length+' 筆 · <b style="color:#00E860;font-size:17px;">NT$'+fmt(total)+'</b>';
+
+  if(!list.length){
+    el.innerHTML='<div class="empty-state"><span class="empty-icon">💼</span>尚無本業收入記錄</div>';
+    return;
+  }
+
+  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
+    +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
+    +'<colgroup><col style="width:130px"><col style="width:120px"><col><col style="width:70px"></colgroup>'
+    +'<thead><tr style="background:rgba(0,200,83,0.08);">'
+      +'<th style="padding:11px 16px;font-size:13px;color:#00E860;text-align:left;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">日期</th>'
+      +'<th style="padding:11px 8px;font-size:13px;color:#00E860;text-align:center;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">類別</th>'
+      +'<th style="padding:11px 16px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">金額</th>'
+      +'<th style="border-bottom:1px solid rgba(0,200,83,0.3);"></th>'
+    +'</tr></thead><tbody>'
+    +list.map(function(s){
+      var col=SALARY_COLOR[s.type]||'#f0dca8';
+      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">'
+        +'<td style="padding:12px 16px;font-size:14px;color:#f5edd8;">'+(s.date||'')+'</td>'
+        +'<td style="padding:12px 8px;text-align:center;"><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:'+col+'22;color:'+col+';">'+(s.type||'')+'</span></td>'
+        +'<td style="padding:12px 16px;text-align:right;font-size:17px;font-weight:700;color:'+col+';">NT$'+fmt(s.amount||0)+'</td>'
+        +'<td style="padding:12px 10px;text-align:center;white-space:nowrap;">'
+          +'<span onclick="editSalary('+s.id+')" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:15px;padding:2px 5px;margin-right:4px;" title="編輯">✎</span>'
+          +'<span class="del-btn" style="font-size:15px;" onclick="deleteSalary('+s.id+')">✕</span>'
+        +'</td>'
+      +'</tr>';
+    }).join('')
+    +'</tbody></table></div>';
+}
 // ── 熱區診斷：列出沒有道路線形的地點與原因 ──
 function toggleHeatDiag(){
   var box=document.getElementById('heatDiag');
@@ -2796,6 +2993,7 @@ function updateDistricts(type){
 }
 // 初始化
 document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+document.getElementById('fs-date').value=new Date().toISOString().slice(0,10);
 // 資料整理：只在 GitHub 載入完成後執行（避免舊資料覆蓋雲端新資料）
 function runDataMigrations(){
   var changed=false;
@@ -2811,7 +3009,7 @@ function runDataMigrations(){
   renderAll();
 }
 function renderAll(){
-  renderTrips();renderWeekly();renderMonthly();updateStats();
+  renderTrips();renderWeekly();renderMonthly();renderSalary();updateStats();
   renderWeekIncomeChart();renderMonthIncomeChart();renderTop5();sortDistrictDropdowns();
 }
 renderAll();   // 先用本地快取畫一次（載入完成後會再畫）
