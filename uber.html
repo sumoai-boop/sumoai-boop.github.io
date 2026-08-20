@@ -511,7 +511,6 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
           <option value="">請選擇</option>
           <option value="本薪">本薪</option>
           <option value="獎金">獎金</option>
-          <option value="分紅">分紅</option>
           <option value="業外收入">業外收入</option>
         </select></div>
         <div class="form-group"><label>金額 (NT$)</label><input class="form-input" type="number" id="fs-amount" placeholder="0"></div>
@@ -524,7 +523,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
     </div>
 
     <!-- 統計卡 -->
-    <div id="salaryStats" class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;"></div>
+    <div id="salaryStats" class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;"></div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;flex-wrap:wrap;gap:8px;">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -532,7 +531,6 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
           <option value="">全部類別</option>
           <option value="本薪">本薪</option>
           <option value="獎金">獎金</option>
-          <option value="分紅">分紅</option>
           <option value="業外收入">業外收入</option>
         </select>
         <select class="form-input" id="salaryYear" onchange="renderSalary()" style="width:110px;padding:8px 12px;"></select>
@@ -2026,7 +2024,7 @@ document.addEventListener('keydown', function(e){
 
 
 // ── 本業收入 ──
-const SALARY_COLOR={'本薪':'#00C853','獎金':'#FFD400','分紅':'#C084FC','業外收入':'#22D3EE'};
+const SALARY_COLOR={'本薪':'#00C853','獎金':'#FFD400','業外收入':'#22D3EE'};
 
 function addSalary(){
   var date=document.getElementById('fs-date').value;
@@ -2114,7 +2112,7 @@ function renderSalary(){
   // 統計卡
   var stats=document.getElementById('salaryStats');
   if(stats){
-    var byType={'本薪':0,'獎金':0,'分紅':0,'業外收入':0};
+    var byType={'本薪':0,'獎金':0,'業外收入':0};
     var scope=all.filter(function(s){ return !fy || (s.date||'').slice(0,4)===fy; });
     scope.forEach(function(s){ if(byType[s.type]!==undefined) byType[s.type]+=(s.amount||0); });
     stats.innerHTML=Object.keys(byType).map(function(t){
