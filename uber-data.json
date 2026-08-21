@@ -979,9 +979,10 @@
       "service": 22,
       "detail": 64,
       "pax": 3,
-      "note": "詩庭，光在髮藝 RAYIN HAIR-The Round Taipei",
-      "id": 1786890515972,
-      "nat": "本國"
+      "guest": "詩庭",
+      "nat": "本國",
+      "note": "光在髮藝 RAYIN HAIR-The Round Taipei",
+      "id": 1786890515972
     },
     {
       "d": "2026-08-16",
