@@ -646,9 +646,10 @@
       "service": 89,
       "detail": 268,
       "pax": 1,
-      "note": "AC，這裏 salon&meal",
-      "id": 1787148324637,
-      "nat": "本國"
+      "guest": "AC",
+      "nat": "本國",
+      "note": "這裏 salon&meal",
+      "id": 1787148324637
     },
     {
       "d": "2026-08-17",
