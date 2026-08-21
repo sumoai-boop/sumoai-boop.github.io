@@ -865,33 +865,49 @@ function loadFromGitHub(){
       }
       return r.json();
     })
-    .then(fi=>{
-      if(!fi||!fi.content){ hideLoading(); if(typeof runDataMigrations==='function') runDataMigrations(); return; }
-      var raw=atob(fi.content.split('\n').join(''));
-      var json=JSON.parse(decodeURIComponent(escape(raw)));
-      // 合併雲端與本機（不再直接覆蓋，避免另一台的資料消失）
-      var _mrep = mergeAllData(json);
-      var _added = Object.keys(_mrep).filter(function(k){ return _mrep[k].merged>_mrep[k].remote; });
-      if(_added.length){
-        window._needPushAfterMerge = true;   // 本機有雲端沒有的資料 → 稍後補推
+    .then(function(fi){
+      if(!fi){ return; }
+      var getRawText;
+      if(fi.content){
+        // 檔案 < 1MB，GitHub API 直接回傳 base64 內容
+        getRawText = Promise.resolve(decodeURIComponent(escape(atob(fi.content.split('\n').join('')))));
+      } else if(fi.download_url){
+        // 檔案 > 1MB，content 會是空字串（GitHub API 限制），改抓 download_url 拿原始檔案，不受 1MB 限制
+        getRawText = fetch(fi.download_url + (fi.download_url.indexOf('?')>-1?'&':'?') + '_t=' + Date.now())
+          .then(function(rr){
+            if(!rr.ok) throw new Error('raw '+rr.status);
+            return rr.text();
+          });
+      } else {
+        hideLoading(); if(typeof runDataMigrations==='function') runDataMigrations();
+        return;
       }
-      // 地理快取：合併雲端與本地（兩邊都保留）
-      if(json.uberRoadGeo){
-        var lg={}; try{ lg=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
-        localStorage.setItem('uberRoadGeo', JSON.stringify(Object.assign({}, json.uberRoadGeo, lg)));
-      }
-      if(json.uberRoadGeom){
-        var lm={}; try{ lm=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
-        localStorage.setItem('uberRoadGeom', JSON.stringify(Object.assign({}, json.uberRoadGeom, lm)));
-      }
-      invalidateCache();
-      // 儲存 SHA 供推送使用
-      if(fi.sha) localStorage.setItem('gh_json_sha', fi.sha);
-      markSyncReady();                      // ← 此時才允許推送
-      if(window._needPushAfterMerge){ window._needPushAfterMerge=false; setTimeout(pushToGitHub, 600); }
-      if(typeof runDataMigrations==='function') runDataMigrations();
-      else if(typeof renderAll==='function') renderAll();
-      hideLoading();
+      return getRawText.then(function(raw){
+        var json=JSON.parse(raw);
+        // 合併雲端與本機（不再直接覆蓋，避免另一台的資料消失）
+        var _mrep = mergeAllData(json);
+        var _added = Object.keys(_mrep).filter(function(k){ return _mrep[k].merged>_mrep[k].remote; });
+        if(_added.length){
+          window._needPushAfterMerge = true;   // 本機有雲端沒有的資料 → 稍後補推
+        }
+        // 地理快取：合併雲端與本地（兩邊都保留）
+        if(json.uberRoadGeo){
+          var lg={}; try{ lg=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
+          localStorage.setItem('uberRoadGeo', JSON.stringify(Object.assign({}, json.uberRoadGeo, lg)));
+        }
+        if(json.uberRoadGeom){
+          var lm={}; try{ lm=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
+          localStorage.setItem('uberRoadGeom', JSON.stringify(Object.assign({}, json.uberRoadGeom, lm)));
+        }
+        invalidateCache();
+        // 儲存 SHA 供推送使用
+        if(fi.sha) localStorage.setItem('gh_json_sha', fi.sha);
+        markSyncReady();                      // ← 此時才允許推送
+        if(window._needPushAfterMerge){ window._needPushAfterMerge=false; setTimeout(pushToGitHub, 600); }
+        if(typeof runDataMigrations==='function') runDataMigrations();
+        else if(typeof renderAll==='function') renderAll();
+        hideLoading();
+      });
     }).catch(e=>{
       console.warn('載入失敗:',e); hideLoading();
       showSyncWarn('雲端載入失敗，為避免覆蓋雲端資料，本機修改暫不同步');
