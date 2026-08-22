@@ -1,5 +1,35 @@
 [
   {
+    "id": "1787364984817",
+    "name": "12mini快煮小火鍋 台北民權東龍江店",
+    "name1": "12mini快煮小火鍋",
+    "name2": "台北民權東龍江店",
+    "type": "小火鍋",
+    "meal": "",
+    "price": 229,
+    "visits": 1,
+    "gscore": 3.9,
+    "addr": "104078臺北市中山區下埤里民權東路三段17號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/12mini%E5%BF%AB%E7%85%AE%E5%B0%8F%E7%81%AB%E9%8D%8B+%E5%8F%B0%E5%8C%97%E6%B0%91%E6%AC%8A%E6%9D%B1%E9%BE%8D%E6%B1%9F%E5%BA%97/@25.0624391,121.5415543,21z/data=!4m6!3m5!1s0x3442ab750d956dcf:0x9875f41278f71c25!8m2!3d25.0625698!4d121.541555!16s%2Fg%2F11s5phbl92?entry=ttu&g_ep=EgoyMDI2MDgxNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-21",
+    "score": 3.4,
+    "visitLog": [
+      {
+        "date": "2026-08-21",
+        "meal": "午餐",
+        "price": 229,
+        "menu": "香滷大腸辣臭鍋",
+        "score": 3.4
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/PBkNk8C/8e4f9eb9c528.jpg"
+    ],
+    "img": "https://i.ibb.co/PBkNk8C/8e4f9eb9c528.jpg",
+    "createdAt": 1787364984817
+  },
+  {
     "id": "1787236821144",
     "name": "隱覓鉄板燒 台北南京東店",
     "name1": "隱覓鉄板燒",
