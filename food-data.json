@@ -1,5 +1,35 @@
 [
   {
+    "id": "1787460743766",
+    "name": "牪嗑牛排 中和民德店",
+    "name1": "牪嗑牛排",
+    "name2": "中和民德店",
+    "type": "牛排",
+    "meal": "",
+    "price": 340,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "235新北市中和區國光里民德路136號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E7%89%AA%E5%97%91%E7%89%9B%E6%8E%92%EF%BC%88%E4%B8%AD%E5%92%8C%E6%B0%91%E5%BE%B7%E5%BA%97%EF%BC%89/@25.0000729,121.4672276,18z/data=!4m6!3m5!1s0x346803de0a1415a5:0xfcdca05b512a6a46!8m2!3d25.0006482!4d121.4687065!16s%2Fg%2F11pxm8yr55?entry=ttu&g_ep=EgoyMDI2MDgxOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-23",
+    "score": 3.6,
+    "visitLog": [
+      {
+        "date": "2026-08-23",
+        "meal": "午餐",
+        "price": 340,
+        "menu": "牛雞雙拼",
+        "score": 3.6
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/sJyZ5Rws/b678a3ecd89d.jpg"
+    ],
+    "img": "https://i.ibb.co/sJyZ5Rws/b678a3ecd89d.jpg",
+    "createdAt": 1787460743766
+  },
+  {
     "id": "1787364984817",
     "name": "12mini快煮小火鍋 台北民權東龍江店",
     "name1": "12mini快煮小火鍋",
