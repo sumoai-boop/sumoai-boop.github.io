@@ -871,12 +871,17 @@ function loadFromGitHub(){
       if(fi.content){
         // 檔案 < 1MB，GitHub API 直接回傳 base64 內容
         getRawText = Promise.resolve(decodeURIComponent(escape(atob(fi.content.split('\n').join('')))));
-      } else if(fi.download_url){
-        // 檔案 > 1MB，content 會是空字串（GitHub API 限制），改抓 download_url 拿原始檔案，不受 1MB 限制
-        getRawText = fetch(fi.download_url + (fi.download_url.indexOf('?')>-1?'&':'?') + '_t=' + Date.now())
+      } else if(fi.sha){
+        // 檔案 > 1MB，content 會是空字串（GitHub API 限制）。改用 Git Blobs API 直接以 sha 抓原始內容，
+        // 不受 1MB 限制，也不會像 raw.githubusercontent.com 那樣偶爾有 CDN 快取延遲、抓到剛推送前的舊版本。
+        getRawText = fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/git/blobs/'+fi.sha,
+          {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
           .then(function(rr){
-            if(!rr.ok) throw new Error('raw '+rr.status);
-            return rr.text();
+            if(!rr.ok) throw new Error('blob '+rr.status);
+            return rr.json();
+          })
+          .then(function(blob){
+            return decodeURIComponent(escape(atob(blob.content.split('\n').join(''))));
           });
       } else {
         hideLoading(); if(typeof runDataMigrations==='function') runDataMigrations();
@@ -996,12 +1001,13 @@ async function pushToGitHub(){
       var fi=await r.json();
       sha=fi.sha;
     }
+    try{ pruneRoadGeom(200); }catch(e){}   // 推送前先把地理快取修剪到 200KB 以內，避免檔案越養越大
     var rgeo={},rgeom={};
     try{ rgeo=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
     try{ rgeom=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
     var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly,uberSalary:salary,
                  uberRoadGeo:rgeo, uberRoadGeom:rgeom};
-    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2))));
+    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData))));   // 改用緊湊格式，省掉縮排空白（約可省 65% 大小）
     showToast('⏳ 推送中...',false);
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
     if(!pr.ok){
