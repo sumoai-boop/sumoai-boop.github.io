@@ -1232,11 +1232,8 @@ function renderExpenses(){
   if(rsEl){
     var isNarrowed=!!expSearch||expFilter!=='全部';
     if(isNarrowed&&filtered.length>0){
-      var rTotal=0,rA=0,rC=0;
-      filtered.forEach(function(e){
-        var a=parseFloat(e.amount)||0;rTotal+=a;
-        if(e.payer==='aaron')rA+=a;else if(e.payer==='chloe')rC+=a;else{rA+=a/2;rC+=a/2;}
-      });
+      var rTotal=0;
+      filtered.forEach(function(e){rTotal+=parseFloat(e.amount)||0;});
       var rAvg=rTotal/filtered.length;
       var label=expSearch?'搜尋「'+expSearch+'」':expFilter;
       if(expSearch&&expFilter!=='全部')label='搜尋「'+expSearch+'」· '+expFilter;
@@ -1244,9 +1241,7 @@ function renderExpenses(){
       rsEl.innerHTML='<span class="exp-rs-tag">'+label+'</span>'+
         '<span class="exp-rs-item">合計<b class="amt">'+fmtMoney(rTotal)+'</b></span>'+
         '<span class="exp-rs-item">筆數<b>'+filtered.length+'</b></span>'+
-        '<span class="exp-rs-item">平均<b>'+fmtMoney(Math.round(rAvg))+'</b></span>'+
-        '<span class="exp-rs-item">Aaron<b>'+fmtMoney(Math.round(rA))+'</b></span>'+
-        '<span class="exp-rs-item">Chloe<b>'+fmtMoney(Math.round(rC))+'</b></span>';
+        '<span class="exp-rs-item">平均<b>'+fmtMoney(Math.round(rAvg))+'</b></span>';
     }else{
       rsEl.className='exp-result-sum';
       rsEl.innerHTML='';
