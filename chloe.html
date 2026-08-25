@@ -180,6 +180,12 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .exp-search:focus{border-color:#7c3aed;}
 .exp-search-clear{background:none;border:none;cursor:pointer;color:#bbb;font-size:14px;padding:2px 4px;}
 .exp-search-clear:hover{color:#dc2626;}
+.exp-result-sum{display:none;align-items:center;flex-wrap:wrap;gap:8px 18px;padding:11px 16px;border:1px solid #222;margin-bottom:-1px;background:#f5f0ff;}
+.exp-result-sum.on{display:flex;}
+.exp-rs-tag{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;background:#fff;border:1px solid #d4c5f0;border-radius:20px;padding:3px 10px;}
+.exp-rs-item{font-size:12px;color:#555;}
+.exp-rs-item b{color:#1a1a1a;font-size:14px;font-weight:700;margin-left:3px;}
+.exp-rs-item b.amt{color:#7c3aed;font-size:16px;}
 .exp-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;background:#fafafa;margin-bottom:-1px;}
 .exp-pager-info{font-size:11.5px;color:#888;}
 .exp-pager-btns{display:flex;gap:4px;flex-wrap:wrap;}
@@ -533,6 +539,8 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
       <button class="exp-search-clear" id="expSearchClear" onclick="clearExpSearch()" style="display:none">✕</button>
     </div>
   </div>
+
+  <div class="exp-result-sum" id="expResultSum"></div>
 
   <div class="exp-table-head">
     <div>日期</div><div>描述</div><div>備註</div><div>分類</div><div>金額</div><div></div>
@@ -1218,6 +1226,32 @@ function renderExpenses(){
   }
   var clrBtn=document.getElementById('expSearchClear');
   if(clrBtn)clrBtn.style.display=expSearch?'block':'none';
+
+  // 搜尋／篩選結果加總
+  var rsEl=document.getElementById('expResultSum');
+  if(rsEl){
+    var isNarrowed=!!expSearch||expFilter!=='全部';
+    if(isNarrowed&&filtered.length>0){
+      var rTotal=0,rA=0,rC=0;
+      filtered.forEach(function(e){
+        var a=parseFloat(e.amount)||0;rTotal+=a;
+        if(e.payer==='aaron')rA+=a;else if(e.payer==='chloe')rC+=a;else{rA+=a/2;rC+=a/2;}
+      });
+      var rAvg=rTotal/filtered.length;
+      var label=expSearch?'搜尋「'+expSearch+'」':expFilter;
+      if(expSearch&&expFilter!=='全部')label='搜尋「'+expSearch+'」· '+expFilter;
+      rsEl.className='exp-result-sum on';
+      rsEl.innerHTML='<span class="exp-rs-tag">'+label+'</span>'+
+        '<span class="exp-rs-item">合計<b class="amt">'+fmtMoney(rTotal)+'</b></span>'+
+        '<span class="exp-rs-item">筆數<b>'+filtered.length+'</b></span>'+
+        '<span class="exp-rs-item">平均<b>'+fmtMoney(Math.round(rAvg))+'</b></span>'+
+        '<span class="exp-rs-item">Aaron<b>'+fmtMoney(Math.round(rA))+'</b></span>'+
+        '<span class="exp-rs-item">Chloe<b>'+fmtMoney(Math.round(rC))+'</b></span>';
+    }else{
+      rsEl.className='exp-result-sum';
+      rsEl.innerHTML='';
+    }
+  }
 
   var total=0;
   scoped.forEach(function(e){total+=parseFloat(e.amount)||0;});
