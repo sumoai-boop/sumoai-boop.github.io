@@ -1,5 +1,35 @@
 [
   {
+    "id": "1787732931559",
+    "name": "昇客肉食堂 晴光總店",
+    "name1": "昇客肉食堂",
+    "name2": "晴光總店",
+    "type": "雞肉飯",
+    "meal": "",
+    "price": 150,
+    "visits": 1,
+    "gscore": 3.7,
+    "addr": "104臺北市中山區晴光里雙城街16之3號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%98%87%E5%AE%A2%E8%82%89%E9%A3%9F%E5%A0%82+%E6%99%B4%E5%85%89%E7%B8%BD%E5%BA%97/@25.0651131,121.5207887,16.5z/data=!4m6!3m5!1s0x3442ab05c51bb26b:0x33369c966d632b13!8m2!3d25.0653756!4d121.5241835!16s%2Fg%2F11hhn9zzqc?entry=ttu&g_ep=EgoyMDI2MDgyMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-26",
+    "score": 3.6,
+    "visitLog": [
+      {
+        "date": "2026-08-26",
+        "meal": "午餐",
+        "price": 150,
+        "menu": "白斬土雞腿飯",
+        "score": 3.6
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/Z1Ykg0Ph/9e337319db98.jpg"
+    ],
+    "img": "https://i.ibb.co/Z1Ykg0Ph/9e337319db98.jpg",
+    "createdAt": 1787732931559
+  },
+  {
     "id": "1787460743766",
     "name": "牪嗑牛排 中和民德店",
     "name1": "牪嗑牛排",
