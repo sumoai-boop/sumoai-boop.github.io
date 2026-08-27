@@ -584,6 +584,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <button onclick="weeklyPageMonth++;renderWeekly();" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:6px;color:#00C853;font-size:13px;padding:2px 10px;cursor:pointer;">›</button>
       </div>
     </div>
+    <div id="weeklyMonthSummary"></div>
     <div id="weeklyList"><div class="empty-state"><span class="empty-icon">📊</span>尚無每日收入記錄</div></div>
   </div>
 
@@ -1395,6 +1396,33 @@ function renderWeekly(){
   var rmap={};getData('uberWeekly').forEach(function(w){if(w.date)rmap[w.date]=w;});
   var max=1;allDates.forEach(function(dt){if(rmap[dt]&&rmap[dt].income>max)max=rmap[dt].income;});
   var DN=['日','一','二','三','四','五','六'];
+
+  // ── 當月合計（隨月份切換即時更新）──
+  var sumInc=0,sumTrips=0,sumMins=0,sumPoints=0,sumDays=0;
+  allDates.forEach(function(dt){
+    var w=rmap[dt]; if(!w) return;
+    var mins=(w.hours||0)*60+(w.mins||0);
+    if((w.income||0)||(w.tripCount||0)||mins||(w.points||0)) sumDays++;
+    sumInc+=(w.income||0);
+    sumTrips+=(w.tripCount||0);
+    sumMins+=mins;
+    sumPoints+=(w.points||0);
+  });
+  var sEl=document.getElementById('weeklyMonthSummary');
+  if(sEl){
+    var chip=function(label,val,color){
+      return '<div style="flex:1;min-width:104px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.18);border-radius:10px;padding:10px 14px;">'
+        +'<div style="font-size:11px;letter-spacing:0.08em;color:rgba(240,220,160,0.55);margin-bottom:5px;white-space:nowrap;">'+label+'</div>'
+        +'<div style="font-family:\'Space Mono\',monospace;font-size:20px;font-weight:700;color:'+color+';white-space:nowrap;">'+val+'</div>'
+      +'</div>';
+    };
+    sEl.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">'
+      +chip('總收入'+(sumDays?' <span style="color:rgba(240,220,160,0.35);">'+sumDays+' 天</span>':''),'NT$'+fmt(sumInc),'#00C853')
+      +chip('總行程數',fmt(sumTrips)+' 趟','#f0dca8')
+      +chip('總時數',Math.floor(sumMins/60)+'h'+(sumMins%60)+'m','#60AAFF')
+      +chip('總積分',fmt(sumPoints)+' 分','#FFD700')
+    +'</div>';
+  }
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
     +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
     +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:34%"><col style="width:13%"><col style="width:6%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
