@@ -1,5 +1,35 @@
 [
   {
+    "id": "1787906285274",
+    "name": "大直粥品",
+    "name1": "大直粥品",
+    "name2": "",
+    "type": "粥品",
+    "meal": "",
+    "price": 125,
+    "visits": 1,
+    "gscore": 4.1,
+    "addr": "10491臺北市中山區大直里北安路567號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%A4%A7%E7%9B%B4%E7%B2%A5%E5%93%81+%E5%A4%A7%E7%9B%B4%E5%BA%97/@25.0805455,121.5488077,19z/data=!4m6!3m5!1s0x3442ac057f37e2d3:0xe12e9071c693f68d!8m2!3d25.0806365!4d121.5481344!16s%2Fg%2F11cmt8jk4q?entry=ttu&g_ep=EgoyMDI2MDgyNS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-28",
+    "score": 3.2,
+    "visitLog": [
+      {
+        "date": "2026-08-28",
+        "meal": "午餐",
+        "price": 125,
+        "menu": "香菇雞粥+皮蛋",
+        "score": 3.2
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/VYwkQMfF/539798e6ffc7.jpg"
+    ],
+    "img": "https://i.ibb.co/VYwkQMfF/539798e6ffc7.jpg",
+    "createdAt": 1787906285274
+  },
+  {
     "id": "1787732931559",
     "name": "昇客肉食堂 晴光總店",
     "name1": "昇客肉食堂",
