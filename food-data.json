@@ -998,44 +998,56 @@
     "name2": "板橋文化店",
     "type": "快餐",
     "meal": "",
-    "price": 277,
-    "visits": 5,
+    "price": 267,
+    "visits": 6,
     "gscore": 3.9,
     "addr": "220新北市板橋區文化里文化路二段173號",
     "note": "",
     "maps": "https://www.google.com/maps/search/%E9%BA%A5%E7%95%B6%E5%8B%9E/@25.027702,121.4523447,15z?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-08-01",
-    "score": 4,
+    "date": "2026-08-28",
+    "score": 3.5,
     "visitLog": [
       {
         "date": "2026-06-18",
         "meal": "晚餐",
         "price": 265,
-        "menu": "二辣腿排餐"
+        "menu": "二辣腿排餐",
+        "score": null
       },
       {
         "date": "2026-07-12",
         "meal": "晚餐",
         "price": 258,
-        "menu": "美墨莎莎醬辣雞堡"
+        "menu": "美墨莎莎醬辣雞堡",
+        "score": null
       },
       {
         "date": "2026-07-16",
         "meal": "晚餐",
         "price": 308,
-        "menu": "美墨莎莎醬辣牛堡"
+        "menu": "美墨莎莎醬辣牛堡",
+        "score": null
       },
       {
         "date": "2026-07-30",
         "meal": "晚餐",
         "price": 288,
-        "menu": "蒜香辣雞腿堡"
+        "menu": "蒜香辣雞腿堡",
+        "score": null
       },
       {
         "date": "2026-08-01",
         "meal": "晚餐",
         "price": 267,
-        "menu": "蒜香雙牛堡"
+        "menu": "蒜香雙牛堡",
+        "score": null
+      },
+      {
+        "date": "2026-08-28",
+        "meal": "晚餐",
+        "price": 214,
+        "menu": "雙層麥香魚",
+        "score": 3.5
       }
     ],
     "imgs": [
@@ -1043,7 +1055,7 @@
     ],
     "img": "https://i.ibb.co/3YPfgXpz/84393b214202.jpg",
     "createdAt": 1781792313054,
-    "updatedAt": 1785595462742
+    "updatedAt": 1787973680960
   },
   {
     "id": "1781700665484",
