@@ -1004,12 +1004,12 @@ async function pushToGitHub(){
       var fi=await r.json();
       sha=fi.sha;
     }
-    try{ pruneRoadGeom(200); }catch(e){}   // 推送前先把地理快取修剪到 200KB 以內，避免檔案越養越大
-    var rgeo={},rgeom={};
+    // uberRoadGeom（道路線形）是從地圖服務抓來的快取，不是使用者資料 → 只留本機、不上傳，
+    // 雲端檔案才能長期維持輕量；本機快取也不再被修剪，熱區地圖抓過一次就不會被砍掉重抓。
+    var rgeo={};
     try{ rgeo=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
-    try{ rgeom=JSON.parse(localStorage.getItem('uberRoadGeom')||'{}'); }catch(e){}
     var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly,uberSalary:salary,
-                 uberRoadGeo:rgeo, uberRoadGeom:rgeom};
+                 uberRoadGeo:rgeo};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData))));   // 改用緊湊格式，省掉縮排空白（約可省 65% 大小）
     showToast('⏳ 推送中...',false);
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
@@ -2663,9 +2663,10 @@ function runRoadGeom(){
     if(_gm2Queue.length){ _gmRunning=false; runRoadGeom2(); return; }
     _gmRunning=false;
     if(st) st.textContent='';
-    if(window._gmDirty && typeof saveAndPush==='function'){
+    if(window._gmDirty && typeof saveData==='function'){
       window._gmDirty=false;
-      try{ saveAndPush('uberRoadGeom', getRoadGeom()); }catch(e){}
+      // 只存本機，不觸發推送（道路快取已不上傳雲端）
+      try{ saveData('uberRoadGeom', getRoadGeom()); }catch(e){}
     }
     return;
   }
@@ -2760,9 +2761,10 @@ function runRoadGeom2(){
   if(!_gm2Queue.length){
     _gm2Running=false;
     if(st) st.textContent='';
-    if(window._gmDirty && typeof saveAndPush==='function'){
+    if(window._gmDirty && typeof saveData==='function'){
       window._gmDirty=false;
-      try{ saveAndPush('uberRoadGeom', getRoadGeom()); }catch(e){}
+      // 只存本機，不觸發推送（道路快取已不上傳雲端）
+      try{ saveData('uberRoadGeom', getRoadGeom()); }catch(e){}
     }
     return;
   }
