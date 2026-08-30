@@ -10,7 +10,7 @@
     "visits": 1,
     "gscore": 4.9,
     "addr": "110061臺北市信義區西村里松壽路12號6樓",
-    "note": "",
+    "note": "公主",
     "maps": "https://www.google.com.tw/maps/place/%E9%BC%8E%E7%8E%8B%E9%BA%BB%E8%BE%A3%E9%8D%8B(%E5%8F%B0%E5%8C%97%E4%BF%A1%E7%BE%A9ATT%E5%BA%97)/@25.0355821,121.5663974,18z/data=!4m6!3m5!1s0x3442abb66d57a997:0xb7a407952a5abd32!8m2!3d25.0354713!4d121.5660703!16s%2Fg%2F11nb30zw85?entry=ttu&g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-08-29",
     "score": 4.5,
@@ -27,7 +27,8 @@
       "https://i.ibb.co/mVBGM4V7/33a483605498.jpg"
     ],
     "img": "https://i.ibb.co/mVBGM4V7/33a483605498.jpg",
-    "createdAt": 1788022767427
+    "createdAt": 1788022767427,
+    "updatedAt": 1788062421975
   },
   {
     "id": "1787906285274",
