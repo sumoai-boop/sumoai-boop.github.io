@@ -139,6 +139,29 @@
   }
 
   /* ── 電影行事曆 ── */
+  .dg-wrap{background:#141010;border:1px solid #2E2621;border-radius:14px;padding:20px;margin-bottom:24px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+  .dg-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+  .dg-pill{background:transparent;border:1px solid #33291F;border-radius:99px;padding:6px 13px;font-size:11px;font-family:'Space Mono',monospace;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .dg-pill:hover{border-color:rgba(201,146,47,0.5);color:#E8C04A;}
+  .dg-pill.active{background:#C9922F;border-color:#C9922F;color:#1A1210;font-weight:700;}
+  .dg-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #241D1A;}
+  .dg-count{font-size:12px;color:#8A7B6E;font-family:'Space Mono',monospace;}
+  .dg-sort{background:#1A1513;border:1px solid #33291F;border-radius:99px;padding:7px 13px;color:#EFE3D2;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;outline:none;}
+  .dg-sort option{background:#1A1513;color:#EFE3D2;}
+  .dg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;}
+  .dg-card{position:relative;cursor:pointer;border-radius:7px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;transition:transform .18s;}
+  .dg-card:hover{transform:translateY(-4px);}
+  .dg-card img{width:100%;height:100%;object-fit:cover;display:block;}
+  .dg-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:8px;font-size:10px;color:#7D7166;text-align:center;line-height:1.4;word-break:break-all;}
+  .dg-meta{position:absolute;left:0;right:0;bottom:0;padding:16px 7px 6px;background:linear-gradient(to top,rgba(0,0,0,0.92),transparent);opacity:0;transition:opacity .18s;}
+  .dg-card:hover .dg-meta{opacity:1;}
+  .dg-t{font-size:10.5px;color:#EFE3D2;line-height:1.3;margin-bottom:3px;}
+  .dg-s{font-size:10px;color:#E8C04A;font-family:'Space Mono',monospace;}
+  .dg-badge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);color:#E8C04A;font-family:'Space Mono',monospace;font-size:10px;padding:2px 6px;border-radius:4px;}
+  .dg-more{display:block;margin:16px auto 0;background:transparent;border:1px solid #33291F;border-radius:99px;padding:9px 26px;color:#9C8B7A;font-family:'Space Mono',monospace;font-size:12px;cursor:pointer;transition:all .15s;}
+  .dg-more:hover{border-color:#C9922F;color:#E8C04A;}
+  .dg-empty{text-align:center;padding:40px 0;color:#6E635A;font-size:12px;}
+  @media(max-width:600px){.dg-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;}}
   .cal-wrap{background:#141010;border:1px solid #2E2621;border-radius:14px;padding:24px;margin-bottom:24px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
   .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
   .cal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#EFE3D2;letter-spacing:0.05em;}
@@ -369,6 +392,24 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     <div class="stat-card"><div class="stat-label">電影院場次</div><div class="stat-val" id="sCinema" style="color:#C89BFF;text-shadow:0 0 14px rgba(200,155,255,0.42);">—</div></div>
   </div>
   <div class="section-divider"></div>
+
+  <!-- 發行商海報牆 -->
+  <span class="top5-label" style="margin-bottom:16px;">— 發行商片庫</span>
+  <div class="dg-wrap">
+    <div class="dg-pills" id="dgPills"></div>
+    <div class="dg-bar">
+      <span class="dg-count" id="dgCount"></span>
+      <select class="dg-sort" id="dgSort">
+        <option value="date">觀看日期（新到舊）</option>
+        <option value="date-asc">觀看日期（舊到新）</option>
+        <option value="personal">個人評分（高到低）</option>
+        <option value="year">上映年份（新到舊）</option>
+        <option value="rev">票房（高到低）</option>
+      </select>
+    </div>
+    <div class="dg-grid" id="dgGrid"></div>
+    <button class="dg-more" id="dgMore" style="display:none;">載入更多</button>
+  </div>
 
   <!-- 電影行事曆 -->
   <span class="top5-label" style="margin-bottom:16px;">— 觀看行事曆</span>
@@ -1558,6 +1599,8 @@ render();
     if(counterEl) counterEl.textContent = (idx+1)+'/'+movies.length;
   }
 
+  window.fetchPoster = fetchPoster;   // 供發行商海報牆共用
+
   async function renderCal(){
     dateMap = buildDateMap(); // 每次重建確保資料最新
     const title = document.getElementById('calTitle');
@@ -1895,7 +1938,7 @@ render();
             showToast('⚠️ GitHub 資料筆數較少（' + arr.length + ' < ' + localCount + '），已保留本機資料', true, true);
           }, 800);
           // 即使跳過覆蓋，仍用本機現有 DATA 重新渲染，確保篩選器/發行商清單等用最新本機資料填充
-          render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
+          render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); if(typeof dgRender==='function') dgRender(); }, 100);
           return;
         }
         DATA.length = 0;
@@ -1910,7 +1953,7 @@ render();
             .then(function(fi){ if(fi&&fi.sha) localStorage.setItem('gh_dramas_sha', fi.sha); })
             .catch(function(){});
         }
-        render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
+        render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); if(typeof dgRender==='function') dgRender(); }, 100);
       }catch(e){ console.warn('dramas parse:', e); }
     }
 
@@ -2278,6 +2321,108 @@ render();
     });
   }
   window.deleteRecord = deleteRecord;
+
+  // ── 發行商海報牆 ──
+  var DG_PAGE = 24;
+  var dgDist = null;      // null = 尚未初始化
+  var dgShown = DG_PAGE;
+
+  function dgList(){
+    var arr = DATA.filter(function(m){
+      var d = (m.dist && m.dist!=='nan') ? m.dist : '其他';
+      return d === dgDist;
+    });
+    var s = document.getElementById('dgSort').value;
+    arr.sort(function(a,b){
+      switch(s){
+        case 'date-asc':  return (a.date||'').localeCompare(b.date||'');
+        case 'personal':  return (b.personal||0)-(a.personal||0);
+        case 'year':      return (b.year||0)-(a.year||0);
+        case 'rev': {
+          var ra=(a.type==='電影')?revGet(a):undefined, rb=(b.type==='電影')?revGet(b):undefined;
+          var va=(typeof ra==='number'&&ra>0)?ra:null, vb=(typeof rb==='number'&&rb>0)?rb:null;
+          if(va===null&&vb===null) return 0;
+          if(va===null) return 1;
+          if(vb===null) return -1;
+          return vb-va;
+        }
+        default:          return (b.date||'').localeCompare(a.date||'');
+      }
+    });
+    return arr;
+  }
+
+  function dgRenderPills(){
+    var counts = {};
+    DATA.forEach(function(m){
+      var d = (m.dist && m.dist!=='nan') ? m.dist : '其他';
+      counts[d] = (counts[d]||0)+1;
+    });
+    var sorted = Object.entries(counts).sort(function(a,b){ return b[1]-a[1]; });
+    if(!sorted.length) return;
+    if(dgDist===null) dgDist = sorted[0][0];
+    document.getElementById('dgPills').innerHTML = sorted.map(function(e){
+      return '<button class="dg-pill'+(e[0]===dgDist?' active':'')+'" data-dist="'+
+             e[0].replace(/"/g,'&quot;')+'">'+e[0]+' '+e[1]+'</button>';
+    }).join('');
+  }
+
+  async function dgRenderGrid(){
+    var list = dgList();
+    var grid = document.getElementById('dgGrid');
+    document.getElementById('dgCount').textContent =
+      dgDist + ' · 共 ' + list.length + ' 部' + (list.length>dgShown?('（顯示 '+dgShown+'）'):'');
+    if(!list.length){ grid.innerHTML='<div class="dg-empty">這個發行商還沒有記錄</div>'; document.getElementById('dgMore').style.display='none'; return; }
+    var page = list.slice(0, dgShown);
+    grid.innerHTML = page.map(function(m){
+      var sc = (m.personal>0) ? m.personal.toFixed(1) : '';
+      return '<div class="dg-card" data-t="'+(m.title||'').replace(/"/g,'&quot;')+'">'+
+             '<div class="dg-fallback">'+m.title+'</div>'+
+             (sc?'<span class="dg-badge">'+sc+'</span>':'')+
+             '<div class="dg-meta"><div class="dg-t">'+m.title+'</div>'+
+             '<div class="dg-s">'+(m.year||'')+(m.date?(' · '+m.date.slice(2)):'')+'</div></div></div>';
+    }).join('');
+    document.getElementById('dgMore').style.display = (list.length>dgShown) ? 'block' : 'none';
+
+    // 逐張補海報（走共用快取與限流）
+    for(var i=0;i<page.length;i++){
+      var m = page[i];
+      var card = grid.children[i];
+      if(!card) continue;
+      try{
+        var url = await window.fetchPoster(m);
+        if(url && grid.children[i]===card){
+          var img = document.createElement('img');
+          img.loading='lazy'; img.decoding='async'; img.alt=m.title; img.src=url;
+          card.insertBefore(img, card.firstChild);
+          var fb = card.querySelector('.dg-fallback');
+          if(fb) fb.remove();
+        }
+      }catch(e){}
+    }
+  }
+
+  function dgRender(){ dgRenderPills(); dgRenderGrid(); }
+  window.dgRender = dgRender;
+
+  document.getElementById('dgPills').addEventListener('click', function(e){
+    var b = e.target.closest('[data-dist]');
+    if(!b) return;
+    dgDist = b.getAttribute('data-dist');
+    dgShown = DG_PAGE;
+    dgRender();
+  });
+  document.getElementById('dgSort').addEventListener('change', function(){ dgShown=DG_PAGE; dgRenderGrid(); });
+  document.getElementById('dgMore').addEventListener('click', function(){ dgShown += DG_PAGE; dgRenderGrid(); });
+  document.getElementById('dgGrid').addEventListener('click', function(e){
+    var card = e.target.closest('[data-t]');
+    if(!card) return;
+    var t = card.getAttribute('data-t');
+    var m = DATA.filter(function(x){ return x.title===t; })[0];
+    if(m && typeof openPoster==='function') openPoster(m);
+  });
+
+  setTimeout(dgRender, 300);
 })();
 </script>
 
