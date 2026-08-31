@@ -1,5 +1,33 @@
 [
   {
+    "id": "1788159844842",
+    "name": "富善雞湯麵舖 松山光復店",
+    "name1": "富善雞湯麵舖",
+    "name2": "松山光復店",
+    "type": "台式麵館",
+    "meal": "",
+    "price": 295,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "105臺北市松山區吉祥里光復北路11巷54號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%AF%8C%E5%96%84%E9%9B%9E%E6%B9%AF%E9%BA%B5%E8%88%96-%E6%9D%BE%E5%B1%B1%E5%85%89%E5%BE%A9%E5%BA%97/@25.0499308,121.560157,18z/data=!4m6!3m5!1s0x3442ab0052818025:0x928ee6cb08fee1a6!8m2!3d25.0498323!4d121.5601029!16s%2Fg%2F11yndv3ftw?entry=ttu&g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-08-31",
+    "score": 4.1,
+    "visitLog": [
+      {
+        "date": "2026-08-31",
+        "meal": "午餐",
+        "price": 295,
+        "menu": "百菇雞腿濃湯麵",
+        "score": 4.1
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1788159844842
+  },
+  {
     "id": "1788022767427",
     "name": "鼎王麻辣鍋 台北信義ATT店",
     "name1": "鼎王麻辣鍋",
