@@ -139,6 +139,12 @@
   }
 
   /* ── 電影行事曆 ── */
+  .tabbar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+  .tab-btn{background:transparent;border:1px solid #33291F;border-radius:99px;padding:9px 20px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#9C8B7A;cursor:pointer;transition:all .15s;}
+  .tab-btn:hover{border-color:rgba(201,146,47,0.5);color:#E8C04A;}
+  .tab-btn.active{background:#C9922F;border-color:#C9922F;color:#1A1210;font-weight:700;}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
   .dg-wrap{background:#141010;border:1px solid #2E2621;border-radius:14px;padding:20px;margin-bottom:24px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
   .dg-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
   .dg-pill{background:transparent;border:1px solid #33291F;border-radius:99px;padding:6px 13px;font-size:11px;font-family:'Space Mono',monospace;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
@@ -393,6 +399,13 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
   </div>
   <div class="section-divider"></div>
 
+  <div class="tabbar">
+    <button class="tab-btn active" data-tab="gallery">發行商片庫</button>
+    <button class="tab-btn" data-tab="calendar">觀看行事曆</button>
+    <button class="tab-btn" data-tab="list">列表記錄</button>
+  </div>
+
+  <div class="tab-pane active" id="pane-gallery">
   <!-- 發行商海報牆 -->
   <span class="top5-label" style="margin-bottom:16px;">— 發行商片庫</span>
   <div class="dg-wrap">
@@ -411,6 +424,9 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     <button class="dg-more" id="dgMore" style="display:none;">載入更多</button>
   </div>
 
+  </div><!-- /pane-gallery -->
+
+  <div class="tab-pane" id="pane-calendar">
   <!-- 電影行事曆 -->
   <span class="top5-label" style="margin-bottom:16px;">— 觀看行事曆</span>
   <div class="cal-wrap">
@@ -432,7 +448,9 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     <div id="calDayList"></div>
   </div>
 
-  <div class="section-divider" style="margin-top:40px;"></div>
+  </div><!-- /pane-calendar -->
+
+  <div class="tab-pane" id="pane-list">
   <div class="filters">
     <input class="filter-input" id="searchInput" placeholder="搜尋片名／演員／導演...">
     <button class="filter-reset" id="resetBtn" title="重置所有篩選">↺ 重置</button>
@@ -476,6 +494,7 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     </table>
   </div>
   <div class="no-result" id="noResult" style="display:none">沒有符合的結果</div>
+  </div><!-- /pane-list -->
 </div>
 
 <!-- 海報燈箱 -->
@@ -2423,6 +2442,30 @@ render();
   });
 
   setTimeout(dgRender, 300);
+
+  // ── 分頁切換 ──
+  document.querySelector('.tabbar').addEventListener('click', function(e){
+    var b = e.target.closest('.tab-btn');
+    if(!b) return;
+    var t = b.getAttribute('data-tab');
+    document.querySelectorAll('.tab-btn').forEach(function(x){ x.classList.toggle('active', x===b); });
+    document.querySelectorAll('.tab-pane').forEach(function(p){
+      p.classList.toggle('active', p.id === 'pane-'+t);
+    });
+    try{ localStorage.setItem('_dramasTab', t); }catch(e){}
+    if(t==='calendar' && typeof renderCal==='function') renderCal();
+    if(t==='gallery'  && typeof dgRender==='function')  dgRender();
+    if(t==='list'     && typeof fillRevenues==='function') setTimeout(fillRevenues, 60);
+  });
+  // 記住上次停留的分頁
+  (function(){
+    var saved = null;
+    try{ saved = localStorage.getItem('_dramasTab'); }catch(e){}
+    if(saved && document.getElementById('pane-'+saved)){
+      var btn = document.querySelector('.tab-btn[data-tab="'+saved+'"]');
+      if(btn) btn.click();
+    }
+  })();
 })();
 </script>
 
