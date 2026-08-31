@@ -23,9 +23,12 @@
         "score": 4.1
       }
     ],
-    "imgs": [],
-    "img": "",
-    "createdAt": 1788159844842
+    "imgs": [
+      "https://i.ibb.co/GfxLfvyr/b618dc1512e3.jpg"
+    ],
+    "img": "https://i.ibb.co/GfxLfvyr/b618dc1512e3.jpg",
+    "createdAt": 1788159844842,
+    "updatedAt": 1788159860015
   },
   {
     "id": "1788022767427",
