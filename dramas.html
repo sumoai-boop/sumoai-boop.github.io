@@ -152,7 +152,11 @@
   .dg-pill.active{background:#C9922F;border-color:#C9922F;color:#1A1210;font-weight:700;}
   .dg-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #241D1A;}
   .dg-count{font-size:12px;color:#8A7B6E;font-family:'Space Mono',monospace;}
-  .dg-sort{background:#1A1513;border:1px solid #33291F;border-radius:99px;padding:7px 13px;color:#EFE3D2;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;outline:none;}
+  .dg-types{display:flex;gap:4px;margin-left:auto;}
+  .dg-type{background:transparent;border:1px solid #33291F;border-radius:99px;padding:6px 13px;font-family:'Space Mono',monospace;font-size:11px;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .dg-type:hover{border-color:rgba(201,146,47,0.5);color:#E8C04A;}
+  .dg-type.active{background:rgba(201,146,47,0.18);border-color:#C9922F;color:#E8C04A;}
+  .dg-sort{flex:none;background:#1A1513;border:1px solid #33291F;border-radius:99px;padding:7px 13px;color:#EFE3D2;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;outline:none;}
   .dg-sort option{background:#1A1513;color:#EFE3D2;}
   .dg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;}
   .dg-card{position:relative;cursor:pointer;border-radius:7px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;transition:transform .18s;}
@@ -412,6 +416,11 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     <div class="dg-pills" id="dgPills"></div>
     <div class="dg-bar">
       <span class="dg-count" id="dgCount"></span>
+      <div class="dg-types">
+        <button class="dg-type active" data-type="all">全部</button>
+        <button class="dg-type" data-type="movie">純電影</button>
+        <button class="dg-type" data-type="tv">純影集</button>
+      </div>
       <select class="dg-sort" id="dgSort">
         <option value="date">觀看日期（新到舊）</option>
         <option value="date-asc">觀看日期（舊到新）</option>
@@ -2346,10 +2355,17 @@ render();
   var dgDist = null;      // null = 尚未初始化
   var dgShown = DG_PAGE;
 
+  var dgType = 'all';
+  var DG_TV_TYPES = ['影集','綜藝'];
+  function dgTypeOk(m){
+    if(dgType==='movie') return m.type==='電影';
+    if(dgType==='tv')    return DG_TV_TYPES.indexOf(m.type)>=0;
+    return true;
+  }
   function dgList(){
     var arr = DATA.filter(function(m){
       var d = (m.dist && m.dist!=='nan') ? m.dist : '其他';
-      return d === dgDist;
+      return d === dgDist && dgTypeOk(m);
     });
     var s = document.getElementById('dgSort').value;
     arr.sort(function(a,b){
@@ -2374,12 +2390,18 @@ render();
   function dgRenderPills(){
     var counts = {};
     DATA.forEach(function(m){
+      if(!dgTypeOk(m)) return;
       var d = (m.dist && m.dist!=='nan') ? m.dist : '其他';
       counts[d] = (counts[d]||0)+1;
     });
     var sorted = Object.entries(counts).sort(function(a,b){ return b[1]-a[1]; });
-    if(!sorted.length) return;
-    if(dgDist===null) dgDist = sorted[0][0];
+    if(!sorted.length){
+      document.getElementById('dgPills').innerHTML =
+        '<span class="dg-empty" style="padding:8px 0;">這個類型還沒有記錄</span>';
+      return;
+    }
+    // 目前選的發行商在此類型下沒有片，就跳到片數最多的那家
+    if(dgDist===null || !counts[dgDist]) dgDist = sorted[0][0];
     document.getElementById('dgPills').innerHTML = sorted.map(function(e){
       return '<button class="dg-pill'+(e[0]===dgDist?' active':'')+'" data-dist="'+
              e[0].replace(/"/g,'&quot;')+'">'+e[0]+' '+e[1]+'</button>';
@@ -2389,8 +2411,10 @@ render();
   async function dgRenderGrid(){
     var list = dgList();
     var grid = document.getElementById('dgGrid');
+    var tLabel = dgType==='movie' ? '電影' : (dgType==='tv' ? '影集' : '部');
+    var unit = (dgType==='all') ? ' 部' : (' 部' + tLabel);
     document.getElementById('dgCount').textContent =
-      dgDist + ' · 共 ' + list.length + ' 部' + (list.length>dgShown?('（顯示 '+dgShown+'）'):'');
+      dgDist + ' · 共 ' + list.length + unit + (list.length>dgShown?('（顯示 '+dgShown+'）'):'');
     if(!list.length){ grid.innerHTML='<div class="dg-empty">這個發行商還沒有記錄</div>'; document.getElementById('dgMore').style.display='none'; return; }
     var page = list.slice(0, dgShown);
     grid.innerHTML = page.map(function(m){
@@ -2432,6 +2456,14 @@ render();
     dgRender();
   });
   document.getElementById('dgSort').addEventListener('change', function(){ dgShown=DG_PAGE; dgRenderGrid(); });
+  document.querySelector('.dg-types').addEventListener('click', function(e){
+    var b = e.target.closest('[data-type]');
+    if(!b) return;
+    dgType = b.getAttribute('data-type');
+    document.querySelectorAll('.dg-type').forEach(function(x){ x.classList.toggle('active', x===b); });
+    dgShown = DG_PAGE;
+    dgRender();
+  });
   document.getElementById('dgMore').addEventListener('click', function(){ dgShown += DG_PAGE; dgRenderGrid(); });
   document.getElementById('dgGrid').addEventListener('click', function(e){
     var card = e.target.closest('[data-t]');
