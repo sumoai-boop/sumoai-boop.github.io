@@ -892,11 +892,21 @@ function loadFromGitHub(){
       }
       return getRawText.then(function(raw){
         var json=JSON.parse(raw);
+        // 先合併「刪除墓碑」：任何一台刪掉的記錄，其他台也要視為已刪除，
+        // 必須在 mergeAllData 之前做，合併時才會把已刪除的記錄排除掉。
+        if(json.uberDeleted){
+          var lt=getTombs();
+          Object.keys(json.uberDeleted).forEach(function(k){
+            lt[k]=Object.assign({}, json.uberDeleted[k], lt[k]||{});
+          });
+          try{ localStorage.setItem('uberDeleted', JSON.stringify(lt)); }catch(e){}
+        }
         // 合併雲端與本機（不再直接覆蓋，避免另一台的資料消失）
         var _mrep = mergeAllData(json);
-        var _added = Object.keys(_mrep).filter(function(k){ return _mrep[k].merged>_mrep[k].remote; });
+        // 只要合併結果和雲端不一致就要補推：多了要上傳，少了（有刪除）也要讓雲端跟上
+        var _added = Object.keys(_mrep).filter(function(k){ return _mrep[k].merged!==_mrep[k].remote; });
         if(_added.length){
-          window._needPushAfterMerge = true;   // 本機有雲端沒有的資料 → 稍後補推
+          window._needPushAfterMerge = true;
         }
         // 地理快取：合併雲端與本地（兩邊都保留）
         if(json.uberRoadGeo){
@@ -1008,8 +1018,10 @@ async function pushToGitHub(){
     // 雲端檔案才能長期維持輕量；本機快取也不再被修剪，熱區地圖抓過一次就不會被砍掉重抓。
     var rgeo={};
     try{ rgeo=JSON.parse(localStorage.getItem('uberRoadGeo')||'{}'); }catch(e){}
+    // uberDeleted（刪除墓碑）必須一起上傳，否則在 A 台刪掉的記錄，
+    // B 台下次合併時會把它推回雲端，變成「刪不掉、一直復活」。
     var newData={uberTrips:trips,uberWeekly:weekly,uberMonthly:monthly,uberSalary:salary,
-                 uberRoadGeo:rgeo};
+                 uberRoadGeo:rgeo, uberDeleted:getTombs()};
     var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(newData))));   // 改用緊湊格式，省掉縮排空白（約可省 65% 大小）
     showToast('⏳ 推送中...',false);
     var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify({message:'更新Uber記錄',content:encoded,sha:sha,branch:GH_BRANCH})});
@@ -1316,7 +1328,19 @@ function addWeekly(){
   var note=document.getElementById('fw-note').value.trim();
   if(!date){alert('請選擇日期');return;}
   var w=getData('uberWeekly');
-  w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
+  // 同一天只能有一筆：若該日期已存在就「就地更新」，不要再新增一筆，
+  // 否則兩筆都會被總收入加總，造成金額多算、且兩台電腦數字對不起來。
+  var same=w.filter(function(x){ return x && x.date===date; });
+  if(same.length){
+    same.sort(function(a,b){ return (b.id||0)-(a.id||0); });
+    var keepId=same[0].id;
+    same.slice(1).forEach(function(x){ addTomb('uberWeekly', x.id); });  // 舊的重複一併標記刪除
+    w=w.filter(function(x){ return !x || x.date!==date; });
+    w.unshift({date,income,tripCount,hours,mins,points,note,id:keepId});
+    showToast('✦ 已更新 '+date+' 的記錄',false);
+  }else{
+    w.unshift({date,income,tripCount,hours,mins,points,note,id:Date.now()});
+  }
   saveAndPush('uberWeekly',w);renderWeekly();updateStats();renderOverviewPies();renderWeekIncomeChart();renderMonthIncomeChart();
   ['fw-income','fw-trips','fw-hours','fw-mins','fw-points','fw-note'].forEach(id=>document.getElementById(id).value='');
 }
@@ -3297,9 +3321,47 @@ function runDataMigrations(){
     if(!x.nat){ x.nat='本國'; changed2=true; }      // 未填國籍 → 預設本國
   });
   if(changed2){ saveData('uberTrips',t); }
+  // 一次性清理：每日收入同一天有多筆時只保留最新的一筆（舊的標記刪除）。
+  // 這種重複會讓「總收入」把同一天加總兩次，也是兩台電腦金額對不起來的原因。
+  var changed3=false;
+  if(localStorage.getItem('uberWeeklyDedupeV1')!=='done'){
+    var wk=getData('uberWeekly'), byD={};
+    wk.forEach(function(x){ if(x&&x.date) (byD[x.date]=byD[x.date]||[]).push(x); });
+    Object.keys(byD).forEach(function(d){
+      var arr=byD[d]; if(arr.length<2) return;
+      arr.sort(function(a,b){ return (b.id||0)-(a.id||0); });   // id 是建立時間，越大越新
+      arr.slice(1).forEach(function(x){ addTomb('uberWeekly', x.id); changed3=true; });
+    });
+    if(changed3){
+      var tb=(getTombs()['uberWeekly']||{});
+      saveData('uberWeekly', wk.filter(function(x){ return !(x && tb[x.id]); }));
+    }
+    try{ localStorage.setItem('uberWeeklyDedupeV1','done'); }catch(e){}
+  }
+  // 一次性清理：支出中「日期＋類別＋金額＋備註」完全相同的重複記錄，只保留最新一筆。
+  // 刻意只跑一次（跑完記錄 done），因為同一天出現兩筆相同金額的過路費本來就可能是真的，
+  // 不能做成每次都自動去重，否則以後正常的重複支出會被誤刪。
+  if(localStorage.getItem('uberMonthlyDedupeV1')!=='done'){
+    var mo=getData('uberMonthly'), byK={};
+    mo.forEach(function(x){
+      if(!x) return;
+      var k=[x.date||'',x.type||'',x.amount||0,x.note||''].join('|');
+      (byK[k]=byK[k]||[]).push(x);
+    });
+    Object.keys(byK).forEach(function(k){
+      var arr=byK[k]; if(arr.length<2) return;
+      arr.sort(function(a,b){ return (b.id||0)-(a.id||0); });   // 保留 id 最大（最新）那筆
+      arr.slice(1).forEach(function(x){ addTomb('uberMonthly', x.id); changed3=true; });
+    });
+    if(changed3){
+      var tbm=(getTombs()['uberMonthly']||{});
+      saveData('uberMonthly', mo.filter(function(x){ return !(x && tbm[x.id]); }));
+    }
+    try{ localStorage.setItem('uberMonthlyDedupeV1','done'); }catch(e){}
+  }
   if(typeof purgeOutOfBounds==='function') purgeOutOfBounds();
   if(typeof purgeMisplacedGeom==='function') purgeMisplacedGeom();
-  if((changed||changed2) && _syncReady) pushToGitHub();
+  if((changed||changed2||changed3) && _syncReady) pushToGitHub();
   renderAll();
 }
 function renderAll(){
