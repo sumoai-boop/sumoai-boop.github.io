@@ -1082,9 +1082,10 @@ function addExpense(){
   var date=document.getElementById('e-date').value;
   var desc=document.getElementById('e-desc').value.trim();
   var note=document.getElementById('e-note').value.trim();
-  var amount=parseFloat(document.getElementById('e-amount').value);
+  var amountRaw=document.getElementById('e-amount').value.trim();
+  var amount=parseFloat(amountRaw);
   var cat=document.getElementById('e-cat').value;
-  if(!date||!desc||!amount||amount<=0){showToast('請填寫完整資料');return;}
+  if(!date||!desc||amountRaw===''||isNaN(amount)||amount<0){showToast('請填寫完整資料（金額可為 0）');return;}
   var isEdit=editingId!==null;
   if(isEdit){
     expenses.forEach(function(e){
