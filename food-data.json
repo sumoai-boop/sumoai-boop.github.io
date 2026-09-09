@@ -1098,13 +1098,13 @@
     "name2": "板橋文化店",
     "type": "快餐",
     "meal": "",
-    "price": 264,
-    "visits": 7,
+    "price": 261,
+    "visits": 8,
     "gscore": 3.9,
     "addr": "220新北市板橋區文化里文化路二段173號",
     "note": "",
     "maps": "https://www.google.com/maps/search/%E9%BA%A5%E7%95%B6%E5%8B%9E/@25.027702,121.4523447,15z?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-08-30",
+    "date": "2026-09-09",
     "score": 3.8,
     "visitLog": [
       {
@@ -1155,6 +1155,13 @@
         "price": 249,
         "menu": "辣味麥脆雞",
         "score": 4
+      },
+      {
+        "date": "2026-09-09",
+        "meal": "晚餐",
+        "price": 240,
+        "menu": "肯瓊勁脆雞腿堡",
+        "score": 4
       }
     ],
     "imgs": [
@@ -1162,7 +1169,7 @@
     ],
     "img": "https://i.ibb.co/3YPfgXpz/84393b214202.jpg",
     "createdAt": 1781792313054,
-    "updatedAt": 1788103222376
+    "updatedAt": 1788968218971
   },
   {
     "id": "1781700665484",
