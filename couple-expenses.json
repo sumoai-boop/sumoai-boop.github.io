@@ -1,6 +1,14 @@
 {
   "expenses": [
     {
+      "id": 1789142720766,
+      "date": "2027-05-02",
+      "desc": "Bruno Mars - The Romantic Tour",
+      "note": "高雄國家體育場",
+      "amount": 10360,
+      "cat": "娛樂"
+    },
+    {
       "id": 1786025374856,
       "date": "2026-12-26",
       "desc": "《神隱少女》舞台劇",
