@@ -1,5 +1,35 @@
 [
   {
+    "id": "1789319899430",
+    "name": "麥當勞 台北大巨蛋店",
+    "name1": "麥當勞",
+    "name2": "台北大巨蛋店",
+    "type": "快餐",
+    "meal": "",
+    "price": 268,
+    "visits": 1,
+    "gscore": 2.4,
+    "addr": "110臺北市信義區新仁里忠孝東路四段515號D棟B2",
+    "note": "公主",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E5%8F%B0%E5%8C%97%E5%A4%A7%E5%B7%A8%E8%9B%8B%E9%A4%90%E5%BB%B3/@25.0424367,121.5583801,19z/data=!3m1!5s0x3442abc75d1494bf:0xa58f6b30749edd04!4m6!3m5!1s0x3442ab8d950d6e47:0x2254eff0065565ad!8m2!3d25.0424367!4d121.5595066!16s%2Fg%2F11whxd9q76?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-13",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2026-09-13",
+        "meal": "晚餐",
+        "price": 268,
+        "menu": "辣味炸雞餐",
+        "score": 3
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/1tfpQQ9d/490dcfdbdfce.jpg"
+    ],
+    "img": "https://i.ibb.co/1tfpQQ9d/490dcfdbdfce.jpg",
+    "createdAt": 1789319899430
+  },
+  {
     "id": "1789319675025",
     "name": "麵屋壹の穴 ICHI",
     "name1": "麵屋壹の穴 ICHI",
