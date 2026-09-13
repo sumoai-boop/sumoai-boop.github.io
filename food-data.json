@@ -1,5 +1,35 @@
 [
   {
+    "id": "1789319675025",
+    "name": "麵屋壹の穴 ICHI",
+    "name1": "麵屋壹の穴 ICHI",
+    "name2": "",
+    "type": "拉麵",
+    "meal": "",
+    "price": 360,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "106臺北市大安區華聲里延吉街137巷22號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%B5%E5%B1%8B%E5%A3%B9%E3%81%AE%E7%A9%B4+ICHI/@25.0420804,121.5549825,19z/data=!3m1!5s0x3442abc68a37a4a7:0x3512f05873761c78!4m6!3m5!1s0x3442abc68a279125:0x1c5b1c90785e9e10!8m2!3d25.0418912!4d121.5552509!16s%2Fg%2F1tjkch45?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-13",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-09-13",
+        "meal": "晚餐",
+        "price": 360,
+        "menu": "豚骨魚介拉麵+脆皮燒肉",
+        "score": 4
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/dsg0w5zG/573c60d96d1b.jpg"
+    ],
+    "img": "https://i.ibb.co/dsg0w5zG/573c60d96d1b.jpg",
+    "createdAt": 1789319675025
+  },
+  {
     "id": "1789139139851",
     "name": "梁記嘉義雞肉飯",
     "name1": "梁記嘉義雞肉飯",
