@@ -2504,18 +2504,25 @@ function renderPeriodSummary(){
 function renderPeriodHours(){
   var el=document.getElementById('periodHours'); if(!el) return;
   var p=periodSlice();
+  // 時薪只算「跑車實收」，不含平台的每日額外獎勵 —— 獎勵不是靠工時換來的，
+  // 混進來會把時薪灌高。實收取自各趟行程的費用明細，依日期加總。
+  var netByDate={};
+  p.trips.forEach(function(t){
+    if(!t.d) return;
+    netByDate[t.d]=(netByDate[t.d]||0)+(t.detail||0);
+  });
   var mins=p.weekly.reduce(function(s,w){ return s+((w.hours||0)*60+(w.mins||0)); },0);
-  var inc=p.weekly.reduce(function(s,w){ return s+(w.income||0); },0);
+  var inc=p.weekly.reduce(function(s,w){ return s+(netByDate[w.date]||0); },0);
   var days=p.weekly.filter(function(w){ return ((w.hours||0)*60+(w.mins||0))>0; }).length;
   var hhmm=function(m){ return Math.floor(m/60)+':'+pd2(Math.round(m%60)); };
 
-  // 每週各天平均時薪（該星期幾的收入總和 ÷ 時數總和）
+  // 每週各天平均時薪（該星期幾的跑車實收總和 ÷ 時數總和）
   var DN=['一','二','三','四','五','六','日'];
   var agg=[0,1,2,3,4,5,6].map(function(){ return {inc:0,min:0}; });
   p.weekly.forEach(function(w){
     if(!w.date) return;
     var i=(new Date(w.date+'T00:00:00').getDay()+6)%7;
-    agg[i].inc+=(w.income||0); agg[i].min+=((w.hours||0)*60+(w.mins||0));
+    agg[i].inc+=(netByDate[w.date]||0); agg[i].min+=((w.hours||0)*60+(w.mins||0));
   });
   var list=agg.map(function(a,i){ return {name:'週'+DN[i], rate:a.min>0?a.inc/(a.min/60):0, min:a.min}; })
               .filter(function(x){ return x.min>0; })
@@ -2544,7 +2551,8 @@ function renderPeriodHours(){
   };
 
   el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:16px;">'
-    +'<div style="font-size:13px;font-weight:700;color:#00E860;margin-bottom:14px;">⏱ 工時效率分析</div>'
+    +'<div style="font-size:13px;font-weight:700;color:#00E860;margin-bottom:14px;">⏱ 工時效率分析'
+      +'<span style="float:right;font-weight:400;font-size:11px;color:rgba(255,255,255,0.35);">時薪以跑車實收計算，不含額外獎勵</span></div>'
     +'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;">'
       +card('總工時', mins?hhmm(mins):'—','','#60AAFF')
       +card('平均時薪', mins?'NT$'+fmt(Math.round(inc/(mins/60))):'—','','#00E860')
