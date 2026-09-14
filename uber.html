@@ -2445,8 +2445,8 @@ function renderPeriodSummary(){
       +'<div class="pd-grid">'+cells+'</div>'
       +(extra||'')+'</div>';
   };
-  // 只用三種語意色：進帳＝綠、被抽走／支出＝橘紅、純數量＝米白
-  var C_IN='#00E860', C_OUT='#FF9500', C_NUM='#f0dca8';
+  // 語意色：進帳＝綠、被抽走／支出＝橘、純數量＝米白、支出分類＝紅（與上排橘色區隔）
+  var C_IN='#00E860', C_OUT='#FF9500', C_NUM='#f0dca8', C_CAT='#FF6B6B';
 
   // 期間內各支出類別的金額，由大到小。
   // 只讓小色塊沿用圓餅圖色票（維持對照關係），金額文字統一色，避免整張卡片五顏六色。
@@ -2469,8 +2469,8 @@ function renderPeriodSummary(){
           +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'
             +'<i style="width:8px;height:8px;border-radius:2px;background:'+col+';display:inline-block;flex-shrink:0;"></i>'
             +'<span style="font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.name+'</span></div>'
-          +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+C_OUT+';white-space:nowrap;">NT$'+fmt(c.amt)
-            +'<span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:400;margin-left:4px;">'+pct.toFixed(1)+'%</span></div>'
+          +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+C_CAT+';white-space:nowrap;">NT$'+fmt(c.amt)
+            +'<span style="font-size:14px;color:#ffffff;font-weight:400;margin-left:6px;">'+pct.toFixed(1)+'%</span></div>'
         +'</div>';
       }).join('')
       +'</div></div>';
