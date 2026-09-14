@@ -1106,17 +1106,30 @@ function buildFilters(){
     if(m.dist && m.dist !== 'nan') dists[m.dist] = (dists[m.dist]||0) + 1;
   });
 
-  const LANG_NAME = {'US':'🇺🇸 美國','KR':'🇰🇷 韓國','JP':'🇯🇵 日本','TW':'🇹🇼 台灣','CN':'🇨🇳 中國','HK':'🇭🇰 香港',
+  const LANG_NAME = {
+    'US':'🇺🇸 美國','KR':'🇰🇷 韓國','JP':'🇯🇵 日本','TW':'🇹🇼 台灣','CN':'🇨🇳 中國','HK':'🇭🇰 香港',
     'GB':'🇬🇧 英國','FR':'🇫🇷 法國','DE':'🇩🇪 德國','ES':'🇪🇸 西班牙','IT':'🇮🇹 義大利','AU':'🇦🇺 澳洲',
     'IN':'🇮🇳 印度','ID':'🇮🇩 印尼','TR':'🇹🇷 土耳其','IR':'🇮🇷 伊朗','NL':'🇳🇱 荷蘭','CH':'🇨🇭 瑞士',
-    'MY':'🇲🇾 馬來西亞','SE':'🇸🇪 瑞典','PL':'🇵🇱 波蘭','BE':'🇧🇪 比利時','DK':'🇩🇰 丹麥','NO':'🇳🇴 挪威'};
+    'MY':'🇲🇾 馬來西亞','SE':'🇸🇪 瑞典','PL':'🇵🇱 波蘭','BE':'🇧🇪 比利時','DK':'🇩🇰 丹麥','NO':'🇳🇴 挪威',
+    'MX':'🇲🇽 墨西哥','BR':'🇧🇷 巴西','TH':'🇹🇭 泰國','PH':'🇵🇭 菲律賓','RU':'🇷🇺 俄羅斯','IL':'🇮🇱 以色列',
+    'AR':'🇦🇷 阿根廷','PT':'🇵🇹 葡萄牙','FI':'🇫🇮 芬蘭','AT':'🇦🇹 奧地利','NZ':'🇳🇿 紐西蘭','ZA':'🇿🇦 南非',
+    'NG':'🇳🇬 奈及利亞','EG':'🇪🇬 埃及','SA':'🇸🇦 沙烏地阿拉伯','AE':'🇦🇪 阿聯','CO':'🇨🇴 哥倫比亞',
+    'CL':'🇨🇱 智利','PE':'🇵🇪 秘魯','UY':'🇺🇾 烏拉圭','VE':'🇻🇪 委內瑞拉','CA':'🇨🇦 加拿大',
+    'IE':'🇮🇪 愛爾蘭','IS':'🇮🇸 冰島','GR':'🇬🇷 希臘','CZ':'🇨🇿 捷克','HU':'🇭🇺 匈牙利',
+    'RO':'🇷🇴 羅馬尼亞','UA':'🇺🇦 烏克蘭','SG':'🇸🇬 新加坡','VN':'🇻🇳 越南','KH':'🇰🇭 柬埔寨',
+    'MM':'🇲🇲 緬甸','BD':'🇧🇩 孟加拉','PK':'🇵🇰 巴基斯坦','LK':'🇱🇰 斯里蘭卡','MA':'🇲🇦 摩洛哥',
+    'KE':'🇰🇪 肯亞','QA':'🇶🇦 卡達','JO':'🇯🇴 約旦','LB':'🇱🇧 黎巴嫩'
+  };
 
   // 國家
   const langSel = document.getElementById('langSelect');
   const curLang = langSel.value;
   langSel.innerHTML = '<option value="">全部國家</option>' +
     Object.entries(counts).sort((a,b)=>b[1]-a[1])
-      .map(([k,v])=>`<option value="${k}">${LANG_NAME[k]||k} (${v})</option>`).join('');
+      .map(([k,v])=>{
+        const code = (typeof CN_FLAG_ALIAS!=='undefined' && CN_FLAG_ALIAS[k]) ? CN_FLAG_ALIAS[k] : k;
+        return `<option value="${k}">${LANG_NAME[code]||k} (${v})</option>`;
+      }).join('');
   langSel.value = curLang;
 
   // 年份
