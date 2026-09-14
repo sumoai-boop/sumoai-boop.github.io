@@ -147,6 +147,12 @@ body{
 .empty-state{text-align:center;padding:48px 20px;color:rgba(240,220,160,0.55);font-size:12px;letter-spacing:0.1em;}
 .empty-icon{font-size:40px;margin-bottom:12px;opacity:0.3;display:block;}
 
+/* 期間分析的數字格：固定欄數才會有規律的間隔，不會因為數字長短不一而看起來忽寬忽窄 */
+.pd-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px 16px;}
+@media(max-width:1000px){ .pd-grid{grid-template-columns:repeat(4,1fr);} }
+@media(max-width:760px){  .pd-grid{grid-template-columns:repeat(3,1fr);} }
+@media(max-width:520px){  .pd-grid{grid-template-columns:repeat(2,1fr);} }
+
 @media(max-width:768px){
   .page-content{padding:44px 12px 110px;}
   /* 統計卡片：2欄，縮小字級 */
@@ -2300,7 +2306,9 @@ const INCOME_COLOR={'Uber 收入':'#00C853','55688 收入':'#FFD400','本薪':'#
    期間是全域的：選好一段時間，收支摘要／工時效率／圓餅圖都只看那段時間。
    週一律以「週一」為起始，與一般計程車排班習慣一致。 */
 var periodMode='week', periodOffset=0, periodCustom=null;
-var PERIOD_DEFS=[['day','本日'],['week','本週'],['month','本月'],['q','三個月'],['h','六個月'],['y','一年'],['custom','自訂']];
+// [模式, 預設位移, 顯示文字]。「上週」就是週模式往前一期，所以用 offset 區分。
+var PERIOD_DEFS=[['week',0,'本週'],['week',-1,'上週'],['month',0,'本月'],
+                 ['q',0,'三個月'],['h',0,'六個月'],['y',0,'一年'],['custom',0,'自訂']];
 
 function pd2(n){ return String(n).padStart(2,'0'); }
 function ymdOf(d){ return d.getFullYear()+'-'+pd2(d.getMonth()+1)+'-'+pd2(d.getDate()); }
@@ -2335,13 +2343,15 @@ function periodRange(){
   return {start:ymdOf(s), end:ymdOf(e), label:label, days:Math.round((e-s)/86400000)+1};
 }
 
-function setPeriodMode(m){
-  periodMode=m; periodOffset=0;
+function setPeriodMode(m,off){
+  periodMode=m; periodOffset=off||0;
   if(m==='custom' && !periodCustom){
+    // 第一次點「自訂」先給本月至今當預設，才不會顯示空白區間
     var t=new Date(), a=new Date(t.getFullYear(),t.getMonth(),1);
     var se=document.getElementById('pcStart'), ee=document.getElementById('pcEnd');
     if(se&&!se.value) se.value=ymdOf(a);
     if(ee&&!ee.value) ee.value=ymdOf(t);
+    periodCustom={start:(se?se.value:ymdOf(a)), end:(ee?ee.value:ymdOf(t))};
   }
   renderPeriodAll();
 }
@@ -2394,10 +2404,11 @@ function renderPeriodBar(){
   var box=document.getElementById('periodChips');
   if(box){
     box.innerHTML=PERIOD_DEFS.map(function(p){
-      var on=(periodMode===p[0]);
-      return '<button onclick="setPeriodMode(\''+p[0]+'\')" style="background:'+(on?'rgba(0,200,83,0.28)':'rgba(255,255,255,0.04)')+';'
+      // 自訂只看模式；其餘要模式與位移都相同才算選中（這樣「本週／上週」才分得開）
+      var on=(p[0]==='custom') ? (periodMode==='custom') : (periodMode===p[0] && periodOffset===p[1]);
+      return '<button onclick="setPeriodMode(\''+p[0]+'\','+p[1]+')" style="background:'+(on?'rgba(0,200,83,0.28)':'rgba(255,255,255,0.04)')+';'
         +'border:1px solid rgba(0,200,83,'+(on?'0.65':'0.2')+');border-radius:99px;color:'+(on?'#00E860':'rgba(255,255,255,0.5)')+';'
-        +'font-size:12px;font-weight:'+(on?'700':'400')+';padding:4px 13px;cursor:pointer;font-family:monospace;">'+p[1]+'</button>';
+        +'font-size:12px;font-weight:'+(on?'700':'400')+';padding:4px 13px;cursor:pointer;font-family:monospace;">'+p[2]+'</button>';
     }).join('');
   }
   var cb=document.getElementById('periodCustomBox');
@@ -2428,11 +2439,42 @@ function renderPeriodSummary(){
       +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+color+';white-space:nowrap;">'+val
       +(unit?'<span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:2px;">'+unit+'</span>':'')+'</div></div>';
   };
-  var grid=function(title,titleColor,bg,border,cells){
+  var grid=function(title,titleColor,bg,border,cells,extra){
     return '<div style="background:'+bg+';border:1px solid '+border+';border-radius:12px;padding:14px 16px;margin-top:12px;">'
       +'<div style="font-size:13px;font-weight:700;color:'+titleColor+';margin-bottom:12px;">'+title+'</div>'
-      +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:14px 12px;">'+cells+'</div></div>';
+      +'<div class="pd-grid">'+cells+'</div>'
+      +(extra||'')+'</div>';
   };
+  // 只用三種語意色：進帳＝綠、被抽走／支出＝橘紅、純數量＝米白
+  var C_IN='#00E860', C_OUT='#FF9500', C_NUM='#f0dca8';
+
+  // 期間內各支出類別的金額，由大到小。
+  // 只讓小色塊沿用圓餅圖色票（維持對照關係），金額文字統一色，避免整張卡片五顏六色。
+  var catMap={};
+  p.monthly.forEach(function(m){
+    var t=m.type||'其他';
+    catMap[t]=(catMap[t]||0)+(m.amount||0);
+  });
+  var catList=Object.keys(catMap).map(function(k){ return {name:k, amt:catMap[k]}; })
+                    .sort(function(a,b){ return b.amt-a.amt; });
+  var catBlock='';
+  if(catList.length){
+    catBlock='<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,107,107,0.18);">'
+      +'<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:10px;">支出分類</div>'
+      +'<div class="pd-grid">'
+      +catList.map(function(c){
+        var col=(typeof TYPE_COLOR!=='undefined'&&TYPE_COLOR[c.name])||'#FF6B6B';
+        var pct=exp>0?(c.amt/exp*100):0;
+        return '<div>'
+          +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'
+            +'<i style="width:8px;height:8px;border-radius:2px;background:'+col+';display:inline-block;flex-shrink:0;"></i>'
+            +'<span style="font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.name+'</span></div>'
+          +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+C_OUT+';white-space:nowrap;">NT$'+fmt(c.amt)
+            +'<span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:400;margin-left:4px;">'+pct.toFixed(1)+'%</span></div>'
+        +'</div>';
+      }).join('')
+      +'</div></div>';
+  }
 
   el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:16px;">'
     +'<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">收支摘要 · '+p.range.start+' ~ '+p.range.end+'</div>'
@@ -2441,20 +2483,21 @@ function renderPeriodSummary(){
       +big('總支出', exp, '#FF6B6B')
     +'</div>'
     +grid('收入詳細','#00E860','rgba(0,200,83,0.06)','rgba(0,200,83,0.18)',
-        cell('總車資','NT$'+fmt(gross),'#60AAFF')
-       +cell('平台抽成','NT$'+fmt(take),'#FF9500')
-       +cell('抽成比例',takeRate?takeRate.toFixed(1):'—','#FF9500','%')
-       +cell('跑車實收','NT$'+fmt(netFare),'#FF2D95')
-       +cell('實際入帳','NT$'+fmt(uberInc),'#00E860')
-       +cell('Uber 實收','NT$'+fmt(byPlat['Uber 收入'].net),'#00C853')
-       +cell('55688 實收','NT$'+fmt(byPlat['55688 收入'].net),'#FFD400')
-       +cell('單數',fmt(p.trips.length),'#C084FC','趟')
-       +cell('平均每趟',p.trips.length?'NT$'+fmt(Math.round(netFare/p.trips.length)):'—','#f0dca8')
-       +cell('工作天數',workDays,'#FFD700','天'))
+        cell('總車資','NT$'+fmt(gross),C_IN)
+       +cell('平台抽成','NT$'+fmt(take),C_OUT)
+       +cell('抽成比例',takeRate?takeRate.toFixed(1):'—',C_OUT,'%')
+       +cell('跑車實收','NT$'+fmt(netFare),C_IN)
+       +cell('實際入帳','NT$'+fmt(uberInc),C_IN)
+       +cell('Uber 實收','NT$'+fmt(byPlat['Uber 收入'].net),C_IN)
+       +cell('55688 實收','NT$'+fmt(byPlat['55688 收入'].net),C_IN)
+       +cell('平均每趟',p.trips.length?'NT$'+fmt(Math.round(netFare/p.trips.length)):'—',C_IN)
+       +cell('單數',fmt(p.trips.length),C_NUM,'趟')
+       +cell('工作天數',workDays,C_NUM,'天'))
     +grid('支出詳細','#FF6B6B','rgba(255,107,107,0.06)','rgba(255,107,107,0.18)',
-        cell('支出筆數',p.monthly.length,'#FF6B6B','筆')
-       +cell('日均支出',p.range.days>0?'NT$'+fmt(Math.round(exp/p.range.days)):'—','#FFD700')
-       +cell('每趟成本',p.trips.length?'NT$'+fmt(Math.round(exp/p.trips.length)):'—','#FF9500'))
+        cell('日均支出',p.range.days>0?'NT$'+fmt(Math.round(exp/p.range.days)):'—',C_OUT)
+       +cell('每趟成本',p.trips.length?'NT$'+fmt(Math.round(exp/p.trips.length)):'—',C_OUT)
+       +cell('支出筆數',p.monthly.length,C_NUM,'筆'),
+        catBlock)
     +'</div>';
 }
 
