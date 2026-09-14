@@ -2469,7 +2469,7 @@ function renderPeriodSummary(){
           +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'
             +'<i style="width:8px;height:8px;border-radius:2px;background:'+col+';display:inline-block;flex-shrink:0;"></i>'
             +'<span style="font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.name+'</span></div>'
-          +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+C_CAT+';white-space:nowrap;">NT$'+fmt(c.amt)
+          +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+C_CAT+';white-space:nowrap;">$'+fmt(c.amt)
             +'<span style="font-size:14px;color:#ffffff;font-weight:400;margin-left:6px;">'+pct.toFixed(1)+'%</span></div>'
         +'</div>';
       }).join('')
@@ -2483,19 +2483,19 @@ function renderPeriodSummary(){
       +big('總支出', exp, '#FF6B6B')
     +'</div>'
     +grid('收入詳細','#00E860','rgba(0,200,83,0.06)','rgba(0,200,83,0.18)',
-        cell('總車資','NT$'+fmt(gross),C_IN)
-       +cell('平台抽成','NT$'+fmt(take),C_OUT)
+        cell('總車資','$'+fmt(gross),C_IN)
+       +cell('平台抽成','$'+fmt(take),C_OUT)
        +cell('抽成比例',takeRate?takeRate.toFixed(1):'—',C_OUT,'%')
-       +cell('跑車實收','NT$'+fmt(netFare),C_IN)
-       +cell('實際入帳','NT$'+fmt(uberInc),C_IN)
-       +cell('Uber 實收','NT$'+fmt(byPlat['Uber 收入'].net),C_IN)
-       +cell('55688 實收','NT$'+fmt(byPlat['55688 收入'].net),C_IN)
-       +cell('平均每趟',p.trips.length?'NT$'+fmt(Math.round(netFare/p.trips.length)):'—',C_IN)
+       +cell('跑車實收','$'+fmt(netFare),C_IN)
+       +cell('實際入帳','$'+fmt(uberInc),C_IN)
+       +cell('Uber 實收','$'+fmt(byPlat['Uber 收入'].net),C_IN)
+       +cell('55688 實收','$'+fmt(byPlat['55688 收入'].net),C_IN)
+       +cell('平均每趟',p.trips.length?'$'+fmt(Math.round(netFare/p.trips.length)):'—',C_IN)
        +cell('單數',fmt(p.trips.length),C_NUM,'趟')
        +cell('工作天數',workDays,C_NUM,'天'))
     +grid('支出詳細','#FF6B6B','rgba(255,107,107,0.06)','rgba(255,107,107,0.18)',
-        cell('日均支出',p.range.days>0?'NT$'+fmt(Math.round(exp/p.range.days)):'—',C_OUT)
-       +cell('每趟成本',p.trips.length?'NT$'+fmt(Math.round(exp/p.trips.length)):'—',C_OUT)
+        cell('日均支出',p.range.days>0?'$'+fmt(Math.round(exp/p.range.days)):'—',C_OUT)
+       +cell('每趟成本',p.trips.length?'$'+fmt(Math.round(exp/p.trips.length)):'—',C_OUT)
        +cell('支出筆數',p.monthly.length,C_NUM,'筆'),
         catBlock)
     +'</div>';
