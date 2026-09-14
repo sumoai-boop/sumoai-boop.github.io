@@ -1,5 +1,35 @@
 [
   {
+    "id": "1789385204671",
+    "name": "大賞平價鐵板燒 土城店",
+    "name1": "大賞平價鐵板燒",
+    "name2": "土城店",
+    "type": "鐵板燒",
+    "meal": "",
+    "price": 280,
+    "visits": 1,
+    "gscore": 4.7,
+    "addr": "236新北市土城區平和里延和路91號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%A4%A7%E8%B3%9E%E5%B9%B3%E5%83%B9%E9%90%B5%E6%9D%BF%E7%87%92+%E5%9C%9F%E5%9F%8E%E5%BA%97/@24.9900088,121.4671386,21z/data=!4m6!3m5!1s0x346802be1320c4fd:0x5f8df2721682ad4d!8m2!3d24.9900289!4d121.4670786!16s%2Fg%2F11f8k29kqk?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-14",
+    "score": 3.3,
+    "visitLog": [
+      {
+        "date": "2026-09-14",
+        "meal": "晚餐",
+        "price": 280,
+        "menu": "乾煎雞腿排",
+        "score": 3.3
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/WvbYR6td/3d73e015522e.jpg"
+    ],
+    "img": "https://i.ibb.co/WvbYR6td/3d73e015522e.jpg",
+    "createdAt": 1789385204671
+  },
+  {
     "id": "1789319899430",
     "name": "麥當勞 台北大巨蛋店",
     "name1": "麥當勞",
