@@ -2356,6 +2356,18 @@ function applyCustomPeriod(){
   periodCustom={start:a,end:b}; periodMode='custom'; renderPeriodAll();
 }
 
+// 依平台（Uber／55688）拆分行程金額。舊資料沒填 cat，與其他頁面一致視為 uber。
+function splitByPlatform(trips){
+  var out={'Uber 收入':{n:0,gross:0,take:0,net:0}, '55688 收入':{n:0,gross:0,take:0,net:0}};
+  (trips||[]).forEach(function(t){
+    var k=((t.cat||'uber')==='55688')?'55688 收入':'Uber 收入';
+    var o=out[k]; o.n++;
+    o.gross+=(t.fare||0)+(t.bonus||0)+(t.toll||0)+(t.tip||0);
+    o.take+=(t.service||0); o.net+=(t.detail||0);
+  });
+  return out;
+}
+
 // 取出期間內的四種資料
 function periodSlice(){
   var r=periodRange();
@@ -2400,11 +2412,12 @@ function renderPeriodSummary(){
   var take    = sum(p.trips,'service');                                                          // 平台抽成
   var netFare = sum(p.trips,'detail');                                                           // 每趟實收加總
   var uberInc = sum(p.weekly,'income');                                                          // 每日收入（實際入帳）
-  var salInc  = sum(p.salary,'amount');
   var exp     = sum(p.monthly,'amount');
-  var net     = uberInc+salInc-exp;
+  // 淨收入只算跑車（Uber＋55688）收入，本業薪資不計入 —— 本業請看「本業收入」分頁
+  var net     = uberInc-exp;
   var workDays= p.weekly.filter(function(w){ return (w.income||w.tripCount||w.hours||w.mins); }).length;
   var takeRate= gross>0?(take/gross*100):0;
+  var byPlat  = splitByPlatform(p.trips);
 
   var big=function(label,val,color){
     return '<div style="flex:1;min-width:140px;"><div style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:5px;">'+label+'</div>'
@@ -2433,7 +2446,8 @@ function renderPeriodSummary(){
        +cell('抽成比例',takeRate?takeRate.toFixed(1):'—','#FF9500','%')
        +cell('跑車實收','NT$'+fmt(netFare),'#FF2D95')
        +cell('實際入帳','NT$'+fmt(uberInc),'#00E860')
-       +cell('本業收入','NT$'+fmt(salInc),'#22D3EE')
+       +cell('Uber 實收','NT$'+fmt(byPlat['Uber 收入'].net),'#00C853')
+       +cell('55688 實收','NT$'+fmt(byPlat['55688 收入'].net),'#FFD400')
        +cell('單數',fmt(p.trips.length),'#C084FC','趟')
        +cell('平均每趟',p.trips.length?'NT$'+fmt(Math.round(netFare/p.trips.length)):'—','#f0dca8')
        +cell('工作天數',workDays,'#FFD700','天'))
@@ -2511,19 +2525,15 @@ function renderOverviewPies(){
   var expTotal=drawPie('ovExpPie','ovExpLegend',expMap,TYPE_COLOR,'支出');
 
   // 期間收入（Uber + 本業各類別）
-  var incMap={};
-  var uberInc=p.weekly.reduce(function(s,w){ return s+(w.income||0); },0);
-  if(uberInc>0) incMap['Uber 收入']=uberInc;
-  p.salary.forEach(function(s){
-    var t=s.type||'本薪';
-    incMap[t]=(incMap[t]||0)+(s.amount||0);
-  });
-  var incTotal=drawPie('ovIncPie','ovIncLegend',incMap,INCOME_COLOR,'收入');
+  // 期間收入：只看跑車（Uber／55688），本業薪資不計入
+  var incMap={}, bp=splitByPlatform(p.trips);
+  Object.keys(bp).forEach(function(k){ if(bp[k].net>0) incMap[k]=bp[k].net; });
+  var incTotal=drawPie('ovIncPie','ovIncLegend',incMap,INCOME_COLOR,'跑車實收');
 
   var t1=document.getElementById('ovExpTitle');
   if(t1) t1.textContent=label+' 支出';
   var t2=document.getElementById('ovIncTitle');
-  if(t2) t2.textContent=label+' 收入';
+  if(t2) t2.textContent=label+' 跑車實收（依平台）';
   var net=document.getElementById('ovNet');
   if(net){
     var n=incTotal-expTotal;
