@@ -2432,12 +2432,12 @@ function renderPeriodSummary(){
 
   var big=function(label,val,color){
     return '<div style="flex:1;min-width:140px;"><div style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:5px;">'+label+'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:26px;font-weight:700;color:'+color+';white-space:nowrap;">NT$'+fmt(val)+'</div></div>';
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:30px;font-weight:700;color:'+color+';white-space:nowrap;">NT$'+fmt(val)+'</div></div>';
   };
   var cell=function(label,val,color,unit){
-    return '<div><div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">'+label+'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+color+';white-space:nowrap;">'+val
-      +(unit?'<span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:2px;">'+unit+'</span>':'')+'</div></div>';
+    return '<div><div style="font-size:16px;color:rgba(255,255,255,0.4);margin-bottom:5px;">'+label+'</div>'
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:'+color+';white-space:nowrap;">'+val
+      +(unit?'<span style="font-size:16px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:4px;">'+unit+'</span>':'')+'</div></div>';
   };
   var grid=function(title,titleColor,bg,border,cells,extra){
     return '<div style="background:'+bg+';border:1px solid '+border+';border-radius:12px;padding:14px 16px;margin-top:12px;">'
@@ -2468,9 +2468,9 @@ function renderPeriodSummary(){
         return '<div>'
           +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'
             +'<i style="width:8px;height:8px;border-radius:2px;background:'+col+';display:inline-block;flex-shrink:0;"></i>'
-            +'<span style="font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.name+'</span></div>'
-          +'<div style="font-family:\'Space Mono\',monospace;font-size:18px;font-weight:700;color:'+C_CAT+';white-space:nowrap;">$'+fmt(c.amt)
-            +'<span style="font-size:14px;color:#ffffff;font-weight:400;margin-left:6px;">'+pct.toFixed(1)+'%</span></div>'
+            +'<span style="font-size:16px;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.name+'</span></div>'
+          +'<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:'+C_CAT+';white-space:nowrap;">$'+fmt(c.amt)
+            +'<span style="font-size:16px;color:#ffffff;font-weight:400;margin-left:6px;">'+pct.toFixed(1)+'%</span></div>'
         +'</div>';
       }).join('')
       +'</div></div>';
