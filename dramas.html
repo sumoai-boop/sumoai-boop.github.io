@@ -145,6 +145,14 @@
   .tab-btn.active{background:#C9922F;border-color:#C9922F;color:#1A1210;font-weight:700;}
   .tab-pane{display:none;}
   .tab-pane.active{display:block;}
+  .pl-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+  .pl-pill{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid #33291F;border-radius:99px;padding:5px 13px 5px 6px;font-size:11px;font-family:'Space Mono',monospace;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .pl-pill:hover{border-color:rgba(201,146,47,0.5);color:#E8C04A;}
+  .pl-pill.active{border-color:#C9922F;color:#E8C04A;background:rgba(201,146,47,0.14);}
+  .pl-sw{width:16px;height:16px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);flex:none;}
+  .pl-note{font-size:11px;color:#6E635A;margin-bottom:12px;line-height:1.6;}
+  .pl-note.warn{color:#E8A33C;}
+  .pl-dot{position:absolute;left:6px;top:6px;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,0.5);box-shadow:0 0 6px rgba(0,0,0,0.5);}
   .dg-wrap{background:#141010;border:1px solid #2E2621;border-radius:14px;padding:20px;margin-bottom:24px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
   .dg-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
   .dg-pill{background:transparent;border:1px solid #33291F;border-radius:99px;padding:6px 13px;font-size:11px;font-family:'Space Mono',monospace;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
@@ -408,6 +416,7 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
   <div class="tabbar">
     <button class="tab-btn active" data-tab="gallery">發行商片庫</button>
     <button class="tab-btn" data-tab="calendar">觀看行事曆</button>
+    <button class="tab-btn" data-tab="palette">色調片庫</button>
     <button class="tab-btn" data-tab="list">列表記錄</button>
   </div>
 
@@ -460,6 +469,20 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
   </div>
 
   </div><!-- /pane-calendar -->
+
+  <div class="tab-pane" id="pane-palette">
+  <span class="top5-label" style="margin-bottom:16px;">— 依海報色調分類</span>
+  <div class="dg-wrap">
+    <div class="pl-pills" id="plPills"></div>
+    <div class="dg-bar">
+      <span class="dg-count" id="plCount"></span>
+      <button class="dg-type" id="plScan">分析海報色調</button>
+    </div>
+    <div class="pl-note" id="plNote"></div>
+    <div class="dg-grid" id="plGrid"></div>
+    <button class="dg-more" id="plMore" style="display:none;">載入更多</button>
+  </div>
+  </div><!-- /pane-palette -->
 
   <div class="tab-pane" id="pane-list">
   <div class="filters">
@@ -2534,6 +2557,194 @@ render();
 
   setTimeout(dgRender, 300);
 
+  // ── 色調片庫 ──
+  var COLOR_BUCKETS = [
+    {k:'red',    n:'紅',   sw:'#D64545', h:[[345,360],[0,15]]},
+    {k:'orange', n:'橙',   sw:'#E08A3C', h:[[15,45]]},
+    {k:'yellow', n:'黃',   sw:'#D9C24A', h:[[45,70]]},
+    {k:'green',  n:'綠',   sw:'#5FA85F', h:[[70,165]]},
+    {k:'cyan',   n:'青',   sw:'#4FA8A8', h:[[165,195]]},
+    {k:'blue',   n:'藍',   sw:'#4A7FC1', h:[[195,255]]},
+    {k:'purple', n:'紫',   sw:'#8B6FC1', h:[[255,300]]},
+    {k:'pink',   n:'粉',   sw:'#C96F9E', h:[[300,345]]},
+    {k:'mono',   n:'黑白灰',sw:'#8A8A8A', h:[]}
+  ];
+  var COLOR_CACHE = (function(){ try{ return JSON.parse(localStorage.getItem('_colorCache')||'{}'); }catch(e){ return {}; } })();
+  var _ccTimer=null;
+  function saveColorCache(){
+    clearTimeout(_ccTimer);
+    _ccTimer=setTimeout(function(){ try{ localStorage.setItem('_colorCache', JSON.stringify(COLOR_CACHE)); }catch(e){} },800);
+  }
+
+  function rgbToHsl(r,g,b){
+    r/=255; g/=255; b/=255;
+    var mx=Math.max(r,g,b), mn=Math.min(r,g,b), h=0, s=0, l=(mx+mn)/2, d=mx-mn;
+    if(d){
+      s = l>0.5 ? d/(2-mx-mn) : d/(mx+mn);
+      if(mx===r) h=((g-b)/d + (g<b?6:0));
+      else if(mx===g) h=((b-r)/d + 2);
+      else h=((r-g)/d + 4);
+      h*=60;
+    }
+    return [h,s,l];
+  }
+  function bucketOf(h){
+    for(var i=0;i<COLOR_BUCKETS.length;i++){
+      var B=COLOR_BUCKETS[i];
+      for(var j=0;j<B.h.length;j++){
+        if(h>=B.h[j][0] && h<B.h[j][1]) return B.k;
+      }
+    }
+    return 'red';
+  }
+
+  // 讀一張海報，回傳 {bucket, swatch}
+  function analyzePoster(url){
+    return new Promise(function(resolve){
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onerror = function(){ resolve(null); };
+      img.onload = function(){
+        try{
+          var W=36, H=54;
+          var cv = document.createElement('canvas');
+          cv.width=W; cv.height=H;
+          var ctx = cv.getContext('2d');
+          ctx.drawImage(img,0,0,W,H);
+          var data = ctx.getImageData(0,0,W,H).data;   // 跨域未授權會在這裡拋錯
+          var votes={}, sr=0, sg=0, sb=0, n=0, mono=0, tot=0;
+          for(var i=0;i<data.length;i+=4){
+            var r=data[i], g=data[i+1], b=data[i+2];
+            var hsl = rgbToHsl(r,g,b);
+            tot++;
+            if(hsl[1] < 0.18 || hsl[2] < 0.08 || hsl[2] > 0.94){ mono++; continue; }
+            var w = hsl[1];                       // 越飽和權重越高
+            var k = bucketOf(hsl[0]);
+            votes[k] = (votes[k]||0) + w;
+            sr+=r; sg+=g; sb+=b; n++;
+          }
+          var best=null, bestV=0;
+          for(var k2 in votes){ if(votes[k2]>bestV){ bestV=votes[k2]; best=k2; } }
+          if(!best || n/tot < 0.12) { best='mono'; }
+          var sw = n ? 'rgb('+Math.round(sr/n)+','+Math.round(sg/n)+','+Math.round(sb/n)+')' : '#8A8A8A';
+          resolve({b:best, sw:sw});
+        }catch(e){ resolve('TAINTED'); }
+      };
+      img.src = url;
+    });
+  }
+
+  var PL_PAGE = 24;
+  var plColor = null, plShown = PL_PAGE, plScanning = false;
+
+  function plList(){
+    return DATA.filter(function(m){
+      var e = COLOR_CACHE[m.title];
+      return e && (!plColor || e.b === plColor);
+    }).sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+  }
+
+  function plRenderPills(){
+    var counts = {};
+    DATA.forEach(function(m){
+      var e = COLOR_CACHE[m.title];
+      if(e) counts[e.b] = (counts[e.b]||0)+1;
+    });
+    var total = Object.keys(counts).reduce(function(s,k){ return s+counts[k]; },0);
+    var html = '<button class="pl-pill'+(plColor?'':' active')+'" data-color=""><span class="pl-sw" style="background:linear-gradient(135deg,#D64545,#4A7FC1);"></span>全部 '+total+'</button>';
+    html += COLOR_BUCKETS.filter(function(B){ return counts[B.k]; }).map(function(B){
+      return '<button class="pl-pill'+(plColor===B.k?' active':'')+'" data-color="'+B.k+'">'+
+             '<span class="pl-sw" style="background:'+B.sw+';"></span>'+B.n+' '+counts[B.k]+'</button>';
+    }).join('');
+    document.getElementById('plPills').innerHTML = html;
+  }
+
+  function plRenderGrid(){
+    var list = plList();
+    var grid = document.getElementById('plGrid');
+    document.getElementById('plCount').textContent =
+      '共 ' + list.length + ' 部' + (list.length>plShown?('（顯示 '+plShown+'）'):'');
+    if(!list.length){
+      grid.innerHTML = '<div class="dg-empty">還沒有分析結果，點右邊「分析海報色調」開始</div>';
+      document.getElementById('plMore').style.display='none';
+      return;
+    }
+    var page = list.slice(0, plShown);
+    grid.innerHTML = page.map(function(m){
+      var e = COLOR_CACHE[m.title];
+      var sc = (m.personal>0) ? m.personal.toFixed(1) : '';
+      var hi = (m.personal>=8) ? ' hi' : '';
+      return '<div class="dg-card" data-t="'+(m.title||'').replace(/"/g,'&quot;')+'">'+
+             (e.u?'<img loading="lazy" decoding="async" src="'+e.u+'" alt="">':'<div class="dg-fallback">'+m.title+'</div>')+
+             '<span class="pl-dot" style="background:'+e.sw+';"></span>'+
+             (sc?'<span class="dg-badge'+hi+'">'+sc+'</span>':'')+
+             '<div class="dg-meta"><div class="dg-t">'+m.title+'</div>'+
+             '<div class="dg-s">'+(m.year||'')+'</div></div></div>';
+    }).join('');
+    document.getElementById('plMore').style.display = (list.length>plShown)?'block':'none';
+  }
+
+  function plRender(){ plRenderPills(); plRenderGrid(); }
+  window.plRender = plRender;
+
+  async function plScan(){
+    if(plScanning) return;
+    var note = document.getElementById('plNote');
+    var pend = DATA.filter(function(m){ return !COLOR_CACHE[m.title]; });
+    if(!pend.length){ note.className='pl-note'; note.textContent='全部海報都分析過了。'; return; }
+    plScanning = true;
+    var btn = document.getElementById('plScan');
+    btn.disabled = true;
+    var done=0, ok=0, tainted=0;
+    for(var i=0;i<pend.length;i++){
+      var m = pend[i];
+      try{
+        var url = await window.fetchPoster(m);
+        if(url){
+          var res = await analyzePoster(url);
+          if(res === 'TAINTED'){ tainted++; }
+          else if(res){ res.u = url; COLOR_CACHE[m.title] = res; ok++; }
+        }
+      }catch(e){}
+      done++;
+      if(tainted >= 3){
+        note.className='pl-note warn';
+        note.textContent='⚠️ 圖床不允許跨網域讀取像素，無法分析色調。';
+        break;
+      }
+      if(done%10===0){
+        saveColorCache();
+        note.className='pl-note';
+        note.textContent='分析中… '+done+'/'+pend.length+'（成功 '+ok+'）';
+        plRender();
+      }
+    }
+    saveColorCache();
+    plScanning = false;
+    btn.disabled = false;
+    if(tainted < 3){
+      note.className='pl-note';
+      note.textContent='分析完成，共 '+ok+' 部。之後新增的記錄再按一次即可補齊。';
+    }
+    plRender();
+  }
+
+  document.getElementById('plScan').addEventListener('click', plScan);
+  document.getElementById('plMore').addEventListener('click', function(){ plShown += PL_PAGE; plRenderGrid(); });
+  document.getElementById('plPills').addEventListener('click', function(e){
+    var b = e.target.closest('[data-color]');
+    if(!b) return;
+    plColor = b.getAttribute('data-color') || null;
+    plShown = PL_PAGE;
+    plRender();
+  });
+  document.getElementById('plGrid').addEventListener('click', function(e){
+    var card = e.target.closest('[data-t]');
+    if(!card) return;
+    var m = DATA.filter(function(x){ return x.title===card.getAttribute('data-t'); })[0];
+    if(m && typeof openPoster==='function') openPoster(m);
+  });
+
   // ── 分頁切換 ──
   document.querySelector('.tabbar').addEventListener('click', function(e){
     var b = e.target.closest('.tab-btn');
@@ -2547,6 +2758,7 @@ render();
     if(t==='calendar' && typeof renderCal==='function') renderCal();
     if(t==='gallery'  && typeof dgRender==='function')  dgRender();
     if(t==='list'     && typeof fillRevenues==='function') setTimeout(fillRevenues, 60);
+    if(t==='palette'  && typeof plRender==='function') plRender();
   });
   // 記住上次停留的分頁
   (function(){
