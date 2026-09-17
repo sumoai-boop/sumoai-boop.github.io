@@ -2559,15 +2559,17 @@ render();
 
   // ── 色調片庫 ──
   var COLOR_BUCKETS = [
-    {k:'red',    n:'紅',   sw:'#D64545', h:[[345,360],[0,15]]},
-    {k:'orange', n:'橙',   sw:'#E08A3C', h:[[15,45]]},
-    {k:'yellow', n:'黃',   sw:'#D9C24A', h:[[45,70]]},
-    {k:'green',  n:'綠',   sw:'#5FA85F', h:[[70,165]]},
-    {k:'cyan',   n:'青',   sw:'#4FA8A8', h:[[165,195]]},
-    {k:'blue',   n:'藍',   sw:'#4A7FC1', h:[[195,255]]},
-    {k:'purple', n:'紫',   sw:'#8B6FC1', h:[[255,300]]},
-    {k:'pink',   n:'粉',   sw:'#C96F9E', h:[[300,345]]},
-    {k:'mono',   n:'黑白灰',sw:'#8A8A8A', h:[]}
+    {k:'red',    n:'紅',    sw:'#D64545', h:[[345,360],[0,12]]},
+    {k:'orange', n:'橙',    sw:'#E08A3C', h:[[12,45]]},
+    {k:'yellow', n:'黃',    sw:'#D9C24A', h:[[45,70]]},
+    {k:'green',  n:'綠',    sw:'#5FA85F', h:[[70,165]]},
+    {k:'cyan',   n:'青',    sw:'#4FA8A8', h:[[165,195]]},
+    {k:'blue',   n:'藍',    sw:'#4A7FC1', h:[[195,255]]},
+    {k:'purple', n:'紫',    sw:'#8B6FC1', h:[[255,300]]},
+    {k:'pink',   n:'粉',    sw:'#C96F9E', h:[[300,345]]},
+    {k:'brown',  n:'棕／大地',sw:'#8A5A32', h:[]},
+    {k:'dark',   n:'暗色系', sw:'#2E2A28', h:[]},
+    {k:'mono',   n:'黑白灰', sw:'#8A8A8A', h:[]}
   ];
   var COLOR_CACHE = (function(){ try{ return JSON.parse(localStorage.getItem('_colorCache')||'{}'); }catch(e){ return {}; } })();
   var _ccTimer=null;
@@ -2612,21 +2614,30 @@ render();
           var ctx = cv.getContext('2d');
           ctx.drawImage(img,0,0,W,H);
           var data = ctx.getImageData(0,0,W,H).data;   // 跨域未授權會在這裡拋錯
-          var votes={}, sr=0, sg=0, sb=0, n=0, mono=0, tot=0;
+          var votes={}, sr=0, sg=0, sb=0, cn=0, n=0, tot=0, sumL=0, sumS=0, earth=0;
+          function isSkin(h,s,l){ return h>=10&&h<=45&&s>=0.15&&s<=0.60&&l>=0.35&&l<=0.85; }
+          function isEarth(h,s,l){ return h>=10&&h<=45&&s>=0.15&&l<0.35; }
           for(var i=0;i<data.length;i+=4){
             var r=data[i], g=data[i+1], b=data[i+2];
-            var hsl = rgbToHsl(r,g,b);
-            tot++;
-            if(hsl[1] < 0.18 || hsl[2] < 0.08 || hsl[2] > 0.94){ mono++; continue; }
-            var w = hsl[1];                       // 越飽和權重越高
-            var k = bucketOf(hsl[0]);
+            var hsl = rgbToHsl(r,g,b), H=hsl[0], S=hsl[1], L=hsl[2];
+            tot++; sumL+=L; sumS+=S;
+            if(S<0.30 || L<0.15 || L>0.88) continue;       // 門檻加嚴，濾掉暗沉與過曝
+            var w = S*(1-Math.abs(L-0.5)*1.2);             // 偏好飽和且中亮度
+            if(w<=0) continue;
+            if(isSkin(H,S,L)) w*=0.15;                     // 膚色大幅降權（避免人臉海報全變紅橙）
+            if(isEarth(H,S,L)){ earth+=w; continue; }      // 暗棕另計
+            var k = bucketOf(H);
             votes[k] = (votes[k]||0) + w;
-            sr+=r; sg+=g; sb+=b; n++;
+            sr+=r; sg+=g; sb+=b; cn++; n++;
           }
+          var meanL = sumL/tot, meanS = sumS/tot;
+          var sw = cn ? 'rgb('+Math.round(sr/cn)+','+Math.round(sg/cn)+','+Math.round(sb/cn)+')' : '#8A8A8A';
           var best=null, bestV=0;
           for(var k2 in votes){ if(votes[k2]>bestV){ bestV=votes[k2]; best=k2; } }
-          if(!best || n/tot < 0.12) { best='mono'; }
-          var sw = n ? 'rgb('+Math.round(sr/n)+','+Math.round(sg/n)+','+Math.round(sb/n)+')' : '#8A8A8A';
+          if(meanS < 0.14)            { resolve({b:'mono',  sw:sw}); return; }   // 整體灰
+          if(meanL < 0.24)            { resolve({b:'dark',  sw:sw}); return; }   // 整體暗
+          if(earth > bestV)           { resolve({b:'brown', sw:sw}); return; }   // 暗棕主導
+          if(!best || bestV/tot<0.12) { resolve({b:'mono',  sw:sw}); return; }   // 色相證據不足
           resolve({b:best, sw:sw});
         }catch(e){ resolve('TAINTED'); }
       };
@@ -2690,7 +2701,7 @@ render();
   async function plScan(){
     if(plScanning) return;
     var note = document.getElementById('plNote');
-    var pend = DATA.filter(function(m){ return !COLOR_CACHE[m.title]; });
+    var pend = DATA.filter(function(m){ var e=COLOR_CACHE[m.title]; return !e || e.algo!==2; });
     if(!pend.length){ note.className='pl-note'; note.textContent='全部海報都分析過了。'; return; }
     plScanning = true;
     var btn = document.getElementById('plScan');
@@ -2703,7 +2714,7 @@ render();
         if(url){
           var res = await analyzePoster(url);
           if(res === 'TAINTED'){ tainted++; }
-          else if(res){ res.u = url; COLOR_CACHE[m.title] = res; ok++; }
+          else if(res){ res.u = url; res.algo = 2; COLOR_CACHE[m.title] = res; ok++; }
         }
       }catch(e){}
       done++;
