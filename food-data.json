@@ -1,5 +1,35 @@
 [
   {
+    "id": "1789609499932",
+    "name": "邱太太滷味",
+    "name1": "邱太太滷味",
+    "name2": "",
+    "type": "滷味",
+    "meal": "",
+    "price": 325,
+    "visits": 1,
+    "gscore": 3.8,
+    "addr": "114臺北市內湖區紫星里康寧路一段48巷",
+    "note": "公主",
+    "maps": "https://www.google.com.tw/maps/place/%E9%82%B1%E5%A4%AA%E5%A4%AA%E6%BB%B7%E5%91%B3/@25.0801867,121.5918504,15z/data=!4m6!3m5!1s0x3442ac8daf8d3d5b:0x8a4cb3e3a3607fac!8m2!3d25.0802196!4d121.5917739!16s%2Fg%2F1thckg9q?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-16",
+    "score": 2.9,
+    "visitLog": [
+      {
+        "date": "2026-09-16",
+        "meal": "晚餐",
+        "price": 325,
+        "menu": "",
+        "score": 2.9
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/1fSnTv7L/8d500b39fe0c.jpg"
+    ],
+    "img": "https://i.ibb.co/1fSnTv7L/8d500b39fe0c.jpg",
+    "createdAt": 1789609499932
+  },
+  {
     "id": "1789385204671",
     "name": "大賞平價鐵板燒 土城店",
     "name1": "大賞平價鐵板燒",
