@@ -113,8 +113,13 @@
   .ep-ctrl-label{font-size:10px;letter-spacing:0.1em;color:#9C8B7A;white-space:nowrap;}
   .ep-count-input{width:90px;}
   .ep-avg{margin-left:auto;font-size:11px;font-weight:700;color:#E8C04A;letter-spacing:0.05em;}
-  .ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px;max-height:240px;overflow-y:auto;padding:2px;}
-  .ep-cell{display:flex;align-items:center;gap:4px;background:#1A1513;border:1px solid #33291F;border-radius:7px;padding:4px 6px;}
+  .ep-row{display:flex;align-items:center;gap:4px;}
+  .ep-date{width:100%;margin-top:4px;border:none;background:rgba(255,255,255,0.05);border-radius:4px;outline:none;font-family:'Space Mono',monospace;font-size:10px;color:#B5A695;padding:2px 4px;}
+  .ep-date::-webkit-calendar-picker-indicator{filter:invert(0.65);cursor:pointer;}
+  .ep-autofill{background:transparent;border:1px solid #33291F;border-radius:99px;padding:5px 12px;font-family:'Space Mono',monospace;font-size:10px;color:#9C8B7A;cursor:pointer;margin-left:8px;}
+  .ep-autofill:hover{border-color:#C9922F;color:#E8C04A;}
+  .ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:7px;max-height:240px;overflow-y:auto;padding:2px;}
+  .ep-cell{display:flex;flex-direction:column;align-items:stretch;gap:0;background:#1A1513;border:1px solid #33291F;border-radius:7px;padding:4px 6px;}
   .ep-cell-no{font-size:10px;color:#7D7166;white-space:nowrap;min-width:22px;font-family:'Space Mono',monospace;}
   .ep-cell input{width:100%;border:none;background:transparent;outline:none;font-family:'Space Mono',monospace;font-size:12px;color:#EFE3D2;padding:1px 0;}
   .ep-cell.filled{border-color:rgba(201,146,47,0.55);background:#241D18;}
@@ -124,6 +129,7 @@
   .pm-eps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:5px;}
   .pm-ep{display:flex;flex-direction:column;align-items:center;gap:1px;background:#1A1513;border-radius:6px;padding:5px 2px;}
   .pm-ep-no{font-size:8px;color:#7D7166;font-family:'Space Mono',monospace;}
+  .pm-ep-d{font-size:8px;color:#7D7166;font-family:'Space Mono',monospace;}
   .pm-ep-sc{font-size:13px;font-weight:700;color:#E8C04A;font-family:'Space Mono',monospace;}
   .ar-textarea{width:100%;padding:10px 12px;background:#1A1513;border:1px solid #33291F;border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;color:#EFE3D2;resize:vertical;min-height:80px;outline:none;transition:border 0.2s;}
   .ar-textarea:focus{border-color:rgba(201,146,47,0.6);background:#221B18;}
@@ -984,9 +990,26 @@ async function fillRevenues(){
   }
 }
 
+// 分集資料正規化：舊格式 [8.5, null] → [{s:8.5,d:''}, null]
+function epNorm(eps){
+  if(!eps) return [];
+  return eps.map(function(x){
+    if(x==null) return null;
+    if(typeof x === 'number') return {s:x, d:''};
+    if(typeof x === 'object'){
+      var s = (x.s==null||x.s==='') ? null : Number(x.s);
+      var d = x.d || '';
+      return (s==null && !d) ? null : {s:s, d:d};
+    }
+    return null;
+  });
+}
+function epWatched(m){
+  return epNorm(m.eps).filter(function(e){ return e && (e.s!=null || e.d); }).length;
+}
 function epBadge(m){
   if(!m.epCount || !m.eps) return '';
-  var done = m.eps.filter(function(x){return x!=null;}).length;
+  var done = epWatched(m);
   var cls = (done >= m.epCount) ? 'ep-badge ep-badge-done' : 'ep-badge';
   return ' <span class="'+cls+'">('+done+'/'+m.epCount+')</span>';
 }
@@ -1216,7 +1239,7 @@ async function openPoster(m){
   pmPlaceholder.style.display='flex';
   pmPlaceholder.textContent='載入中...';
   document.getElementById('pmTitleZH').textContent=m.title +
-    ((m.epCount&&m.eps)?' ('+m.eps.filter(function(x){return x!=null;}).length+'/'+m.epCount+')':'');
+    ((m.epCount&&m.eps)?' ('+epWatched(m)+'/'+m.epCount+')':'');
   document.getElementById('pmTitleEN').textContent=m.orig!=='nan'?m.orig:'';
   document.getElementById('pmTags').innerHTML='';
   document.getElementById('pmOverview').textContent='';
@@ -1227,10 +1250,14 @@ async function openPoster(m){
   // 分集評分
   var epsWrap = document.getElementById('pmEpsWrap');
   var epsGrid = document.getElementById('pmEpsGrid');
-  if(m.eps && m.eps.length && m.eps.some(function(x){return x!=null;})){
-    epsGrid.innerHTML = m.eps.map(function(sc,i){
+  var _eps = epNorm(m.eps);
+  if(_eps.length && _eps.some(function(x){return x!=null;})){
+    epsGrid.innerHTML = _eps.map(function(e,i){
+      var sc = e ? e.s : null;
+      var dd = (e && e.d) ? e.d.slice(5) : '';
       return '<div class="pm-ep"><span class="pm-ep-no">EP'+(i+1)+'</span><span class="pm-ep-sc">'+
-             (sc!=null?Number(sc).toFixed(1):'—')+'</span></div>';
+             (sc!=null?Number(sc).toFixed(1):'—')+'</span>'+
+             (dd?'<span class="pm-ep-d">'+dd+'</span>':'')+'</div>';
     }).join('');
     epsWrap.style.display = 'block';
   } else {
@@ -1534,11 +1561,20 @@ render();
 
   function buildDateMap(){
     const map = {};
-    DATA.forEach(m=>{
-      if(!m.date) return;
-      const k = m.date.substring(0,10);
+    const push = (k, m) => {
+      if(!k) return;
       if(!map[k]) map[k]=[];
-      map[k].push(m);
+      if(map[k].indexOf(m) < 0) map[k].push(m);
+    };
+    DATA.forEach(m=>{
+      // 分集各自的觀看日期
+      const eps = (typeof epNorm==='function') ? epNorm(m.eps) : [];
+      let hasEpDate = false;
+      eps.forEach(e=>{
+        if(e && e.d){ push(e.d.substring(0,10), m); hasEpDate = true; }
+      });
+      // 沒有任何分集日期時，才用主記錄日期
+      if(!hasEpDate && m.date) push(m.date.substring(0,10), m);
     });
     return map;
   }
@@ -1954,10 +1990,10 @@ render();
         <div class="ep-ctrl">
           <span class="ep-ctrl-label">總集數</span>
           <input class="ar-input ep-count-input" id="ar_epCount" type="number" min="0" max="200" step="1" placeholder="12">
-          <span class="ep-avg" id="arEpAvg">平均 —</span>
+          <button type="button" class="ep-autofill" id="arEpAuto">日期自動遞增</button><span class="ep-avg" id="arEpAvg">平均 —</span>
         </div>
         <div class="ep-grid" id="arEpGrid"></div>
-        <div class="ep-hint">填入各集評分後，個人評分會自動以平均值計算（未填的集數不計入）</div>
+        <div class="ep-hint">填入各集評分後，個人評分自動取平均；填了觀看日期的集數，行事曆當天就會出現海報</div>
       </div>
 
       <div class="ar-divider"></div>
@@ -2207,16 +2243,20 @@ render();
   var EP_TYPES = ['影集','綜藝','動畫'];
   function epIsSeries(){ return EP_TYPES.indexOf(document.getElementById('ar_type').value) >= 0; }
 
-  function epBuildGrid(count, scores){
+  function epBuildGrid(count, eps){
     var grid = document.getElementById('arEpGrid');
     grid.innerHTML = '';
+    eps = epNorm(eps);
     count = Math.max(0, Math.min(200, parseInt(count)||0));
     for(var i=0;i<count;i++){
-      var v = (scores && scores[i] != null && scores[i] !== '') ? scores[i] : '';
+      var e = eps[i] || null;
+      var v = (e && e.s!=null) ? e.s : '';
+      var d = (e && e.d) ? e.d : '';
       var cell = document.createElement('div');
-      cell.className = 'ep-cell' + (v!==''?' filled':'');
-      cell.innerHTML = '<span class="ep-cell-no">'+(i+1)+'</span>'+
-        '<input type="number" step="0.5" min="0" max="10" placeholder="—" data-ep="'+i+'" value="'+v+'">';
+      cell.className = 'ep-cell' + ((v!==''||d)?' filled':'');
+      cell.innerHTML = '<div class="ep-row"><span class="ep-cell-no">'+(i+1)+'</span>'+
+        '<input type="number" step="0.5" min="0" max="10" placeholder="分數" data-ep="'+i+'" value="'+v+'"></div>'+
+        '<input class="ep-date" type="date" data-epd="'+i+'" value="'+d+'">';
       grid.appendChild(cell);
     }
     epRecalc();
@@ -2228,7 +2268,9 @@ render();
     inputs.forEach(function(inp){
       var v = parseFloat(inp.value);
       if(!isNaN(v)){ sum += v; n++; }
-      inp.parentElement.classList.toggle('filled', inp.value !== '');
+      var cell = inp.closest('.ep-cell');
+      var dEl = cell ? cell.querySelector('input[data-epd]') : null;
+      if(cell) cell.classList.toggle('filled', inp.value !== '' || (dEl && dEl.value !== ''));
     });
     var avgEl = document.getElementById('arEpAvg');
     var pers = document.getElementById('ar_personal');
@@ -2258,21 +2300,45 @@ render();
   }
 
   function epCollect(){
-    var inputs = document.querySelectorAll('#arEpGrid input[data-ep]');
+    var cells = document.querySelectorAll('#arEpGrid .ep-cell');
     var arr = [];
-    inputs.forEach(function(inp){
-      var v = parseFloat(inp.value);
-      arr.push(isNaN(v) ? null : v);
+    cells.forEach(function(cell){
+      var sEl = cell.querySelector('input[data-ep]');
+      var dEl = cell.querySelector('input[data-epd]');
+      var v = sEl ? parseFloat(sEl.value) : NaN;
+      var d = dEl ? (dEl.value||'') : '';
+      if(isNaN(v) && !d) arr.push(null);
+      else arr.push({s: isNaN(v)?null:v, d: d});
     });
     return arr;
   }
+  // 快速填入：把某一集的日期往後逐日遞增
+  function epAutoFillDates(){
+    var cells = document.querySelectorAll('#arEpGrid .ep-cell');
+    var base = null, baseIdx = -1;
+    cells.forEach(function(cell, i){
+      var d = cell.querySelector('input[data-epd]');
+      if(base===null && d && d.value){ base = d.value; baseIdx = i; }
+    });
+    if(base===null){ showToast('請先填第一集的觀看日期', true); return; }
+    var bd = new Date(base + 'T00:00:00');
+    cells.forEach(function(cell, i){
+      if(i <= baseIdx) return;
+      var d = cell.querySelector('input[data-epd]');
+      if(!d || d.value) return;
+      var nd = new Date(bd.getTime() + (i-baseIdx)*86400000);
+      d.value = nd.toISOString().slice(0,10);
+    });
+    epRecalc();
+  }
 
+  document.getElementById('arEpAuto').addEventListener('click', epAutoFillDates);
   document.getElementById('ar_type').addEventListener('change', epToggle);
   document.getElementById('ar_epCount').addEventListener('input', function(){
     epBuildGrid(this.value, epCollect());
   });
   document.getElementById('arEpGrid').addEventListener('input', function(e){
-    if(e.target.matches('input[data-ep]')) epRecalc();
+    if(e.target.matches('input[data-ep]') || e.target.matches('input[data-epd]')) epRecalc();
   });
 
   document.getElementById('arSubmitBtn').addEventListener('click', function(){
