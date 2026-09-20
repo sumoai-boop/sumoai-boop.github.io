@@ -2537,10 +2537,10 @@ function renderPeriodHours(){
       +'<div style="width:34px;font-size:13px;font-weight:700;color:'+(top||bot?col:'rgba(255,255,255,0.6)')+';flex-shrink:0;">'+x.name+'</div>'
       +'<div style="flex:1;min-width:0;height:20px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;">'
         +'<div style="height:100%;width:'+w+'%;background:'+col+';border-radius:5px;"></div></div>'
-      +'<div style="width:126px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;">'
-        +'<span style="font-size:15px;font-weight:700;color:'+col+';">NT$'+fmt(Math.round(x.rate))+'</span>'
-        +(top?' <span style="font-size:11px;">🏆</span>':(bot?' <span style="font-size:11px;">📉</span>':''))
-        +'<div style="font-size:11px;color:rgba(255,255,255,0.4);">'+hhmm(x.min)+'</div></div>'
+      +'<div style="width:152px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;">'
+        +'<span style="font-size:21px;font-weight:700;color:'+col+';">$'+fmt(Math.round(x.rate))+'</span>'
+        +(top?' <span style="font-size:14px;">🏆</span>':(bot?' <span style="font-size:14px;">📉</span>':''))
+        +'<div style="font-size:16px;color:#ffffff;margin-top:2px;">'+hhmm(x.min)+'</div></div>'
     +'</div>';
   }).join('');
 
