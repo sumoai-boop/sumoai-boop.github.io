@@ -163,13 +163,17 @@
   .cb-drop.over{border-color:#C9922F;color:#E8C04A;background:rgba(201,146,47,0.07);}
   .cb-note{font-size:11px;color:#6E635A;margin-bottom:10px;line-height:1.6;}
   .cb-note.warn{color:#E8A33C;}
-  .cb-card{position:relative;border-radius:7px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;cursor:pointer;transition:transform .18s;}
+  .cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
+  .cb-card{cursor:pointer;transition:transform .18s;}
   .cb-card:hover{transform:translateY(-4px);}
+  .cb-thumb{position:relative;border-radius:8px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;}
   .cb-card img{width:100%;height:100%;object-fit:cover;display:block;}
-  .cb-meta{position:absolute;left:0;right:0;bottom:0;padding:16px 7px 6px;background:linear-gradient(to top,rgba(0,0,0,0.92),transparent);}
-  .cb-t{font-size:10.5px;color:#EFE3D2;line-height:1.3;}
+  .cb-meta{padding:9px 2px 0;}
+  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;}
+  @media(max-width:600px){.cb-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}}
   .cb-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;}
   .cb-card:hover .cb-tools{opacity:1;}
+  .cb-tools{z-index:2;}
   .cb-tool{border:none;border-radius:5px;color:#fff;font-size:11px;line-height:1;padding:5px 7px;cursor:pointer;}
   .cb-edit{background:rgba(60,60,70,0.9);}
   .cb-del{background:rgba(180,40,40,0.9);}
@@ -523,7 +527,7 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     <input type="file" id="cbFile" accept="image/*" multiple style="display:none;">
     <div class="cb-note" id="cbNote"></div>
     <div class="cb-drop" id="cbDrop">把圖片拖進來，或點「＋ 上傳圖片」</div>
-    <div class="dg-grid" id="cbGrid"></div>
+    <div class="cb-grid" id="cbGrid"></div>
   </div>
   </div><!-- /pane-collect -->
 
@@ -2955,12 +2959,14 @@ render();
     if(!CB.length){ grid.innerHTML=''; return; }
     grid.innerHTML=list.map(function(it){
       return '<div class="cb-card" data-f="'+it.f+'">'+
-        '<img loading="lazy" decoding="async" src="'+cbUrl(it.f)+'" alt="'+(it.t||'').replace(/"/g,'&quot;')+'">'+
-        '<div class="cb-tools">'+
-          '<button class="cb-tool cb-edit" data-edit="'+it.f+'" title="改標題">✎</button>'+
-          '<button class="cb-tool cb-del" data-del="'+it.f+'" title="刪除">✕</button>'+
+        '<div class="cb-thumb">'+
+          '<img loading="lazy" decoding="async" src="'+cbUrl(it.f)+'" alt="'+(it.t||'').replace(/"/g,'&quot;')+'">'+
+          '<div class="cb-tools">'+
+            '<button class="cb-tool cb-edit" data-edit="'+it.f+'" title="改標題">✎</button>'+
+            '<button class="cb-tool cb-del" data-del="'+it.f+'" title="刪除">✕</button>'+
+          '</div>'+
         '</div>'+
-        (it.t?'<div class="cb-meta"><div class="cb-t">'+it.t+'</div></div>':'')+
+        '<div class="cb-meta"><div class="cb-t">'+(it.t||'（未命名）')+'</div></div>'+
       '</div>';
     }).join('');
   }
