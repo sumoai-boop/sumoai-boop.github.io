@@ -159,28 +159,39 @@
   .pl-note{font-size:11px;color:#6E635A;margin-bottom:12px;line-height:1.6;}
   .pl-note.warn{color:#E8A33C;}
   .pl-dot{position:absolute;left:6px;top:6px;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,0.5);box-shadow:0 0 6px rgba(0,0,0,0.5);}
-  .cb-drop{border:1px dashed #3A2F27;border-radius:10px;padding:26px;text-align:center;color:#6E635A;font-size:12px;margin-bottom:14px;transition:all .15s;}
-  .cb-drop.over{border-color:#C9922F;color:#E8C04A;background:rgba(201,146,47,0.07);}
-  .cb-note{font-size:11px;color:#6E635A;margin-bottom:10px;line-height:1.6;}
-  .cb-note.warn{color:#E8A33C;}
   .cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
   .cb-card{cursor:pointer;transition:transform .18s;}
   .cb-card:hover{transform:translateY(-4px);}
   .cb-thumb{position:relative;border-radius:8px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;}
   .cb-card img{width:100%;height:100%;object-fit:cover;display:block;}
   .cb-meta{padding:9px 2px 0;}
-  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;cursor:text;border-bottom:1px dashed transparent;display:inline-block;}
-  .cb-t:hover{color:#E8C04A;border-bottom-color:rgba(201,146,47,0.5);}
-  .cb-t-input{width:100%;background:#1A1513;border:1px solid #C9922F;border-radius:5px;color:#EFE3D2;font-family:'Space Mono',monospace;font-size:12px;padding:4px 6px;outline:none;}
-  @media(hover:none){.cb-tools{opacity:1;}}
-  @media(max-width:600px){.cb-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}}
-  .cb-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;}
+  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;}
+  .cb-d{font-size:10.5px;color:#8A7B6E;font-family:'Space Mono',monospace;margin-top:3px;}
+  .cb-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;z-index:2;}
   .cb-card:hover .cb-tools{opacity:1;}
-  .cb-tools{z-index:2;}
+  @media(hover:none){.cb-tools{opacity:1;}}
   .cb-tool{border:none;border-radius:5px;color:#fff;font-size:11px;line-height:1;padding:5px 7px;cursor:pointer;}
   .cb-edit{background:rgba(60,60,70,0.9);}
   .cb-del{background:rgba(180,40,40,0.9);}
-  .cb-up{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);color:#E8C04A;font-size:11px;font-family:'Space Mono',monospace;}
+  .cb-note{font-size:11px;color:#6E635A;margin-bottom:12px;line-height:1.6;min-height:16px;}
+  .cb-note.warn{color:#E8A33C;}
+  .cb-modal{display:none;position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;}
+  .cb-modal.open{display:flex;}
+  .cb-box{background:#16110F;border:1px solid #33291F;border-radius:16px;padding:26px;width:440px;max-width:94vw;max-height:90vh;overflow-y:auto;}
+  .cb-box h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#EFE3D2;margin-bottom:14px;letter-spacing:0.06em;}
+  .cb-lbl{display:block;font-size:10.5px;font-weight:600;letter-spacing:0.1em;color:#9C8B7A;margin:14px 0 6px;}
+  .cb-lbl span{color:#D9A544;margin-left:3px;}
+  .cb-input{width:100%;padding:10px 12px;background:#1A1513;border:1px solid #33291F;border-radius:8px;color:#EFE3D2;font-family:'Space Mono',monospace;font-size:12.5px;outline:none;box-sizing:border-box;transition:border .15s;}
+  .cb-input:focus{border-color:rgba(201,146,47,0.6);background:#221B18;}
+  .cb-input::-webkit-calendar-picker-indicator{filter:invert(0.65);cursor:pointer;}
+  .cb-drop{border:1px dashed #3A2F27;border-radius:10px;padding:22px;text-align:center;color:#6E635A;font-size:12px;cursor:pointer;transition:all .15s;}
+  .cb-drop.over{border-color:#C9922F;color:#E8C04A;background:rgba(201,146,47,0.07);}
+  .cb-preview{width:100%;max-height:230px;object-fit:contain;border-radius:8px;margin-top:10px;background:#1A1513;}
+  .cb-err{color:#ff7b7b;font-size:11px;min-height:15px;margin-top:8px;line-height:1.5;}
+  .cb-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
+  .cb-btn{border-radius:8px;font-size:13px;padding:9px 20px;cursor:pointer;font-family:'Space Mono',monospace;border:1px solid #33291F;background:transparent;color:#9C8B7A;}
+  .cb-btn.primary{background:#C9922F;border-color:#C9922F;color:#1A1210;font-weight:700;}
+  .cb-btn:disabled{opacity:0.5;cursor:default;}
   .dg-wrap{background:#141010;border:1px solid #2E2621;border-radius:14px;padding:20px;margin-bottom:24px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
   .dg-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
   .dg-pill{background:transparent;border:1px solid #33291F;border-radius:99px;padding:6px 13px;font-size:11px;font-family:'Space Mono',monospace;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
@@ -519,20 +530,41 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
     <div class="dg-bar">
       <span class="dg-count" id="cbCount"></span>
       <div class="dg-types">
-        <button class="dg-type" id="cbAdd">＋ 上傳圖片</button>
+        <button class="dg-type" id="cbAdd">＋ 新增收藏</button>
+        <button class="dg-type" id="cbResync" title="把本機清單推回 GitHub">↻ 重新同步</button>
       </div>
       <select class="dg-sort" id="cbSort">
-        <option value="new">新增順序（新到舊）</option>
-        <option value="old">新增順序（舊到新）</option>
+        <option value="date">觀看日期（新到舊）</option>
+        <option value="date-asc">觀看日期（舊到新）</option>
         <option value="title">標題 A→Z</option>
       </select>
     </div>
-    <input type="file" id="cbFile" accept="image/*" multiple style="display:none;">
     <div class="cb-note" id="cbNote"></div>
-    <div class="cb-drop" id="cbDrop">把圖片拖進來，或點「＋ 上傳圖片」</div>
     <div class="cb-grid" id="cbGrid"></div>
   </div>
   </div><!-- /pane-collect -->
+
+  <!-- 新增收藏 Modal -->
+  <div class="cb-modal" id="cbModal">
+    <div class="cb-box">
+      <h2 id="cbBoxTitle">新增收藏</h2>
+      <label class="cb-lbl">標題<span>*</span></label>
+      <input class="cb-input" id="cbTitle" type="text" placeholder="例：沙丘 第二部">
+      <label class="cb-lbl">觀看日期<span>*</span></label>
+      <input class="cb-input" id="cbDate" type="date">
+      <div id="cbFileWrap">
+        <label class="cb-lbl">海報圖片<span>*</span></label>
+        <div class="cb-drop" id="cbDrop">點這裡選圖，或把圖片拖進來</div>
+        <input type="file" id="cbFile" accept="image/*" style="display:none;">
+        <img class="cb-preview" id="cbPreview" style="display:none;" alt="">
+      </div>
+      <div class="cb-err" id="cbErr"></div>
+      <div class="cb-actions">
+        <button class="cb-btn" id="cbCancel">取消</button>
+        <button class="cb-btn primary" id="cbSaveBtn">✦ 新增</button>
+      </div>
+    </div>
+  </div>
 
   <div class="tab-pane" id="pane-list">
   <div class="filters">
@@ -2866,34 +2898,35 @@ render();
     if(m && typeof openPoster==='function') openPoster(m);
   });
 
-  // ── 收藏冊（圖片上傳到 GitHub repo，metadata 存 collection-data.json）──
+  // ── 收藏冊 ──
   var CB_OWNER='sumoai-boop', CB_REPO='sumoai-boop.github.io', CB_BRANCH='main';
   var CB_META='collection-data.json', CB_DIR='collection';
   var CB = (function(){ try{ return JSON.parse(localStorage.getItem('_collectData')||'[]'); }catch(e){ return []; } })();
-  var cbPushing=false;
+  var cbEditing=null, cbPendingB64=null;
 
   function cbSave(){ try{ localStorage.setItem('_collectData', JSON.stringify(CB)); }catch(e){} }
   function cbNote(msg, warn){
     var el=document.getElementById('cbNote');
-    el.className = 'cb-note' + (warn?' warn':'');
-    el.textContent = msg||'';
+    el.className='cb-note'+(warn?' warn':'');
+    el.textContent=msg||'';
   }
+  function cbErr(msg){ document.getElementById('cbErr').textContent=msg||''; }
 
-  // 壓縮：長邊最多 1000px，JPEG 0.82
+  // 壓縮：長邊 1000px、JPEG 0.82
   function cbCompress(file){
     return new Promise(function(resolve,reject){
+      if(!/^image\//.test(file.type)) return reject(new Error('請選擇圖片檔'));
       var fr=new FileReader();
-      fr.onerror=function(){ reject(new Error('讀檔失敗')); };
+      fr.onerror=function(){ reject(new Error('讀取檔案失敗')); };
       fr.onload=function(){
         var img=new Image();
-        img.onerror=function(){ reject(new Error('不是有效的圖片')); };
+        img.onerror=function(){ reject(new Error('無法解析這張圖片')); };
         img.onload=function(){
-          var MAX=1000, w=img.width, h=img.height;
+          var MAX=1000,w=img.width,h=img.height;
           if(Math.max(w,h)>MAX){ var r=MAX/Math.max(w,h); w=Math.round(w*r); h=Math.round(h*r); }
           var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
           cv.getContext('2d').drawImage(img,0,0,w,h);
-          var dataUrl=cv.toDataURL('image/jpeg',0.82);
-          resolve(dataUrl.split(',')[1]);   // 只要 base64 本體
+          resolve(cv.toDataURL('image/jpeg',0.82));
         };
         img.src=fr.result;
       };
@@ -2901,190 +2934,208 @@ render();
     });
   }
 
-  // 取最新 SHA：關閉快取，避免拿到舊版造成 409
-  async function cbGetSha(api, hdrs){
+  async function cbGetSha(api,hdrs){
     try{
-      var g=await fetch(api+'?ref='+CB_BRANCH+'&_='+Date.now(),
-        {headers:Object.assign({}, hdrs, {'Cache-Control':'no-cache','If-None-Match':''}), cache:'no-store'});
+      var g=await fetch(api+'?ref='+CB_BRANCH+'&_='+Date.now(),{headers:hdrs,cache:'no-store'});
+      if(g.status===404) return null;
       if(g.ok){ var fi=await g.json(); return fi.sha||null; }
     }catch(e){}
     return null;
   }
 
-  async function cbPutFile(path, b64, msg){
+  async function cbPut(path,b64,msg){
     var token=getGHToken();
     if(!token) throw new Error('尚未設定 GitHub Token');
     var api='https://api.github.com/repos/'+CB_OWNER+'/'+CB_REPO+'/contents/'+path;
     var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    var lastErr='';
-    for(var attempt=0; attempt<4; attempt++){
-      if(attempt) await new Promise(function(r){ setTimeout(r, 400*attempt); });   // 退避後重試
-      var sha=await cbGetSha(api, hdrs);
-      var body={message:msg, content:b64, branch:CB_BRANCH};
+    var last='';
+    for(var i=0;i<4;i++){
+      if(i) await new Promise(function(r){ setTimeout(r,400*i); });
+      var sha=await cbGetSha(api,hdrs);
+      var body={message:msg,content:b64,branch:CB_BRANCH};
       if(sha) body.sha=sha;
       var r=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
       if(r.ok) return true;
-      var e2={};
-      try{ e2=await r.json(); }catch(e){}
-      lastErr=e2.message||('HTTP '+r.status);
-      // 409/422 = SHA 過期或衝突 → 重新取 SHA 再試
-      if(r.status===409 || r.status===422) continue;
-      throw new Error(lastErr);
+      var j={}; try{ j=await r.json(); }catch(e){}
+      last=j.message||('HTTP '+r.status);
+      if(r.status===409||r.status===422) continue;
+      throw new Error(last);
     }
-    throw new Error(lastErr+'（重試多次仍衝突）');
+    throw new Error(last+'（重試多次仍衝突）');
   }
 
-  var _cbQueue = Promise.resolve();
+  var _cbQ=Promise.resolve();
   function cbPushMeta(msg){
-    // 串接成佇列，確保同一時間只有一個 PUT
-    _cbQueue = _cbQueue.then(function(){ return _cbPushMetaNow(msg); }, function(){ return _cbPushMetaNow(msg); });
-    return _cbQueue;
+    _cbQ=_cbQ.then(run,run);
+    function run(){ return cbPushNow(msg); }
+    return _cbQ;
   }
-  async function _cbPushMetaNow(msg){
-    cbPushing=true;
+  async function cbPushNow(msg){
     try{
-      var b64=btoa(unescape(encodeURIComponent(JSON.stringify(CB,null,2))));
-      await cbPutFile(CB_META, b64, msg);
+      await cbPut(CB_META, btoa(unescape(encodeURIComponent(JSON.stringify(CB,null,2)))), msg);
       return true;
-    }catch(e){ showToast('❌ 收藏冊儲存失敗：'+e.message, true); return false; }
-    finally{ cbPushing=false; }
-  }
-
-  async function cbUpload(files){
-    if(!files || !files.length) return;
-    if(!getGHToken()){ showTokenModal(function(){ cbUpload(files); }); return; }
-    var arr=Array.prototype.slice.call(files).filter(function(f){ return /^image\//.test(f.type); });
-    if(!arr.length){ cbNote('沒有可用的圖片檔。', true); return; }
-    for(var i=0;i<arr.length;i++){
-      cbNote('上傳中… '+(i+1)+'/'+arr.length+'（'+arr[i].name+'）');
-      try{
-        var b64=await cbCompress(arr[i]);
-        var name=Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
-        await cbPutFile(CB_DIR+'/'+name, b64, '收藏冊新增圖片：'+name);
-        CB.unshift({f:name, t:arr[i].name.replace(/\.[^.]+$/,''), ts:Date.now()});
-        cbSave(); cbRender();
-      }catch(e){ cbNote('「'+arr[i].name+'」上傳失敗：'+e.message, true); return; }
+    }catch(e){
+      console.error('收藏冊同步失敗:', e);
+      cbNote('❌ 同步 GitHub 失敗：'+e.message, true);
+      return false;
     }
-    var ok=await cbPushMeta('收藏冊更新（'+arr.length+' 張）');
-    cbNote(ok ? ('✦ 已上傳 '+arr.length+' 張') : '圖片已上傳，但清單同步失敗', !ok);
-    cbRender();
   }
 
-  function cbUrl(f){ return CB_DIR+'/'+f; }
+  // ── Modal ──
+  var cbModal=document.getElementById('cbModal');
+  function cbOpen(item){
+    cbEditing=item||null;
+    cbPendingB64=null;
+    document.getElementById('cbBoxTitle').textContent=item?'編輯收藏':'新增收藏';
+    document.getElementById('cbSaveBtn').textContent=item?'✦ 儲存':'✦ 新增';
+    document.getElementById('cbTitle').value=item?(item.t||''):'';
+    document.getElementById('cbDate').value=item?(item.d||''):new Date().toISOString().slice(0,10);
+    document.getElementById('cbFileWrap').style.display=item?'none':'';
+    document.getElementById('cbPreview').style.display='none';
+    document.getElementById('cbFile').value='';
+    cbErr('');
+    cbModal.classList.add('open');
+    setTimeout(function(){ document.getElementById('cbTitle').focus(); },80);
+  }
+  function cbClose(){ cbModal.classList.remove('open'); }
 
+  async function cbPickFile(file){
+    if(!file) return;
+    try{
+      var dataUrl=await cbCompress(file);
+      cbPendingB64=dataUrl.split(',')[1];
+      var pv=document.getElementById('cbPreview');
+      pv.src=dataUrl; pv.style.display='block';
+      document.getElementById('cbDrop').textContent='已選好圖片，可再點一次更換';
+      cbErr('');
+    }catch(e){ cbErr(e.message); }
+  }
+
+  async function cbSubmit(){
+    var t=document.getElementById('cbTitle').value.trim();
+    var d=document.getElementById('cbDate').value;
+    if(!t){ cbErr('請填標題'); return; }
+    if(!d){ cbErr('請選觀看日期'); return; }
+    if(!cbEditing && !cbPendingB64){ cbErr('請選一張海報圖片'); return; }
+    if(!getGHToken()){ showTokenModal(cbSubmit); return; }
+
+    var btn=document.getElementById('cbSaveBtn');
+    btn.disabled=true;
+
+    if(cbEditing){
+      cbEditing.t=t; cbEditing.d=d;
+      cbSave(); cbRender(); cbClose(); btn.disabled=false;
+      var ok1=await cbPushMeta('收藏冊更新：'+t);
+      cbNote(ok1?'✦ 已更新':'已存本機，同步失敗', !ok1);
+      return;
+    }
+
+    cbErr('上傳中…');
+    var name=Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
+    try{
+      await cbPut(CB_DIR+'/'+name, cbPendingB64, '收藏冊新增圖片：'+name);
+    }catch(e){
+      cbErr('圖片上傳失敗：'+e.message);
+      btn.disabled=false;
+      return;
+    }
+    CB.unshift({f:name, t:t, d:d, ts:Date.now()});
+    cbSave(); cbRender(); cbClose(); btn.disabled=false;
+    var ok=await cbPushMeta('收藏冊新增：'+t);
+    cbNote(ok?('✦ 已新增「'+t+'」'):'圖片已上傳，但清單同步失敗', !ok);
+  }
+
+  // ── 列表 ──
   function cbRender(){
     var s=document.getElementById('cbSort').value;
     var list=CB.slice();
-    if(s==='old') list.sort(function(a,b){ return (a.ts||0)-(b.ts||0); });
+    if(s==='date-asc') list.sort(function(a,b){ return (a.d||'').localeCompare(b.d||''); });
     else if(s==='title') list.sort(function(a,b){ return (a.t||'').localeCompare(b.t||''); });
-    else list.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+    else list.sort(function(a,b){ return (b.d||'').localeCompare(a.d||''); });
 
     document.getElementById('cbCount').textContent='共 '+CB.length+' 張';
     var grid=document.getElementById('cbGrid');
-    if(!CB.length){ grid.innerHTML=''; return; }
+    if(!CB.length){
+      grid.innerHTML='<div class="dg-empty">還沒有收藏，點「＋ 新增收藏」開始</div>';
+      return;
+    }
     grid.innerHTML=list.map(function(it){
       return '<div class="cb-card" data-f="'+it.f+'">'+
         '<div class="cb-thumb">'+
-          '<img loading="lazy" decoding="async" src="'+cbUrl(it.f)+'" alt="'+(it.t||'').replace(/"/g,'&quot;')+'">'+
+          '<img loading="lazy" decoding="async" src="'+CB_DIR+'/'+it.f+'" alt="'+(it.t||'').replace(/"/g,'&quot;')+'">'+
           '<div class="cb-tools">'+
-            '<button class="cb-tool cb-edit" data-edit="'+it.f+'" title="改標題">✎</button>'+
+            '<button class="cb-tool cb-edit" data-edit="'+it.f+'" title="編輯">✎</button>'+
             '<button class="cb-tool cb-del" data-del="'+it.f+'" title="刪除">✕</button>'+
           '</div>'+
         '</div>'+
-        '<div class="cb-meta"><div class="cb-t" data-rename="'+it.f+'" title="點一下改標題">'+(it.t||'（未命名）')+'</div></div>'+
+        '<div class="cb-meta"><div class="cb-t">'+(it.t||'（未命名）')+'</div>'+
+        (it.d?'<div class="cb-d">'+it.d+'</div>':'')+'</div>'+
       '</div>';
     }).join('');
   }
-  window.cbRender = cbRender;
+  window.cbRender=cbRender;
 
-  // 行內改標題（不使用 prompt，避免彈窗被瀏覽器封鎖）
-  function cbStartRename(f){
-    var it=CB.filter(function(x){ return x.f===f; })[0];
-    if(!it) return;
-    var card=document.querySelector('.cb-card[data-f="'+f+'"]');
-    if(!card) return;
-    var meta=card.querySelector('.cb-meta');
-    if(!meta || meta.querySelector('.cb-t-input')) return;
-    var inp=document.createElement('input');
-    inp.className='cb-t-input';
-    inp.value=it.t||'';
-    inp.placeholder='輸入標題';
-    meta.innerHTML='';
-    meta.appendChild(inp);
-    inp.focus(); inp.select();
-    var done=false;
-    async function commit(save){
-      if(done) return; done=true;
-      if(save){
-        var nv=inp.value.trim();
-        if(nv!==(it.t||'')){
-          it.t=nv; cbSave(); cbRender();
-          var ok=await cbPushMeta('收藏冊改標題');
-          cbNote(ok?'✦ 標題已更新':'標題已存在本機，同步 GitHub 失敗', !ok);
-          return;
-        }
-      }
-      cbRender();
-    }
-    inp.addEventListener('keydown', function(ev){
-      if(ev.key==='Enter'){ ev.preventDefault(); commit(true); }
-      if(ev.key==='Escape'){ ev.preventDefault(); commit(false); }
-    });
-    inp.addEventListener('blur', function(){ commit(true); });
-    inp.addEventListener('click', function(ev){ ev.stopPropagation(); });
-  }
-
-  // 事件
-  document.getElementById('cbAdd').addEventListener('click', function(){ document.getElementById('cbFile').click(); });
-  document.getElementById('cbFile').addEventListener('change', function(e){ cbUpload(e.target.files); e.target.value=''; });
+  // ── 事件 ──
+  document.getElementById('cbAdd').addEventListener('click', function(){ cbOpen(null); });
+  document.getElementById('cbCancel').addEventListener('click', cbClose);
+  cbModal.addEventListener('click', function(e){ if(e.target===cbModal) cbClose(); });
+  document.getElementById('cbSaveBtn').addEventListener('click', cbSubmit);
+  document.getElementById('cbTitle').addEventListener('keydown', function(e){ if(e.key==='Enter') cbSubmit(); });
   document.getElementById('cbSort').addEventListener('change', cbRender);
 
   var drop=document.getElementById('cbDrop');
+  drop.addEventListener('click', function(){ document.getElementById('cbFile').click(); });
+  document.getElementById('cbFile').addEventListener('change', function(e){ cbPickFile(e.target.files[0]); });
   ['dragenter','dragover'].forEach(function(ev){
     drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('over'); });
   });
   ['dragleave','drop'].forEach(function(ev){
     drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('over'); });
   });
-  drop.addEventListener('drop', function(e){ cbUpload(e.dataTransfer.files); });
-  drop.addEventListener('click', function(){ document.getElementById('cbFile').click(); });
+  drop.addEventListener('drop', function(e){ cbPickFile(e.dataTransfer.files[0]); });
+
+  document.getElementById('cbResync').addEventListener('click', async function(){
+    if(!getGHToken()){ showTokenModal(function(){ document.getElementById('cbResync').click(); }); return; }
+    cbNote('同步中…（本機 '+CB.length+' 張）');
+    var ok=await cbPushMeta('收藏冊重新同步（'+CB.length+' 張）');
+    cbNote(ok?('✦ 已把 '+CB.length+' 張推回 GitHub'):'同步失敗', !ok);
+  });
 
   document.getElementById('cbGrid').addEventListener('click', async function(e){
-    var ed=e.target.closest('[data-edit]') || e.target.closest('[data-rename]');
+    var ed=e.target.closest('[data-edit]');
     if(ed){
       e.stopPropagation();
-      var f=ed.getAttribute('data-edit') || ed.getAttribute('data-rename');
-      cbStartRename(f);
+      var it=CB.filter(function(x){ return x.f===ed.getAttribute('data-edit'); })[0];
+      if(it) cbOpen(it);
       return;
     }
     var dl=e.target.closest('[data-del]');
     if(dl){
       e.stopPropagation();
-      var f2=dl.getAttribute('data-del');
-      if(!confirm('確定要從收藏冊移除這張圖片嗎？')) return;
-      CB=CB.filter(function(x){ return x.f!==f2; });
+      var f=dl.getAttribute('data-del');
+      var it2=CB.filter(function(x){ return x.f===f; })[0];
+      if(!confirm('確定要移除「'+((it2&&it2.t)||'這張')+'」嗎？')) return;
+      CB=CB.filter(function(x){ return x.f!==f; });
       cbSave(); cbRender();
-      await cbPushMeta('收藏冊移除圖片');
+      var ok=await cbPushMeta('收藏冊移除：'+((it2&&it2.t)||f));
+      cbNote(ok?'✦ 已移除':'已從本機移除，同步失敗', !ok);
       return;
     }
     var card=e.target.closest('.cb-card');
     if(card){
-      var src=card.querySelector('img');
-      if(src) window.open(src.src, '_blank');
+      var img=card.querySelector('img');
+      if(img) window.open(img.src,'_blank');
     }
   });
 
-  // 同步遠端清單
-  (function cbSync(){
-    fetch('https://raw.githubusercontent.com/'+CB_OWNER+'/'+CB_REPO+'/'+CB_BRANCH+'/'+CB_META+'?t='+Date.now())
-      .then(function(r){ return r.ok?r.json():Promise.reject(); })
-      .then(function(arr){
-        if(!Array.isArray(arr)) return;
-        if(CB.length && arr.length < CB.length) return;   // 遠端較舊就不覆蓋
-        CB=arr; cbSave(); cbRender();
-      })
-      .catch(function(){});
-  })();
+  // 開頁同步遠端
+  fetch('https://raw.githubusercontent.com/'+CB_OWNER+'/'+CB_REPO+'/'+CB_BRANCH+'/'+CB_META+'?t='+Date.now())
+    .then(function(r){ return r.ok?r.json():Promise.reject(); })
+    .then(function(arr){
+      if(!Array.isArray(arr)) return;
+      if(CB.length && arr.length < CB.length) return;
+      CB=arr; cbSave(); cbRender();
+    }).catch(function(){});
 
   cbRender();
 
