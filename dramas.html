@@ -169,7 +169,10 @@
   .cb-thumb{position:relative;border-radius:8px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;}
   .cb-card img{width:100%;height:100%;object-fit:cover;display:block;}
   .cb-meta{padding:9px 2px 0;}
-  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;}
+  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;cursor:text;border-bottom:1px dashed transparent;display:inline-block;}
+  .cb-t:hover{color:#E8C04A;border-bottom-color:rgba(201,146,47,0.5);}
+  .cb-t-input{width:100%;background:#1A1513;border:1px solid #C9922F;border-radius:5px;color:#EFE3D2;font-family:'Space Mono',monospace;font-size:12px;padding:4px 6px;outline:none;}
+  @media(hover:none){.cb-tools{opacity:1;}}
   @media(max-width:600px){.cb-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}}
   .cb-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;}
   .cb-card:hover .cb-tools{opacity:1;}
@@ -2966,11 +2969,48 @@ render();
             '<button class="cb-tool cb-del" data-del="'+it.f+'" title="刪除">✕</button>'+
           '</div>'+
         '</div>'+
-        '<div class="cb-meta"><div class="cb-t">'+(it.t||'（未命名）')+'</div></div>'+
+        '<div class="cb-meta"><div class="cb-t" data-rename="'+it.f+'" title="點一下改標題">'+(it.t||'（未命名）')+'</div></div>'+
       '</div>';
     }).join('');
   }
   window.cbRender = cbRender;
+
+  // 行內改標題（不使用 prompt，避免彈窗被瀏覽器封鎖）
+  function cbStartRename(f){
+    var it=CB.filter(function(x){ return x.f===f; })[0];
+    if(!it) return;
+    var card=document.querySelector('.cb-card[data-f="'+f+'"]');
+    if(!card) return;
+    var meta=card.querySelector('.cb-meta');
+    if(!meta || meta.querySelector('.cb-t-input')) return;
+    var inp=document.createElement('input');
+    inp.className='cb-t-input';
+    inp.value=it.t||'';
+    inp.placeholder='輸入標題';
+    meta.innerHTML='';
+    meta.appendChild(inp);
+    inp.focus(); inp.select();
+    var done=false;
+    async function commit(save){
+      if(done) return; done=true;
+      if(save){
+        var nv=inp.value.trim();
+        if(nv!==(it.t||'')){
+          it.t=nv; cbSave(); cbRender();
+          var ok=await cbPushMeta('收藏冊改標題');
+          cbNote(ok?'✦ 標題已更新':'標題已存在本機，同步 GitHub 失敗', !ok);
+          return;
+        }
+      }
+      cbRender();
+    }
+    inp.addEventListener('keydown', function(ev){
+      if(ev.key==='Enter'){ ev.preventDefault(); commit(true); }
+      if(ev.key==='Escape'){ ev.preventDefault(); commit(false); }
+    });
+    inp.addEventListener('blur', function(){ commit(true); });
+    inp.addEventListener('click', function(ev){ ev.stopPropagation(); });
+  }
 
   // 事件
   document.getElementById('cbAdd').addEventListener('click', function(){ document.getElementById('cbFile').click(); });
@@ -2988,19 +3028,16 @@ render();
   drop.addEventListener('click', function(){ document.getElementById('cbFile').click(); });
 
   document.getElementById('cbGrid').addEventListener('click', async function(e){
-    var ed=e.target.closest('[data-edit]');
+    var ed=e.target.closest('[data-edit]') || e.target.closest('[data-rename]');
     if(ed){
-      var f=ed.getAttribute('data-edit');
-      var it=CB.filter(function(x){ return x.f===f; })[0];
-      if(!it) return;
-      var nt=prompt('圖片標題：', it.t||'');
-      if(nt===null) return;
-      it.t=nt.trim(); cbSave(); cbRender();
-      await cbPushMeta('收藏冊改標題');
+      e.stopPropagation();
+      var f=ed.getAttribute('data-edit') || ed.getAttribute('data-rename');
+      cbStartRename(f);
       return;
     }
     var dl=e.target.closest('[data-del]');
     if(dl){
+      e.stopPropagation();
       var f2=dl.getAttribute('data-del');
       if(!confirm('確定要從收藏冊移除這張圖片嗎？')) return;
       CB=CB.filter(function(x){ return x.f!==f2; });
