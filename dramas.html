@@ -2901,24 +2901,46 @@ render();
     });
   }
 
-  async function cbPutFile(path, b64, msg){
-    var token=getGHToken();
-    var api='https://api.github.com/repos/'+CB_OWNER+'/'+CB_REPO+'/contents/'+path;
-    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    var sha=null;
+  // 取最新 SHA：關閉快取，避免拿到舊版造成 409
+  async function cbGetSha(api, hdrs){
     try{
-      var g=await fetch(api+'?ref='+CB_BRANCH,{headers:hdrs});
-      if(g.ok){ var fi=await g.json(); sha=fi.sha; }
+      var g=await fetch(api+'?ref='+CB_BRANCH+'&_='+Date.now(),
+        {headers:Object.assign({}, hdrs, {'Cache-Control':'no-cache','If-None-Match':''}), cache:'no-store'});
+      if(g.ok){ var fi=await g.json(); return fi.sha||null; }
     }catch(e){}
-    var body={message:msg, content:b64, branch:CB_BRANCH};
-    if(sha) body.sha=sha;
-    var r=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
-    if(!r.ok){ var e2=await r.json(); throw new Error(e2.message||('HTTP '+r.status)); }
-    return true;
+    return null;
   }
 
-  async function cbPushMeta(msg){
-    if(cbPushing) return false;
+  async function cbPutFile(path, b64, msg){
+    var token=getGHToken();
+    if(!token) throw new Error('尚未設定 GitHub Token');
+    var api='https://api.github.com/repos/'+CB_OWNER+'/'+CB_REPO+'/contents/'+path;
+    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+    var lastErr='';
+    for(var attempt=0; attempt<4; attempt++){
+      if(attempt) await new Promise(function(r){ setTimeout(r, 400*attempt); });   // 退避後重試
+      var sha=await cbGetSha(api, hdrs);
+      var body={message:msg, content:b64, branch:CB_BRANCH};
+      if(sha) body.sha=sha;
+      var r=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
+      if(r.ok) return true;
+      var e2={};
+      try{ e2=await r.json(); }catch(e){}
+      lastErr=e2.message||('HTTP '+r.status);
+      // 409/422 = SHA 過期或衝突 → 重新取 SHA 再試
+      if(r.status===409 || r.status===422) continue;
+      throw new Error(lastErr);
+    }
+    throw new Error(lastErr+'（重試多次仍衝突）');
+  }
+
+  var _cbQueue = Promise.resolve();
+  function cbPushMeta(msg){
+    // 串接成佇列，確保同一時間只有一個 PUT
+    _cbQueue = _cbQueue.then(function(){ return _cbPushMetaNow(msg); }, function(){ return _cbPushMetaNow(msg); });
+    return _cbQueue;
+  }
+  async function _cbPushMetaNow(msg){
     cbPushing=true;
     try{
       var b64=btoa(unescape(encodeURIComponent(JSON.stringify(CB,null,2))));
