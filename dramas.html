@@ -164,9 +164,9 @@
   .cb-card:hover{transform:translateY(-4px);}
   .cb-thumb{position:relative;border-radius:8px;overflow:hidden;background:#1A1513;aspect-ratio:2/3;}
   .cb-card img{width:100%;height:100%;object-fit:cover;display:block;}
-  .cb-meta{padding:9px 2px 0;}
-  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;}
-  .cb-d{font-size:10.5px;color:#8A7B6E;font-family:'Space Mono',monospace;margin-top:3px;}
+  .cb-meta{padding:9px 2px 0;display:flex;align-items:baseline;gap:6px;}
+  .cb-t{font-size:12px;color:#EFE3D2;line-height:1.45;word-break:break-word;flex:1;min-width:0;}
+  .cb-d{font-size:10.5px;color:#8A7B6E;font-family:'Space Mono',monospace;white-space:nowrap;flex:none;}
   .cb-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;z-index:2;}
   .cb-card:hover .cb-tools{opacity:1;}
   @media(hover:none){.cb-tools{opacity:1;}}
@@ -3068,8 +3068,8 @@ render();
             '<button class="cb-tool cb-del" data-del="'+it.f+'" title="刪除">✕</button>'+
           '</div>'+
         '</div>'+
-        '<div class="cb-meta"><div class="cb-t">'+(it.t||'（未命名）')+'</div>'+
-        (it.d?'<div class="cb-d">'+it.d+'</div>':'')+'</div>'+
+        '<div class="cb-meta"><span class="cb-t">'+(it.t||'（未命名）')+'</span>'+
+        (it.d?'<span class="cb-d">'+it.d.slice(5).replace('-','/')+'</span>':'')+'</div>'+
       '</div>';
     }).join('');
   }
