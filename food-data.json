@@ -1,5 +1,35 @@
 [
   {
+    "id": "1789915324986",
+    "name": "忠青商行 遠百信義A13店",
+    "name1": "忠青商行",
+    "name2": "遠百信義A13店",
+    "type": "台式餐館",
+    "meal": "",
+    "price": 644,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "110臺北市信義區西村里松仁路58號4樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%BF%A0%E9%9D%92%E5%95%86%E8%A1%8C+%E9%81%A0%E7%99%BE%E4%BF%A1%E7%BE%A9A13%E5%BA%97/@25.0367849,121.5653817,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ab6a7d736971:0x4b3b0536eda033d6!8m2!3d25.0367849!4d121.5679566!16s%2Fg%2F11s5pq64l3?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-20",
+    "score": 2.8,
+    "visitLog": [
+      {
+        "date": "2026-09-20",
+        "meal": "晚餐",
+        "price": 644,
+        "menu": "招牌好蝦蛋飯套餐、忠青炸雞滷肉飯套餐",
+        "score": 2.8
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/spX8Ms7p/a3b6a3cda305.jpg"
+    ],
+    "img": "https://i.ibb.co/spX8Ms7p/a3b6a3cda305.jpg",
+    "createdAt": 1789915324986
+  },
+  {
     "id": "1789609499932",
     "name": "邱太太滷味",
     "name1": "邱太太滷味",
