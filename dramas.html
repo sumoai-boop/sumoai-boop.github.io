@@ -153,14 +153,6 @@
   .tab-btn.active{background:#C9922F;border-color:#C9922F;color:#1A1210;font-weight:700;}
   .tab-pane{display:none;}
   .tab-pane.active{display:block;}
-  .pl-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
-  .pl-pill{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid #33291F;border-radius:99px;padding:5px 13px 5px 6px;font-size:11px;font-family:'Space Mono',monospace;color:#9C8B7A;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .pl-pill:hover{border-color:rgba(201,146,47,0.5);color:#E8C04A;}
-  .pl-pill.active{border-color:#C9922F;color:#E8C04A;background:rgba(201,146,47,0.14);}
-  .pl-sw{width:16px;height:16px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);flex:none;}
-  .pl-note{font-size:11px;color:#6E635A;margin-bottom:12px;line-height:1.6;}
-  .pl-note.warn{color:#E8A33C;}
-  .pl-dot{position:absolute;left:6px;top:6px;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,0.5);box-shadow:0 0 6px rgba(0,0,0,0.5);}
   .cb-head{text-align:center;margin:6px 0 26px;}
   .cb-head-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.42em;color:#8A7B6E;margin-bottom:8px;}
   .cb-head-title{font-family:'LXGW WenKai TC','Cormorant Garamond',serif;font-size:38px;font-weight:400;color:#EFE3D2;letter-spacing:0.06em;line-height:1;}
@@ -182,6 +174,8 @@
   .cb-card:hover img{transform:scale(1.035);}
   .cb-card.tilting{transition:transform .08s linear,box-shadow .28s,border-color .28s;}
   .cb-meta{display:flex;align-items:baseline;gap:8px;padding:13px 2px 12px;}
+  .cb-v{font-size:10.5px;color:#9A8670;letter-spacing:0.04em;padding:0 2px 12px;margin-top:-6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cb-v::before{content:'▸ ';color:#C9922F;}
   .cb-t{font-family:'LXGW WenKai TC','Cormorant Garamond',serif;font-size:16px;font-weight:400;color:#2B1D12;line-height:1.35;letter-spacing:0.03em;word-break:break-word;flex:1;min-width:0;}
   .cb-d{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.06em;color:#8C7A66;white-space:nowrap;flex:none;}
   .cb-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;z-index:2;}
@@ -472,7 +466,6 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
   <div class="tabbar">
     <button class="tab-btn active" data-tab="gallery">發行商片庫</button>
     <button class="tab-btn" data-tab="calendar">觀看行事曆</button>
-    <button class="tab-btn" data-tab="palette">色調片庫</button>
     <button class="tab-btn" data-tab="collect">收藏冊</button>
     <button class="tab-btn" data-tab="list">列表記錄</button>
   </div>
@@ -527,20 +520,6 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
 
   </div><!-- /pane-calendar -->
 
-  <div class="tab-pane" id="pane-palette">
-  <span class="top5-label" style="margin-bottom:16px;">— 依海報色調分類</span>
-  <div class="dg-wrap">
-    <div class="pl-pills" id="plPills"></div>
-    <div class="dg-bar">
-      <span class="dg-count" id="plCount"></span>
-      <button class="dg-type" id="plScan">分析海報色調</button>
-    </div>
-    <div class="pl-note" id="plNote"></div>
-    <div class="dg-grid" id="plGrid"></div>
-    <button class="dg-more" id="plMore" style="display:none;">載入更多</button>
-  </div>
-  </div><!-- /pane-palette -->
-
   <div class="tab-pane" id="pane-collect">
   <div class="cb-head">
     <div class="cb-head-eyebrow">PRIVATE COLLECTION</div>
@@ -573,6 +552,9 @@ body::before { background: radial-gradient(ellipse at 50% -10%,rgba(201,146,47,0
       <input class="cb-input" id="cbTitle" type="text" placeholder="例：沙丘 第二部">
       <label class="cb-lbl">觀看日期<span>*</span></label>
       <input class="cb-input" id="cbDate" type="date">
+      <label class="cb-lbl">影城</label>
+      <input class="cb-input" id="cbVenue" type="text" list="cbVenueList" placeholder="例：台北松仁威秀">
+      <datalist id="cbVenueList"></datalist>
       <div id="cbFileWrap">
         <label class="cb-lbl">海報圖片<span>*</span></label>
         <div class="cb-drop" id="cbDrop">點這裡選圖，或把圖片拖進來</div>
@@ -2720,205 +2702,6 @@ render();
 
   setTimeout(dgRender, 300);
 
-  // ── 色調片庫 ──
-  var COLOR_BUCKETS = [
-    {k:'red',    n:'紅',    sw:'#D64545', h:[[345,360],[0,12]]},
-    {k:'orange', n:'橙',    sw:'#E08A3C', h:[[12,45]]},
-    {k:'yellow', n:'黃',    sw:'#D9C24A', h:[[45,70]]},
-    {k:'green',  n:'綠',    sw:'#5FA85F', h:[[70,165]]},
-    {k:'cyan',   n:'青',    sw:'#4FA8A8', h:[[165,195]]},
-    {k:'blue',   n:'藍',    sw:'#4A7FC1', h:[[195,255]]},
-    {k:'purple', n:'紫',    sw:'#8B6FC1', h:[[255,300]]},
-    {k:'pink',   n:'粉',    sw:'#C96F9E', h:[[300,345]]},
-    {k:'brown',  n:'棕／大地',sw:'#8A5A32', h:[]},
-    {k:'dark',   n:'暗色系', sw:'#2E2A28', h:[]},
-    {k:'mono',   n:'黑白灰', sw:'#8A8A8A', h:[]}
-  ];
-  var COLOR_CACHE = (function(){ try{ return JSON.parse(localStorage.getItem('_colorCache')||'{}'); }catch(e){ return {}; } })();
-  var _ccTimer=null;
-  function saveColorCache(){
-    clearTimeout(_ccTimer);
-    _ccTimer=setTimeout(function(){ try{ localStorage.setItem('_colorCache', JSON.stringify(COLOR_CACHE)); }catch(e){} },800);
-  }
-
-  function rgbToHsl(r,g,b){
-    r/=255; g/=255; b/=255;
-    var mx=Math.max(r,g,b), mn=Math.min(r,g,b), h=0, s=0, l=(mx+mn)/2, d=mx-mn;
-    if(d){
-      s = l>0.5 ? d/(2-mx-mn) : d/(mx+mn);
-      if(mx===r) h=((g-b)/d + (g<b?6:0));
-      else if(mx===g) h=((b-r)/d + 2);
-      else h=((r-g)/d + 4);
-      h*=60;
-    }
-    return [h,s,l];
-  }
-  function bucketOf(h){
-    for(var i=0;i<COLOR_BUCKETS.length;i++){
-      var B=COLOR_BUCKETS[i];
-      for(var j=0;j<B.h.length;j++){
-        if(h>=B.h[j][0] && h<B.h[j][1]) return B.k;
-      }
-    }
-    return 'red';
-  }
-
-  // 讀一張海報，回傳 {bucket, swatch}
-  function analyzePoster(url){
-    return new Promise(function(resolve){
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onerror = function(){ resolve(null); };
-      img.onload = function(){
-        try{
-          var W=36, H=54;
-          var cv = document.createElement('canvas');
-          cv.width=W; cv.height=H;
-          var ctx = cv.getContext('2d');
-          ctx.drawImage(img,0,0,W,H);
-          var data = ctx.getImageData(0,0,W,H).data;   // 跨域未授權會在這裡拋錯
-          var votes={}, sr=0, sg=0, sb=0, cn=0, n=0, tot=0, sumL=0, sumS=0, earth=0;
-          function isSkin(h,s,l){ return h>=10&&h<=45&&s>=0.15&&s<=0.60&&l>=0.35&&l<=0.85; }
-          function isEarth(h,s,l){ return h>=10&&h<=45&&s>=0.15&&l<0.35; }
-          for(var i=0;i<data.length;i+=4){
-            var r=data[i], g=data[i+1], b=data[i+2];
-            var hsl = rgbToHsl(r,g,b), H=hsl[0], S=hsl[1], L=hsl[2];
-            tot++; sumL+=L; sumS+=S;
-            if(S<0.30 || L<0.15 || L>0.88) continue;       // 門檻加嚴，濾掉暗沉與過曝
-            var w = S*(1-Math.abs(L-0.5)*1.2);             // 偏好飽和且中亮度
-            if(w<=0) continue;
-            if(isSkin(H,S,L)) w*=0.15;                     // 膚色大幅降權（避免人臉海報全變紅橙）
-            if(isEarth(H,S,L)){ earth+=w; continue; }      // 暗棕另計
-            var k = bucketOf(H);
-            votes[k] = (votes[k]||0) + w;
-            sr+=r; sg+=g; sb+=b; cn++; n++;
-          }
-          var meanL = sumL/tot, meanS = sumS/tot;
-          var sw = cn ? 'rgb('+Math.round(sr/cn)+','+Math.round(sg/cn)+','+Math.round(sb/cn)+')' : '#8A8A8A';
-          var best=null, bestV=0;
-          for(var k2 in votes){ if(votes[k2]>bestV){ bestV=votes[k2]; best=k2; } }
-          if(meanS < 0.14)            { resolve({b:'mono',  sw:sw}); return; }   // 整體灰
-          if(meanL < 0.24)            { resolve({b:'dark',  sw:sw}); return; }   // 整體暗
-          if(earth > bestV)           { resolve({b:'brown', sw:sw}); return; }   // 暗棕主導
-          if(!best || bestV/tot<0.12) { resolve({b:'mono',  sw:sw}); return; }   // 色相證據不足
-          resolve({b:best, sw:sw});
-        }catch(e){ resolve('TAINTED'); }
-      };
-      img.src = url;
-    });
-  }
-
-  var PL_PAGE = 24;
-  var plColor = null, plShown = PL_PAGE, plScanning = false;
-
-  function plList(){
-    return DATA.filter(function(m){
-      var e = COLOR_CACHE[m.title];
-      return e && (!plColor || e.b === plColor);
-    }).sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
-  }
-
-  function plRenderPills(){
-    var counts = {};
-    DATA.forEach(function(m){
-      var e = COLOR_CACHE[m.title];
-      if(e) counts[e.b] = (counts[e.b]||0)+1;
-    });
-    var total = Object.keys(counts).reduce(function(s,k){ return s+counts[k]; },0);
-    var html = '<button class="pl-pill'+(plColor?'':' active')+'" data-color=""><span class="pl-sw" style="background:linear-gradient(135deg,#D64545,#4A7FC1);"></span>全部 '+total+'</button>';
-    html += COLOR_BUCKETS.filter(function(B){ return counts[B.k]; }).map(function(B){
-      return '<button class="pl-pill'+(plColor===B.k?' active':'')+'" data-color="'+B.k+'">'+
-             '<span class="pl-sw" style="background:'+B.sw+';"></span>'+B.n+' '+counts[B.k]+'</button>';
-    }).join('');
-    document.getElementById('plPills').innerHTML = html;
-  }
-
-  function plRenderGrid(){
-    var list = plList();
-    var grid = document.getElementById('plGrid');
-    document.getElementById('plCount').textContent =
-      '共 ' + list.length + ' 部' + (list.length>plShown?('（顯示 '+plShown+'）'):'');
-    if(!list.length){
-      grid.innerHTML = '<div class="dg-empty">還沒有分析結果，點右邊「分析海報色調」開始</div>';
-      document.getElementById('plMore').style.display='none';
-      return;
-    }
-    var page = list.slice(0, plShown);
-    grid.innerHTML = page.map(function(m){
-      var e = COLOR_CACHE[m.title];
-      var sc = (m.personal>0) ? m.personal.toFixed(1) : '';
-      var hi = (m.personal>=8) ? ' hi' : '';
-      return '<div class="dg-card" data-t="'+(m.title||'').replace(/"/g,'&quot;')+'">'+
-             (e.u?'<img loading="lazy" decoding="async" src="'+e.u+'" alt="">':'<div class="dg-fallback">'+m.title+'</div>')+
-             '<span class="pl-dot" style="background:'+e.sw+';"></span>'+
-             (sc?'<span class="dg-badge'+hi+'">'+sc+'</span>':'')+
-             '<div class="dg-meta"><div class="dg-t">'+m.title+'</div>'+
-             '<div class="dg-s">'+(m.year||'')+'</div></div></div>';
-    }).join('');
-    document.getElementById('plMore').style.display = (list.length>plShown)?'block':'none';
-  }
-
-  function plRender(){ plRenderPills(); plRenderGrid(); }
-  window.plRender = plRender;
-
-  async function plScan(){
-    if(plScanning) return;
-    var note = document.getElementById('plNote');
-    var pend = DATA.filter(function(m){ var e=COLOR_CACHE[m.title]; return !e || e.algo!==2; });
-    if(!pend.length){ note.className='pl-note'; note.textContent='全部海報都分析過了。'; return; }
-    plScanning = true;
-    var btn = document.getElementById('plScan');
-    btn.disabled = true;
-    var done=0, ok=0, tainted=0;
-    for(var i=0;i<pend.length;i++){
-      var m = pend[i];
-      try{
-        var url = await window.fetchPoster(m);
-        if(url){
-          var res = await analyzePoster(url);
-          if(res === 'TAINTED'){ tainted++; }
-          else if(res){ res.u = url; res.algo = 2; COLOR_CACHE[m.title] = res; ok++; }
-        }
-      }catch(e){}
-      done++;
-      if(tainted >= 3){
-        note.className='pl-note warn';
-        note.textContent='⚠️ 圖床不允許跨網域讀取像素，無法分析色調。';
-        break;
-      }
-      if(done%10===0){
-        saveColorCache();
-        note.className='pl-note';
-        note.textContent='分析中… '+done+'/'+pend.length+'（成功 '+ok+'）';
-        plRender();
-      }
-    }
-    saveColorCache();
-    plScanning = false;
-    btn.disabled = false;
-    if(tainted < 3){
-      note.className='pl-note';
-      note.textContent='分析完成，共 '+ok+' 部。之後新增的記錄再按一次即可補齊。';
-    }
-    plRender();
-  }
-
-  document.getElementById('plScan').addEventListener('click', plScan);
-  document.getElementById('plMore').addEventListener('click', function(){ plShown += PL_PAGE; plRenderGrid(); });
-  document.getElementById('plPills').addEventListener('click', function(e){
-    var b = e.target.closest('[data-color]');
-    if(!b) return;
-    plColor = b.getAttribute('data-color') || null;
-    plShown = PL_PAGE;
-    plRender();
-  });
-  document.getElementById('plGrid').addEventListener('click', function(e){
-    var card = e.target.closest('[data-t]');
-    if(!card) return;
-    var m = DATA.filter(function(x){ return x.title===card.getAttribute('data-t'); })[0];
-    if(m && typeof openPoster==='function') openPoster(m);
-  });
-
   // ── 收藏冊 ──
   var CB_OWNER='sumoai-boop', CB_REPO='sumoai-boop.github.io', CB_BRANCH='main';
   var CB_META='collection-data.json', CB_DIR='collection';
@@ -2933,6 +2716,16 @@ render();
     el.textContent=msg||'';
   }
   function cbErr(msg){ document.getElementById('cbErr').textContent=msg||''; }
+  function cbFillVenues(){
+    var cnt={};
+    DATA.forEach(function(m){
+      var v=(m.venue||'').replace(/^\S*\s*(?=[^\s])/, function(x){ return /[\u4e00-\u9fffA-Za-z]/.test(x)?x:''; }).trim();
+      if(v && v.indexOf('家庭劇院')<0) cnt[v]=(cnt[v]||0)+1;
+    });
+    CB.forEach(function(x){ if(x.v) cnt[x.v]=(cnt[x.v]||0)+1; });
+    var list=Object.keys(cnt).sort(function(a,b){ return cnt[b]-cnt[a]; });
+    document.getElementById('cbVenueList').innerHTML=list.map(function(v){ return '<option value="'+v.replace(/"/g,'&quot;')+'">'; }).join('');
+  }
 
   // 壓縮：長邊 1000px、JPEG 0.82
   function cbCompress(file){
@@ -3012,6 +2805,8 @@ render();
     document.getElementById('cbSaveBtn').textContent=item?'✦ 儲存':'✦ 新增';
     document.getElementById('cbTitle').value=item?(item.t||''):'';
     document.getElementById('cbDate').value=item?(item.d||''):new Date().toISOString().slice(0,10);
+    document.getElementById('cbVenue').value=item?(item.v||''):'';
+    cbFillVenues();
     document.getElementById('cbFileWrap').style.display=item?'none':'';
     document.getElementById('cbPreview').style.display='none';
     document.getElementById('cbFile').value='';
@@ -3036,6 +2831,7 @@ render();
   async function cbSubmit(){
     var t=document.getElementById('cbTitle').value.trim();
     var d=document.getElementById('cbDate').value;
+    var v=document.getElementById('cbVenue').value.trim();
     if(!t){ cbErr('請填標題'); return; }
     if(!d){ cbErr('請選觀看日期'); return; }
     if(!cbEditing && !cbPendingB64){ cbErr('請選一張海報圖片'); return; }
@@ -3046,6 +2842,7 @@ render();
 
     if(cbEditing){
       cbEditing.t=t; cbEditing.d=d;
+      if(v) cbEditing.v=v; else delete cbEditing.v;
       cbSave(); cbRender(); cbClose(); btn.disabled=false;
       var ok1=await cbPushMeta('收藏冊更新：'+t);
       cbNote(ok1?'✦ 已更新':'已存本機，同步失敗', !ok1);
@@ -3061,7 +2858,9 @@ render();
       btn.disabled=false;
       return;
     }
-    CB.unshift({f:name, t:t, d:d, ts:Date.now()});
+    var rec={f:name, t:t, d:d, ts:Date.now()};
+    if(v) rec.v=v;
+    CB.unshift(rec);
     cbSave(); cbRender(); cbClose(); btn.disabled=false;
     var ok=await cbPushMeta('收藏冊新增：'+t);
     cbNote(ok?('✦ 已新增「'+t+'」'):'圖片已上傳，但清單同步失敗', !ok);
@@ -3092,6 +2891,7 @@ render();
         '</div>'+
         '<div class="cb-meta"><span class="cb-t">'+(it.t||'（未命名）')+'</span>'+
         (it.d?'<span class="cb-d">'+it.d.slice(5).replace('-','/')+'</span>':'')+'</div>'+
+        (it.v?'<div class="cb-v">'+it.v+'</div>':'')+
       '</div>';
     }).join('');
   }
@@ -3200,7 +3000,6 @@ render();
     if(t==='calendar' && typeof renderCal==='function') renderCal();
     if(t==='gallery'  && typeof dgRender==='function')  dgRender();
     if(t==='list'     && typeof fillRevenues==='function') setTimeout(fillRevenues, 60);
-    if(t==='palette'  && typeof plRender==='function') plRender();
     if(t==='collect'  && typeof cbRender==='function') cbRender();
   });
   // 記住上次停留的分頁
