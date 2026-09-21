@@ -104,6 +104,9 @@ body{
 .stat-val{font-family:'Space Mono',monospace;font-size:40px;font-weight:700;color:#ffffff;text-shadow:0 0 20px rgba(255,255,255,0.25);line-height:1;}
 .stat-val em{font-style:normal;color:#00C853;font-size:40px;font-weight:700;font-family:'Space Mono',monospace;}
 .stat-unit{font-size:20px;font-weight:700;vertical-align:baseline;font-family:'Space Mono',monospace;}
+/* 總覽的金額單位已從「NT$」縮成一個「$」，字級跟著放大才不會細得看不見；
+   本業收入頁仍是 NT$，維持原字級以免撐破卡片 */
+#tab-overview .stat-unit{font-size:28px;}
 .stat-val em.unit{font-size:22px;color:#ffffff;font-family:'Space Mono',monospace;}
 .stat-val em.num{color:#00C853;font-size:40px;font-family:'Space Mono',monospace;}
 
@@ -165,11 +168,14 @@ body{
   .stat-val em{font-size:26px!important;}
   .stat-val em.unit{font-size:14px!important;}
   .stat-unit{font-size:13px!important;}
+  #tab-overview .stat-unit{font-size:18px!important;}
   /* 圖表改單欄 */
   .chart-grid{grid-template-columns:1fr;}
   .chart-card{padding:16px 14px;}
   /* TOP10 改單欄 */
   #top5Section{grid-template-columns:1fr!important;}
+  /* 客人排行：手機省略「最後一趟」日期，留空間給名字與金額 */
+  #guestTop10 .gt-last{display:none;}
   /* 分頁按鈕：可橫向捲動不換行擠壓 */
   .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
   .tabs::-webkit-scrollbar{display:none;}
@@ -375,20 +381,20 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
       <div class="stat-card"><div class="stat-label">本月公里數</div><div class="stat-val" id="s-month-km"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均公里數</div><div class="stat-val" id="s-avg-km2"><em class="num">0</em> <em class="unit">km</em></div></div>
       <div class="stat-card"><div class="stat-label">總公里數</div><div class="stat-val" id="s-total-km"><em class="num">0</em> <em class="unit">km</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均週薪</div><div class="stat-val" id="s-avg-month-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均時薪</div><div class="stat-val" id="s-hourly"><span class="stat-unit">$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均週薪</div><div class="stat-val" id="s-avg-month-income"><span class="stat-unit">$</span><em>0</em></div></div>
       <!-- Row 2: 載客 + 費用 -->
       <div class="stat-card"><div class="stat-label">本月載客數</div><div class="stat-val" id="s-month-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">總載客數</div><div class="stat-val" id="s-total-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均行程時間</div><div class="stat-val" id="s-avg-fare"><em class="num" style="font-size:32px;">—</em></div></div>
       <!-- Row 3: 趟數 + 收入 -->
       <div class="stat-card"><div class="stat-label">本月趟數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均趟數</div><div class="stat-val" id="s-avg-day-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
       <div class="stat-card"><div class="stat-label">總趟數</div><div class="stat-val" id="s-total-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
-      <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">NT$</span><em>0</em></div></div>
-      <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總收入</div><div class="stat-val" id="s-total-income"><span class="stat-unit">$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">總支出</div><div class="stat-val" id="s-total-exp"><span class="stat-unit">$</span><em>0</em></div></div>
       <!-- Row 4: 時數 + 支出 -->
       <div class="stat-card"><div class="stat-label">本月時數</div><div class="stat-val" id="s-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均時數</div><div class="stat-val" id="s-avg-day-hours"><em class="num">0</em> <em class="unit">hr</em></div></div>
@@ -396,7 +402,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <div class="stat-label">總時數</div>
         <div class="stat-val" id="s-total-hours"><em class="num">0</em> <em class="unit">hr</em></div>
       </div>
-      <div class="stat-card" style="grid-column:span 2;"><div class="stat-label">總淨利</div><div class="stat-val" id="s-net-card"><span class="stat-unit">NT$</span><em>0</em></div></div>
+      <div class="stat-card" style="grid-column:span 2;"><div class="stat-label">總淨利</div><div class="stat-val" id="s-net-card"><span class="stat-unit">$</span><em>0</em></div></div>
     </div>
 
     <!-- TOP5 區域 -->
@@ -426,6 +432,9 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <div id="monthIncomeChart" style="width:100%;"></div>
       </div>
     </div>
+
+    <!-- 客人排行 TOP10（累計，不受上方期間影響） -->
+    <div id="guestTop10" style="margin-top:26px;"></div>
   </div>
 
   <!-- 行程記錄 -->
@@ -769,6 +778,74 @@ function renderTop5(){
     + makeCard('下車區域 TOP10', toDistData)
     + makeCard('上車地點 TOP10', fromRoadData)
     + makeCard('下車地點 TOP10', toRoadData);
+
+  renderGuestTop10();
+}
+
+// ── 客人排行 TOP10 ──
+// 名字是手動輸入的自由欄位，同一個人可能寫成「陳」「陳先生」而被算成兩個人，
+// 所以這裡只做去頭尾空白 + 不分大小寫的合併，不做更激進的猜測。
+var guestTopSort='amt';   // 'amt'=依實收金額，'cnt'=依趟數
+function setGuestTopSort(k){ guestTopSort=k; renderGuestTop10(); }
+
+function renderGuestTop10(){
+  var el=document.getElementById('guestTop10'); if(!el) return;
+  var trips=getData('uberTrips');
+  var esc=function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                                       .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+
+  var map={}, named=0;
+  trips.forEach(function(t){
+    var n=(t.guest||'').trim(); if(!n) return;
+    named++;
+    var k=n.toLowerCase();
+    if(!map[k]) map[k]={name:n, cnt:0, amt:0, last:''};
+    map[k].cnt++;
+    map[k].amt+=(t.detail||0);
+    if(t.d && t.d>map[k].last) map[k].last=t.d;
+  });
+  var list=Object.keys(map).map(function(k){ return map[k]; });
+  // 主排序依選定指標，同分時用另一個指標當次要排序，避免順序每次重整都跳動
+  list.sort(function(a,b){
+    return guestTopSort==='cnt' ? (b.cnt-a.cnt)||(b.amt-a.amt)
+                                : (b.amt-a.amt)||(b.cnt-a.cnt);
+  });
+  var top=list.slice(0,10);
+
+  var chip=function(k,label){
+    var on=(guestTopSort===k);
+    return '<button onclick="setGuestTopSort(\''+k+'\')" style="background:'+(on?'rgba(0,200,83,0.28)':'rgba(255,255,255,0.04)')+';'
+      +'border:1px solid rgba(0,200,83,'+(on?'0.65':'0.2')+');border-radius:99px;color:'+(on?'#00E860':'rgba(255,255,255,0.5)')+';'
+      +'font-size:12px;font-weight:'+(on?'700':'400')+';padding:4px 13px;cursor:pointer;font-family:monospace;margin-left:6px;">'+label+'</button>';
+  };
+
+  var rows=top.map(function(g,i){
+    var medal=i<3;
+    var rc=i===0?'#FFD700':i===1?'#C0C0C0':i===2?'#CD7F32':'rgba(255,255,255,0.4)';
+    var rb=i===0?'rgba(255,215,0,0.14)':i===1?'rgba(192,192,192,0.14)':i===2?'rgba(205,127,50,0.14)':'transparent';
+    var badge=medal
+      ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:'+rb+';border:1px solid '+rc+';font-size:12px;font-weight:700;color:'+rc+';flex-shrink:0;">'+(i+1)+'</span>'
+      : '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;font-size:13px;font-weight:700;color:'+rc+';flex-shrink:0;">'+(i+1)+'</span>';
+    return '<div class="top10-row" style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:7px;border-bottom:1px solid rgba(255,255,255,0.04);">'
+      +badge
+      +'<span style="flex:1;min-width:0;font-size:15px;color:'+(medal?'#fff':'#f0dca8')+';font-weight:'+(medal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(g.name)+'">'+esc(g.name)+'</span>'
+      +'<span style="width:66px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:17px;font-weight:700;color:'+(guestTopSort==='cnt'?'#00E860':'#f0dca8')+';">'+g.cnt
+        +'<span style="font-size:12px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:3px;">趟</span></span>'
+      +'<span style="width:96px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:17px;font-weight:700;color:'+(guestTopSort==='amt'?'#00E860':'#f0dca8')+';">$'+fmt(Math.round(g.amt))+'</span>'
+      +'<span class="gt-last" style="width:74px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.35);">'+(g.last?g.last.slice(5):'—')+'</span>'
+    +'</div>';
+  }).join('');
+
+  var cover=trips.length ? '共 '+named+' 趟有填乘客（佔全部 '+trips.length+' 趟的 '+(named/trips.length*100).toFixed(0)+'%）· '+list.length+' 位不重複客人' : '';
+
+  el.innerHTML='<div class="chart-card" style="padding:18px 20px;">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px;">'
+      +'<div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;">客人排行 TOP10</div>'
+      +'<div>'+chip('amt','依實收金額')+chip('cnt','依趟數')+'</div>'
+    +'</div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px;">'+cover+'</div>'
+    +(rows||'<div style="color:rgba(255,255,255,0.2);font-size:13px;">尚無乘客名字資料</div>')
+  +'</div>';
 }
 
 
@@ -2088,12 +2165,12 @@ function updateStats(){
   // 平均載客數（所有行程）
   var avgPax=totalTrips>0?(allTrips.reduce(function(s,t){return s+(t.pax||1);},0)/totalTrips).toFixed(1):0;
 
-  document.getElementById('s-hourly').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(hourly)+'</em>';
+  document.getElementById('s-hourly').innerHTML='<span class="stat-unit">$</span><em>'+fmt(hourly)+'</em>';
   document.getElementById('s-hours').innerHTML='<em class="num">'+hours.toFixed(1)+'</em> <em class="unit">hr</em>';
   document.getElementById('s-total-hours').innerHTML='<em class="num">'+totalHours.toFixed(1)+'</em> <em class="unit">hr</em>';
   var totalNet=totalIncome-totalExp;
   var netCard=document.getElementById('s-net-card');
-  if(netCard) netCard.innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalNet)+'</em>';
+  if(netCard) netCard.innerHTML='<span class="stat-unit">$</span><em>'+fmt(totalNet)+'</em>';
   // 平均公里數
   // 有收入的天數（作為所有平均的分母）
   // 本月載客數
@@ -2139,7 +2216,7 @@ function updateStats(){
   var incomeWeeks=Object.keys(incomeWeekSet);
   var avgMonthIncome=incomeWeeks.length>0?Math.round(incomeWeeks.reduce(function(s,k){return s+incomeWeekSet[k];},0)/incomeWeeks.length):0;
 
-  document.getElementById('s-avg-month-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgMonthIncome)+'</em>';
+  document.getElementById('s-avg-month-income').innerHTML='<span class="stat-unit">$</span><em>'+fmt(avgMonthIncome)+'</em>';
   document.getElementById('s-total-km').innerHTML='<em class="num">'+totalKm.toFixed(1)+'</em> <em class="unit">km</em>';
   document.getElementById('s-avg-fare').innerHTML='<em class="num" style="font-size:32px;">'+avgTmStr+'</em>';
   document.getElementById('s-total-pax').innerHTML='<em class="num">'+fmt(totalPax)+'</em> <em class="unit">人</em>';
@@ -2152,10 +2229,10 @@ function updateStats(){
   document.getElementById('s-trips').innerHTML='<em class="num">'+fmt(tripCount)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-total-trips').innerHTML='<em class="num">'+fmt(totalTrips)+'</em> <em class="unit">趟</em>';
   document.getElementById('s-month-km').innerHTML='<em class="num">'+monthKm.toFixed(1)+'</em> <em class="unit">km</em>';
-  document.getElementById('s-avg-detail').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(avgDetail)+'</em>';
-  document.getElementById('s-total-income').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalIncome)+'</em>';
+  document.getElementById('s-avg-detail').innerHTML='<span class="stat-unit">$</span><em>'+fmt(avgDetail)+'</em>';
+  document.getElementById('s-total-income').innerHTML='<span class="stat-unit">$</span><em>'+fmt(totalIncome)+'</em>';
   document.getElementById('s-avg-pax').innerHTML='<em class="num">'+avgPax2+'</em> <em class="unit">人</em>';
-  document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">NT$</span><em>'+fmt(totalExp)+'</em>';
+  document.getElementById('s-total-exp').innerHTML='<span class="stat-unit">$</span><em>'+fmt(totalExp)+'</em>';
 }
 // 縣市分區資料
 const DISTRICTS = {
@@ -2432,7 +2509,7 @@ function renderPeriodSummary(){
 
   var big=function(label,val,color){
     return '<div style="flex:1;min-width:140px;"><div style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:5px;">'+label+'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:30px;font-weight:700;color:'+color+';white-space:nowrap;">NT$'+fmt(val)+'</div></div>';
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:30px;font-weight:700;color:'+color+';white-space:nowrap;">$'+fmt(val)+'</div></div>';
   };
   var cell=function(label,val,color,unit){
     return '<div><div style="font-size:16px;color:rgba(255,255,255,0.4);margin-bottom:5px;">'+label+'</div>'
@@ -2555,7 +2632,7 @@ function renderPeriodHours(){
       +'<span style="float:right;font-weight:400;font-size:11px;color:rgba(255,255,255,0.35);">時薪以跑車實收計算，不含額外獎勵</span></div>'
     +'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;">'
       +card('總工時', mins?hhmm(mins):'—','','#60AAFF')
-      +card('平均時薪', mins?'NT$'+fmt(Math.round(inc/(mins/60))):'—','','#00E860')
+      +card('平均時薪', mins?'$'+fmt(Math.round(inc/(mins/60))):'—','','#00E860')
       +card('日均工時', days?hhmm(mins/days):'—','','#FF9500')
     +'</div>'
     +(list.length
@@ -2588,7 +2665,7 @@ function renderOverviewPies(){
   var net=document.getElementById('ovNet');
   if(net){
     var n=incTotal-expTotal;
-    net.innerHTML='期間淨利 <b style="color:'+(n>=0?'#00E860':'#FF6B6B')+';font-size:20px;">NT$'+fmt(n)+'</b>';
+    net.innerHTML='期間淨利 <b style="color:'+(n>=0?'#00E860':'#FF6B6B')+';font-size:20px;">$'+fmt(n)+'</b>';
   }
 }
 // ── 本業收入 ──
