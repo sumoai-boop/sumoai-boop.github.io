@@ -147,7 +147,7 @@ body{
 .btn-sync:hover{border-color:var(--orange);color:var(--orange-dk);}
 
 /* 主內容 */
-.main{flex:1;margin-left:240px;padding:22px 28px 150px;max-width:1100px;}
+.main{flex:1;margin-left:240px;padding:22px 28px 20px;max-width:1100px;}
 .main-empty{margin-left:240px;flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--hint);padding:60px 20px 150px;text-align:center;}
 .trip-header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
 .th-title{font-size:24px;font-weight:900;color:var(--ink);}
@@ -229,7 +229,7 @@ body{
 .cal-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;border:1px solid;border-radius:8px;padding:4px 9px;color:var(--ink);background:var(--card);}
 .cal-chip b{font-weight:700;color:var(--red-dk);}
 .cal-chip b.cur-twd{color:var(--green-dk);}
-.cal-scroll{height:60vh;min-height:360px;max-height:760px;overflow-y:auto;overflow-x:hidden;border:1px solid var(--line);border-radius:12px;background:var(--card);-webkit-overflow-scrolling:touch;}
+.cal-scroll{height:60vh;min-height:420px;overflow-y:auto;overflow-x:hidden;border:1px solid var(--line);border-radius:12px;background:var(--card);-webkit-overflow-scrolling:touch;}
 .cal{position:relative;background:var(--card);}
 .cal-grid{position:absolute;inset:0;}
 .cal-hline{position:absolute;left:46px;right:0;border-top:1px solid var(--line-soft);}
@@ -355,7 +355,7 @@ body{
   .sidebar{transform:translateX(-100%);box-shadow:none;}
   .sidebar.open{transform:translateX(0);box-shadow:0 0 40px rgba(59,47,42,0.25);}
   .sb-overlay.show{display:block;}
-  .main,.main-empty{margin-left:0;padding:16px 14px 150px;}
+  .main,.main-empty{margin-left:0;padding:16px 14px 16px;}
   .hamburger{display:flex;}
   .th-title{font-size:20px;}
   .th-total{width:100%;margin-left:0;}
@@ -978,6 +978,7 @@ function renderLog(){
   host.style.display='block';
   host.innerHTML=calMode==='week'?renderWeekCalendar(t,wk):renderDayCalendar(t,itSelectedDate);
   var sc=host.querySelector('.cal-scroll');
+  fitCalHeight();
   if(sc){
     var mins=items.map(function(x){return toMin(x.time);}).filter(function(m){return m!=null&&m>=360;});
     var startMin=mins.length?Math.min.apply(null,mins):480; // 預設 08:00
@@ -1125,6 +1126,14 @@ function renderWeekCalendar(t,days){
   return '<div class="cal-scroll wk-scroll"><div class="wk"><div class="wk-sticky">'+head+allday+'</div>'
     +'<div class="cal wk-body" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div>'+body+'</div></div></div>';
 }
+/* 日曆高度撐到視窗底部，減少下方空白 */
+function fitCalHeight(){
+  var sc=document.querySelector('#logTimeline .cal-scroll');if(!sc||!sc.getBoundingClientRect)return;
+  // 捲到日曆時剛好佔滿整個視窗，底部只留一點邊距
+  var h=Math.max(420,Math.round(window.innerHeight-28-40));
+  sc.style.height=h+'px';
+}
+window.addEventListener('resize',function(){fitCalHeight();});
 function setCalMode(m){
   calMode=(m==='week')?'week':'day';
   try{localStorage.setItem('trips_cal_mode',calMode);}catch(e){}
