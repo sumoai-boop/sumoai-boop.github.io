@@ -481,6 +481,54 @@ body{
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
 }
+
+/* ── 日/週 切換工具列 ── */
+.cal-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.cal-today{background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:6px 16px;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:inherit;transition:border-color .15s,background-color .15s;}
+.cal-today:hover{border-color:var(--orange);color:var(--orange-dk);}
+.cal-today:disabled{opacity:.4;cursor:default;border-color:var(--line);color:var(--hint);}
+.cal-nav{width:32px;height:32px;border-radius:50%;border:none;background:transparent;font-size:22px;line-height:1;color:var(--ink-soft);cursor:pointer;transition:background-color .15s;}
+.cal-nav:hover{background:var(--orange-bg);color:var(--orange-dk);}
+.cal-range{font-size:17px;font-weight:900;color:var(--ink);font-family:'Space Mono','Noto Sans TC',monospace;margin-left:4px;}
+.cal-seg{margin-left:auto;display:flex;background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:3px;gap:2px;}
+.cal-seg button{border:none;background:transparent;border-radius:99px;padding:5px 16px;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:inherit;transition:background-color .18s,color .18s;}
+.cal-seg button.on{background:var(--orange);color:#FFF3EC;box-shadow:0 2px 8px rgba(255,107,53,.3);}
+
+/* ── 週檢視 ── */
+.cal-scroll.wk-scroll{overflow-x:auto;}
+.wk{min-width:640px;position:relative;}
+.wk-sticky{position:sticky;top:0;z-index:9;background:var(--card);box-shadow:0 2px 6px rgba(59,47,42,.05);}
+.wk-head{display:flex;background:var(--card);border-bottom:1px solid var(--line);}
+.wk-gut{width:46px;flex-shrink:0;}
+.wk-hd{flex:1;min-width:0;text-align:center;padding:7px 2px 6px;cursor:pointer;border-radius:10px;transition:background-color .15s;}
+.wk-hd:hover{background:rgba(255,107,53,.06);}
+.wk-hd.off{opacity:.35;cursor:default;}
+.wk-hd.off:hover{background:transparent;}
+.wk-dow{font-size:11px;font-weight:700;color:var(--hint);}
+.wk-num{width:34px;height:34px;line-height:34px;margin:2px auto 1px;border-radius:50%;font-size:17px;font-weight:700;color:var(--ink);font-family:'Space Mono',monospace;transition:background-color .15s;}
+.wk-hd.sel .wk-num{background:var(--orange-bg);color:var(--orange-dk);}
+.wk-hd.today .wk-dow{color:var(--orange-dk);}
+.wk-hd.today .wk-num{background:var(--orange);color:#fff;box-shadow:0 2px 8px rgba(255,107,53,.35);}
+.wk-sum{font-size:10px;font-weight:700;color:var(--red-dk);font-family:'Space Mono',monospace;min-height:13px;}
+.wk-allday{display:flex;border-bottom:1px solid var(--line);background:var(--panel);}
+.wk-gut-lbl{font-size:10px;color:var(--hint);text-align:right;padding:6px 6px 0 0;font-weight:700;}
+.wk-adcell{flex:1;min-width:0;padding:3px 2px;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--line-soft);}
+.wk-chip{font-size:11px;font-weight:700;padding:2px 5px;border-radius:5px;border-left:3px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.wk-chip b{font-family:'Space Mono',monospace;font-weight:700;}
+.wk-body{position:relative;}
+.wk-col{position:absolute;top:0;bottom:0;border-left:1px solid var(--line-soft);}
+.wk-col.sel{background:rgba(255,107,53,.04);}
+.wk-col.off{background:repeating-linear-gradient(135deg,rgba(59,47,42,.035) 0 6px,transparent 6px 12px);}
+.wk-ev{padding:2px 4px 2px 5px;border-left-width:3px;}
+.wk-ev .cev-title{font-size:12px;padding-right:0;white-space:normal;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.wk-time{font-size:10px;color:var(--ink-soft);font-family:'Space Mono',monospace;line-height:1.25;}
+.wk-ev .cev-cost{font-size:10px;line-height:1.25;}
+.wk-now{left:0;right:0;}
+.wk-now::before{left:-5px;}
+@media (max-width:768px){
+  .cal-range{font-size:14px;}
+  .cal-seg{margin-left:0;}
+}
 </style>
 </head>
 <body>
@@ -550,6 +598,16 @@ body{
         <div class="stat-card red"><div class="sc-label">總花費 NT$</div><div class="sc-value" id="stLocalTotal">0</div></div>
         <div class="stat-card orange"><div class="sc-label">機票 NT$</div><div class="sc-value" id="stFlight">0</div></div>
         <div class="stat-card green"><div class="sc-label">住宿 NT$</div><div class="sc-value" id="stStay">0</div></div>
+      </div>
+      <div class="cal-toolbar">
+        <button class="cal-today" id="calTodayBtn" onclick="calToday()">今天</button>
+        <button class="cal-nav" onclick="calNav(-1)" aria-label="上一段">‹</button>
+        <button class="cal-nav" onclick="calNav(1)" aria-label="下一段">›</button>
+        <span class="cal-range" id="calRange"></span>
+        <div class="cal-seg" role="tablist">
+          <button id="segDay" onclick="setCalMode('day')">日</button>
+          <button id="segWeek" onclick="setCalMode('week')">週</button>
+        </div>
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
       <div class="form-row">
@@ -695,6 +753,7 @@ let DB={trips:[]};
 let currentTripId=null;
 let currentView='log';
 let itSelectedDate=null;
+let calMode=(function(){try{return localStorage.getItem('trips_cal_mode')==='week'?'week':'day';}catch(e){return 'day';}})();
 
 // ── 工具 ──
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -898,16 +957,26 @@ function renderLog(){
     var dot=ds>0?'<span style=\"display:inline-block;width:5px;height:5px;border-radius:50%;background:'+(d===itSelectedDate?'#FFF3EC':'#E24B4A')+';margin-left:5px;vertical-align:middle;\"></span>':'';
     return '<button class=\"day-tab'+(d===itSelectedDate?' active':'')+'\" onclick=\"pickDay(\''+d+'\')\">D'+(i+1)+' '+fmtMD(d)+dot+'</button>';
   }).join('');
-  var items=t.entries.filter(x=>x.date===itSelectedDate);
+  var wk=weekDaysFor(itSelectedDate);
+  var inTrip=function(d){return d>=t.start&&d<=t.end;};
+  var viewDays=calMode==='week'?wk.filter(inTrip):[itSelectedDate];
+  var items=t.entries.filter(x=>viewDays.indexOf(x.date)>=0);
   var sub=items.reduce((s,x)=>s+entryTWD(x,t),0);
-  document.getElementById('logDaySub').innerHTML=items.length
-    ?'<span class="ds-day">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
-      +(sub>0?'<span class="ds-sum">當日 NT$ '+num(sub)+'</span>':'')
-    :'';
+  document.getElementById('logDaySub').innerHTML=calMode==='week'
+    ?'<span class="ds-day">'+fmtMD(wk[0])+' – '+fmtMD(wk[6])+'</span>'+(sub>0?'<span class="ds-sum">本週 NT$ '+num(sub)+'</span>':'')
+    :(items.length?'<span class="ds-day">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
+      +(sub>0?'<span class="ds-sum">當日 NT$ '+num(sub)+'</span>':''):'');
+  document.getElementById('segDay').className=calMode==='day'?'on':'';
+  document.getElementById('segWeek').className=calMode==='week'?'on':'';
+  document.getElementById('calRange').textContent=calMode==='week'
+    ?(wk[0].slice(0,4)+' '+fmtMD(wk[0])+' – '+fmtMD(wk[6]))
+    :(itSelectedDate.slice(0,4)+' '+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate));
+  var todayBtn=document.getElementById('calTodayBtn');
+  if(todayBtn)todayBtn.disabled=!inTrip(today);
   var host=document.getElementById('logTimeline');
   document.getElementById('logEmpty').style.display='none';
   host.style.display='block';
-  host.innerHTML=renderDayCalendar(t,itSelectedDate);
+  host.innerHTML=calMode==='week'?renderWeekCalendar(t,wk):renderDayCalendar(t,itSelectedDate);
   var sc=host.querySelector('.cal-scroll');
   if(sc){
     var mins=items.map(function(x){return toMin(x.time);}).filter(function(m){return m!=null&&m>=360;});
@@ -986,6 +1055,106 @@ function renderDayCalendar(t,day){
       +'</div>';
   }).join('');
   return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body" onclick="calSlotClick(event)">'+evs+'</div></div></div>';
+}
+/* ══════════ 週檢視（仿 Google 日曆） ══════════ */
+function weekDaysFor(day){
+  var d=parseDate(day),dow=(d.getDay()+6)%7; // 週一為一週開始
+  d.setDate(d.getDate()-dow);
+  var out=[];for(var i=0;i<7;i++){out.push(fmtDateLocal(d));d.setDate(d.getDate()+1);}
+  return out;
+}
+function collectDay(t,day){
+  var timed=[],untimed=[];
+  (t.entries||[]).filter(function(e){return e.date===day;}).forEach(function(x){
+    var sm=toMin(x.time);
+    if(sm==null){untimed.push(x);return;}
+    var em=toMin(x.end);if(em==null)em=sm+60;else if(em<=sm)em+=1440;
+    timed.push({x:x,s:sm,e:em,cont:false});
+  });
+  var pd=prevDateStr(day);
+  (t.entries||[]).filter(function(e){return e.date===pd;}).forEach(function(x){
+    var sm=toMin(x.time),em=toMin(x.end);
+    if(sm==null||em==null||em>sm)return;
+    timed.push({x:x,s:0,e:em,cont:true});
+  });
+  return {timed:timed,untimed:untimed};
+}
+function renderWeekCalendar(t,days){
+  var HP=66,pm=HP/60,bodyH=24*HP,today=fmtDateLocal(new Date());
+  var inTrip=function(d){return d>=t.start&&d<=t.end;};
+  var W='(100% - 46px)/7';
+  var head='<div class="wk-head"><div class="wk-gut"></div>'+days.map(function(d){
+    var off=!inTrip(d),cls='wk-hd'+(off?' off':'')+(d===itSelectedDate?' sel':'')+(d===today?' today':'');
+    var ds=off?0:(t.entries||[]).filter(function(x){return x.date===d;}).reduce(function(s,x){return s+entryTWD(x,t);},0);
+    return '<div class="'+cls+'"'+(off?'':' onclick="pickDay(\''+d+'\')"')+'>'
+      +'<div class="wk-dow">'+weekdayZh(d)+'</div>'
+      +'<div class="wk-num">'+(+d.slice(8))+'</div>'
+      +'<div class="wk-sum">'+(ds>0?'NT$'+num(ds):'&nbsp;')+'</div></div>';
+  }).join('')+'</div>';
+  var cols=days.map(function(d){return inTrip(d)?collectDay(t,d):{timed:[],untimed:[]};});
+  var hasUntimed=cols.some(function(c){return c.untimed.length;});
+  var allday=hasUntimed?'<div class="wk-allday"><div class="wk-gut wk-gut-lbl">未定</div>'+cols.map(function(c){
+    return '<div class="wk-adcell">'+c.untimed.map(function(x){
+      var ty=TAG[x.type]||TAG['其他'];
+      var cost=(+x.amount>0)?' <b>'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount))+'</b>':'';
+      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\')" style="background:'+ty.bg+';border-left-color:'+ty.pie+';color:'+ty.c+';">'+esc(x.title)+cost+'</div>';
+    }).join('')+'</div>';
+  }).join('')+'</div>':'';
+  var grid='<div class="cal-night" style="top:0;height:'+(6*HP)+'px;"></div>'
+    +'<div class="cal-night" style="top:'+(22*HP)+'px;height:'+(2*HP)+'px;"></div>';
+  for(var h=0;h<=24;h++){
+    grid+='<div class="cal-hline" style="top:'+(h*HP)+'px;"></div>'
+      +'<div class="cal-hlabel" style="top:'+(h*HP-6)+'px;">'+String(h%24).padStart(2,'0')+':00</div>';
+  }
+  var body=days.map(function(d,i){
+    var off=!inTrip(d),c=cols[i];
+    layoutColumns(c.timed);
+    var evs=c.timed.map(function(o,_i){
+      var x=o.x,ty=TAG[x.type]||TAG['其他'];
+      var drawE=Math.min(o.e,1440),top=o.s*pm,hgt=Math.max((drawE-o.s)*pm,22);
+      var w=100/o.cols,left=o.col*w;
+      var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
+      var tm=o.cont?'':'<div class="wk-time">'+minHHMM(o.s)+(o.e-o.s>=45?' – '+minHHMM(o.e%1440):'')+'</div>';
+      return '<div class="cal-ev wk-ev" onclick="openEntryDetail(\''+x.id+'\')" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 2px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
+        +'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost+'</div>';
+    }).join('');
+    var now=(d===today)?'<div class="cal-now wk-now" style="top:'+((new Date().getHours()*60+new Date().getMinutes())*pm).toFixed(1)+'px;"></div>':'';
+    return '<div class="wk-col'+(off?' off':'')+(d===itSelectedDate?' sel':'')+'" style="left:calc(46px + '+i+' * '+W+');width:calc('+W+');"'
+      +(off?'':' onclick="weekSlotClick(event,\''+d+'\')"')+'>'+now+evs+'</div>';
+  }).join('');
+  return '<div class="cal-scroll wk-scroll"><div class="wk"><div class="wk-sticky">'+head+allday+'</div>'
+    +'<div class="cal wk-body" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div>'+body+'</div></div></div>';
+}
+function setCalMode(m){
+  calMode=(m==='week')?'week':'day';
+  try{localStorage.setItem('trips_cal_mode',calMode);}catch(e){}
+  renderLog();
+}
+function calNav(dir){
+  var t=curTrip();if(!t)return;
+  var d=parseDate(itSelectedDate);d.setDate(d.getDate()+dir*(calMode==='week'?7:1));
+  var nd=fmtDateLocal(d);
+  if(nd<t.start)nd=t.start;if(nd>t.end)nd=t.end;
+  if(nd===itSelectedDate){showToast(dir<0?'已經是旅程第一天':'已經是旅程最後一天',false);return;}
+  itSelectedDate=nd;renderLog();
+}
+function calToday(){
+  var t=curTrip();if(!t)return;
+  var td=fmtDateLocal(new Date());
+  if(td<t.start||td>t.end){showToast('今天不在這趟旅程期間',false);return;}
+  itSelectedDate=td;renderLog();
+}
+function weekSlotClick(e,day){
+  if(!e.target.classList||!e.target.classList.contains('wk-col'))return;
+  itSelectedDate=day;
+  var mins=Math.max(0,Math.min(1425,Math.round((e.offsetY/66)*60/15)*15));
+  var v=String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+  renderLog();
+  var lt=document.getElementById('logTime');if(lt)lt.value=v;
+  syncEndOptions('logTime','logEnd');
+  var ti=document.getElementById('logTitle');
+  if(ti){ti.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){ti.focus();},220);}
+  showToast('已帶入 '+fmtMD(day)+' '+v+'，輸入內容後按記錄',false);
 }
 function fillCurSelect(t){
   var el=document.getElementById('logCur');
