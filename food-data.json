@@ -5767,20 +5767,28 @@
     "name2": "龍江店",
     "type": "燒臘便當",
     "meal": "",
-    "price": 130,
-    "visits": 1,
+    "price": 135,
+    "visits": 2,
     "gscore": 3.8,
     "addr": "104臺北市中山區行仁里龍江路346號",
     "note": "",
     "maps": "https://www.google.com/maps/place/%E5%AE%B6%E9%B4%BB%E7%87%92%E9%B5%9D-%E9%BE%8D%E6%B1%9F%E5%BA%97/@25.0656393,121.5408375,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abfcee1f45c3:0x6d62cc028eeb2bc3!8m2!3d25.0656393!4d121.5408375!16s%2Fg%2F1tfc49ls?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-05-21",
-    "score": 2.9,
+    "date": "2026-09-23",
+    "score": 3.3,
     "visitLog": [
       {
         "date": "2026-05-21",
         "meal": "午餐",
         "price": 130,
-        "menu": "油雞燒肉飯"
+        "menu": "油雞燒肉飯",
+        "score": null
+      },
+      {
+        "date": "2026-09-23",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "油雞燒肉飯",
+        "score": 3.3
       }
     ],
     "imgs": [
@@ -5788,7 +5796,7 @@
     ],
     "img": "https://i.ibb.co/F49hz0St/fdbb453762b2.jpg",
     "createdAt": 1779368712391,
-    "updatedAt": 1779463615682
+    "updatedAt": 1790172367812
   },
   {
     "id": "1779368486510",
