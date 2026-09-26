@@ -1,5 +1,35 @@
 [
   {
+    "id": "1790438201359",
+    "name": "牛肉麵．雞湯 新信義店",
+    "name1": "牛肉麵．雞湯",
+    "name2": "新信義店",
+    "type": "牛肉麵",
+    "meal": "",
+    "price": 570,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "110臺北市信義區興雅里忠孝東路五段189號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E7%89%9B%E8%82%89%E9%BA%B5%EF%BC%8E%E9%9B%9E%E6%B9%AF+%E6%96%B0%E4%BF%A1%E7%BE%A9%E5%BA%97/@25.0412243,121.5667666,17z/data=!4m14!1m7!3m6!1s0x3442ab22c40cfaeb:0x896a1052de4d4d8!2z54mb6IKJ6bq177yO6Zue5rmvIOaWsOS_oee-qeW6lw!8m2!3d25.0412195!4d121.5693415!16s%2Fg%2F11tnbh74_r!3m5!1s0x3442ab22c40cfaeb:0x896a1052de4d4d8!8m2!3d25.0412195!4d121.5693415!16s%2Fg%2F11tnbh74_r?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-26",
+    "score": 4.3,
+    "visitLog": [
+      {
+        "date": "2026-09-26",
+        "meal": "晚餐",
+        "price": 570,
+        "menu": "半筋半肉麵、香菇雞湯",
+        "score": 4.3
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/849z6hMw/448392ea1094.jpg"
+    ],
+    "img": "https://i.ibb.co/849z6hMw/448392ea1094.jpg",
+    "createdAt": 1790438201359
+  },
+  {
     "id": "1789915324986",
     "name": "忠青商行 遠百信義A13店",
     "name1": "忠青商行",
