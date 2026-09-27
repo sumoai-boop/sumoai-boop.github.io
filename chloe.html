@@ -131,6 +131,14 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .tab-content.active{display:block;}
 /* EXPENSE STYLES */
 #tab-expense{width:100%;}
+.exp-save-bar{display:none;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;font-weight:700;line-height:1.5;}
+.exp-save-bar.saving{display:flex;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;}
+.exp-save-bar.ok{display:flex;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
+.exp-save-bar.warn{display:flex;background:#fffbeb;color:#92400e;border:1px solid #fde68a;}
+.exp-save-bar.err{display:flex;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
+.exp-save-bar #expSaveMsg{flex:1;}
+.exp-save-retry{display:none;flex:0 0 auto;background:#111827;color:#fff;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;}
+.exp-save-bar.err .exp-save-retry,.exp-save-bar.warn .exp-save-retry{display:block;}
 .exp-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid #222;margin-bottom:-1px;}
 .exp-sum-card{padding:16px;text-align:center;border-right:1px solid #222;}
 .exp-sum-card:last-child{border-right:none;}
@@ -486,6 +494,11 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 <!-- 記帳分頁 -->
 <div class="tab-content active" id="tab-expense">
 <div class="resume" style="border-top:none;padding:24px">
+
+  <div class="exp-save-bar" id="expSaveBar">
+    <span id="expSaveMsg"></span>
+    <button class="exp-save-retry" onclick="retryExpSave()">重試儲存</button>
+  </div>
 
   <div class="exp-summary">
     <div class="exp-sum-card"><div class="exp-sum-label">總支出</div><div class="exp-sum-val total" id="s-total">$0</div></div>
@@ -1002,10 +1015,17 @@ document.getElementById('saveBtn').addEventListener('click',async function(){
   await saveData('✅ 已儲存！');btn.disabled=false;btn.textContent='💾 儲存到 GitHub';
 });
 
-function openTokenModal(){document.getElementById('tokenModal').classList.add('open');}
+var pendingSave=null;
+function openTokenModal(which){if(which)pendingSave=which;document.getElementById('tokenModal').classList.add('open');}
 document.getElementById('saveToken').addEventListener('click',function(){
   var t=document.getElementById('tokenInput').value.trim();
-  if(t){localStorage.setItem(LS_TOKEN,t);document.getElementById('tokenModal').classList.remove('open');saveData();}
+  if(t){
+    localStorage.setItem(LS_TOKEN,t);
+    document.getElementById('tokenModal').classList.remove('open');
+    var w=pendingSave;pendingSave=null;
+    if(w==='exp')saveExpenses('✅ 已儲存！');
+    else saveData();
+  }
 });
 document.getElementById('cancelToken').addEventListener('click',function(){document.getElementById('tokenModal').classList.remove('open');});
 document.getElementById('closeToken').addEventListener('click',function(){document.getElementById('tokenModal').classList.remove('open');});
@@ -1055,27 +1075,83 @@ function fmtMoney(n){return '$'+Number(n).toLocaleString();}
 function todayStr(){return new Date().toISOString().slice(0,10);}
 
 async function loadExpenses(){
-  try{
-    var r=await fetch(EXP_RAW+'?t='+Date.now());
-    if(r.ok){
-      var t=await r.text();
-      if(t.trim().startsWith('{')){var d=JSON.parse(t);expenses=d.expenses||[];}
-      try{var r2=await fetch(EXP_API+'?t='+Date.now());if(r2.ok){var j=await r2.json();expSha=j.sha;}}catch(e){}
-    }
-  }catch(e){}
+  var token=localStorage.getItem(LS_TOKEN);
+  var loaded=false;
+  // 有 token 就直接讀 API：內容永遠是最新的，raw CDN 會快取 5 分鐘
+  if(token){
+    try{
+      var ra=await fetch(EXP_API+'?t='+Date.now(),{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'},cache:'no-store'});
+      if(ra.ok){
+        var ja=await ra.json();
+        expSha=ja.sha;
+        if(ja.content){
+          var txt=fromBase64UTF8(ja.content);
+          if(txt.trim().startsWith('{')){expenses=(JSON.parse(txt).expenses)||[];loaded=true;}
+        }
+      }
+    }catch(e){}
+  }
+  if(!loaded){
+    try{
+      var r=await fetch(EXP_RAW+'?t='+Date.now(),{cache:'no-store'});
+      if(r.ok){
+        var t=await r.text();
+        if(t.trim().startsWith('{')){var d=JSON.parse(t);expenses=d.expenses||[];loaded=true;}
+        try{var r2=await fetch(EXP_API+'?t='+Date.now());if(r2.ok){var j=await r2.json();expSha=j.sha;}}catch(e){}
+      }
+    }catch(e){}
+  }
+  if(!token)setExpSaveState('warn','⚠️ 這台裝置還沒設定 GitHub Token，新增的記錄不會存到雲端');
   renderExpenses();
+}
+
+function retryExpSave(){saveExpenses('✅ 已儲存！');}
+
+function setExpSaveState(state,text){
+  var el=document.getElementById('expSaveBar');if(!el)return;
+  el.className='exp-save-bar '+(state||'');
+  var t=document.getElementById('expSaveMsg');if(t)t.textContent=text||'';
+}
+
+async function pushExpenses(token){
+  var body={message:'Update couple-expenses.json',content:toBase64UTF8(JSON.stringify({expenses:expenses},null,2))};
+  if(expSha)body.sha=expSha;
+  return await fetch(EXP_API,{method:'PUT',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
 }
 
 async function saveExpenses(msg){
   var token=localStorage.getItem(LS_TOKEN);
-  if(!token){openTokenModal();return;}
-  var body={message:'Update couple-expenses.json',content:toBase64UTF8(JSON.stringify({expenses:expenses},null,2))};
-  if(expSha)body.sha=expSha;
+  if(!token){setExpSaveState('warn','⚠️ 尚未設定 GitHub Token，這筆還沒存到雲端');openTokenModal('exp');return;}
+  setExpSaveState('saving','☁️ 儲存中…');
   try{
-    var r=await fetch(EXP_API,{method:'PUT',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(r.ok){var j=await r.json();expSha=j.content.sha;showToast(msg||'✅ 已儲存！');}
-    else{var e=await r.json();if(r.status===401){localStorage.removeItem(LS_TOKEN);openTokenModal();}else showToast('❌ '+(e.message||r.status));}
-  }catch(e){showToast('❌ 網路錯誤');}
+    var r=await pushExpenses(token);
+    // sha 過期 / 衝突 → 重抓 sha 再試一次
+    if(r.status===409||r.status===422){
+      try{
+        var rs=await fetch(EXP_API+'?t='+Date.now(),{headers:{'Authorization':'token '+token}});
+        if(rs.ok){var js=await rs.json();expSha=js.sha;}
+      }catch(e){}
+      r=await pushExpenses(token);
+    }
+    if(r.ok){
+      var j=await r.json();expSha=j.content.sha;
+      setExpSaveState('ok','✅ 已存到雲端 '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
+      showToast(msg||'✅ 已儲存！');
+    }else{
+      var e={};try{e=await r.json();}catch(x){}
+      if(r.status===401){
+        localStorage.removeItem(LS_TOKEN);
+        setExpSaveState('warn','⚠️ Token 失效，請重新輸入');
+        openTokenModal('exp');
+      }else{
+        setExpSaveState('err','❌ 儲存失敗（'+r.status+'）'+(e.message?'：'+e.message:'')+' — 重整會遺失，請按重試');
+        showToast('❌ 儲存失敗 '+r.status);
+      }
+    }
+  }catch(e){
+    setExpSaveState('err','❌ 網路錯誤，這筆還沒存到雲端 — 重整會遺失，請按重試');
+    showToast('❌ 網路錯誤');
+  }
 }
 
 function addExpense(){
@@ -1086,6 +1162,12 @@ function addExpense(){
   var amount=parseFloat(amountRaw);
   var cat=document.getElementById('e-cat').value;
   if(!date||!desc||amountRaw===''||isNaN(amount)||amount<0){showToast('請填寫完整資料（金額可為 0）');return;}
+  if(!localStorage.getItem(LS_TOKEN)){
+    setExpSaveState('warn','⚠️ 這台裝置還沒設定 GitHub Token，記錄無法存到雲端。請先輸入 Token。');
+    showToast('⚠️ 請先設定 Token 才能記錄');
+    openTokenModal('exp');
+    return;
+  }
   var isEdit=editingId!==null;
   if(isEdit){
     expenses.forEach(function(e){
