@@ -1,5 +1,33 @@
 [
   {
+    "id": "1790529099398",
+    "name": "八色烤肉mini 台北101店",
+    "name1": "八色烤肉mini",
+    "name2": "台北101店",
+    "type": "韓國",
+    "meal": "",
+    "price": 458,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "110臺北市信義區西村里信義路五段7號B1",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%85%AB%E8%89%B2%E7%83%A4%E8%82%89mini+%E5%8F%B0%E5%8C%97101%E5%BA%97/@25.0338009,121.5633565,18z/data=!3m2!4b1!5s0x3442abb6d95eb43b:0xbfc3edc9e6aa3050!4m6!3m5!1s0x3442ab461486e2a1:0xfe320a0d4cdd9ba0!8m2!3d25.0337985!4d121.564644!16s%2Fg%2F11t71jv0yx?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-27",
+    "score": 4.5,
+    "visitLog": [
+      {
+        "date": "2026-09-27",
+        "meal": "晚餐",
+        "price": 458,
+        "menu": "",
+        "score": 4.5
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1790529099398
+  },
+  {
     "id": "1790438201359",
     "name": "牛肉麵．雞湯 新信義店",
     "name1": "牛肉麵．雞湯",
