@@ -1,5 +1,35 @@
 [
   {
+    "id": "1790529786153",
+    "name": "Popeyes Chicken 台北101店",
+    "name1": "Popeyes Chicken",
+    "name2": "台北101店",
+    "type": "快餐",
+    "meal": "",
+    "price": 601,
+    "visits": 1,
+    "gscore": 4.5,
+    "addr": "110臺北市信義區西村里市府路45號B1,18櫃",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/Popeyes+Chicken+%E5%8F%B0%E5%8C%97101%E5%BA%97/@25.0339684,121.564194,20z/data=!4m6!3m5!1s0x3442ab8681640ac1:0x37f61d6f7984d079!8m2!3d25.0338711!4d121.5643384!16s%2Fg%2F11yb0_zzqk?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-27",
+    "score": 2.8,
+    "visitLog": [
+      {
+        "date": "2026-09-27",
+        "meal": "晚餐",
+        "price": 601,
+        "menu": "都是腿爽脆炸雞餐",
+        "score": 2.8
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/WNbmQk66/6be4173d54d8.jpg"
+    ],
+    "img": "https://i.ibb.co/WNbmQk66/6be4173d54d8.jpg",
+    "createdAt": 1790529786153
+  },
+  {
     "id": "1790529099398",
     "name": "八色烤肉mini 台北101店",
     "name1": "八色烤肉mini",
