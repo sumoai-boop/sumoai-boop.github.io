@@ -251,6 +251,10 @@ body{
   /* 翻頁/小按鈕統一 hover 手感 */
   button{transition:filter 0.15s,transform 0.1s;}
   button:active{transform:scale(0.96);}
+  /* 圖磚來源標示：這是圖磚服務要求的著作權標示，做小做淡但不隱藏 */
+  #heatMap .leaflet-control-attribution{background:rgba(10,15,20,0.55);color:rgba(255,255,255,0.4);
+    font-size:10px;padding:1px 6px;border-radius:5px 0 0 0;}
+  #heatMap .leaflet-control-attribution a{color:rgba(255,255,255,0.55);}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -3324,6 +3328,47 @@ var DISTRICT_COORD = {
 };
 var _heatMap=null, _heatLayer=null, _circleLayer=null;
 
+// ── 底圖圖磚來源 ──
+// 2026/9 起 CARTO（原本用的 basemaps.cartocdn.com）取消免金鑰的免費用量，
+// 沒有 API key 的圖磚會被蓋上「API KEY REQUIRED」字樣，等於整張底圖不能看，
+// 所以改用不需要金鑰的來源，並依序備援：
+//   1. Esri 深色底圖（免金鑰，色調跟原本的 CARTO dark 最接近）
+//   2. OpenStreetMap（一定有，但是亮色，用 CSS 濾鏡轉成深色）
+// 濾鏡只套在圖磚層（tilePane），熱區線條與圓點在另外的 pane，顏色不受影響。
+var HEAT_TILE_SOURCES=[
+  { url:'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    // maxNativeZoom 壓在 16：放更大時直接把 16 級的圖磚拉伸，不去要可能不存在的圖磚，
+    // 免得正常的底圖被誤判成掛掉而切換來源
+    opts:{maxZoom:19, maxNativeZoom:16,
+          attribution:'Esri, HERE, Garmin, © OpenStreetMap contributors'}, invert:false },
+  { url:'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    opts:{maxZoom:19, subdomains:'abc',
+          attribution:'© OpenStreetMap contributors'}, invert:true }
+];
+var _heatTileLayer=null;
+
+function addHeatBaseLayer(map, idx){
+  var src=HEAT_TILE_SOURCES[idx];
+  if(!src) return;                                   // 都失敗就讓底圖留空，熱區資料照樣看得到
+  var layer=L.tileLayer(src.url, src.opts), errs=0, loaded=0, switched=false;
+  layer.on('tileload', function(){ loaded++; });
+  layer.on('tileerror', function(){
+    // 只有「錯了一堆、而且從頭到尾沒有任何一張圖磚成功」才判定這個來源整個不能用。
+    // 單張圖磚偶爾失敗（網路抖動、邊界空白圖磚）不該害整個底圖換掉。
+    if(++errs>=8 && loaded===0 && !switched && HEAT_TILE_SOURCES[idx+1]){
+      switched=true;
+      map.removeLayer(layer);
+      addHeatBaseLayer(map, idx+1);
+    }
+  });
+  layer.addTo(map);
+  _heatTileLayer=layer;
+  var pane=map.getPane('tilePane');
+  if(pane) pane.style.filter = src.invert
+    ? 'invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.65)'
+    : '';
+}
+
 
 // 備援：Leaflet 載入失敗時，自繪 SVG 地理散點圖
 function renderHeatFallback(){
@@ -3511,10 +3556,9 @@ function renderHeatmap(){
 
   // 初始化地圖
   if(!_heatMap){
-    _heatMap=L.map('heatMap',{zoomControl:true,attributionControl:false}).setView([25.03,121.52],11);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-      maxZoom:18, subdomains:'abcd'
-    }).addTo(_heatMap);
+    _heatMap=L.map('heatMap',{zoomControl:true,attributionControl:true}).setView([25.03,121.52],11);
+    _heatMap.attributionControl.setPrefix('');
+    addHeatBaseLayer(_heatMap,0);
   }
   if(_heatLayer){ _heatMap.removeLayer(_heatLayer); _heatLayer=null; }
   if(_circleLayer){ _heatMap.removeLayer(_circleLayer); _circleLayer=null; }
