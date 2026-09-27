@@ -509,7 +509,7 @@
           <span style="font-size:18px;opacity:0.4;">📷</span>
           <span style="font-size:10px;color:rgba(100,60,10,0.4);letter-spacing:0.08em;text-transform:uppercase;">新增照片</span>
         </div>
-        <input class="img-upload-input" type="file" accept="image/*" multiple id="imgInput">
+        <input class="img-upload-input" type="file" accept="image/*,.heic,.heif,.HEIC,.HEIF" multiple id="imgInput">
       </div>
 
       <!-- ── 裁切器（已停用） ── -->
@@ -1088,22 +1088,63 @@ async function uploadToImgBB(dataUrl){
   throw new Error(json.error?.message || '上傳失敗');
 }
 
-// 上傳後直接加入（先存 dataUrl 預覽，儲存時才上傳 ImgBB）
-imgInput.addEventListener('change',e=>{
-  const files=[...e.target.files];
-  if(!files.length) return;
-  let loaded=0;
-  files.forEach(file=>{
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      photosArr.push({dataUrl:ev.target.result, url:null});
-      cropStates.push(null);
-      loaded++;
-      if(loaded===files.length) renderThumbs();
-    };
-    reader.readAsDataURL(file);
+/* ───── HEIC / HEIF 轉檔（iPhone 照片）───── */
+let _heicLibLoading = null;
+function loadHeicLib(){
+  if(window.heic2any) return Promise.resolve();
+  if(_heicLibLoading) return _heicLibLoading;
+  _heicLibLoading = new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+    s.onload=()=>resolve();
+    s.onerror=()=>reject(new Error('HEIC 轉檔元件載入失敗'));
+    document.head.appendChild(s);
   });
+  return _heicLibLoading;
+}
+function isHeic(file){
+  const n=(file.name||'').toLowerCase();
+  const t=(file.type||'').toLowerCase();
+  return t.includes('heic')||t.includes('heif')||n.endsWith('.heic')||n.endsWith('.heif');
+}
+// 把 File 轉成可用的 dataUrl（HEIC 會先轉 JPEG）
+async function fileToDataUrl(file){
+  let blob = file;
+  if(isHeic(file)){
+    await loadHeicLib();
+    const out = await window.heic2any({blob:file, toType:'image/jpeg', quality:0.92});
+    blob = Array.isArray(out) ? out[0] : out;
+  }
+  return await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=ev=>resolve(ev.target.result);
+    reader.onerror=()=>reject(new Error('讀取檔案失敗'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+// 上傳後直接加入（先存 dataUrl 預覽，儲存時才上傳 ImgBB）
+imgInput.addEventListener('change', async e=>{
+  const files=[...e.target.files];
   imgInput.value='';
+  if(!files.length) return;
+  const hasHeic = files.some(isHeic);
+  if(hasHeic) showToast('⏳ 轉換 iPhone 照片中…', false);
+  let ok=0, fail=0;
+  for(const file of files){
+    try{
+      const dataUrl = await fileToDataUrl(file);
+      photosArr.push({dataUrl, url:null});
+      cropStates.push(null);
+      ok++;
+    }catch(err){
+      console.warn('照片處理失敗:', file.name, err);
+      fail++;
+    }
+  }
+  renderThumbs();
+  if(fail) showToast(`❌ ${fail} 張照片無法讀取`, true);
+  else if(hasHeic) showToast(`✦ 已加入 ${ok} 張照片`, false);
 });
 
 // 移除目前這張
