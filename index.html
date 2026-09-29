@@ -1,182 +1,120 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{overflow:hidden;background:#000;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;
+  -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;}
 
-  body{
-    min-height:100vh;
-    font-family:'Space Mono',monospace;
-    overflow:hidden;
-    position:relative;
-    cursor:default;
-    background:#000;
-  }
+/* ── 桌布（沿用原本輪播邏輯）── */
+#wallpaper{transition:opacity .45s ease;}
+#wallpaperBg{position:fixed;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;
+  filter:blur(30px) saturate(1.15) brightness(.82);transform:scale(1.15);opacity:0;transition:opacity .45s ease;}
+.shade{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.40) 0%,rgba(0,0,0,.06) 34%,rgba(0,0,0,.06) 70%,rgba(0,0,0,.35) 100%);}
 
-  /* 全螢幕自然桌布 SVG */
-  .wallpaper{
-    position:fixed;inset:0;z-index:0;
-    width:100%;height:100%;
-  }
-  #wallpaper{transition:opacity .45s ease;}
-  /* 比例不合時：底層放同一張圖，放大模糊當背景，避免留黑邊 */
-  #wallpaperBg{
-    position:fixed;inset:0;z-index:0;
-    width:100%;height:100%;object-fit:cover;
-    filter:blur(30px) saturate(1.15) brightness(.82);
-    transform:scale(1.15);
-    opacity:0;transition:opacity .45s ease;
-  }
+/* ── 主畫面 ── */
+.home{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 20px calc(env(safe-area-inset-bottom,0px) + 22px);
+  overflow-y:auto;overscroll-behavior:contain;
+  transition:transform .42s cubic-bezier(.2,.9,.25,1),filter .42s ease,opacity .42s ease;}
+.home::-webkit-scrollbar{display:none;}
+body.app-open .home{transform:scale(.92);filter:blur(6px) brightness(.7);opacity:.6;}
 
-  /* Menubar */
-  .menubar{
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    height:28px;
-    background:rgba(0,0,0,0.35);
-    backdrop-filter:blur(20px) saturate(180%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0 16px;
-    font-size:12px;color:rgba(255,255,255,0.92);
-    letter-spacing:0.02em;
-  }
-  .menubar-left{display:flex;align-items:center;gap:16px;font-weight:600;}
-  .menubar-right{display:flex;align-items:center;gap:12px;font-size:11px;opacity:0.85;}
-  .mb-menu{padding:0 6px;border-radius:4px;cursor:default;transition:background 0.15s;font-size:12px;}
-  .mb-menu:hover{background:rgba(255,255,255,0.2);}
-  .apple-logo{font-size:14px;}
+/* 狀態列 */
+.status{display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 10px;
+  font-size:15px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.35);flex-shrink:0;}
+.status-r{display:flex;align-items:center;gap:7px;}
+.status-r svg{display:block;}
+.status-r img{width:18px;height:auto;border-radius:2px;display:block;}
 
-  
-  
-  
-  /* 觸發區：底部感應條 */
-  
-  
-  
-  
-  
-  
-  
-  
+/* 時鐘小工具 */
+.widget{text-align:center;margin:28px 0 30px;text-shadow:0 2px 14px rgba(0,0,0,.35);flex-shrink:0;}
+.w-date{font-size:17px;font-weight:600;opacity:.92;letter-spacing:.04em;}
+.w-time{font-size:86px;font-weight:700;line-height:1;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums;}
+.w-greet{font-size:14px;opacity:.82;margin-top:10px;letter-spacing:.06em;}
 
-  .ic-about  {background:linear-gradient(135deg,#667eea,#764ba2);}
-  .ic-ai{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-  .ic-dramas{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-  .ic-food{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-  
-  
-  
-  
+/* App 格子 */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px 8px;width:100%;max-width:420px;margin:0 auto;}
+.app{display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:#fff;min-width:0;
+  opacity:0;transform:translateY(12px) scale(.9);animation:appIn .5s cubic-bezier(.2,.9,.3,1.2) forwards;}
+@keyframes appIn{to{opacity:1;transform:none;}}
+.app-icon{width:62px;height:62px;border-radius:15px;display:flex;align-items:center;justify-content:center;position:relative;
+  background:linear-gradient(145deg,#111,#1c1c1e);border:1px solid rgba(255,255,255,.14);overflow:hidden;
+  box-shadow:0 6px 16px rgba(0,0,0,.32);transition:transform .15s ease,filter .15s ease;}
+.app-icon > span{font-size:38px!important;}
+.app-icon > svg:not([style]){width:56px;height:56px;}
+.app:active .app-icon{transform:scale(.86);filter:brightness(.75);}
+.app-name{font-size:12px;line-height:1.2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 1px 4px rgba(0,0,0,.6);}
+/* ── 底部 Dock ── */
+.dock-space{flex-shrink:0;height:calc(120px + env(safe-area-inset-bottom,0px));}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;
+  padding:0 12px calc(env(safe-area-inset-bottom,0px) + 12px);pointer-events:none;
+  transition:transform .42s cubic-bezier(.2,.9,.25,1),filter .42s ease,opacity .42s ease;}
+.dock-inner{pointer-events:auto;width:100%;max-width:420px;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:8px;padding:14px 12px;border-radius:34px;
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);}
+.dock .app-name{display:none;}
+body.app-open .dock{transform:scale(.92);filter:blur(6px) brightness(.7);opacity:.6;}
 
-  @media(max-width:600px){
-    
-    
-  }
-
-.global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
-.global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
-.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
-.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
-.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
-.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
-.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;font-family:'Space Mono',monospace;}
-.gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
-.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about{background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-.ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-dramas{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-food{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-threads{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-weight{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-reminder{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-netflix{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-mlb{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-chloe{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-trips{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
-
-/* ===== 手機版共用修正 ===== */
-@media(max-width:768px){
-  /* Dock 縮小，12 個項目完整顯示 */
-  .global-dock-wrap{max-width:100vw;}
-  .global-dock{gap:2px!important;padding:5px 6px!important;border-radius:14px!important;
-    max-width:calc(100vw - 12px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .global-dock::-webkit-scrollbar{display:none;}
-  .gd-icon{width:29px!important;height:29px!important;border-radius:8px!important;font-size:15px!important;}
-  .gd-icon svg{width:25px!important;height:25px!important;}
-  .gd-icon span{font-size:17px!important;}
-  .gd-item{flex-shrink:0;}
-  .gd-item:hover .gd-icon{transform:translateY(-5px) scale(1.12)!important;}
-  .gd-sep{height:22px!important;margin:0 1px!important;}
-  .gd-label{display:none!important;}
-  /* Menubar 精簡 */
-  .menubar{font-size:10px!important;padding:0 8px!important;}
-  .mb-menu{display:none!important;}
-  .menubar-left{gap:8px!important;}
-  .menubar-right{gap:7px!important;}
-  /* 觸控目標加大 */
-  button,.btn,a.btn{min-height:40px;}
-  /* 內文最小字級，避免過小難讀 */
-  body{-webkit-text-size-adjust:100%;}
-  /* 表格一律可橫向捲動 */
-  table{max-width:100%;}
-  .table-wrap,.trip-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
-  /* 圖片不溢出 */
-  img,video,canvas{max-width:100%;height:auto;}
+/* 電腦／平板：格子變寬、圖示放大 */
+@media (min-width:769px){
+  .widget{margin:44px 0 44px;}
+  .w-time{font-size:110px;}
+  .grid{grid-template-columns:repeat(6,1fr);max-width:720px;gap:36px 18px;}
+  .app-icon{width:78px;height:78px;border-radius:19px;}
+  .app-icon > span{font-size:46px!important;}
+  .app-icon > svg:not([style]){width:70px;height:70px;}
+  .app-name{font-size:13px;}
+  .dock-inner{max-width:440px;padding:14px 18px;border-radius:30px;gap:14px;}
+  .dock-space{height:140px;}
+  @media (hover:hover){ .app:hover .app-icon{transform:translateY(-4px) scale(1.06);} }
 }
-@media(max-width:420px){
-  .gd-icon{width:26px!important;height:26px!important;border-radius:7px!important;}
-  .gd-icon svg{width:22px!important;height:22px!important;}
-  .gd-icon span{font-size:15px!important;}
-  .global-dock{gap:1px!important;padding:4px 5px!important;}
-  .gd-sep{height:19px!important;margin:0 1px!important;}
+/* 手機橫放 */
+@media (orientation:landscape) and (max-height:520px){
+  .widget{margin:4px 0 14px;} .w-time{font-size:48px;} .status{display:none;}
+  .grid{grid-template-columns:repeat(6,1fr);max-width:640px;gap:16px 8px;}
+  .dock-inner{max-width:360px;padding:8px 10px;} .dock .app-icon{width:50px;height:50px;} .dock-space{height:90px;}
 }
 
-/* ── macOS 視窗 ── */
-.osx-win{position:fixed;z-index:60;display:none;flex-direction:column;
-  background:rgba(30,30,36,0.97);backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,0.16);border-radius:12px;overflow:hidden;
-  box-shadow:0 26px 70px rgba(0,0,0,0.55),0 4px 14px rgba(0,0,0,0.4);
-  opacity:0;transform:scale(0.94);transition:opacity .18s ease,transform .18s cubic-bezier(0.2,0.9,0.3,1.2);}
-.osx-win.show{display:flex;}
-.osx-win.in{opacity:1;transform:scale(1);}
-.osx-win.max{border-radius:0;}
-.win-bar{height:38px;flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 12px;
-  background:linear-gradient(180deg,rgba(60,60,70,0.95),rgba(44,44,52,0.95));
-  border-bottom:1px solid rgba(0,0,0,0.45);cursor:grab;user-select:none;}
-.win-bar:active{cursor:grabbing;}
-.win-lights{display:flex;gap:8px;flex-shrink:0;}
-.wl{width:12px;height:12px;border-radius:50%;border:none;padding:0;cursor:pointer;position:relative;
-  font-size:9px;line-height:12px;text-align:center;color:rgba(0,0,0,0.55);font-weight:900;}
-.wl span{opacity:0;transition:opacity .12s;}
-.win-lights:hover .wl span{opacity:1;}
-.wl-red{background:#FF5F57;}.wl-yellow{background:#FEBC2E;}.wl-green{background:#28C840;}
-.win-title{flex:1;text-align:center;font-size:13px;font-weight:600;color:rgba(255,255,255,0.86);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;}
-.win-ext{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:none;cursor:pointer;
-  background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.75);font-size:13px;line-height:1;}
-.win-ext:hover{background:rgba(255,255,255,0.2);color:#fff;}
-.win-body{flex:1;position:relative;background:#fff;min-height:0;}
-.win-body iframe{width:100%;height:100%;border:0;display:block;}
-.win-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(24,24,30,0.96);color:rgba(255,255,255,0.6);font-size:13px;z-index:2;}
-.win-load.off{display:none;}
-.win-grip{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;z-index:3;}
-.win-grip::after{content:'';position:absolute;right:3px;bottom:3px;width:8px;height:8px;
-  border-right:2px solid rgba(255,255,255,0.35);border-bottom:2px solid rgba(255,255,255,0.35);}
-.osx-win.max .win-grip{display:none;}
-@media(max-width:768px){
-  .win-bar{height:44px;}
-  .wl{width:15px;height:15px;line-height:15px;}
-  .win-grip{display:none;}
+/* ── App 全螢幕視窗 ── */
+.appwin{position:fixed;inset:0;z-index:50;display:none;flex-direction:column;background:#fff;overflow:hidden;
+  border-radius:0;transform-origin:50% 50%;}
+.appwin.show{display:flex;}
+.appwin.anim{transition:transform .42s cubic-bezier(.2,.9,.25,1),border-radius .42s ease,opacity .3s ease;}
+.appbar{height:calc(44px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 10px 0;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;background:rgba(22,22,26,.96);color:#fff;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);}
+.ab-btn{border:none;background:none;color:#0A84FF;font:inherit;font-size:16px;cursor:pointer;padding:8px 6px;
+  display:flex;align-items:center;gap:2px;white-space:nowrap;}
+.ab-btn b{font-size:24px;font-weight:400;line-height:0;margin-top:-2px;}
+.ab-title{flex:1;text-align:center;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ab-ext{min-width:64px;justify-content:flex-end;font-size:15px;}
+.appbody{flex:1;position:relative;min-height:0;background:#fff;}
+.appbody iframe{width:100%;height:100%;border:0;display:block;}
+.apploading{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#1c1c1e;}
+.apploading.off{display:none;}
+.apploading .app-icon{animation:pulse 1.1s ease-in-out infinite;}
+@keyframes pulse{50%{transform:scale(.92);opacity:.7;}}
+/* 底部 Home 橫條：點一下或往上滑回主畫面 */
+.homebar{position:absolute;left:0;right:0;bottom:0;height:calc(22px + env(safe-area-inset-bottom,0px));z-index:3;
+  display:flex;justify-content:center;align-items:flex-start;padding-top:9px;cursor:pointer;touch-action:none;}
+.homebar::before{content:'';width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.35);
+  box-shadow:0 0 0 1px rgba(255,255,255,.35);}
+
+@media (prefers-reduced-motion:reduce){
+  .app{animation:none;opacity:1;transform:none;} .appwin.anim,.home{transition:none;}
 }
 </style>
 </head>
@@ -315,243 +253,173 @@
   };
 })();
 </script>
+<div class="shade"></div>
 
-<!-- Menubar -->
-<div class="menubar">
-  <div class="menubar-left">
-    <span class="apple-logo" style="font-size:16px;margin-right:4px">🗿</span>
-    <a href="index.html" style="font-weight:700;margin-right:8px;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
-    <span class="mb-menu">檔案</span>
-    <span class="mb-menu">編輯</span>
-    <span class="mb-menu">顯示方式</span>
-    <span class="mb-menu">前往</span>
-    <span class="mb-menu">視窗</span>
-    <span class="mb-menu">輔助說明</span>
+<!-- ══ 主畫面 ══ -->
+<main class="home" id="home">
+  <div class="status">
+    <span id="stTime"></span>
+    <span class="status-r">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="1"/><rect x="9" y="3" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 24 18" fill="#fff"><path d="M12 3.2c3.4 0 6.5 1.3 8.8 3.5l1.7-1.8C19.7 2.2 16 .7 12 .7S4.3 2.2 1.5 4.9l1.7 1.8C5.5 4.5 8.6 3.2 12 3.2zm0 5c2 0 3.9.8 5.3 2.1l1.7-1.8C17.2 6.8 14.7 5.7 12 5.7S6.8 6.8 5 8.5l1.7 1.8C8.1 9 10 8.2 12 8.2zM12 13a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/></svg>
+      <img src="https://flagcdn.com/w40/tw.png" alt="TW">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="rgba(255,255,255,.55)"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="#fff"/><rect x="23.5" y="4" width="1.8" height="4" rx=".9" fill="rgba(255,255,255,.55)"/></svg>
+    </span>
   </div>
-  <div class="menubar-right">
-    <!-- 藍芽 -->
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="vertical-align:middle">
-      <path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/>
-    </svg>
-    <!-- WiFi -->
-    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="vertical-align:middle">
-      <path d="M1 9l2 2c5.07-5.07 13.27-5.05 18.36 0l2-2C16.93 2.37 7.1 2.35 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.77 7.27-2.76 10.03 0l2-2C15.14 9.14 8.87 9.13 5 13z"/>
-    </svg>
-    <!-- 音量 -->
-    <svg width="16" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="vertical-align:middle">
-      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-    </svg>
-    <!-- 台灣國旗 -->
-    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px" alt="TW">
-    <!-- 時間 -->
-    <span id="mbTime" style="letter-spacing:0.03em"></span>
-    <!-- 放大鏡 -->
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" style="vertical-align:middle;cursor:default">
-      <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-    </svg>
+
+  <section class="widget">
+    <div class="w-date" id="wDate"></div>
+    <div class="w-time" id="wTime"></div>
+    <div class="w-greet" id="wGreet"></div>
+  </section>
+
+  <nav class="grid" id="grid">
+    <a href="photos.html" class="app"><div class="app-icon ic-photos"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FF6B9D;line-height:1;letter-spacing:-2px;">P</span></div><span class="app-name">照片</span></a>
+    <a href="ai.html" class="app"><div class="app-icon ic-ai" style="position:relative;"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FBBF24;line-height:1;letter-spacing:-2px;">A</span><svg width="15" height="15" viewBox="0 0 16 16" style="position:absolute;top:5px;right:5px;"><path d="M8 1 L9.3 5 L13.3 6.3 L9.3 7.6 L8 11.6 L6.7 7.6 L2.7 6.3 L6.7 5 Z" fill="#FBBF24"/></svg><svg width="19" height="19" viewBox="0 0 16 16" style="position:absolute;bottom:26px;left:3px;"><path d="M8 1 L9.3 5 L13.3 6.3 L9.3 7.6 L8 11.6 L6.7 7.6 L2.7 6.3 L6.7 5 Z" fill="#FBBF24"/></svg></div><span class="app-name">AI 圖庫</span></a>
+    <a href="trips.html" class="app"><div class="app-icon ic-trips"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="16.5" y="3.5" width="15" height="12" rx="4" fill="none" stroke="#A32D2D" stroke-width="3.6"/><rect x="5.5" y="10" width="37" height="33" rx="5.5" fill="#E24B4A"/><rect x="11.5" y="10" width="3.4" height="33" fill="#A32D2D"/><rect x="33.1" y="10" width="3.4" height="33" fill="#A32D2D"/><text x="24" y="33.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">T</text></svg></div><span class="app-name">行程記帳</span></a>
+    <a href="threads.html" class="app"><div class="app-icon ic-threads"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FFFFFF;line-height:1;letter-spacing:-2px;">T</span></div><span class="app-name">Threads</span></a>
+    <a href="weight.html" class="app"><div class="app-icon ic-weight"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="9" fill="#2DD4BF"/><path d="M14 4.6 A 17.5 17.5 0 0 1 34 4.6 L 31 11.5 A 11 11 0 0 0 17 11.5 Z" fill="#0F766E"/><rect x="19.5" y="6" width="9" height="4.2" rx="1.8" fill="#E6FFFA"/><text x="24" y="34.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">W</text></svg></div><span class="app-name">體重</span></a>
+    <a href="reminder.html" class="app"><div class="app-icon ic-reminder"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M6 11.5 L13.5 3.5 L18 8.5 Z" fill="#34D399"/><path d="M42 11.5 L34.5 3.5 L30 8.5 Z" fill="#34D399"/><circle cx="24" cy="25" r="19" fill="#34D399"/><circle cx="24" cy="25" r="14.8" fill="#065F46"/><path d="M10.5 40 L7 45 M37.5 40 L41 45" stroke="#34D399" stroke-width="3" stroke-linecap="round"/><text x="24" y="32.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">R</text></svg></div><span class="app-name">提醒</span></a>
+    <a href="top10.html" class="app"><div class="app-icon ic-netflix"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#E50914;line-height:1;letter-spacing:-2px;">N</span></div><span class="app-name">Top 10</span></a>
+    <a href="mlb.html" class="app"><div class="app-icon ic-mlb"><svg width="52" height="52" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#FFFFFF"/><path d="M8 9 A 27 27 0 0 1 8 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M40 9 A 27 27 0 0 0 40 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M9.5 14 l3.4 1.6 M8 19 l3.6 0.9 M8 29 l3.6 -0.9 M9.5 34 l3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><path d="M38.5 14 l-3.4 1.6 M40 19 l-3.6 0.9 M40 29 l-3.6 -0.9 M38.5 34 l-3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><text x="24" y="31.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#0C2340">M</text></svg></div><span class="app-name">MLB</span></a>
+  </nav>
+
+  <div class="dock-space"></div>
+</main>
+
+<!-- ══ 底部 Dock（固定 4 個）══ -->
+<div class="dock" id="dock">
+  <div class="dock-inner">
+      <a href="uber.html" class="app"><div class="app-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="app-name">Uber</span></a>
+      <a href="dramas.html" class="app"><div class="app-icon ic-dramas"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#A78BFA;line-height:1;letter-spacing:-2px;">D</span></div><span class="app-name">追劇</span></a>
+      <a href="food.html" class="app"><div class="app-icon ic-food"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#38BDF8;line-height:1;letter-spacing:-2px;">F</span></div><span class="app-name">食記</span></a>
+      <a href="chloe.html" class="app"><div class="app-icon ic-chloe"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M24 43.5 L6 25.5 A11.3 11.3 0 0 1 22.1 9.4 L24 11.3 L25.9 9.4 A11.3 11.3 0 0 1 42 25.5 Z" fill="#E879F9"/><text x="24" y="28.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#111">C</text></svg></div><span class="app-name">Chloe ♥</span></a>
+  </div>
+</div>
+
+<!-- ══ App 視窗 ══ -->
+<div class="appwin" id="appWin" role="dialog" aria-modal="true">
+  <div class="appbar">
+    <button class="ab-btn" id="abHome"><b>‹</b>主畫面</button>
+    <div class="ab-title" id="abTitle"></div>
+    <button class="ab-btn ab-ext" id="abExt" title="在新分頁開啟">開啟 ↗</button>
+  </div>
+  <div class="appbody">
+    <div class="apploading" id="appLoad"></div>
+    <iframe id="appFrame" title="App"></iframe>
+    <div class="homebar" id="homeBar" title="回主畫面"></div>
   </div>
 </div>
 
 <script>
-
-
-function updateTime(){
-  const now = new Date();
-  const d = ['日','一','二','三','四','五','六'][now.getDay()];
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('mbTime').textContent =
-    `週${d} ${now.getMonth()+1}/${now.getDate()} ${h}:${m}`;
-}
-updateTime();
-setInterval(updateTime, 10000);
-</script>
-
-
-
-
-
-
-
-
-<!-- ══ macOS 視窗 ══ -->
-<div class="osx-win" id="osxWin" role="dialog" aria-label="應用程式視窗">
-  <div class="win-bar" id="winBar">
-    <div class="win-lights">
-      <button class="wl wl-red"    id="winClose" title="關閉"><span>✕</span></button>
-      <button class="wl wl-yellow" id="winMin"   title="縮到最小"><span>−</span></button>
-      <button class="wl wl-green"  id="winMax"   title="放到最大"><span>+</span></button>
-    </div>
-    <div class="win-title" id="winTitle">—</div>
-    <button class="win-ext" id="winExt" title="在新分頁開啟">↗</button>
-  </div>
-  <div class="win-body">
-    <div class="win-load" id="winLoad">載入中…</div>
-    <iframe id="winFrame" title="內容"></iframe>
-  </div>
-  <div class="win-grip" id="winGrip"></div>
-</div>
-
-<div class="dock-trigger-zone" id="dockTrigger"></div>
-<div class="global-dock-wrap" id="globalDock">
-  <div class="global-dock">
-    <a href="photos.html" class="gd-item"><div class="gd-icon ic-photos"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FF6B9D;line-height:1;letter-spacing:-2px;">P</span></div><span class="gd-label">照片</span></a>
-    <a href="dramas.html" class="gd-item"><div class="gd-icon ic-dramas"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#A78BFA;line-height:1;letter-spacing:-2px;">D</span></div><span class="gd-label">追劇</span></a>
-    <a href="food.html" class="gd-item"><div class="gd-icon ic-food"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#38BDF8;line-height:1;letter-spacing:-2px;">F</span></div><span class="gd-label">食記</span></a>
-    <a href="ai.html" class="gd-item"><div class="gd-icon ic-ai" style="position:relative;"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FBBF24;line-height:1;letter-spacing:-2px;">A</span><svg width="15" height="15" viewBox="0 0 16 16" style="position:absolute;top:5px;right:5px;"><path d="M8 1 L9.3 5 L13.3 6.3 L9.3 7.6 L8 11.6 L6.7 7.6 L2.7 6.3 L6.7 5 Z" fill="#FBBF24"/></svg><svg width="19" height="19" viewBox="0 0 16 16" style="position:absolute;bottom:26px;left:3px;"><path d="M8 1 L9.3 5 L13.3 6.3 L9.3 7.6 L8 11.6 L6.7 7.6 L2.7 6.3 L6.7 5 Z" fill="#FBBF24"/></svg></div><span class="gd-label">AI 圖庫</span></a>
-    <div class="gd-sep"></div>
-    <a href="trips.html" class="gd-item"><div class="gd-icon ic-trips"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="16.5" y="3.5" width="15" height="12" rx="4" fill="none" stroke="#A32D2D" stroke-width="3.6"/><rect x="5.5" y="10" width="37" height="33" rx="5.5" fill="#E24B4A"/><rect x="11.5" y="10" width="3.4" height="33" fill="#A32D2D"/><rect x="33.1" y="10" width="3.4" height="33" fill="#A32D2D"/><text x="24" y="33.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">T</text></svg></div><span class="gd-label">行程記帳</span></a>
-    <a href="threads.html" class="gd-item"><div class="gd-icon ic-threads"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FFFFFF;line-height:1;letter-spacing:-2px;">T</span></div><span class="gd-label">Threads</span></a>
-    <a href="uber.html" class="gd-item"><div class="gd-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="gd-label">Uber</span></a>
-    <a href="weight.html" class="gd-item"><div class="gd-icon ic-weight"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="9" fill="#2DD4BF"/><path d="M14 4.6 A 17.5 17.5 0 0 1 34 4.6 L 31 11.5 A 11 11 0 0 0 17 11.5 Z" fill="#0F766E"/><rect x="19.5" y="6" width="9" height="4.2" rx="1.8" fill="#E6FFFA"/><text x="24" y="34.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">W</text></svg></div><span class="gd-label">體重</span></a>
-    <a href="reminder.html" class="gd-item"><div class="gd-icon ic-reminder"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M6 11.5 L13.5 3.5 L18 8.5 Z" fill="#34D399"/><path d="M42 11.5 L34.5 3.5 L30 8.5 Z" fill="#34D399"/><circle cx="24" cy="25" r="19" fill="#34D399"/><circle cx="24" cy="25" r="14.8" fill="#065F46"/><path d="M10.5 40 L7 45 M37.5 40 L41 45" stroke="#34D399" stroke-width="3" stroke-linecap="round"/><text x="24" y="32.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">R</text></svg></div><span class="gd-label">提醒</span></a>
-    <a href="top10.html" class="gd-item"><div class="gd-icon ic-netflix"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#E50914;line-height:1;letter-spacing:-2px;">N</span></div><span class="gd-label">Netflix Top10</span></a>
-    <a href="mlb.html" class="gd-item"><div class="gd-icon ic-mlb"><svg width="52" height="52" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#FFFFFF"/><path d="M8 9 A 27 27 0 0 1 8 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M40 9 A 27 27 0 0 0 40 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M9.5 14 l3.4 1.6 M8 19 l3.6 0.9 M8 29 l3.6 -0.9 M9.5 34 l3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><path d="M38.5 14 l-3.4 1.6 M40 19 l-3.6 0.9 M40 29 l-3.6 -0.9 M38.5 34 l-3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><text x="24" y="31.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#0C2340">M</text></svg></div><span class="gd-label">MLB</span></a>
-    <div class="gd-sep"></div>
-    <a href="chloe.html" class="gd-item"><div class="gd-icon ic-chloe"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M24 43.5 L6 25.5 A11.3 11.3 0 0 1 22.1 9.4 L24 11.3 L25.9 9.4 A11.3 11.3 0 0 1 42 25.5 Z" fill="#E879F9"/><text x="24" y="28.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#111">C</text></svg></div><span class="gd-label">Chloe ♥</span></a>
-  </div>
-</div>
-<script>
+/* ══ 時鐘小工具 ══ */
 (function(){
-  var dock=document.getElementById('globalDock');
-  if(dock) dock.classList.add('visible');
+  var W=['日','一','二','三','四','五','六'], $=function(id){return document.getElementById(id);};
+  function tick(){
+    var d=new Date(), t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'), h=d.getHours();
+    $('wTime').textContent=t; $('stTime').textContent=t;
+    $('wDate').textContent=(d.getMonth()+1)+'月'+d.getDate()+'日 星期'+W[d.getDay()];
+    $('wGreet').textContent=h<5?'夜深了，早點休息':h<11?'早安，Aaron':h<14?'午安，Aaron':h<18?'下午好，Aaron':'晚安，Aaron';
+  }
+  tick(); setInterval(tick,10000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) tick(); });
+  /* 圖示依序浮現 */
+  document.querySelectorAll('.app').forEach(function(a,i){ a.style.animationDelay=Math.min(i*28,400)+'ms'; });
 })();
-</script>
-<script>
-/* ══════════ Dock → 首頁視窗 ══════════ */
+
+/* ══ 點圖示 → App 全螢幕展開 ══ */
 (function(){
-  const g=id=>document.getElementById(id);
-  const win=g('osxWin'), bar=g('winBar'), frame=g('winFrame'),
-        titleEl=g('winTitle'), load=g('winLoad'), grip=g('winGrip');
-  const GEO='sumoai_win_geo';
-  let cur='', maxed=false, pre=null;
-  const mobile=()=>window.innerWidth<=768;
-  /* 最大化時 Dock 滑下去，還原時升回來 */
-  function setDock(show){
-    const d=g('globalDock'); if(!d) return;
-    d.classList.toggle('visible',!!show);
+  var $=function(id){return document.getElementById(id);};
+  var win=$('appWin'), frame=$('appFrame'), load=$('appLoad'), title=$('abTitle');
+  var cur='', srcRect=null, busy=false;
+
+  /* 從圖示位置放大展開（iOS 開 App 的動畫） */
+  function fromIcon(r){
+    var vw=innerWidth, vh=innerHeight;
+    var sx=r.width/vw, sy=r.height/vh;
+    var tx=r.left+r.width/2-vw/2, ty=r.top+r.height/2-vh/2;
+    return 'translate('+tx+'px,'+ty+'px) scale('+sx+','+sy+')';
   }
 
-  /* ── 幾何 ── */
-  function defGeo(){
-    if(mobile()) return {x:6,y:34,w:window.innerWidth-12,h:window.innerHeight-46};
-    const w=Math.min(1180,Math.round(window.innerWidth*0.82));
-    const hh=Math.min(760,Math.round(window.innerHeight*0.8));
-    return {x:Math.round((window.innerWidth-w)/2),y:Math.max(34,Math.round((window.innerHeight-hh)/2)),w:w,h:hh};
-  }
-  function loadGeo(){
-    if(mobile()) return defGeo();
-    try{const s=JSON.parse(localStorage.getItem(GEO)); if(s&&s.w>320&&s.h>240) return s;}catch(e){}
-    return defGeo();
-  }
-  function saveGeo(){
-    if(maxed||mobile()) return;
-    try{localStorage.setItem(GEO,JSON.stringify({x:win.offsetLeft,y:win.offsetTop,w:win.offsetWidth,h:win.offsetHeight}));}catch(e){}
-  }
-  function applyGeo(o){
-    win.style.left=o.x+'px'; win.style.top=o.y+'px';
-    win.style.width=o.w+'px'; win.style.height=o.h+'px';
+  function open(a, push){
+    if(busy) return;
+    var href=a.getAttribute('href'), name=a.querySelector('.app-name').textContent;
+    var icon=a.querySelector('.app-icon');
+    srcRect=icon.getBoundingClientRect();
+    cur=href; title.textContent=name;
+    $('abExt').onclick=function(){ window.open(href,'_blank'); };
+    load.innerHTML=''; load.appendChild(icon.cloneNode(true)); load.classList.remove('off');
+    /* 加時間戳，避免 iframe 吃到舊版快取 */
+    frame.src=href+(href.indexOf('?')<0?'?':'&')+'_='+Date.now();
+
+    win.classList.remove('anim');
+    win.style.transform=fromIcon(srcRect); win.style.borderRadius='40px'; win.style.opacity='0';
+    win.classList.add('show');
+    document.body.classList.add('app-open');
+    win.offsetWidth; /* 強制重排，讓動畫從圖示位置開始 */
+    win.classList.add('anim');
+    win.style.transform='none'; win.style.borderRadius='0'; win.style.opacity='1';
+    if(push!==false) history.pushState({app:href},'', '#'+href.replace('.html',''));
   }
 
-  /* ── 開窗 ── */
-  function open(href,label){
-    const same = (cur===href) && win.classList.contains('show');
-    cur=href; titleEl.textContent=label||'';
-    g('winExt').onclick=()=>window.open(href,'_blank');
-    // 加上時間戳避免 iframe 吃到舊版快取（改完檔案後點 dock 卻還是舊畫面的元凶）
-    if(!same){ load.classList.remove('off'); frame.src = href + (href.indexOf('?')<0?'?':'&') + '_=' + Date.now(); }
-    if(!win.classList.contains('show')){
-      applyGeo(loadGeo());
-      win.classList.add('show');
-      requestAnimationFrame(()=>win.classList.add('in'));
-    }
-    if(maxed){
-      win.style.left='0px'; win.style.top='28px';
-      win.style.width=window.innerWidth+'px'; win.style.height=(window.innerHeight-28)+'px';
-      win.classList.add('max'); setDock(false);
-    }
-  }
-  function close(){
-    win.classList.remove('in'); setDock(true);
-    setTimeout(()=>{ win.classList.remove('show'); frame.src='about:blank'; cur=''; },180);
-  }
-  function minimize(){ win.classList.remove('in'); setDock(true); setTimeout(()=>win.classList.remove('show'),180); }
-  function toggleMax(){
-    if(maxed){ applyGeo(pre||defGeo()); win.classList.remove('max'); maxed=false; setDock(true); }
-    else{
-      pre={x:win.offsetLeft,y:win.offsetTop,w:win.offsetWidth,h:win.offsetHeight};
-      win.style.left='0px'; win.style.top='28px';
-      win.style.width=window.innerWidth+'px'; win.style.height=(window.innerHeight-28)+'px';
-      win.classList.add('max'); maxed=true; setDock(false);
-    }
+  function close(fromPop){
+    if(!win.classList.contains('show')||busy) return;
+    busy=true;
+    document.body.classList.remove('app-open');
+    var a=document.querySelector('.app[href="'+cur+'"] .app-icon');
+    var r=a?a.getBoundingClientRect():srcRect;
+    win.classList.add('anim');
+    win.style.transform=fromIcon(r); win.style.borderRadius='40px'; win.style.opacity='0';
+    setTimeout(function(){
+      win.classList.remove('show','anim'); frame.src='about:blank'; cur=''; busy=false;
+    },420);
+    if(!fromPop && history.state && history.state.app) history.back();
   }
 
-  g('winClose').onclick=e=>{e.stopPropagation();close();};
-  g('winMin').onclick  =e=>{e.stopPropagation();minimize();};
-  g('winMax').onclick  =e=>{e.stopPropagation();toggleMax();};
-  bar.addEventListener('dblclick',e=>{ if(!e.target.closest('.wl,.win-ext')) toggleMax(); });
+  /* 點圖示（Ctrl/Cmd/Shift 點擊保留另開分頁） */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('.grid .app, .dock .app'); if(!a) return;
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0) return;
+    e.preventDefault(); open(a);
+  });
 
-  /* ── iframe 載入後隱藏子頁自己的選單列與 Dock ── */
-  frame.addEventListener('load',()=>{
+  $('abHome').onclick=function(){ close(); };
+  $('homeBar').onclick=function(){ close(); };
+  /* Home 橫條往上滑 → 回主畫面 */
+  var sy=null;
+  $('homeBar').addEventListener('pointerdown',function(e){ sy=e.clientY; this.setPointerCapture(e.pointerId); });
+  $('homeBar').addEventListener('pointermove',function(e){
+    if(sy===null) return; var d=Math.max(0,sy-e.clientY);
+    win.style.transform='translateY('+(-d*0.6)+'px) scale('+(1-Math.min(d,300)/900)+')';
+  });
+  $('homeBar').addEventListener('pointerup',function(e){
+    if(sy===null) return; var d=sy-e.clientY; sy=null;
+    if(d>60) close(); else if(d>6){ win.classList.add('anim'); win.style.transform='none'; }
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+
+  /* 手機的「返回」鍵／手勢 → 關 App */
+  window.addEventListener('popstate',function(){ if(win.classList.contains('show')) close(true); });
+
+  /* App 載入後：隱藏子頁自己的 Mac 選單列，子頁連回 index.html 的連結改成關閉 */
+  frame.addEventListener('load',function(){
+    if(!cur) return;
     load.classList.add('off');
     try{
-      const d=frame.contentDocument; if(!d||!d.head) return;
-      const s=d.createElement('style');
+      var d=frame.contentDocument; if(!d||!d.head) return;
+      var s=d.createElement('style');
       s.textContent='.global-menubar,.menubar,.global-dock-wrap,.dock-trigger-zone{display:none!important}';
       d.head.appendChild(s);
-      d.addEventListener('click',ev=>{
-        const a=ev.target.closest&&ev.target.closest('a[href$="index.html"]');
+      d.addEventListener('click',function(ev){
+        var a=ev.target.closest&&ev.target.closest('a[href$="index.html"]');
         if(a){ ev.preventDefault(); close(); }
       });
     }catch(e){}
   });
 
-  /* ── 拖曳 ── */
-  let drag=null;
-  bar.addEventListener('pointerdown',e=>{
-    if(e.target.closest('.wl,.win-ext')||maxed) return;
-    drag={sx:e.clientX,sy:e.clientY,ox:win.offsetLeft,oy:win.offsetTop};
-    bar.setPointerCapture(e.pointerId);
-  });
-  bar.addEventListener('pointermove',e=>{
-    if(!drag) return;
-    let nx=drag.ox+(e.clientX-drag.sx), ny=drag.oy+(e.clientY-drag.sy);
-    nx=Math.max(-win.offsetWidth+120,Math.min(window.innerWidth-120,nx));
-    ny=Math.max(28,Math.min(window.innerHeight-46,ny));
-    win.style.left=nx+'px'; win.style.top=ny+'px';
-  });
-  bar.addEventListener('pointerup',e=>{ if(drag){drag=null;saveGeo();} });
-
-  /* ── 縮放 ── */
-  let rz=null;
-  grip.addEventListener('pointerdown',e=>{
-    e.preventDefault();
-    rz={sx:e.clientX,sy:e.clientY,w:win.offsetWidth,h:win.offsetHeight};
-    grip.setPointerCapture(e.pointerId);
-  });
-  grip.addEventListener('pointermove',e=>{
-    if(!rz) return;
-    win.style.width =Math.max(360,rz.w+(e.clientX-rz.sx))+'px';
-    win.style.height=Math.max(260,rz.h+(e.clientY-rz.sy))+'px';
-  });
-  grip.addEventListener('pointerup',()=>{ if(rz){rz=null;saveGeo();} });
-
-  /* ── Dock 攔截（事件委派，之後新增圖示自動生效）── */
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('.gd-item'); if(!a) return;
-    const href=a.getAttribute('href')||'';
-    if(!href||/^(https?:|mailto:|#)/.test(href)||a.target==='_blank') return;
-    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0) return;   /* 保留另開分頁 */
-    e.preventDefault();
-    const lb=a.querySelector('.gd-label');
-    open(href, lb?lb.textContent.trim():href.replace('.html',''));
-  });
-
-  window.addEventListener('resize',()=>{
-    if(!win.classList.contains('show')) return;
-    if(maxed){ win.style.width=window.innerWidth+'px'; win.style.height=(window.innerHeight-28)+'px'; return; }
-    if(mobile()) applyGeo(defGeo());
-  });
+  /* 用 #uber 這類網址直接開啟某個 App */
+  var h=location.hash.slice(1);
+  if(h){ var a=document.querySelector('.app[href="'+h+'.html"]'); if(a){ history.replaceState(null,'',location.pathname); setTimeout(function(){ open(a); },350); } }
 })();
 </script>
 </body>
