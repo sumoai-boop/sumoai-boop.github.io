@@ -19,7 +19,12 @@ body{overflow:hidden;background:#000;color:#fff;
 #wallpaperBg{position:fixed;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;
   filter:blur(30px) saturate(1.15) brightness(.82);transform:scale(1.15);opacity:0;transition:opacity .45s ease;}
 .shade{position:fixed;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(180deg,rgba(0,0,0,.40) 0%,rgba(0,0,0,.06) 34%,rgba(0,0,0,.06) 70%,rgba(0,0,0,.35) 100%);}
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 48%,rgba(0,0,0,.30),rgba(0,0,0,0) 75%),
+    linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.25) 30%,rgba(0,0,0,.25) 70%,rgba(0,0,0,.45) 100%);}
+/* 桌布本身降一點飽和與亮度，減少跟圖示搶色 */
+#wallpaper,#wallpaperBg{filter:saturate(.85) brightness(.9);}
+#wallpaperBg{filter:blur(30px) saturate(1) brightness(.75)!important;}
 
 /* ── 主畫面 ── */
 .home{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;
@@ -40,7 +45,7 @@ body.app-open .home{transform:scale(.92);filter:blur(6px) brightness(.7);opacity
 .widget{text-align:center;margin:28px 0 30px;text-shadow:0 2px 14px rgba(0,0,0,.35);flex-shrink:0;}
 .w-date{font-size:17px;font-weight:600;opacity:.92;letter-spacing:.04em;}
 .w-time{font-size:86px;font-weight:700;line-height:1;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums;}
-.w-greet{font-size:14px;opacity:.82;margin-top:10px;letter-spacing:.06em;}
+.w-greet{font-size:15px;font-weight:600;opacity:.95;margin-top:10px;letter-spacing:.06em;}
 
 /* App 格子 */
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px 8px;width:100%;max-width:420px;margin:0 auto;}
@@ -48,13 +53,15 @@ body.app-open .home{transform:scale(.92);filter:blur(6px) brightness(.7);opacity
   opacity:0;transform:translateY(12px) scale(.9);animation:appIn .5s cubic-bezier(.2,.9,.3,1.2) forwards;}
 @keyframes appIn{to{opacity:1;transform:none;}}
 .app-icon{width:62px;height:62px;border-radius:15px;display:flex;align-items:center;justify-content:center;position:relative;
-  background:linear-gradient(145deg,#111,#1c1c1e);border:1px solid rgba(255,255,255,.14);overflow:hidden;
-  box-shadow:0 6px 16px rgba(0,0,0,.32);transition:transform .15s ease,filter .15s ease;}
+  background:linear-gradient(145deg,#1a1a1d,#2a2a2e);border:1.5px solid rgba(255,255,255,.30);overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.55);transition:transform .15s ease,filter .15s ease;}
 .app-icon > span{font-size:38px!important;}
 .app-icon > svg:not([style]){width:56px;height:56px;}
 .app:active .app-icon{transform:scale(.86);filter:brightness(.75);}
-.app-name{font-size:12px;line-height:1.2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  text-shadow:0 1px 4px rgba(0,0,0,.6);}
+.app-name{font-size:12.5px;font-weight:600;line-height:1.25;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  padding:2px 8px;border-radius:9px;background:rgba(0,0,0,.52);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  text-shadow:0 1px 2px rgba(0,0,0,.8);}
 /* ── 底部 Dock ── */
 .dock-space{flex-shrink:0;height:calc(120px + env(safe-area-inset-bottom,0px));}
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;
@@ -76,7 +83,7 @@ body.app-open .dock{transform:scale(.92);filter:blur(6px) brightness(.7);opacity
   .app-icon{width:78px;height:78px;border-radius:19px;}
   .app-icon > span{font-size:46px!important;}
   .app-icon > svg:not([style]){width:70px;height:70px;}
-  .app-name{font-size:13px;}
+  .app-name{font-size:14px;padding:3px 10px;}
   .dock-inner{max-width:440px;padding:14px 18px;border-radius:30px;gap:14px;}
   .dock-space{height:140px;}
   @media (hover:hover){ .app:hover .app-icon{transform:translateY(-4px) scale(1.06);} }
