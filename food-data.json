@@ -1,5 +1,35 @@
 [
   {
+    "id": "1790693651366",
+    "name": "初海和牛鐵板燒 台北永康店",
+    "name1": "初海和牛鐵板燒",
+    "name2": "台北永康店",
+    "type": "鐵板燒",
+    "meal": "",
+    "price": 4023,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "106臺北市大安區福住里永康街1號4樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%88%9D%E6%B5%B7%E5%92%8C%E7%89%9B%E9%90%B5%E6%9D%BF%E7%87%92+%E5%8F%B0%E5%8C%97%E6%B0%B8%E5%BA%B7%E5%BA%97/@25.0333566,121.5274021,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a9003cc81f25:0x150f672ad03f45b!8m2!3d25.0333518!4d121.529977!16s%2Fg%2F11xny3bh26?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-09-29",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2026-09-29",
+        "meal": "晚餐",
+        "price": 4023,
+        "menu": "",
+        "score": 3.8
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/wZ1Vc2cN/c3f8692a9895.jpg"
+    ],
+    "img": "https://i.ibb.co/wZ1Vc2cN/c3f8692a9895.jpg",
+    "createdAt": 1790693651366
+  },
+  {
     "id": "1790529786153",
     "name": "Popeyes Chicken 台北101店",
     "name1": "Popeyes Chicken",
