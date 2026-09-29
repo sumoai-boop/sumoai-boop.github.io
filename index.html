@@ -1,41 +1,433 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-TW">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <title>誰買單？聚餐結帳小遊戲</title>
-    <meta name="description" content="手指輪盤、吹氣球、碼錶挑戰、終極密碼，玩一局決定今天誰請客，還會自動算好每人要付多少。" />
-    <meta name="theme-color" content="#FFFFFF" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="誰買單" />
-    <link rel="apple-touch-icon" href="icon-180.png" />
-    <link rel="manifest" href="manifest.json" />
-    <meta property="og:title" content="誰買單？聚餐結帳小遊戲" />
-    <meta property="og:description" content="玩一局決定今天誰請客，自動算好分攤金額。" />
-    <meta property="og:image" content="icon-512.png" />
-    <style id="expo-reset">
-      html, body { height: 100%; }
-      body {
-        overflow: hidden;
-        margin: 0;
-        background: #FFFFFF;
-        overscroll-behavior: none;
-        -webkit-user-select: none;
-        user-select: none;
-        -webkit-touch-callout: none;
-        -webkit-tap-highlight-color: transparent;
-        font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      }
-      input { -webkit-user-select: text; user-select: text; }
-      #root { display: flex; height: 100%; flex: 1; }
-    </style>
-  <meta name="theme-color" content="#FFFFFF">
-<link rel="icon" href="/whopays/favicon.ico"/></head>
-  <body>
-    <noscript>請開啟 JavaScript 才能玩「誰買單」。</noscript>
-    <div id="root"></div>
-  <script src="/whopays/expo/static/js/web/index-b6bf81e0ad86bfb3805cb02518dca7f3.js" defer></script>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Sumoai's Reel</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{overflow:hidden;background:#000;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;
+  -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;}
+
+/* ── 桌布（沿用原本輪播邏輯）── */
+#wallpaper{transition:opacity .45s ease;}
+#wallpaperBg{position:fixed;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;
+  filter:blur(30px) saturate(1.15) brightness(.82);transform:scale(1.15);opacity:0;transition:opacity .45s ease;}
+.shade{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 48%,rgba(0,0,0,.30),rgba(0,0,0,0) 75%),
+    linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.25) 30%,rgba(0,0,0,.25) 70%,rgba(0,0,0,.45) 100%);}
+/* 桌布本身降一點飽和與亮度，減少跟圖示搶色 */
+#wallpaper,#wallpaperBg{filter:saturate(.85) brightness(.9);}
+#wallpaperBg{filter:blur(30px) saturate(1) brightness(.75)!important;}
+
+/* ── 主畫面 ── */
+.home{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 20px calc(env(safe-area-inset-bottom,0px) + 22px);
+  overflow-y:auto;overscroll-behavior:contain;
+  transition:transform .42s cubic-bezier(.2,.9,.25,1),filter .42s ease,opacity .42s ease;}
+.home::-webkit-scrollbar{display:none;}
+body.app-open .home{transform:scale(.92);filter:blur(6px) brightness(.7);opacity:.6;}
+
+/* 狀態列 */
+.status{display:flex;align-items:center;justify-content:flex-end;height:30px;padding:0 10px;
+  font-size:15px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.35);flex-shrink:0;}
+.status-r{display:flex;align-items:center;gap:7px;}
+.status-r svg{display:block;}
+.status-r img{width:18px;height:auto;border-radius:2px;display:block;}
+
+/* 時鐘小工具 */
+.widget{text-align:center;margin:28px 0 30px;text-shadow:0 2px 14px rgba(0,0,0,.35);flex-shrink:0;}
+.w-date{font-size:17px;font-weight:600;opacity:.92;letter-spacing:.04em;}
+.w-time{font-size:86px;font-weight:700;line-height:1;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums;}
+.w-greet{font-size:15px;font-weight:600;opacity:.95;margin-top:10px;letter-spacing:.06em;}
+
+/* App 格子 */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px 8px;width:100%;max-width:420px;margin:0 auto;}
+.app{display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:#fff;min-width:0;
+  opacity:0;transform:translateY(12px) scale(.9);animation:appIn .5s cubic-bezier(.2,.9,.3,1.2) forwards;}
+@keyframes appIn{to{opacity:1;transform:none;}}
+.app-icon{width:62px;height:62px;border-radius:15px;display:flex;align-items:center;justify-content:center;position:relative;
+  background:linear-gradient(145deg,#1a1a1d,#2a2a2e);border:1.5px solid rgba(255,255,255,.30);overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.55);transition:transform .15s ease,filter .15s ease;}
+.app-icon > span{font-size:38px!important;}
+.app-icon > svg:not([style]){width:56px;height:56px;}
+.app:active .app-icon{transform:scale(.86);filter:brightness(.75);}
+.app-name{font-size:12.5px;font-weight:600;line-height:1.25;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  padding:2px 8px;border-radius:9px;background:rgba(0,0,0,.52);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  text-shadow:0 1px 2px rgba(0,0,0,.8);}
+/* ── 底部 Dock ── */
+.dock-space{flex-shrink:0;height:calc(120px + env(safe-area-inset-bottom,0px));}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;
+  padding:0 12px calc(env(safe-area-inset-bottom,0px) + 12px);pointer-events:none;
+  transition:transform .42s cubic-bezier(.2,.9,.25,1),filter .42s ease,opacity .42s ease;}
+.dock-inner{pointer-events:auto;width:100%;max-width:420px;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:8px;padding:14px 12px;border-radius:34px;
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);}
+.dock .app-name{display:none;}
+body.app-open .dock{transform:scale(.92);filter:blur(6px) brightness(.7);opacity:.6;}
+
+/* 電腦／平板：格子變寬、圖示放大 */
+@media (min-width:769px){
+  .widget{margin:44px 0 44px;}
+  .w-time{font-size:110px;}
+  .grid{grid-template-columns:repeat(6,1fr);max-width:720px;gap:36px 18px;}
+  .app-icon{width:78px;height:78px;border-radius:19px;}
+  .app-icon > span{font-size:46px!important;}
+  .app-icon > svg:not([style]){width:70px;height:70px;}
+  .app-name{font-size:14px;padding:3px 10px;}
+  .dock-inner{max-width:440px;padding:14px 18px;border-radius:30px;gap:14px;}
+  .dock-space{height:140px;}
+  @media (hover:hover){ .app:hover .app-icon{transform:translateY(-4px) scale(1.06);} }
+}
+/* 手機橫放 */
+@media (orientation:landscape) and (max-height:520px){
+  .widget{margin:4px 0 14px;} .w-time{font-size:48px;} .status{display:none;}
+  .grid{grid-template-columns:repeat(6,1fr);max-width:640px;gap:16px 8px;}
+  .dock-inner{max-width:360px;padding:8px 10px;} .dock .app-icon{width:50px;height:50px;} .dock-space{height:90px;}
+}
+
+/* ── App 全螢幕視窗 ── */
+.appwin{position:fixed;inset:0;z-index:50;display:none;flex-direction:column;background:#fff;overflow:hidden;
+  border-radius:0;transform-origin:50% 50%;}
+.appwin.show{display:flex;}
+.appwin.anim{transition:transform .42s cubic-bezier(.2,.9,.25,1),border-radius .42s ease,opacity .3s ease;}
+.appbar{height:calc(44px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 10px 0;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;background:rgba(22,22,26,.96);color:#fff;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);}
+.ab-btn{border:none;background:none;color:#0A84FF;font:inherit;font-size:16px;cursor:pointer;padding:8px 6px;
+  display:flex;align-items:center;gap:2px;white-space:nowrap;}
+.ab-btn b{font-size:24px;font-weight:400;line-height:0;margin-top:-2px;}
+.ab-title{flex:1;text-align:center;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ab-ext{min-width:64px;justify-content:flex-end;font-size:15px;}
+.appbody{flex:1;position:relative;min-height:0;background:#fff;}
+.appbody iframe{width:100%;height:100%;border:0;display:block;}
+.apploading{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#1c1c1e;}
+.apploading.off{display:none;}
+.apploading .app-icon{animation:pulse 1.1s ease-in-out infinite;}
+@keyframes pulse{50%{transform:scale(.92);opacity:.7;}}
+/* 底部 Home 橫條：點一下或往上滑回主畫面 */
+.homebar{position:absolute;left:0;right:0;bottom:0;height:calc(22px + env(safe-area-inset-bottom,0px));z-index:3;
+  display:flex;justify-content:center;align-items:flex-start;padding-top:9px;cursor:pointer;touch-action:none;}
+.homebar::before{content:'';width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.35);
+  box-shadow:0 0 0 1px rgba(255,255,255,.35);}
+
+@media (prefers-reduced-motion:reduce){
+  .app{animation:none;opacity:1;transform:none;} .appwin.anim,.home{transition:none;}
+}
+</style>
+</head>
+<body>
+<!-- 桌布（日夜自動切換）-->
+<img id="wallpaperBg" alt="">
+<img id="wallpaper" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" alt="">
+<script>
+(function(){
+  /* ── 自動更換桌布 ──────────────────────────────
+     把桌布圖片放進 repo 的 wallpapers/ 資料夾（jpg / png / webp / avif），
+     會依下面設定的時間自動輪換，不需要改其他程式。
+     資料夾不存在或沒圖時，維持使用預設桌布。
+     想改用線上圖源（完全不用自己準備圖）→ ONLINE_DAILY 改成 true。
+
+     CHANGE_EVERY_MINUTES = 每幾分鐘換一張：
+       5 → 一天 288 張   10 → 一天 144 張   15 → 一天 96 張
+       30 → 一天 48 張   60 → 一小時一張    180 → 三小時一張
+       1440 → 一天換一次                                      */
+  var CHANGE_EVERY_MINUTES = 10;
+  /* 圖片比例與螢幕差多少以內就直接填滿（0.10 = 10%）。
+     超過就改成完整顯示整張圖，四周用同一張圖放大模糊補滿。
+     想要「一律填滿、可接受裁切」→ 改成 1 ；想要「一律完整顯示」→ 改成 0 */
+  var FIT_TOLERANCE = 0.10;
+  var REPO         = 'sumoai-boop/sumoai-boop.github.io';
+  var DIR          = 'wallpapers';
+  var DEFAULT_WALL = 'https://sumoai-boop.github.io/wallpaper-xp.jpg';
+  var ONLINE_DAILY = false;
+  function onlineSrc(slot){ return 'https://picsum.photos/seed/w'+slot+'/2560/1440'; }
+
+  var img = document.getElementById('wallpaper');
+  var LIST_KEY = 'sumoai_wall_list', TS_KEY = 'sumoai_wall_ts';
+  var list = null, lastOK = 0, lastTry = 0;
+  var RELIST_MS = 10*60*1000;   /* 每 10 分鐘重新讀一次資料夾（新上傳的圖很快就會加入輪播） */
+  var RETRY_MS  = 3*60*1000;    /* 讀取失敗時的重試間隔，避免一直打 API */
+  /* 目前是第幾個時段：每 CHANGE_EVERY_MINUTES 分鐘 +1，跨到下一段就換圖 */
+  function slotNum(){
+    var d = new Date();
+    var mins = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes())/60000);
+    var step = Math.min(1440, Math.max(1, CHANGE_EVERY_MINUTES));
+    return Math.floor(mins/step);
+  }
+  var bg = document.getElementById('wallpaperBg');
+  var natW = 0, natH = 0;
+  /* 依「圖片比例 vs 螢幕比例」決定顯示方式：
+     接近 → 填滿整個畫面；差太多 → 完整顯示整張圖，用模糊底圖補邊 */
+  function fitWallpaper(){
+    if(!natW || !natH) return;
+    var imgAR = natW / natH;
+    var winAR = (window.innerWidth || 1) / (window.innerHeight || 1);
+    var diff  = Math.abs(imgAR - winAR) / winAR;
+    if(diff <= FIT_TOLERANCE){
+      img.style.objectFit = 'cover';
+      if(bg) bg.style.opacity = '0';
+    }else{
+      img.style.objectFit = 'contain';
+      if(bg) bg.style.opacity = '1';
+    }
+  }
+  /* 預先載入再淡入，避免換圖時閃一下 */
+  function setSrc(u){
+    if(!u || img.getAttribute('src') === u) return;
+    var pre = new Image();
+    pre.onload = function(){
+      natW = pre.naturalWidth; natH = pre.naturalHeight;
+      img.style.opacity = '0';
+      setTimeout(function(){
+        img.src = u;
+        if(bg) bg.src = u;
+        fitWallpaper();
+        img.style.opacity = '1';
+      }, 160);
+    };
+    pre.onerror = function(){ if(u !== DEFAULT_WALL) setSrc(DEFAULT_WALL); };
+    pre.src = u;
+  }
+  /* 轉螢幕方向或改變視窗大小時重新判斷 */
+  window.addEventListener('resize', fitWallpaper);
+  function apply(){
+    if(ONLINE_DAILY){ setSrc(onlineSrc(slotNum())); return; }
+    setSrc(list && list.length ? list[slotNum() % list.length] : DEFAULT_WALL);
+  }
+
+  try{
+    var saved = JSON.parse(localStorage.getItem(LIST_KEY) || 'null');
+    lastOK = parseInt(localStorage.getItem(TS_KEY) || '0', 10) || 0;
+    if(saved && saved.length) list = saved;
+  }catch(e){}
+  apply();
+
+  /* 讀取 wallpapers/ 資料夾內容（每次開頁 + 每 10 分鐘各一次） */
+  function refreshList(){
+    lastTry = Date.now();
+    var h = {'Accept':'application/vnd.github.v3+json'};
+    try{ var tk = localStorage.getItem('sumoai_gh_token'); if(tk) h.Authorization = 'token '+tk; }catch(e){}
+    fetch('https://api.github.com/repos/'+REPO+'/contents/'+DIR+'?t='+Date.now(), {headers:h})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if(!Array.isArray(j)) return;
+        var l = j.filter(function(x){ return x.type==='file' && /\.(jpe?g|png|webp|avif)$/i.test(x.name); })
+                 .map(function(x){ return x.download_url; })
+                 .sort();
+        if(!l.length) return;
+        list = l; lastOK = Date.now();
+        try{
+          localStorage.setItem(LIST_KEY, JSON.stringify(l));
+          localStorage.setItem(TS_KEY, String(lastOK));
+        }catch(e){}
+        console.info('[桌布] 找到 ' + l.length + ' 張，目前第 ' + ((slotNum() % l.length) + 1) + ' 張');
+        apply();
+      })
+      .catch(function(){});
+  }
+  if(!ONLINE_DAILY) refreshList();   /* 每次開啟頁面都重新確認一次清單 */
+
+  /* 定期檢查：跨到下一個時段就換圖；清單每 10 分鐘重新讀一次 */
+  setInterval(function(){
+    var now = Date.now();
+    if(!ONLINE_DAILY && now - lastOK > RELIST_MS && now - lastTry > RETRY_MS) refreshList();
+    apply();
+  }, 15000);
+
+  /* 從背景切回前景（手機解鎖、切回分頁）時立刻檢查一次 */
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden) apply();
+  });
+
+  /* 想確認狀態：瀏覽器主控台輸入 wallInfo() */
+  window.wallInfo = function(){
+    return {
+      張數: list ? list.length : 0,
+      目前第幾張: list && list.length ? (slotNum() % list.length) + 1 : 0,
+      每幾分鐘換: CHANGE_EVERY_MINUTES,
+      目前圖片: img.getAttribute('src')
+    };
+  };
+})();
+</script>
+<div class="shade"></div>
+
+<!-- ══ 主畫面 ══ -->
+<main class="home" id="home">
+  <div class="status">
+    <span class="status-r">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="1"/><rect x="9" y="3" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 24 18" fill="#fff"><path d="M12 3.2c3.4 0 6.5 1.3 8.8 3.5l1.7-1.8C19.7 2.2 16 .7 12 .7S4.3 2.2 1.5 4.9l1.7 1.8C5.5 4.5 8.6 3.2 12 3.2zm0 5c2 0 3.9.8 5.3 2.1l1.7-1.8C17.2 6.8 14.7 5.7 12 5.7S6.8 6.8 5 8.5l1.7 1.8C8.1 9 10 8.2 12 8.2zM12 13a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/></svg>
+      <img src="https://flagcdn.com/w40/tw.png" alt="TW">
+      <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="rgba(255,255,255,.55)"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="#fff"/><rect x="23.5" y="4" width="1.8" height="4" rx=".9" fill="rgba(255,255,255,.55)"/></svg>
+    </span>
+  </div>
+
+  <section class="widget">
+    <div class="w-date" id="wDate"></div>
+    <div class="w-time" id="wTime"></div>
+    <div class="w-greet" id="wGreet"></div>
+  </section>
+
+  <nav class="grid" id="grid">
+    <a href="photos.html" class="app"><div class="app-icon ic-photos"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FF6B9D;line-height:1;letter-spacing:-2px;">P</span></div><span class="app-name">照片</span></a>
+    <a href="ai.html" class="app"><div class="app-icon ic-ai" style="position:relative;"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FBBF24;line-height:1;letter-spacing:-2px;">A</span><svg width="15" height="15" viewBox="0 0 16 16" style="position:absolute;top:5px;right:5px;"><path d="M8 1 L9.3 5 L13.3 6.3 L9.3 7.6 L8 11.6 L6.7 7.6 L2.7 6.3 L6.7 5 Z" fill="#FBBF24"/></svg><svg width="19" height="19" viewBox="0 0 16 16" style="position:absolute;bottom:26px;left:3px;"><path d="M8 1 L9.3 5 L13.3 6.3 L9.3 7.6 L8 11.6 L6.7 7.6 L2.7 6.3 L6.7 5 Z" fill="#FBBF24"/></svg></div><span class="app-name">AI 圖庫</span></a>
+    <a href="trips.html" class="app"><div class="app-icon ic-trips"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="16.5" y="3.5" width="15" height="12" rx="4" fill="none" stroke="#A32D2D" stroke-width="3.6"/><rect x="5.5" y="10" width="37" height="33" rx="5.5" fill="#E24B4A"/><rect x="11.5" y="10" width="3.4" height="33" fill="#A32D2D"/><rect x="33.1" y="10" width="3.4" height="33" fill="#A32D2D"/><text x="24" y="33.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">T</text></svg></div><span class="app-name">行程記帳</span></a>
+    <a href="threads.html" class="app"><div class="app-icon ic-threads"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#FFFFFF;line-height:1;letter-spacing:-2px;">T</span></div><span class="app-name">Threads</span></a>
+    <a href="weight.html" class="app"><div class="app-icon ic-weight"><svg width="52" height="52" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="9" fill="#2DD4BF"/><path d="M14 4.6 A 17.5 17.5 0 0 1 34 4.6 L 31 11.5 A 11 11 0 0 0 17 11.5 Z" fill="#0F766E"/><rect x="19.5" y="6" width="9" height="4.2" rx="1.8" fill="#E6FFFA"/><text x="24" y="34.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">W</text></svg></div><span class="app-name">體重</span></a>
+    <a href="reminder.html" class="app"><div class="app-icon ic-reminder"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M6 11.5 L13.5 3.5 L18 8.5 Z" fill="#34D399"/><path d="M42 11.5 L34.5 3.5 L30 8.5 Z" fill="#34D399"/><circle cx="24" cy="25" r="19" fill="#34D399"/><circle cx="24" cy="25" r="14.8" fill="#065F46"/><path d="M10.5 40 L7 45 M37.5 40 L41 45" stroke="#34D399" stroke-width="3" stroke-linecap="round"/><text x="24" y="32.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#FFFFFF">R</text></svg></div><span class="app-name">提醒</span></a>
+    <a href="top10.html" class="app"><div class="app-icon ic-netflix"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#E50914;line-height:1;letter-spacing:-2px;">N</span></div><span class="app-name">Top 10</span></a>
+    <a href="mlb.html" class="app"><div class="app-icon ic-mlb"><svg width="52" height="52" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#FFFFFF"/><path d="M8 9 A 27 27 0 0 1 8 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M40 9 A 27 27 0 0 0 40 39" fill="none" stroke="#D2372C" stroke-width="2.2" stroke-linecap="round"/><path d="M9.5 14 l3.4 1.6 M8 19 l3.6 0.9 M8 29 l3.6 -0.9 M9.5 34 l3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><path d="M38.5 14 l-3.4 1.6 M40 19 l-3.6 0.9 M40 29 l-3.6 -0.9 M38.5 34 l-3.4 -1.6" stroke="#D2372C" stroke-width="1.8" stroke-linecap="round"/><text x="24" y="31.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#0C2340">M</text></svg></div><span class="app-name">MLB</span></a>
+    <a href="passwords.html" class="app"><div class="app-icon ic-pw"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M15 22v-6.5a9 9 0 0 1 18 0V22" fill="none" stroke="#818CF8" stroke-width="4.4" stroke-linecap="round"/><rect x="8" y="21" width="32" height="23" rx="5.5" fill="#818CF8"/><text x="24" y="39" text-anchor="middle" font-family="Arial" font-size="17" font-weight="900" fill="#1a1a1d">***</text></svg></div><span class="app-name">密碼</span></a>
+  </nav>
+
+  <div class="dock-space"></div>
+</main>
+
+<!-- ══ 底部 Dock（固定 4 個）══ -->
+<div class="dock" id="dock">
+  <div class="dock-inner">
+      <a href="uber.html" class="app"><div class="app-icon ic-uber"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#00C853;line-height:1;letter-spacing:-2px;">U</span></div><span class="app-name">Uber</span></a>
+      <a href="dramas.html" class="app"><div class="app-icon ic-dramas"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#A78BFA;line-height:1;letter-spacing:-2px;">D</span></div><span class="app-name">追劇</span></a>
+      <a href="food.html" class="app"><div class="app-icon ic-food"><span style="font-size:36px;font-weight:900;font-family:Arial,sans-serif;color:#38BDF8;line-height:1;letter-spacing:-2px;">F</span></div><span class="app-name">食記</span></a>
+      <a href="chloe.html" class="app"><div class="app-icon ic-chloe"><svg width="52" height="52" viewBox="0 0 48 48"><path d="M24 43.5 L6 25.5 A11.3 11.3 0 0 1 22.1 9.4 L24 11.3 L25.9 9.4 A11.3 11.3 0 0 1 42 25.5 Z" fill="#E879F9"/><text x="24" y="28.5" text-anchor="middle" font-family="Arial" font-size="21" font-weight="900" fill="#111">C</text></svg></div><span class="app-name">Chloe ♥</span></a>
+  </div>
+</div>
+
+<!-- ══ App 視窗 ══ -->
+<div class="appwin" id="appWin" role="dialog" aria-modal="true">
+  <div class="appbar">
+    <button class="ab-btn" id="abHome"><b>‹</b>主畫面</button>
+    <div class="ab-title" id="abTitle"></div>
+    <button class="ab-btn ab-ext" id="abExt" title="在新分頁開啟">開啟 ↗</button>
+  </div>
+  <div class="appbody">
+    <div class="apploading" id="appLoad"></div>
+    <iframe id="appFrame" title="App"></iframe>
+    <div class="homebar" id="homeBar" title="回主畫面"></div>
+  </div>
+</div>
+
+<script>
+/* ══ 時鐘小工具 ══ */
+(function(){
+  var W=['日','一','二','三','四','五','六'], $=function(id){return document.getElementById(id);};
+  function tick(){
+    var d=new Date(), t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'), h=d.getHours();
+    $('wTime').textContent=t;
+    $('wDate').textContent=(d.getMonth()+1)+'月'+d.getDate()+'日 星期'+W[d.getDay()];
+    $('wGreet').textContent=h<5?'夜深了，早點休息':h<11?'早安，Aaron':h<14?'午安，Aaron':h<18?'下午好，Aaron':'晚安，Aaron';
+  }
+  tick(); setInterval(tick,10000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) tick(); });
+  /* 圖示依序浮現 */
+  document.querySelectorAll('.app').forEach(function(a,i){ a.style.animationDelay=Math.min(i*28,400)+'ms'; });
+})();
+
+/* ══ 點圖示 → App 全螢幕展開 ══ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var win=$('appWin'), frame=$('appFrame'), load=$('appLoad'), title=$('abTitle');
+  var cur='', srcRect=null, busy=false;
+
+  /* 從圖示位置放大展開（iOS 開 App 的動畫） */
+  function fromIcon(r){
+    var vw=innerWidth, vh=innerHeight;
+    var sx=r.width/vw, sy=r.height/vh;
+    var tx=r.left+r.width/2-vw/2, ty=r.top+r.height/2-vh/2;
+    return 'translate('+tx+'px,'+ty+'px) scale('+sx+','+sy+')';
+  }
+
+  function open(a, push){
+    if(busy) return;
+    var href=a.getAttribute('href'), name=a.querySelector('.app-name').textContent;
+    var icon=a.querySelector('.app-icon');
+    srcRect=icon.getBoundingClientRect();
+    cur=href; title.textContent=name;
+    $('abExt').onclick=function(){ window.open(href,'_blank'); };
+    load.innerHTML=''; load.appendChild(icon.cloneNode(true)); load.classList.remove('off');
+    /* 加時間戳，避免 iframe 吃到舊版快取 */
+    frame.src=href+(href.indexOf('?')<0?'?':'&')+'_='+Date.now();
+
+    win.classList.remove('anim');
+    win.style.transform=fromIcon(srcRect); win.style.borderRadius='40px'; win.style.opacity='0';
+    win.classList.add('show');
+    document.body.classList.add('app-open');
+    win.offsetWidth; /* 強制重排，讓動畫從圖示位置開始 */
+    win.classList.add('anim');
+    win.style.transform='none'; win.style.borderRadius='0'; win.style.opacity='1';
+    if(push!==false) history.pushState({app:href},'', '#'+href.replace('.html',''));
+  }
+
+  function close(fromPop){
+    if(!win.classList.contains('show')||busy) return;
+    busy=true;
+    document.body.classList.remove('app-open');
+    var a=document.querySelector('.app[href="'+cur+'"] .app-icon');
+    var r=a?a.getBoundingClientRect():srcRect;
+    win.classList.add('anim');
+    win.style.transform=fromIcon(r); win.style.borderRadius='40px'; win.style.opacity='0';
+    setTimeout(function(){
+      win.classList.remove('show','anim'); frame.src='about:blank'; cur=''; busy=false;
+    },420);
+    if(!fromPop && history.state && history.state.app) history.back();
+  }
+
+  /* 點圖示（Ctrl/Cmd/Shift 點擊保留另開分頁） */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('.grid .app, .dock .app'); if(!a) return;
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0) return;
+    e.preventDefault(); open(a);
+  });
+
+  $('abHome').onclick=function(){ close(); };
+  $('homeBar').onclick=function(){ close(); };
+  /* Home 橫條往上滑 → 回主畫面 */
+  var sy=null;
+  $('homeBar').addEventListener('pointerdown',function(e){ sy=e.clientY; this.setPointerCapture(e.pointerId); });
+  $('homeBar').addEventListener('pointermove',function(e){
+    if(sy===null) return; var d=Math.max(0,sy-e.clientY);
+    win.style.transform='translateY('+(-d*0.6)+'px) scale('+(1-Math.min(d,300)/900)+')';
+  });
+  $('homeBar').addEventListener('pointerup',function(e){
+    if(sy===null) return; var d=sy-e.clientY; sy=null;
+    if(d>60) close(); else if(d>6){ win.classList.add('anim'); win.style.transform='none'; }
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+
+  /* 手機的「返回」鍵／手勢 → 關 App */
+  window.addEventListener('popstate',function(){ if(win.classList.contains('show')) close(true); });
+
+  /* App 載入後：隱藏子頁自己的 Mac 選單列，子頁連回 index.html 的連結改成關閉 */
+  frame.addEventListener('load',function(){
+    if(!cur) return;
+    load.classList.add('off');
+    try{
+      var d=frame.contentDocument; if(!d||!d.head) return;
+      var s=d.createElement('style');
+      s.textContent='.global-menubar,.menubar,.global-dock-wrap,.dock-trigger-zone{display:none!important}';
+      d.head.appendChild(s);
+      d.addEventListener('click',function(ev){
+        var a=ev.target.closest&&ev.target.closest('a[href$="index.html"]');
+        if(a){ ev.preventDefault(); close(); }
+      });
+    }catch(e){}
+  });
+
+  /* 用 #uber 這類網址直接開啟某個 App */
+  var h=location.hash.slice(1);
+  if(h){ var a=document.querySelector('.app[href="'+h+'.html"]'); if(a){ history.replaceState(null,'',location.pathname); setTimeout(function(){ open(a); },350); } }
+})();
+</script>
 </body>
 </html>
