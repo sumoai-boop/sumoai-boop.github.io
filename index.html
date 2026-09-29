@@ -35,7 +35,7 @@ body{overflow:hidden;background:#000;color:#fff;
 body.app-open .home{transform:scale(.92);filter:blur(6px) brightness(.7);opacity:.6;}
 
 /* 狀態列 */
-.status{display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 10px;
+.status{display:flex;align-items:center;justify-content:flex-end;height:30px;padding:0 10px;
   font-size:15px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.35);flex-shrink:0;}
 .status-r{display:flex;align-items:center;gap:7px;}
 .status-r svg{display:block;}
@@ -265,7 +265,6 @@ body.app-open .dock{transform:scale(.92);filter:blur(6px) brightness(.7);opacity
 <!-- ══ 主畫面 ══ -->
 <main class="home" id="home">
   <div class="status">
-    <span id="stTime"></span>
     <span class="status-r">
       <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="1"/><rect x="9" y="3" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
       <svg width="16" height="12" viewBox="0 0 24 18" fill="#fff"><path d="M12 3.2c3.4 0 6.5 1.3 8.8 3.5l1.7-1.8C19.7 2.2 16 .7 12 .7S4.3 2.2 1.5 4.9l1.7 1.8C5.5 4.5 8.6 3.2 12 3.2zm0 5c2 0 3.9.8 5.3 2.1l1.7-1.8C17.2 6.8 14.7 5.7 12 5.7S6.8 6.8 5 8.5l1.7 1.8C8.1 9 10 8.2 12 8.2zM12 13a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/></svg>
@@ -325,7 +324,7 @@ body.app-open .dock{transform:scale(.92);filter:blur(6px) brightness(.7);opacity
   var W=['日','一','二','三','四','五','六'], $=function(id){return document.getElementById(id);};
   function tick(){
     var d=new Date(), t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'), h=d.getHours();
-    $('wTime').textContent=t; $('stTime').textContent=t;
+    $('wTime').textContent=t;
     $('wDate').textContent=(d.getMonth()+1)+'月'+d.getDate()+'日 星期'+W[d.getDay()];
     $('wGreet').textContent=h<5?'夜深了，早點休息':h<11?'早安，Aaron':h<14?'午安，Aaron':h<18?'下午好，Aaron':'晚安，Aaron';
   }
