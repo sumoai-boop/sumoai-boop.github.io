@@ -1096,32 +1096,31 @@ async function uploadToImgBB(dataUrl){
 }
 
 /* ───── 照片解碼（含 iPhone HEIC 支援）───── */
+// heic-to：基於 libheif 1.23（2025），支援新款 iPhone 的 HDR / 分塊 HEIC
 const HEIC_CDNS = [
-  'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js',
-  'https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js'
+  'https://cdn.jsdelivr.net/npm/heic-to@1.5.2/dist/iife/heic-to.js',
+  'https://unpkg.com/heic-to@1.5.2/dist/iife/heic-to.js'
 ];
 let _heicLibLoading = null;
 function _loadScriptOnce(src){
   return new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     let done=false;
-    const t=setTimeout(()=>{ if(!done){done=true; s.remove(); reject(new Error('逾時'));} },25000);
+    const t=setTimeout(()=>{ if(!done){done=true; s.remove(); reject(new Error('逾時'));} },40000);
     s.src=src;
     s.onload=()=>{ if(done) return; done=true; clearTimeout(t);
-      window.heic2any ? resolve() : reject(new Error('載入後找不到元件')); };
+      window.HeicTo ? resolve() : reject(new Error('載入後找不到元件')); };
     s.onerror=()=>{ if(done) return; done=true; clearTimeout(t); s.remove(); reject(new Error('下載失敗')); };
     document.head.appendChild(s);
   });
 }
 function loadHeicLib(){
-  if(window.heic2any) return Promise.resolve();
+  if(window.HeicTo) return Promise.resolve();
   if(_heicLibLoading) return _heicLibLoading;
   _heicLibLoading = (async()=>{
-    let last;
     for(const url of HEIC_CDNS){
       try{ await _loadScriptOnce(url); return; }
-      catch(err){ last=err; console.warn('[HEIC 元件] 來源失敗:', url, err.message); }
+      catch(err){ console.warn('[HEIC 元件] 來源失敗:', url, err.message); }
     }
     _heicLibLoading = null; // 允許下次重試
     throw new Error('轉檔元件無法下載（網路或防火牆阻擋）');
@@ -1129,10 +1128,16 @@ function loadHeicLib(){
   return _heicLibLoading;
 }
 
-function looksHeic(file){
-  const n=(file.name||'').toLowerCase();
-  const t=(file.type||'').toLowerCase();
-  return t.includes('heic')||t.includes('heif')||n.endsWith('.heic')||n.endsWith('.heif');
+// 用檔案開頭的 magic bytes 判斷（比副檔名可靠，能抓到被改名成 .jpg 的 HEIC）
+async function sniffHeic(file){
+  try{
+    const buf = new Uint8Array(await file.slice(0,32).arrayBuffer());
+    if(buf.length<12) return false;
+    // ISO BMFF: [size][ftyp][brand]
+    if(!(buf[4]===0x66&&buf[5]===0x74&&buf[6]===0x79&&buf[7]===0x70)) return false;
+    let s=''; for(let i=8;i<Math.min(buf.length,28);i++) s+=String.fromCharCode(buf[i]);
+    return /heic|heix|hevc|hevx|heim|heis|hevm|hevs|mif1|msf1|avif/i.test(s);
+  }catch(e){ return false; }
 }
 
 // 嘗試用瀏覽器原生能力把 Blob 解成 JPEG dataURL（Safari 原生支援 HEIC）
@@ -1161,24 +1166,32 @@ function blobToJpegNative(blob){
   });
 }
 
-// 主流程：原生解碼 → 失敗再用 heic2any → 一律輸出 JPEG dataURL
+// 主流程：原生解碼 → 失敗再用 heic-to → 一律輸出 JPEG dataURL
 async function fileToDataUrl(file){
-  // 1) 先試原生（一般 JPG/PNG 走這條；iPhone/Safari 的 HEIC 也走這條）
+  // 1) 先試瀏覽器原生（JPG/PNG 走這條；iPhone / macOS Safari 的 HEIC 也走這條，免下載）
   try{
     return await blobToJpegNative(file);
   }catch(err){
-    // 2) 原生失敗，若像 HEIC 就用轉檔函式庫
-    if(!looksHeic(file)) throw new Error('不支援的圖片格式：'+(file.type||file.name||'未知'));
+    console.warn('[原生解碼失敗，改用轉檔]', file.name, err.message);
   }
-  showToast('⏳ 轉換 iPhone 照片中…（首次需下載元件約 1.3MB）', false);
+
+  // 2) 原生失敗：確認是不是 HEIC/HEIF
+  const isH = await sniffHeic(file);
+  if(!isH){
+    throw new Error('不支援的圖片格式（'+(file.type||file.name||'未知')+'）');
+  }
+
+  // 3) 用 libheif 轉檔
+  showToast('⏳ 轉換 iPhone 照片中…（首次需下載元件）', false);
   await loadHeicLib();
-  let converted;
+  let blob;
   try{
-    converted = await window.heic2any({blob:file, toType:'image/jpeg', quality:0.92});
+    blob = await window.HeicTo({blob:file, type:'image/jpeg', quality:0.92});
   }catch(err){
-    throw new Error('HEIC 轉檔失敗，建議改用 JPG（iPhone：設定→相機→格式→最相容）');
+    console.error('[HeicTo 轉檔失敗]', err);
+    throw new Error('HEIC 解碼失敗，建議改用 JPG（iPhone：設定→相機→格式→最相容）');
   }
-  const blob = Array.isArray(converted) ? converted[0] : converted;
+  if(!blob || !blob.size) throw new Error('HEIC 轉檔結果為空');
   return await blobToJpegNative(blob);
 }
 
