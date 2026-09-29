@@ -709,19 +709,26 @@ async function pushToGitHub(data){
   }finally{_pushing=false;}
 }
 
-/* ───── 圖片壓縮 ───── */
+/* ───── 圖片壓縮（絕不卡死版）───── */
 function compressImage(dataUrl,maxW,maxH,quality){
-  return new Promise(resolve=>{
+  return new Promise((resolve,reject)=>{
+    let done=false;
+    const finish=(fn,val)=>{ if(done) return; done=true; clearTimeout(timer); fn(val); };
+    const timer=setTimeout(()=>finish(reject,new Error('圖片處理逾時（可能是不支援的格式）')),20000);
     const img=new Image();
     img.onload=()=>{
-      let w=img.width,h=img.height;
-      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
-      const canvas=document.createElement('canvas');
-      canvas.width=w;canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      resolve(canvas.toDataURL('image/jpeg',quality));
+      try{
+        let w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+        if(!w||!h) throw new Error('圖片尺寸讀取失敗');
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+        const canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        finish(resolve,canvas.toDataURL('image/jpeg',quality));
+      }catch(err){ finish(reject,err); }
     };
+    img.onerror=()=>finish(reject,new Error('圖片無法解碼'));
     img.src=dataUrl;
   });
 }
@@ -1088,39 +1095,91 @@ async function uploadToImgBB(dataUrl){
   throw new Error(json.error?.message || '上傳失敗');
 }
 
-/* ───── HEIC / HEIF 轉檔（iPhone 照片）───── */
+/* ───── 照片解碼（含 iPhone HEIC 支援）───── */
+const HEIC_CDNS = [
+  'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js',
+  'https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js'
+];
 let _heicLibLoading = null;
+function _loadScriptOnce(src){
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    let done=false;
+    const t=setTimeout(()=>{ if(!done){done=true; s.remove(); reject(new Error('逾時'));} },25000);
+    s.src=src;
+    s.onload=()=>{ if(done) return; done=true; clearTimeout(t);
+      window.heic2any ? resolve() : reject(new Error('載入後找不到元件')); };
+    s.onerror=()=>{ if(done) return; done=true; clearTimeout(t); s.remove(); reject(new Error('下載失敗')); };
+    document.head.appendChild(s);
+  });
+}
 function loadHeicLib(){
   if(window.heic2any) return Promise.resolve();
   if(_heicLibLoading) return _heicLibLoading;
-  _heicLibLoading = new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
-    s.onload=()=>resolve();
-    s.onerror=()=>reject(new Error('HEIC 轉檔元件載入失敗'));
-    document.head.appendChild(s);
-  });
+  _heicLibLoading = (async()=>{
+    let last;
+    for(const url of HEIC_CDNS){
+      try{ await _loadScriptOnce(url); return; }
+      catch(err){ last=err; console.warn('[HEIC 元件] 來源失敗:', url, err.message); }
+    }
+    _heicLibLoading = null; // 允許下次重試
+    throw new Error('轉檔元件無法下載（網路或防火牆阻擋）');
+  })();
   return _heicLibLoading;
 }
-function isHeic(file){
+
+function looksHeic(file){
   const n=(file.name||'').toLowerCase();
   const t=(file.type||'').toLowerCase();
   return t.includes('heic')||t.includes('heif')||n.endsWith('.heic')||n.endsWith('.heif');
 }
-// 把 File 轉成可用的 dataUrl（HEIC 會先轉 JPEG）
-async function fileToDataUrl(file){
-  let blob = file;
-  if(isHeic(file)){
-    await loadHeicLib();
-    const out = await window.heic2any({blob:file, toType:'image/jpeg', quality:0.92});
-    blob = Array.isArray(out) ? out[0] : out;
-  }
-  return await new Promise((resolve,reject)=>{
-    const reader=new FileReader();
-    reader.onload=ev=>resolve(ev.target.result);
-    reader.onerror=()=>reject(new Error('讀取檔案失敗'));
-    reader.readAsDataURL(blob);
+
+// 嘗試用瀏覽器原生能力把 Blob 解成 JPEG dataURL（Safari 原生支援 HEIC）
+function blobToJpegNative(blob){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(blob);
+    let done=false;
+    const finish=(fn,val)=>{ if(done) return; done=true; clearTimeout(timer); URL.revokeObjectURL(url); fn(val); };
+    const timer=setTimeout(()=>finish(reject,new Error('原生解碼逾時')),15000);
+    const img=new Image();
+    img.onload=()=>{
+      try{
+        const w=img.naturalWidth, h=img.naturalHeight;
+        if(!w||!h) throw new Error('尺寸為 0');
+        const c=document.createElement('canvas');
+        c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0);
+        const out=c.toDataURL('image/jpeg',0.92);
+        // 解碼失敗時 canvas 會是全白/極小，用長度粗略驗證
+        if(!out || out.length<1000) throw new Error('解碼結果異常');
+        finish(resolve,out);
+      }catch(err){ finish(reject,err); }
+    };
+    img.onerror=()=>finish(reject,new Error('原生無法解碼'));
+    img.src=url;
   });
+}
+
+// 主流程：原生解碼 → 失敗再用 heic2any → 一律輸出 JPEG dataURL
+async function fileToDataUrl(file){
+  // 1) 先試原生（一般 JPG/PNG 走這條；iPhone/Safari 的 HEIC 也走這條）
+  try{
+    return await blobToJpegNative(file);
+  }catch(err){
+    // 2) 原生失敗，若像 HEIC 就用轉檔函式庫
+    if(!looksHeic(file)) throw new Error('不支援的圖片格式：'+(file.type||file.name||'未知'));
+  }
+  showToast('⏳ 轉換 iPhone 照片中…（首次需下載元件約 1.3MB）', false);
+  await loadHeicLib();
+  let converted;
+  try{
+    converted = await window.heic2any({blob:file, toType:'image/jpeg', quality:0.92});
+  }catch(err){
+    throw new Error('HEIC 轉檔失敗，建議改用 JPG（iPhone：設定→相機→格式→最相容）');
+  }
+  const blob = Array.isArray(converted) ? converted[0] : converted;
+  return await blobToJpegNative(blob);
 }
 
 // 上傳後直接加入（先存 dataUrl 預覽，儲存時才上傳 ImgBB）
@@ -1128,23 +1187,26 @@ imgInput.addEventListener('change', async e=>{
   const files=[...e.target.files];
   imgInput.value='';
   if(!files.length) return;
-  const hasHeic = files.some(isHeic);
-  if(hasHeic) showToast('⏳ 轉換 iPhone 照片中…', false);
-  let ok=0, fail=0;
+  let ok=0;
+  const errs=[];
   for(const file of files){
     try{
       const dataUrl = await fileToDataUrl(file);
       photosArr.push({dataUrl, url:null});
       cropStates.push(null);
       ok++;
+      renderThumbs();
     }catch(err){
-      console.warn('照片處理失敗:', file.name, err);
-      fail++;
+      console.error('[照片處理失敗]', file.name, file.type, file.size, err);
+      errs.push((file.name||'照片')+'：'+(err && err.message ? err.message : '未知錯誤'));
     }
   }
   renderThumbs();
-  if(fail) showToast(`❌ ${fail} 張照片無法讀取`, true);
-  else if(hasHeic) showToast(`✦ 已加入 ${ok} 張照片`, false);
+  if(errs.length){
+    showToast('❌ '+errs[0], true);
+  } else if(ok){
+    showToast('✦ 已加入 '+ok+' 張照片', false);
+  }
 });
 
 // 移除目前這張
@@ -1372,8 +1434,10 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   // 上傳新照片到 ImgBB，已有 URL 的直接用
   saveCropState(currentCropIdx);
   const snapshotPhotos=[...photosArr];
-  showToast('⏳ 上傳照片中...', false);
+  const _newCount = snapshotPhotos.filter(p=>!p.url).length;
+  if(_newCount) showToast('⏳ 上傳照片中… 0/'+_newCount, false);
   const imgs=[];
+  let _uploaded=0;
   for(let i=0;i<snapshotPhotos.length;i++){
     const p=snapshotPhotos[i];
     if(p.url){
@@ -1382,13 +1446,16 @@ document.getElementById('formSave').addEventListener('click',async()=>{
     } else {
       // 新照片，壓縮後上傳 ImgBB
       try{
+        showToast('⏳ 上傳照片中… '+(_uploaded+1)+'/'+_newCount, false);
         const compressed = await compressImage(p.dataUrl, 1200, 1600, 0.82);
         const url = await uploadToImgBB(compressed);
         imgs.push(url);
+        _uploaded++;
         // 更新 photosArr 裡的 url 避免重複上傳
         if(photosArr[i]) photosArr[i].url = url;
       } catch(err){
-        showToast('❌ 照片上傳失敗：'+err.message, true);
+        console.error('[上傳失敗]', err);
+        showToast('❌ 第 '+(_uploaded+1)+' 張上傳失敗：'+(err&&err.message?err.message:'未知錯誤'), true);
         return;
       }
     }
