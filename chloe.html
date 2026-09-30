@@ -131,6 +131,13 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .tab-content.active{display:block;}
 /* EXPENSE STYLES */
 #tab-expense{width:100%;}
+.exp-month-total{display:inline-flex;align-items:center;gap:10px;margin-left:auto;padding:7px 14px;border-radius:999px;background:linear-gradient(135deg,#fdf2f8,#f5f3ff);border:1px solid #e9d5ff;white-space:nowrap;}
+.exp-month-total.all{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-color:#e2e8f0;}
+.exp-month-total .mt-label{font-size:12px;font-weight:700;color:#6b21a8;}
+.exp-month-total.all .mt-label{color:#475569;}
+.exp-month-total .mt-amt{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.3px;}
+.exp-month-total .mt-sub{font-size:11px;font-weight:600;color:#6b7280;}
+@media(max-width:760px){.exp-month-total{margin-left:0;width:100%;justify-content:space-between;gap:6px;}.exp-month-total .mt-amt{font-size:16px;}}
 .exp-save-bar{display:none;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;font-weight:700;line-height:1.5;}
 .exp-save-bar.saving{display:flex;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;}
 .exp-save-bar.ok{display:flex;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
@@ -1281,6 +1288,14 @@ function renderExpenses(){
   });
   months.sort().reverse();
   if(expMonth!=='全部'&&months.indexOf(expMonth)===-1)expMonth='全部';
+
+  // 該月份（或全部）的合計，先算好給月份列顯示
+  var mScope=expMonth==='全部'?expenses:expenses.filter(function(e){return (e.date||'').slice(0,7)===expMonth;});
+  var mTotal=0;mScope.forEach(function(e){mTotal+=parseFloat(e.amount)||0;});
+  var mAvg=mScope.length?Math.round(mTotal/mScope.length):0;
+  var mLabel='全部月份';
+  if(expMonth!=='全部'){var mp=expMonth.split('-');mLabel=mp[0]+' 年 '+parseInt(mp[1],10)+' 月';}
+
   var mEl=document.getElementById('expMonth');
   if(mEl){
     var idx=months.indexOf(expMonth);
@@ -1295,7 +1310,12 @@ function renderExpenses(){
         '<option value="全部"'+(expMonth==='全部'?' selected':'')+'>— 選擇月份 —</option>'+opts+
       '</select>'+
       '<button class="exp-nav-btn" onclick="stepExpMonth(1)" title="下一個月"'+((expMonth==='全部'||idx<=0)?' disabled':'')+'>&#9654;</button>'+
-      '<span class="exp-month-count">共 '+months.length+' 個月</span>';
+      '<span class="exp-month-count">共 '+months.length+' 個月</span>'+
+      '<span class="exp-month-total'+(expMonth==='全部'?' all':'')+'">'+
+        '<span class="mt-label">'+mLabel+'</span>'+
+        '<span class="mt-amt">'+fmtMoney(mTotal)+'</span>'+
+        '<span class="mt-sub">'+mScope.length+' 筆 ｜ 平均 '+fmtMoney(mAvg)+'</span>'+
+      '</span>';
   }
 
   // 月份範圍（統計與圖表跟著月份走）
