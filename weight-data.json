@@ -1,21 +1,5 @@
 {
-  "weightEntries": [
-    {
-      "date": "2026-07-17",
-      "weight": 80.9,
-      "note": ""
-    },
-    {
-      "date": "2026-07-16",
-      "weight": 80.7,
-      "note": ""
-    },
-    {
-      "date": "2026-07-15",
-      "weight": 80.4,
-      "note": ""
-    }
-  ],
+  "weightEntries": [],
   "weightSettings": {
     "height": 168,
     "target": 74
