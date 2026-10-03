@@ -212,8 +212,8 @@ body{
   /* 星期平均卡片：橫向捲動 */
   #weekdayAvgWrap > div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
   #weekdayAvgWrap > div:last-child > div{min-width:96px;flex-shrink:0;}
-  /* 熱區地圖：手機上高度收斂 */
-  #heatMap{height:clamp(380px, calc(100vh - 260px), 560px)!important;}
+  /* 熱區地圖：手機上高度收斂（扣掉的 180px 是上方標題列與篩選列） */
+  #heatMap{height:clamp(440px, calc(100vh - 180px), 760px)!important;}
   /* 圓餅圖：縮放並改直排 */
   #monthlyPieChart,#ovExpPie,#ovIncPie{width:100%!important;max-width:260px;height:auto!important;}
   #expenseChartWrap{padding:14px!important;min-width:0!important;}
@@ -265,6 +265,13 @@ body{
   #heatMap .leaflet-control-attribution{background:rgba(10,15,20,0.55);color:rgba(255,255,255,0.4);
     font-size:10px;padding:1px 6px;border-radius:5px 0 0 0;}
   #heatMap .leaflet-control-attribution a{color:rgba(255,255,255,0.55);}
+  /* 全螢幕時讓卡片變成直向排列，地圖吃掉圖例以外的全部高度 */
+  #heatCard:fullscreen{display:flex;flex-direction:column;border-radius:0;border:0;background:#1a2030;}
+  #heatCard:fullscreen #heatMap{flex:1 1 auto;height:auto!important;min-height:0;}
+  #heatCard:fullscreen #heatFsExit{display:block!important;}
+  #heatCard:-webkit-full-screen{display:flex;flex-direction:column;border-radius:0;border:0;background:#1a2030;}
+  #heatCard:-webkit-full-screen #heatMap{flex:1 1 auto;height:auto!important;min-height:0;}
+  #heatCard:-webkit-full-screen #heatFsExit{display:block!important;}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -724,11 +731,14 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <option value="both">熱力+路線</option>
         <option value="heat">只看熱力</option>
       </select>
+      <button id="heatFsBtn" onclick="toggleHeatFullscreen()" style="background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.35);border-radius:6px;color:#00C853;font-size:11px;padding:6px 10px;cursor:pointer;font-family:monospace;">⛶ 全螢幕</button>
     </div>
     <div id="heatSummary" style="font-size:13px;color:rgba(240,220,160,0.7);"></div>
   </div>
-  <div class="chart-card" style="padding:0;overflow:hidden;">
-    <div id="heatMap" style="width:100%;height:clamp(560px, calc(100vh - 300px), 820px);background:#1a2030;"></div>
+  <div id="heatCard" class="chart-card" style="padding:0;overflow:hidden;position:relative;">
+    <!-- 全螢幕時上方那排按鈕在全螢幕元素外面、點不到，所以卡片裡另外放一顆離開鍵 -->
+    <button id="heatFsExit" onclick="toggleHeatFullscreen()" style="display:none;position:absolute;top:12px;right:12px;z-index:1200;background:rgba(10,15,20,0.82);border:1px solid rgba(0,200,83,0.5);border-radius:8px;color:#00E860;font-size:12px;padding:7px 13px;cursor:pointer;font-family:monospace;">✕ 離開全螢幕（Esc）</button>
+    <div id="heatMap" style="width:100%;height:clamp(600px, calc(100vh - 200px), 1200px);background:#1a2030;"></div>
     <div id="heatLegend" style="display:flex;align-items:center;gap:0;padding:11px 14px;
       border-top:1px solid rgba(0,200,83,0.18);background:rgba(0,0,0,0.25);flex-wrap:wrap;"></div>
   </div>
@@ -3337,6 +3347,32 @@ var DISTRICT_COORD = {
   '仁愛區':[25.1258,121.7392], '信義區(基隆)':[25.1276,121.7621], '中正區(基隆)':[25.1382,121.7556]
 };
 var _heatMap=null, _heatLayer=null, _circleLayer=null;
+
+// ── 地圖全螢幕 ──
+// 畫面高度被上方標題、分頁、篩選列吃掉約 266px，地圖再怎麼拉也只能到「視窗高 - 這段」。
+// 要真的看大張就得整個蓋掉，所以用瀏覽器原生全螢幕；按 Esc 或再按一次就還原。
+function toggleHeatFullscreen(){
+  var card=document.getElementById('heatCard'); if(!card) return;
+  var fsEl=document.fullscreenElement||document.webkitFullscreenElement;
+  if(fsEl){
+    (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+  }else{
+    var req=card.requestFullscreen||card.webkitRequestFullscreen;
+    if(!req){ alert('這個瀏覽器不支援全螢幕'); return; }
+    var p=req.call(card);
+    if(p&&p.catch) p.catch(function(){ alert('瀏覽器擋下了全螢幕'); });
+  }
+}
+// 進出全螢幕時容器尺寸會變，Leaflet 必須重新量一次，否則圖磚只畫原本那一塊
+function _onHeatFsChange(){
+  var on=!!(document.fullscreenElement||document.webkitFullscreenElement);
+  // 外層那顆按鈕在全螢幕時看不到，標題不用改；離開改按卡片裡的那顆或 Esc
+  var btn=document.getElementById('heatFsBtn');
+  if(btn) btn.textContent='⛶ 全螢幕';
+  if(_heatMap) setTimeout(function(){ _heatMap.invalidateSize(); },120);
+}
+document.addEventListener('fullscreenchange',_onHeatFsChange);
+document.addEventListener('webkitfullscreenchange',_onHeatFsChange);
 
 // ── 底圖圖磚來源 ──
 // 2026/9 起 CARTO（原本用的 basemaps.cartocdn.com）取消免金鑰的免費用量，
