@@ -63,6 +63,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 .p-nav button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:transparent;color:#fff;cursor:pointer;font-size:16px;line-height:1}
 .p-nav button:hover{background:rgba(255,255,255,.12)}
 .p-nav button:disabled{opacity:.3;cursor:default}
+.p-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:relative;z-index:1}
+.p-mode{display:inline-flex;background:rgba(255,255,255,.1);border-radius:999px;padding:3px}
+.p-mode button{border:0;background:none;color:rgba(255,255,255,.65);padding:5px 13px;border-radius:999px;font-size:12.5px;cursor:pointer;transition:.15s}
+.p-mode button.on{background:#fff;color:var(--ink);font-weight:700}
+.p-label.solo{text-align:left;min-width:0}
+.mon{margin-bottom:34px}
+.mon-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.mon-h h2{font-size:22px;font-weight:900;letter-spacing:.04em}
+.mon-h h2 small{font-family:var(--mono);font-size:12px;color:var(--ink3);font-weight:400;margin-left:8px;letter-spacing:0}
+.mon-h .r{display:flex;align-items:baseline;gap:12px}
+.mon-h .t{font-family:var(--mono);font-size:15px;font-weight:700}
+.mon-h button{border:0;background:none;font-size:12.5px;color:var(--tag);cursor:pointer;padding:0;white-space:nowrap}
+.mon .day-h b span{font-size:18px}
 .p-label{font-weight:700;font-size:18px;min-width:118px;text-align:center;letter-spacing:.04em}
 .p-label small{display:block;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.14em;font-weight:400}
 .p-sum{display:flex;gap:28px;align-items:flex-end;position:relative;z-index:1}
@@ -296,6 +309,8 @@ details.more[open] summary::before{content:'－ '}
   .panels{grid-template-columns:1fr}
   .period{flex-direction:column;align-items:stretch;gap:14px}
   .p-nav{justify-content:space-between}
+  .p-left{justify-content:space-between}
+  .mon-h h2{font-size:18px}
   .p-sum{justify-content:space-between;gap:12px}
 }
 @media (max-width:640px){
@@ -436,7 +451,7 @@ const REPO='sumoai-boop/sumoai-boop.github.io', BRANCH='main', FILE='buy-data.js
 const RAW_URL='https://raw.githubusercontent.com/'+REPO+'/'+BRANCH+'/'+FILE;
 const API_URL='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
 const LS={items:'buy_items',dirty:'buy_dirty',tomb:'buy_tomb',sha:'gh_json_sha_buy',
-  token:'sumoai_gh_token',imgbb:'sumoai_imgbb_key',view:'buy_view',lastCat:'buy_last_cat'};
+  token:'sumoai_gh_token',imgbb:'sumoai_imgbb_key',view:'buy_view',lastCat:'buy_last_cat',feedAll:'buy_feed_all'};
 // 舊版「藏品室」留下的本機資料一律清掉（它讀到的是追劇收藏冊的檔案，不是買物資料）
 ['collection_items','collection_dirty','collection_deleted','collection_view','gh_json_sha_collection'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
 const CATS=[
@@ -453,7 +468,7 @@ const WD=['日','一','二','三','四','五','六'];
 
 /* ===== 狀態 ===== */
 let items=[], isDemo=false, view='feed', pushing=false, loading=true;
-let ym=thisYM(), filt={q:'',cat:'全部'};
+let ym=thisYM(), filt={q:'',cat:'全部'}, feedAll=false;
 let curId=null, curPhoto=0, draft=null, pend=[];
 
 /* ===== 工具 ===== */
@@ -631,9 +646,17 @@ function renderPeriod(){
       '<div><div class="k">件數</div><div class="v">'+a.length+'</div></div><div><div class="k">月平均</div><div class="v">'+fmt(sum(a)/(y===String(new Date().getFullYear())?new Date().getMonth()+1:12))+'</div></div></div>';
     return;
   }
+  const mode=view==='feed'?'<div class="p-mode"><button data-mode="month" class="'+(feedAll?'':'on')+'">單月</button><button data-mode="all" class="'+(feedAll?'on':'')+'">全部</button></div>':'';
+  if(view==='feed'&&feedAll){
+    a=items;const ds=a.map(i=>i.date).filter(Boolean).sort(),since=ds.length?ds[0].slice(0,7).replace('-','/'):'';
+    el.innerHTML='<div class="p-left"><div class="p-label solo">全部記錄<small>'+(since?'SINCE '+since:'ALL TIME')+'</small></div>'+mode+'</div>'+
+      '<div class="p-sum"><div class="big"><div class="k">累計花費</div><div class="v"><span>NT$</span>'+fmt(sum(a))+'</div></div>'+
+      '<div><div class="k">件數</div><div class="v">'+a.length+'</div></div><div><div class="k">收藏</div><div class="v">'+a.filter(i=>i.fav).length+'</div></div></div>';
+    return;
+  }
   a=inMonth(ym);prev=sum(inMonth(shiftYM(ym,-1)));
   lab=(+ym.slice(5,7))+' 月';sub=ym.slice(0,4);next=ym<thisYM();
-  el.innerHTML=navHTML(lab,sub,next)+'<div class="p-sum"><div class="big"><div class="k">本月花費</div><div class="v"><span>NT$</span>'+fmt(sum(a))+'</div>'+deltaHTML(sum(a),prev,'上月')+'</div>'+
+  el.innerHTML='<div class="p-left">'+navHTML(lab,sub,next)+mode+'</div><div class="p-sum"><div class="big"><div class="k">本月花費</div><div class="v"><span>NT$</span>'+fmt(sum(a))+'</div>'+deltaHTML(sum(a),prev,'上月')+'</div>'+
     '<div><div class="k">件數</div><div class="v">'+a.length+'</div></div><div><div class="k">收藏</div><div class="v">'+a.filter(i=>i.fav).length+'</div></div></div>';
 }
 function navHTML(lab,sub,next){return '<div class="p-nav"><button data-p="-1" aria-label="上一段">‹</button><div class="p-label">'+lab+'<small>'+sub+'</small></div><button data-p="1" aria-label="下一段"'+(next?'':' disabled')+'>›</button></div>'}
@@ -644,7 +667,7 @@ function renderTabs(){
   $('toolbar').classList.toggle('hidden',!(view==='feed'||view==='fav')||!items.length);
 }
 function renderChips(){
-  const base=view==='fav'?items.filter(i=>i.fav):inMonth(ym),cnt={};
+  const base=view==='fav'?items.filter(i=>i.fav):(view==='feed'&&feedAll)?items:inMonth(ym),cnt={};
   base.forEach(i=>cnt[i.cat]=(cnt[i.cat]||0)+1);
   let h='<button class="chip'+(filt.cat==='全部'?' on':'')+'" data-cat="全部">全部<span class="n">'+base.length+'</span></button>';
   CATS.forEach(c=>{if(!cnt[c.k]&&filt.cat!==c.k)return;
@@ -667,13 +690,22 @@ function tileHTML(it,i){
     '<span class="ptag'+(it.price?'':' none')+'">'+(it.price?'$'+fmt(it.price):'未填')+'</span></div>'+
     '<div class="cap">'+esc(label(it))+'<small>'+esc(it.store||it.cat)+'</small></div></div>';
 }
-function renderFeed(){
-  const base=inMonth(ym),a=byDateDesc(applyFilt(base));
-  if(!a.length){$('view').innerHTML=emptyHTML(base.length?'filter':'month');return}
+function dayGroups(a,startK){
   const g={},order=[];a.forEach(it=>{const d=it.date||'未記日期';if(!g[d]){g[d]=[];order.push(d)}g[d].push(it)});
+  let k=startK||0;
+  return {k:()=>k,html:order.map(d=>'<section class="day" id="d-'+d+'"><div class="day-h"><b>'+(d.length===10?'<span>'+(+d.slice(8))+'</span>'+(+d.slice(5,7))+' 月<em>週'+wd(d)+(d===todayStr()?' · 今天':'')+'</em>':d)+'</b>'+
+    '<span class="t">NT$ '+fmt(sum(g[d]))+'</span></div><div class="tiles">'+g[d].map(it=>tileHTML(it,k++)).join('')+'</div></section>').join('')};
+}
+function renderFeed(){
+  const base=feedAll?items:inMonth(ym),a=byDateDesc(applyFilt(base));
+  if(!a.length){$('view').innerHTML=emptyHTML(base.length?'filter':'month');return}
+  if(!feedAll){$('view').innerHTML=dayGroups(a).html;return}
+  // 全部：依月份分段，每段再依日期分組
+  const gm={},om=[];a.forEach(it=>{const m=it.date?it.date.slice(0,7):'未記日期';if(!gm[m]){gm[m]=[];om.push(m)}gm[m].push(it)});
   let k=0;
-  $('view').innerHTML=order.map(d=>'<section class="day" id="d-'+d+'"><div class="day-h"><b>'+(d.length===10?'<span>'+(+d.slice(8))+'</span>'+(+d.slice(5,7))+' 月<em>週'+wd(d)+(d===todayStr()?' · 今天':'')+'</em>':d)+'</b>'+
-    '<span class="t">NT$ '+fmt(sum(g[d]))+'</span></div><div class="tiles">'+g[d].map(it=>tileHTML(it,k++)).join('')+'</div></section>').join('');
+  $('view').innerHTML=om.map(m=>{const dg=dayGroups(gm[m],k);const html=dg.html;k=dg.k();
+    return '<section class="mon"><div class="mon-h"><h2>'+(m.length===7?(+m.slice(5))+' 月<small>'+m.slice(0,4)+'</small>':m)+'</h2>'+
+      '<div class="r"><span class="t">NT$ '+fmt(sum(gm[m]))+'</span>'+(m.length===7?'<button data-gomonth="'+m+'">只看這個月 ›</button>':'')+'</div></div>'+html+'</section>'}).join('');
 }
 function renderCal(){
   const y=+ym.slice(0,4),m=+ym.slice(5,7)-1,first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),today=todayStr();
@@ -881,9 +913,11 @@ function importJSON(file){
 }
 
 /* ===== 事件 ===== */
+feedAll=lsGet(LS.feedAll,'0')==='1';
 view=lsGet(LS.view,'feed');if(['feed','cal','fav','stats'].indexOf(view)<0)view='feed';
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;view=b.dataset.v;filt.cat='全部';lsSet(LS.view,view);render()});
-$('period').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b||b.disabled)return;const n=+b.dataset.p;
+$('period').addEventListener('click',e=>{const md=e.target.closest('[data-mode]');if(md){feedAll=md.dataset.mode==='all';lsSet(LS.feedAll,feedAll?'1':'0');filt.cat='全部';render();window.scrollTo({top:0});return}
+  const b=e.target.closest('[data-p]');if(!b||b.disabled)return;const n=+b.dataset.p;
   if(view==='stats')ym=String(+ym.slice(0,4)+n)+ym.slice(4);else ym=shiftYM(ym,n);
   if(ym>thisYM())ym=thisYM();filt.cat='全部';render()});
 $('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filt.cat=b.dataset.cat;render()});
@@ -914,9 +948,10 @@ document.addEventListener('click',e=>{
   const day=e.target.closest('[data-day]');
   if(day){const ds=day.dataset.day;
     if(!day.classList.contains('has')){openEdit(null,ds);return}
-    view='feed';lsSet(LS.view,view);filt={q:'',cat:'全部'};$('q').value='';render();
+    view='feed';lsSet(LS.view,view);filt={q:'',cat:'全部'};$('q').value='';if(feedAll){feedAll=false;lsSet(LS.feedAll,'0')}render();
     const s=$('d-'+ds);if(s){s.scrollIntoView({behavior:'smooth',block:'start'});s.classList.add('flash')}return}
-  const vb=e.target.closest('[data-ym]');if(vb){ym=vb.dataset.ym;view='feed';lsSet(LS.view,view);render();return}
+  const vb=e.target.closest('[data-ym]');if(vb){ym=vb.dataset.ym;view='feed';lsSet(LS.view,view);feedAll=false;lsSet(LS.feedAll,'0');render();return}
+  const gmb=e.target.closest('[data-gomonth]');if(gmb){ym=gmb.dataset.gomonth;feedAll=false;lsSet(LS.feedAll,'0');filt.cat='全部';render();window.scrollTo({top:0,behavior:'smooth'});return}
   const card=e.target.closest('main [data-id]');if(card)openDetail(card.dataset.id);
 });
 document.addEventListener('keydown',e=>{
