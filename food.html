@@ -170,6 +170,59 @@
   .modal-btn-del:hover{background:rgba(200,50,30,0.22);}
   .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:1;}
 
+  /* ── 詳情：買物帳式雙欄（照片在左、資訊在右）── */
+  #detailModal{
+    max-width:960px;width:100%;
+    height:min(660px, calc(100vh - 48px));max-height:none;
+    display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:minmax(0,1fr);
+    position:relative;border-radius:20px;
+  }
+  #detailModal .d-media{position:relative;display:flex;flex-direction:column;min-height:0;background:#0b0b0c;overflow:hidden;}
+  #detailModal .d-main{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:pan-y;}
+  #detailModal .d-bg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.4) saturate(1.2);transform:scale(1.1);}
+  #detailModal .d-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:dFade .25s ease;}
+  @keyframes dFade{from{opacity:0}to{opacity:1}}
+  #detailModal .d-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;opacity:.15;}
+  #detailModal .d-nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);color:#fff;font-size:22px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s,background .2s;z-index:2;}
+  #detailModal .d-main:hover .d-nav{opacity:1;}
+  #detailModal .d-nav:hover{background:rgba(232,98,42,.7);}
+  #detailModal .d-nav.prev{left:14px;}
+  #detailModal .d-nav.next{right:14px;}
+  #detailModal .d-count{position:absolute;left:14px;bottom:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;
+    font-size:11px;letter-spacing:.06em;padding:3px 10px;border-radius:99px;font-family:'Space Mono',monospace;}
+  #detailModal .d-thumbs{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;flex-shrink:0;
+    background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);}
+  #detailModal .d-thumbs:empty{display:none;}
+  #detailModal .d-thumbs button{flex:0 0 auto;width:54px;height:54px;border-radius:8px;overflow:hidden;border:2px solid transparent;
+    padding:0;cursor:pointer;opacity:.5;background:#111;transition:opacity .15s,border-color .15s;}
+  #detailModal .d-thumbs button:hover{opacity:.85;}
+  #detailModal .d-thumbs button.on{border-color:#E8622A;opacity:1;}
+  #detailModal .d-thumbs img{width:100%;height:100%;object-fit:cover;display:block;}
+  #detailModal .modal-body{display:flex;flex-direction:column;min-height:0;overflow-y:auto;padding:30px 28px 22px;
+    border-left:1px solid rgba(255,180,80,.08);}
+  #detailModal .modal-title{padding-right:44px;line-height:1.25;}
+  #detailModal .modal-row{flex-wrap:wrap;row-gap:6px;}
+  #detailMask{z-index:10000;}
+  #detailModal .modal-actions{margin-top:auto;justify-content:flex-end;gap:10px;
+    position:sticky;bottom:-22px;margin-bottom:-22px;padding:18px 0 22px;
+    background:linear-gradient(to bottom, rgba(26,26,26,0), #1a1a1a 40%);}
+  #detailModal .modal-btn{flex:0 0 auto;padding:10px 24px;border-radius:999px;font-size:13px;}
+  #detailModal .modal-btn-edit{background:linear-gradient(135deg,#E8622A,#c84a15);color:#fff;border:none;box-shadow:0 4px 14px rgba(232,98,42,.3);}
+  #detailModal .modal-btn-edit:hover{filter:brightness(1.1);}
+  #detailModal .modal-btn-del{background:transparent;}
+  #detailModal .modal-close{top:14px;right:14px;z-index:5;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);}
+  #detailModal .modal-close:hover{background:rgba(232,98,42,.7);}
+
+  @media (max-width:860px){
+    #detailModal{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;max-height:calc(100vh - 32px);overflow-y:auto;}
+    #detailModal .d-main{flex:none;height:min(52vh,360px);}
+    #detailModal .d-nav{opacity:1;}
+    #detailModal .modal-body{overflow:visible;border-left:none;padding:22px 18px 20px;}
+    #detailModal .modal-actions{bottom:-20px;margin-bottom:-20px;padding-bottom:20px;}
+  }
+
   /* ── 新增/編輯 Modal ── */
   .form-modal{
     background:#1a1a1a;
@@ -448,10 +501,12 @@
 <div class="modal-mask" id="detailMask">
   <div class="modal" style="position:relative;" id="detailModal">
     <button class="modal-close" id="detailClose">✕</button>
-    <!-- 照片輪播 -->
-    <div id="detailImgWrap" style="position:relative;background:#111;">
-      <!-- 動態填入 -->
+    <!-- 左欄：照片 -->
+    <div class="d-media">
+      <div class="d-main" id="detailImgWrap"></div>
+      <div class="d-thumbs" id="detailThumbs"></div>
     </div>
+    <!-- 右欄：資訊 -->
     <div class="modal-body">
       <div class="modal-title" id="dName"></div>
       <div class="modal-addr" id="dAddr">
@@ -483,8 +538,8 @@
       <!-- 用餐記錄（含分頁） -->
       <div id="dVisitLog" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;"></div>
       <div class="modal-actions">
-        <button class="modal-btn modal-btn-edit" id="dEdit">✏️ 編輯</button>
-        <button class="modal-btn modal-btn-del" id="dDel">🗑 刪除</button>
+        <button class="modal-btn modal-btn-del" id="dDel">刪除</button>
+        <button class="modal-btn modal-btn-edit" id="dEdit">編輯</button>
       </div>
     </div>
   </div>
@@ -1579,51 +1634,67 @@ function openDetail(item){
   // 星星
   document.getElementById('dStars').innerHTML=starsHTMLDecimal(item.score||0);
   document.getElementById('dScoreNum').textContent=item.score?(+item.score).toFixed(1):'未評分';
-  // 照片輪播
+  // 照片（左欄：主圖 + 縮圖列）
   const wrap=document.getElementById('detailImgWrap');
-  wrap.innerHTML='';
-  const imgs=item.imgs||(item.img?[item.img]:[]);
-  if(imgs.length===0){
-    wrap.innerHTML=`<div class="modal-img-placeholder">🍜</div>`;
-  } else {
-    let slideIdx=0;
-    const renderSlide=()=>{
-      wrap.innerHTML='';
-      const img=document.createElement('img');
-      img.className='modal-img';
-      img.src=imgs[slideIdx];
-      img.alt=item.name;
-      img.style.display='block';
-      wrap.appendChild(img);
-      if(imgs.length>1){
-        const nav=document.createElement('div');
-        nav.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 10px;pointer-events:none;';
-        const prev=document.createElement('button');
-        prev.textContent='‹';
-        prev.style.cssText='pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;';
-        prev.onclick=()=>{ slideIdx=(slideIdx-1+imgs.length)%imgs.length; renderSlide(); };
-        const next=document.createElement('button');
-        next.textContent='›';
-        next.style.cssText='pointer-events:all;background:rgba(0,0,0,0.5);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;';
-        next.onclick=()=>{ slideIdx=(slideIdx+1)%imgs.length; renderSlide(); };
-        nav.appendChild(prev); nav.appendChild(next);
-        wrap.appendChild(nav);
-        const dots=document.createElement('div');
-        dots.style.cssText='position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;';
-        imgs.forEach((_,i)=>{
-          const d=document.createElement('div');
-          d.style.cssText=`width:6px;height:6px;border-radius:50%;background:${i===slideIdx?'#fff':'rgba(255,255,255,0.4)'};`;
-          dots.appendChild(d);
-        });
-        wrap.appendChild(dots);
-      }
-    };
-    renderSlide();
-  }
+  const thumbs=document.getElementById('detailThumbs');
+  const imgs=(item.imgs&&item.imgs.length)?item.imgs:(item.img?[item.img]:[]);
+  let slideIdx=0;
+  const paint=()=>{
+    wrap.innerHTML='';
+    thumbs.innerHTML='';
+    if(!imgs.length){
+      const e=document.createElement('div'); e.className='d-empty'; e.textContent='🍜';
+      wrap.appendChild(e);
+      return;
+    }
+    const src=imgs[slideIdx];
+    const bg=document.createElement('div'); bg.className='d-bg';
+    bg.style.backgroundImage='url("'+src+'")';
+    wrap.appendChild(bg);
+    const im=document.createElement('img');
+    im.src=src; im.alt=item.name||''; im.decoding='async';
+    wrap.appendChild(im);
+    if(imgs.length>1){
+      const mk=(cls,txt,dir)=>{
+        const b=document.createElement('button');
+        b.type='button'; b.className='d-nav '+cls; b.textContent=txt;
+        b.onclick=e=>{e.stopPropagation(); go(dir);};
+        wrap.appendChild(b);
+      };
+      mk('prev','‹',-1); mk('next','›',1);
+      const cnt=document.createElement('div'); cnt.className='d-count';
+      cnt.textContent=(slideIdx+1)+' / '+imgs.length;
+      wrap.appendChild(cnt);
+      imgs.forEach((s,i)=>{
+        const b=document.createElement('button');
+        b.type='button'; if(i===slideIdx) b.className='on';
+        const t=document.createElement('img'); t.src=s; t.alt=''; t.loading='lazy'; t.decoding='async';
+        b.appendChild(t);
+        b.onclick=()=>{ slideIdx=i; paint(); };
+        thumbs.appendChild(b);
+      });
+    }
+  };
+  const go=dir=>{ if(imgs.length<2) return; slideIdx=(slideIdx+dir+imgs.length)%imgs.length; paint(); };
+  window._detailNav=go;
+  // 手機左右滑動切換
+  let _tx=null;
+  wrap.ontouchstart=e=>{ _tx=e.touches[0].clientX; };
+  wrap.ontouchend=e=>{ if(_tx==null) return; const dx=e.changedTouches[0].clientX-_tx; _tx=null; if(Math.abs(dx)>40) go(dx<0?1:-1); };
+  paint();
+  document.getElementById('detailModal').scrollTop=0;
+  document.querySelector('#detailModal .modal-body').scrollTop=0;
   document.getElementById('detailMask').classList.add('open');
 }
 function closeDetail(){ document.getElementById('detailMask').classList.remove('open'); }
 document.getElementById('detailClose').addEventListener('click',closeDetail);
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('detailMask').classList.contains('open')) return;
+  if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  if(e.key==='Escape') closeDetail();
+  else if(e.key==='ArrowLeft' && window._detailNav) window._detailNav(-1);
+  else if(e.key==='ArrowRight' && window._detailNav) window._detailNav(1);
+});
 document.getElementById('detailMask').addEventListener('click',e=>{if(e.target===document.getElementById('detailMask'))closeDetail();});
 document.getElementById('dEdit').addEventListener('click',()=>{const item=DATA.find(r=>r.id===currentId);if(!item)return;closeDetail();setTimeout(()=>openForm(item),120);});
 document.getElementById('dDel').addEventListener('click',()=>{if(!confirm('確定要刪除這筆食記？'))return;DATA=DATA.filter(r=>r.id!==currentId);save(DATA);closeDetail();render();});
