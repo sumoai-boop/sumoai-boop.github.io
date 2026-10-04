@@ -38,7 +38,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn.danger{color:var(--tag2);border-color:#F2C3B8}
 .btn.danger:hover{background:var(--tag2);color:#fff;border-color:var(--tag2)}
 .btn.icon{padding:8px 12px;line-height:1}
-.sync{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);font-family:var(--mono);margin-right:2px}
+.sync{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);font-family:var(--mono);margin-right:2px;border:0;background:none;padding:6px 8px;border-radius:999px;cursor:default}
+.sync.act{cursor:pointer;background:var(--card);border:1px solid var(--line)}
+.sync.err .dot{background:var(--tag2)}
+.sync.err{color:var(--tag2)}
 .sync .dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
 .sync.dirty .dot{background:var(--warn);animation:pulse 1.4s infinite}
 .sync.busy .dot{background:#C9A227;animation:pulse .7s infinite}
@@ -280,6 +283,7 @@ details.more[open] summary::before{content:'－ '}
 .e-act .btn{flex:1;padding:12px;font-size:15px}
 .e-act .btn.tag{flex:2}
 .ksheet{max-width:460px;padding:26px 26px 20px}
+.secret{-webkit-text-security:disc;text-security:disc;font-family:var(--mono)}
 .ksheet h2{font-size:18px;margin-bottom:6px}
 
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:calc(100vw - 32px);text-align:center}
@@ -339,8 +343,7 @@ details.more[open] summary::before{content:'－ '}
   <div class="top">
     <a class="back" href="index.html">‹ 主畫面</a>
     <div class="top-r">
-      <div class="sync" id="syncBox"><span class="dot"></span><span id="syncTxt">已同步</span></div>
-      <button class="btn" id="btnSync">同步</button>
+      <button type="button" class="sync" id="syncBox" title="自動同步狀態"><span class="dot"></span><span id="syncTxt">已同步</span></button>
       <button class="btn icon" id="btnMore" aria-label="更多">⋯</button>
       <div class="menu" id="moreMenu">
         <button data-m="export">匯出備份 JSON</button>
@@ -367,7 +370,7 @@ details.more[open] summary::before{content:'－ '}
   <div class="toolbar" id="toolbar">
     <label class="search">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <input id="q" type="search" placeholder="搜尋名稱、店家、標籤">
+      <input id="q" type="search" name="buy-q" placeholder="搜尋名稱、店家、標籤" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore>
     </label>
     <div class="chips" id="chips"></div>
   </div>
@@ -388,7 +391,7 @@ details.more[open] summary::before{content:'－ '}
     <h2 id="editTitle">記一筆</h2>
     <div class="shots" id="eShots"></div>
     <div class="pricebox"><span>NT$</span><input id="ePrice" type="number" inputmode="numeric" min="0" placeholder="0"></div>
-    <div class="f"><label>這是什麼</label><input id="eName" placeholder="例如：藍牙耳機（可不填）"></div>
+    <div class="f"><label>這是什麼</label><input id="eName" name="buy-eName" autocomplete="off" placeholder="例如：藍牙耳機（可不填）"></div>
     <div class="f"><label>分類</label><div class="catpick" id="eCats"></div></div>
     <div class="f row2">
       <div><label>日期</label><input id="eDate" type="date"></div>
@@ -397,12 +400,12 @@ details.more[open] summary::before{content:'－ '}
     <details class="more" id="eMore">
       <summary>更多資訊（店家、品牌、標籤、心得）</summary>
       <div class="grid2">
-        <div class="f"><label>店家 / 通路</label><input id="eStore" list="storeList"><datalist id="storeList"></datalist></div>
-        <div class="f"><label>品牌</label><input id="eBrand" list="brandList"><datalist id="brandList"></datalist></div>
+        <div class="f"><label>店家 / 通路</label><input id="eStore" name="buy-eStore" autocomplete="off" list="storeList"><datalist id="storeList"></datalist></div>
+        <div class="f"><label>品牌</label><input id="eBrand" name="buy-eBrand" autocomplete="off" list="brandList"><datalist id="brandList"></datalist></div>
       </div>
-      <div class="f"><label>標籤（逗號分隔）</label><input id="eTags" placeholder="禮物, 日本帶回"></div>
+      <div class="f"><label>標籤（逗號分隔）</label><input id="eTags" name="buy-eTags" autocomplete="off" placeholder="禮物, 日本帶回"></div>
       <div class="f"><label>心得 / 備註</label><textarea id="eNote" placeholder="為什麼買？好不好用？"></textarea></div>
-      <div class="f"><label>或貼上圖片網址</label><input id="eUrl" placeholder="https://… 按 Enter 加入"></div>
+      <div class="f"><label>或貼上圖片網址</label><input id="eUrl" name="buy-eUrl" autocomplete="off" placeholder="https://… 按 Enter 加入"></div>
     </details>
     <div class="e-act">
       <button class="btn" data-close="editModal">取消</button>
@@ -416,8 +419,8 @@ details.more[open] summary::before{content:'－ '}
     <button class="x" data-close="keyModal" aria-label="關閉">×</button>
     <h2>設定金鑰</h2>
     <p class="hint">與網站其他頁面共用，只存在這台裝置的瀏覽器。</p>
-    <div class="f"><label>GitHub Token</label><input id="kGh" type="password" autocomplete="off"></div>
-    <div class="f"><label>ImgBB API Key（上傳照片用）</label><input id="kImg" type="password" autocomplete="off"></div>
+    <div class="f"><label>GitHub Token</label><input id="kGh" class="secret" name="buy-k1" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore></div>
+    <div class="f"><label>ImgBB API Key（上傳照片用）</label><input id="kImg" class="secret" name="buy-k2" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore></div>
     <div class="e-act"><button class="btn" data-close="keyModal">取消</button><button class="btn tag" id="btnKeySave">儲存</button></div>
   </div>
 </div>
@@ -432,7 +435,7 @@ details.more[open] summary::before{content:'－ '}
 const REPO='sumoai-boop/sumoai-boop.github.io', BRANCH='main', FILE='buy-data.json';
 const RAW_URL='https://raw.githubusercontent.com/'+REPO+'/'+BRANCH+'/'+FILE;
 const API_URL='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
-const LS={items:'buy_items',dirty:'buy_dirty',deleted:'buy_deleted',sha:'gh_json_sha_buy',
+const LS={items:'buy_items',dirty:'buy_dirty',tomb:'buy_tomb',sha:'gh_json_sha_buy',
   token:'sumoai_gh_token',imgbb:'sumoai_imgbb_key',view:'buy_view',lastCat:'buy_last_cat',old:'collection_items'};
 const CATS=[
   {k:'3C數位',c:'#3E6FB0',bg:'#DCE6F3'},
@@ -475,7 +478,7 @@ function b64enc(s){const b=new TextEncoder().encode(s);let bin='';for(let i=0;i<
 function b64dec(s){const bin=atob(String(s).replace(/\s/g,''));const b=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);return new TextDecoder().decode(b)}
 function toArr(j){return Array.isArray(j)?j:(j&&Array.isArray(j.items)?j.items:null)}
 function norm(it){return {id:it.id||('b'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),name:it.name||'',price:+it.price||0,date:it.date||'',
-  cat:catOf(it.cat).k,fav:!!it.fav,store:it.store||'',brand:it.brand||'',tags:Array.isArray(it.tags)?it.tags:[],note:it.note||'',photos:Array.isArray(it.photos)?it.photos:[]}}
+  cat:catOf(it.cat).k,fav:!!it.fav,store:it.store||'',brand:it.brand||'',tags:Array.isArray(it.tags)?it.tags:[],note:it.note||'',photos:Array.isArray(it.photos)?it.photos:[],u:+it.u||0}}
 let _tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2600)}
 function show(id){$(id).classList.add('open');document.body.style.overflow='hidden'}
 function hide(id){$(id).classList.remove('open');if(!document.querySelector('.modal.open'))document.body.style.overflow=''}
@@ -484,61 +487,101 @@ function thumb(it){const c=catOf(it.cat);return '<span class="th" style="--tint:
 
 /* ===== 本機 / 雲端 ===== */
 function saveLocal(){lsSet(LS.items,JSON.stringify(items))}
-function markDirty(){if(isDemo)return;saveLocal();setDirty(getDirty()+1);setSync()}
+/* ── 自動同步 ──
+   每次新增 / 編輯 / 刪除後 1.5 秒自動推上 GitHub，不用按按鈕。
+   推之前先讀雲端版本，用「每筆的修改時間 u」合併（另一台裝置的新資料不會被蓋掉），
+   刪除會留下墓碑 {id,t}，避免舊裝置把已刪掉的記錄又同步回來。
+   失敗會自動重試（5s→15s→30s→60s），恢復連線、切回頁面、離開頁面時也會補推。 */
+let syncTimer=null,failN=0,lastErr='';
+function markDirty(it){if(isDemo)return;if(it)it.u=Date.now();saveLocal();setDirty(getDirty()+1);setSync();scheduleSync(1500)}
+function getTomb(){try{const a=JSON.parse(lsGet(LS.tomb,'[]'));return Array.isArray(a)?a:[]}catch(e){return []}}
+function setTomb(a){lsSet(LS.tomb,JSON.stringify(a.slice(-500)))}
+function mergeAll(local,remote,tombs){
+  const T=new Map();tombs.forEach(x=>{if(x&&x.id&&(!T.has(x.id)||T.get(x.id)<x.t))T.set(x.id,+x.t||0)});
+  const m=new Map();
+  [remote,local].forEach(L=>L.forEach(it=>{const r=m.get(it.id);if(!r||(+it.u||0)>=(+r.u||0))m.set(it.id,it)}));  // 同時間以本機為準
+  return {items:Array.from(m.values()).filter(it=>!(T.has(it.id)&&T.get(it.id)>=(+it.u||0))),
+          tombs:Array.from(T,([id,t])=>({id:id,t:t})).sort((a,b)=>a.t-b.t)};
+}
+function parseRemote(j){const items=toArr(j);return items?{items:items.map(norm),tombs:(j&&Array.isArray(j.deleted))?j.deleted:[]}:null}
 function setSync(mode){
   const b=$('syncBox'),t=$('syncTxt');b.className='sync';
   if(isDemo){b.classList.add('demo');t.textContent='範例模式';return}
   if(mode==='busy'||pushing){b.classList.add('busy');t.textContent='同步中…';return}
   if(loading){b.classList.add('busy');t.textContent='載入中…';return}
-  const d=getDirty();if(d>0){b.classList.add('dirty');t.textContent=d+' 筆未同步'}else t.textContent='已同步';
+  const d=getDirty();
+  if(d>0&&!lsGet(LS.token,'')){b.classList.add('err','act');t.textContent='未設定金鑰，點此設定';return}
+  if(d>0&&lastErr){b.classList.add('err','act');t.textContent='同步失敗，點此重試';b.title=lastErr;return}
+  if(d>0){b.classList.add('dirty');t.textContent='等待同步…';return}
+  t.textContent='已同步';b.title='自動同步狀態';
+}
+function scheduleSync(ms){
+  if(isDemo)return;clearTimeout(syncTimer);
+  if(!lsGet(LS.token,'')){setSync();return}
+  syncTimer=setTimeout(syncNow,ms==null?1500:ms);
+}
+async function syncNow(){
+  clearTimeout(syncTimer);
+  if(isDemo||pushing||loading||!Array.isArray(items)||getDirty()<=0)return;
+  const token=lsGet(LS.token,'');if(!token){setSync();return}
+  pushing=true;setSync('busy');const snap=getDirty();
+  try{
+    const h={Authorization:'token '+token,Accept:'application/vnd.github+json'};
+    let sha=null,remote={items:[],tombs:[]};
+    const r=await fetch(API_URL+'?ref='+BRANCH+'&t='+Date.now(),{headers:h,cache:'no-store'});
+    if(r.ok){
+      const j=await r.json();sha=j.sha;
+      let txt=j.content?b64dec(j.content):null;
+      if(txt==null&&j.size>0){const rr=await fetch(RAW_URL+'?t='+Date.now(),{cache:'no-store'});if(!rr.ok)throw new Error('讀不到雲端內容 '+rr.status);txt=await rr.text()}
+      if(txt){const pr=parseRemote(JSON.parse(txt));if(!pr)throw new Error('雲端資料格式不正確，已停止同步');remote=pr}
+    }else if(r.status!==404){const e=await r.json().catch(()=>({}));throw new Error('讀取失敗 '+r.status+' '+(e.message||''))}
+    const mg=mergeAll(items,remote.items,getTomb().concat(remote.tombs));
+    const body={message:'buy: '+mg.items.length+' items',branch:BRANCH,
+      content:b64enc(JSON.stringify({version:2,updated:new Date().toISOString(),items:mg.items,deleted:mg.tombs.slice(-500)}))};
+    if(sha)body.sha=sha;
+    const res=await fetch(API_URL,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},h),body:JSON.stringify(body)});
+    if(res.status===409||res.status===422){throw Object.assign(new Error('雲端剛被更新，重新合併'),{quick:true})}
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(res.status+' '+(e.message||''))}
+    const out=await res.json();lsSet(LS.sha,(out.content&&out.content.sha)||'');
+    // 推送期間如果又有新修改，保留它們，下一輪再推
+    setTomb(mg.tombs);const cur=mergeAll(items,mg.items,mg.tombs);items=cur.items;saveLocal();
+    setDirty(Math.max(0,getDirty()-snap));failN=0;lastErr='';
+    if(!document.querySelector('.modal.open'))render();
+  }catch(e){
+    lastErr=e.message;failN++;console.warn('[自動同步]',e.message);
+    pushing=false;setSync();
+    if(!/格式不正確/.test(e.message))scheduleSync(e.quick?800:[5000,15000,30000,60000][Math.min(failN-1,3)]);
+    return;
+  }
+  pushing=false;setSync();
+  if(getDirty()>0)scheduleSync(1500);
 }
 function readLocal(){
   let a=null;try{a=toArr(JSON.parse(lsGet(LS.items,'null')))}catch(e){}
   if(!a){ // 舊版「藏品室」本機資料自動帶過來
     try{const o=toArr(JSON.parse(lsGet(LS.old,'null')));
-      if(o&&o.length){a=o.map(x=>norm(Object.assign({},x,{fav:(x.status||'收藏中')==='收藏中'&&(+x.love||0)>=4})));lsSet(LS.items,JSON.stringify(a));setDirty(getDirty()+a.length)}}catch(e){}
+      if(o&&o.length){const now=Date.now();a=o.map(x=>norm(Object.assign({},x,{u:now,fav:(x.status||'收藏中')==='收藏中'&&(+x.love||0)>=4})));lsSet(LS.items,JSON.stringify(a));setDirty(getDirty()+a.length)}}catch(e){}
   }
   return a?a.map(norm):null;
 }
 async function init(force){
   loading=true;setSync();
-  const local=readLocal(),dirty=getDirty();
+  const local=readLocal();
   if(local&&!force){items=local;render()}
   try{
     const r=await fetch(RAW_URL+'?t='+Date.now(),{cache:'no-store'});
-    if(r.status===404){if(!local)items=[]}
+    if(r.status===404){if(!local||force)items=force?[]:items}
     else{
       if(!r.ok)throw new Error('HTTP '+r.status);
-      const arr=toArr(await r.json());if(!arr)throw new Error('資料格式不正確');
-      if(dirty>0&&local&&!force)toast('本機有 '+dirty+' 筆未同步的變更，先顯示本機資料');
-      else{items=arr.map(norm);saveLocal();if(force){setDirty(0);lsSet(LS.deleted,'0')}}
+      const rm=parseRemote(await r.json());if(!rm)throw new Error('資料格式不正確');
+      if(force||!local){items=rm.items;setTomb(rm.tombs);if(force)setDirty(0)}
+      else{const mg=mergeAll(local,rm.items,getTomb().concat(rm.tombs));items=mg.items;setTomb(mg.tombs)}
+      saveLocal();
     }
   }catch(e){if(!local)items=[];toast('讀不到雲端資料（'+e.message+'），先顯示本機資料')}
   loading=false;setSync();render();
+  if(getDirty()>0)scheduleSync(800);
 }
-async function pushToGitHub(){
-  if(isDemo){toast('範例模式不會同步');return}
-  const token=lsGet(LS.token,'');
-  if(!token){toast('請先設定 GitHub Token');openKeys();return}
-  if(pushing||!Array.isArray(items))return;
-  pushing=true;setSync('busy');
-  try{
-    let sha=null,remote=0;const h={Authorization:'token '+token,Accept:'application/vnd.github+json'};
-    const r=await fetch(API_URL+'?ref='+BRANCH+'&t='+Date.now(),{headers:h,cache:'no-store'});
-    if(r.ok){const j=await r.json();sha=j.sha;if(j.content){try{const a=toArr(JSON.parse(b64dec(j.content)));if(a)remote=a.length}catch(e){}}}
-    else if(r.status!==404){const e=await r.json().catch(()=>({}));throw new Error('讀取 SHA 失敗 '+r.status+' '+(e.message||''))}
-    const del=+lsGet(LS.deleted,'0')||0;
-    if(remote>items.length+del&&!confirm('雲端有 '+remote+' 筆，本機只有 '+items.length+' 筆。\n可能是本機資料較舊，確定要用本機覆蓋雲端嗎？'))throw new Error('已取消');
-    const body={message:'buy: '+items.length+' items',content:b64enc(JSON.stringify({version:1,updated:new Date().toISOString(),items:items})),branch:BRANCH};
-    if(sha)body.sha=sha;
-    const res=await fetch(API_URL,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},h),body:JSON.stringify(body)});
-    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(res.status+' '+(e.message||''))}
-    const out=await res.json();lsSet(LS.sha,(out.content&&out.content.sha)||'');
-    setDirty(0);lsSet(LS.deleted,'0');toast('已同步到 GitHub ✓');
-  }catch(e){toast('同步失敗：'+e.message)}
-  pushing=false;setSync();
-}
-
 /* ===== 範例 ===== */
 function demoData(){
   const ago=n=>{const d=new Date();d.setDate(d.getDate()-n);return dstr(d)};
@@ -704,11 +747,11 @@ function paintDetail(){
     (it.note?'<div class="d-note">'+esc(it.note)+'</div>':'')+
     (isDemo?'':'<div class="d-act"><button class="btn danger" data-act="del">刪除</button><button class="btn dark" data-act="edit">編輯</button></div>')+'</div>';
 }
-function toggleFav(){const it=items.find(i=>i.id===curId);if(!it)return;it.fav=!it.fav;markDirty();paintDetail();render()}
+function toggleFav(){const it=items.find(i=>i.id===curId);if(!it)return;it.fav=!it.fav;markDirty(it);paintDetail();render()}
 function delItem(){
   const it=items.find(i=>i.id===curId);if(!it||!confirm('確定刪除「'+label(it)+'」？'))return;
-  items=items.filter(i=>i.id!==curId);lsSet(LS.deleted,String((+lsGet(LS.deleted,'0')||0)+1));
-  markDirty();hide('detailModal');render();toast('已刪除，記得同步');
+  items=items.filter(i=>i.id!==curId);setTomb(getTomb().concat([{id:curId,t:Date.now()}]));
+  markDirty();hide('detailModal');render();toast('已刪除');
 }
 
 /* ===== 新增 / 編輯 ===== */
@@ -750,12 +793,12 @@ function saveEdit(){
   lsSet(LS.lastCat,draft.cat);
   const i=items.findIndex(x=>x.id===draft.id),isNew=i<0;
   if(isNew)items.push(draft);else items[i]=draft;
-  const saved=draft;draft=null;markDirty();hide('editModal');
+  const saved=draft;draft=null;markDirty(saved);hide('editModal');
   if(saved.date){ym=saved.date.slice(0,7)}
   if(view==='stats'||(view==='fav'&&!saved.fav))view='feed';
   render();
-  if(isNew){toast('已記下 '+(saved.price?'NT$ '+fmt(saved.price):'')+'，記得同步');setTimeout(()=>{const s=$('d-'+saved.date);if(s&&view==='feed')s.scrollIntoView({behavior:'smooth',block:'start'})},60)}
-  else{toast('已更新，記得同步');openDetail(saved.id)}
+  if(isNew){toast('已記下'+(saved.price?' NT$ '+fmt(saved.price):''));setTimeout(()=>{const s=$('d-'+saved.date);if(s&&view==='feed')s.scrollIntoView({behavior:'smooth',block:'start'})},60)}
+  else{toast('已更新');openDetail(saved.id)}
 }
 /* ── 照片解碼（含 iPhone HEIC / HEIF）：與 food.html 相同做法 ──
    1) 先用瀏覽器原生解碼（JPG/PNG/WebP；Safari 也能直接解 HEIC）
@@ -821,7 +864,7 @@ async function uploadFiles(files){
 /* ===== 金鑰 / 匯入匯出 ===== */
 function openKeys(){$('kGh').value=lsGet(LS.token,'');$('kImg').value=lsGet(LS.imgbb,'');show('keyModal')}
 function exportJSON(){
-  const blob=new Blob([JSON.stringify({version:1,updated:new Date().toISOString(),items:items},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({version:2,updated:new Date().toISOString(),items:items,deleted:getTomb()},null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='buy-backup-'+todayStr().replace(/-/g,'')+'.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
@@ -829,7 +872,7 @@ function importJSON(file){
   const fr=new FileReader();
   fr.onload=()=>{try{const a=toArr(JSON.parse(fr.result));if(!a)throw new Error('找不到 items 陣列');
     if(!confirm('匯入 '+a.length+' 筆，會取代目前的 '+items.length+' 筆，確定嗎？'))return;
-    if(isDemo)exitDemo();items=a.map(norm);markDirty();render();toast('已匯入 '+a.length+' 筆，記得同步');
+    if(isDemo)exitDemo();const now=Date.now();setTomb(getTomb().concat(items.map(i=>({id:i.id,t:now}))));items=a.map(x=>Object.assign(norm(x),{u:now+1}));markDirty();render();toast('已匯入 '+a.length+' 筆');
   }catch(e){toast('匯入失敗：'+e.message)}};
   fr.readAsText(file);
 }
@@ -843,13 +886,18 @@ $('period').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if
 $('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filt.cat=b.dataset.cat;render()});
 $('q').addEventListener('input',e=>{filt.q=e.target.value;render()});
 $('fab').addEventListener('click',()=>openEdit());
-$('btnSync').addEventListener('click',pushToGitHub);
+$('syncBox').addEventListener('click',()=>{if(isDemo)return;if(!lsGet(LS.token,'')){openKeys();return}if(getDirty()>0){failN=0;syncNow()}});
+window.addEventListener('online',()=>{if(getDirty()>0){failN=0;scheduleSync(300)}});
+document.addEventListener('visibilitychange',()=>{if(getDirty()>0)syncNow()});  // 切走時補推、切回時重試
+window.addEventListener('pagehide',()=>{if(getDirty()>0)syncNow()});
+// 有些瀏覽器會在載入後才自動填入搜尋框（例如把別的網站存的帳號填進來），一律清掉
+[0,400,1500].forEach(ms=>setTimeout(()=>{const q=$('q');if(q&&q.value&&document.activeElement!==q){q.value='';if(filt.q){filt.q='';render()}}},ms));
 $('btnExitDemo').addEventListener('click',exitDemo);
 $('btnMore').addEventListener('click',e=>{e.stopPropagation();$('moreMenu').classList.toggle('open')});
 document.addEventListener('click',()=>$('moreMenu').classList.remove('open'));
 $('moreMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const m=b.dataset.m;
   if(m==='export')exportJSON();else if(m==='import')$('importFile').click();else if(m==='keys')openKeys();
-  else if(m==='reload'){if(getDirty()>0&&!confirm('本機有未同步的變更，重新載入會被雲端資料覆蓋，確定嗎？'))return;if(isDemo)exitDemo();init(true)}});
+  else if(m==='reload'){if(getDirty()>0&&!confirm('還有變更沒同步完成，重新載入會用雲端資料覆蓋本機，確定嗎？'))return;if(isDemo)exitDemo();init(true)}});
 $('importFile').addEventListener('change',e=>{if(e.target.files[0])importJSON(e.target.files[0]);e.target.value=''});
 
 document.addEventListener('click',e=>{
@@ -892,7 +940,7 @@ document.addEventListener('paste',e=>{if(!$('editModal').classList.contains('ope
   const fs=Array.from((e.clipboardData||{}).files||[]);if(fs.length){e.preventDefault();uploadFiles(fs)}});
 $('ePrice').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveEdit()}});
 $('btnSave').addEventListener('click',saveEdit);
-$('btnKeySave').addEventListener('click',()=>{lsSet(LS.token,$('kGh').value.trim());lsSet(LS.imgbb,$('kImg').value.trim());hide('keyModal');toast('金鑰已儲存')});
+$('btnKeySave').addEventListener('click',()=>{lsSet(LS.token,$('kGh').value.trim());lsSet(LS.imgbb,$('kImg').value.trim());hide('keyModal');toast('金鑰已儲存');lastErr='';failN=0;setSync();if(getDirty()>0)scheduleSync(300)});
 window.addEventListener('beforeunload',e=>{if(!isDemo&&getDirty()>0){e.preventDefault();e.returnValue=''}});
 
 render();
