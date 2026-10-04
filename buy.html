@@ -436,12 +436,14 @@ const REPO='sumoai-boop/sumoai-boop.github.io', BRANCH='main', FILE='buy-data.js
 const RAW_URL='https://raw.githubusercontent.com/'+REPO+'/'+BRANCH+'/'+FILE;
 const API_URL='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
 const LS={items:'buy_items',dirty:'buy_dirty',tomb:'buy_tomb',sha:'gh_json_sha_buy',
-  token:'sumoai_gh_token',imgbb:'sumoai_imgbb_key',view:'buy_view',lastCat:'buy_last_cat',old:'collection_items'};
+  token:'sumoai_gh_token',imgbb:'sumoai_imgbb_key',view:'buy_view',lastCat:'buy_last_cat'};
+// 舊版「藏品室」留下的本機資料一律清掉（它讀到的是追劇收藏冊的檔案，不是買物資料）
+['collection_items','collection_dirty','collection_deleted','collection_view','gh_json_sha_collection'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
 const CATS=[
   {k:'3C數位',c:'#3E6FB0',bg:'#DCE6F3'},
   {k:'服飾配件',c:'#B0583E',bg:'#F3E0D8'},
   {k:'生活家居',c:'#4F8A5B',bg:'#DDEBDF'},
-  {k:'吃喝',c:'#C98418',bg:'#F7E8CC'},
+  {k:'食品保健',c:'#C98418',bg:'#F7E8CC'},
   {k:'美妝保養',c:'#C2477A',bg:'#F5DCE7'},
   {k:'興趣收藏',c:'#7A4FB0',bg:'#E6DDF3'},
   {k:'運動戶外',c:'#2F8580',bg:'#D6EAE8'},
@@ -477,8 +479,11 @@ function setDirty(n){lsSet(LS.dirty,String(n))}
 function b64enc(s){const b=new TextEncoder().encode(s);let bin='';for(let i=0;i<b.length;i+=0x8000)bin+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(bin)}
 function b64dec(s){const bin=atob(String(s).replace(/\s/g,''));const b=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);return new TextDecoder().decode(b)}
 function toArr(j){return Array.isArray(j)?j:(j&&Array.isArray(j.items)?j.items:null)}
-function norm(it){return {id:it.id||('b'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),name:it.name||'',price:+it.price||0,date:it.date||'',
+const CAT_RENAME={'吃喝':'食品保健'};let _catMigrated=false;
+function norm(it){if(it&&CAT_RENAME[it.cat]){it=Object.assign({},it,{cat:CAT_RENAME[it.cat]});_catMigrated=true}return {id:it.id||('b'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),name:it.name||'',price:+it.price||0,date:it.date||'',
   cat:catOf(it.cat).k,fav:!!it.fav,store:it.store||'',brand:it.brand||'',tags:Array.isArray(it.tags)?it.tags:[],note:it.note||'',photos:Array.isArray(it.photos)?it.photos:[],u:+it.u||0}}
+function clean(a){let n=0;const out=a.filter(i=>{const ok=!!(i.name||(+i.price)||i.photos.length);if(!ok)n++;return ok});if(n)_dropped+=n;return out}
+let _dropped=0;
 let _tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2600)}
 function show(id){$(id).classList.add('open');document.body.style.overflow='hidden'}
 function hide(id){$(id).classList.remove('open');if(!document.querySelector('.modal.open'))document.body.style.overflow=''}
@@ -503,7 +508,7 @@ function mergeAll(local,remote,tombs){
   return {items:Array.from(m.values()).filter(it=>!(T.has(it.id)&&T.get(it.id)>=(+it.u||0))),
           tombs:Array.from(T,([id,t])=>({id:id,t:t})).sort((a,b)=>a.t-b.t)};
 }
-function parseRemote(j){const items=toArr(j);return items?{items:items.map(norm),tombs:(j&&Array.isArray(j.deleted))?j.deleted:[]}:null}
+function parseRemote(j){const items=toArr(j);return items?{items:clean(items.map(norm)),tombs:(j&&Array.isArray(j.deleted))?j.deleted:[]}:null}
 function setSync(mode){
   const b=$('syncBox'),t=$('syncTxt');b.className='sync';
   if(isDemo){b.classList.add('demo');t.textContent='範例模式';return}
@@ -558,11 +563,7 @@ async function syncNow(){
 }
 function readLocal(){
   let a=null;try{a=toArr(JSON.parse(lsGet(LS.items,'null')))}catch(e){}
-  if(!a){ // 舊版「藏品室」本機資料自動帶過來
-    try{const o=toArr(JSON.parse(lsGet(LS.old,'null')));
-      if(o&&o.length){const now=Date.now();a=o.map(x=>norm(Object.assign({},x,{u:now,fav:(x.status||'收藏中')==='收藏中'&&(+x.love||0)>=4})));lsSet(LS.items,JSON.stringify(a));setDirty(getDirty()+a.length)}}catch(e){}
-  }
-  return a?a.map(norm):null;
+  return a?clean(a.map(norm)):null;
 }
 async function init(force){
   loading=true;setSync();
@@ -579,18 +580,20 @@ async function init(force){
       saveLocal();
     }
   }catch(e){if(!local)items=[];toast('讀不到雲端資料（'+e.message+'），先顯示本機資料')}
-  loading=false;setSync();render();
+  loading=false;
+  if((_catMigrated||_dropped)&&!isDemo){_catMigrated=false;_dropped=0;saveLocal();setDirty(getDirty()+1)}  // 改過分類名稱或清掉空白記錄後寫回雲端
+  setSync();render();
   if(getDirty()>0)scheduleSync(800);
 }
 /* ===== 範例 ===== */
 function demoData(){
   const ago=n=>{const d=new Date();d.setDate(d.getDate()-n);return dstr(d)};
   return [
-    ['藍牙降噪耳機','3C數位',4990,2,true,'電器行','通勤終於安靜了。'],['拿鐵','吃喝',120,2,false,'巷口咖啡',''],
+    ['藍牙降噪耳機','3C數位',4990,2,true,'電器行','通勤終於安靜了。'],['綜合維他命','食品保健',590,2,false,'藥妝店',''],
     ['帆布托特包','服飾配件',1280,5,true,'選物店',''],['香氛蠟燭','生活家居',680,9,false,'市集',''],
     ['限定扭蛋','興趣收藏',300,12,true,'扭蛋店','第三次才轉到想要的那隻。'],['慢跑鞋','運動戶外',3680,19,true,'運動用品店',''],
     ['生日蛋糕','禮物',1100,26,false,'甜點店','朋友生日。'],['護手霜','美妝保養',450,33,false,'藥妝店',''],
-    ['機械式鍵盤','3C數位',3290,41,true,'網購',''],['豚骨拉麵','吃喝',260,44,false,'拉麵店',''],
+    ['機械式鍵盤','3C數位',3290,41,true,'網購',''],['堅果禮盒','食品保健',680,44,false,'超市',''],
     ['小盆栽','生活家居',520,58,false,'花市',''],['爵士黑膠','興趣收藏',980,70,true,'二手唱片行',''],
     ['牛仔外套','服飾配件',2190,85,false,'百貨',''],['行動電源','3C數位',890,96,false,'電器行','']
   ].map((r,i)=>norm({id:'demo'+i,name:r[0],cat:r[1],price:r[2],date:ago(r[3]),fav:r[4],store:r[5],note:r[6]}));
