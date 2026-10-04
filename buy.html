@@ -241,6 +241,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shot{flex:0 0 auto;width:104px;height:104px;border-radius:12px;overflow:hidden;position:relative;background:var(--soft)}
 .shot img{width:100%;height:100%;object-fit:cover;display:block}
 .shot.cover{outline:2.5px solid var(--tag);outline-offset:-2.5px}
+.shot .conv{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:10.5px;color:var(--ink2);z-index:2}
 .shot .lbl{position:absolute;left:6px;top:6px;background:var(--tag);color:#fff;font-size:10px;padding:1px 6px;border-radius:4px}
 .shot .rm{position:absolute;right:5px;top:5px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:13px;line-height:1;cursor:pointer}
 .shot .mk{position:absolute;left:5px;bottom:5px;border:0;background:rgba(255,255,255,.92);border-radius:5px;font-size:10.5px;padding:2px 6px;cursor:pointer}
@@ -421,8 +422,8 @@ details.more[open] summary::before{content:'－ '}
   </div>
 </div>
 
-<input type="file" id="fCam" accept="image/*" capture="environment" hidden>
-<input type="file" id="fLib" accept="image/*" multiple hidden>
+<input type="file" id="fCam" accept="image/*,.heic,.heif,.HEIC,.HEIF" capture="environment" hidden>
+<input type="file" id="fLib" accept="image/*,.heic,.heif,.HEIC,.HEIF" multiple hidden>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <div class="toast" id="toast"></div>
 
@@ -736,7 +737,7 @@ function paintShots(){
   const box=$('eShots'),empty=!draft.photos.length&&!pend.length;
   box.classList.toggle('first',empty);
   let h=draft.photos.map((p,i)=>'<div class="shot'+(i===0?' cover':'')+'"><img src="'+esc(p)+'" alt="">'+(i===0?'<span class="lbl">封面</span>':'<button type="button" class="mk" data-pa="cover" data-i="'+i+'">設封面</button>')+'<button type="button" class="rm" data-pa="rm" data-i="'+i+'" aria-label="移除">×</button></div>').join('');
-  h+=pend.map(p=>'<div class="shot up"><img src="'+p.preview+'" alt=""></div>').join('');
+  h+=pend.map(p=>'<div class="shot up">'+(p.preview?'<img src="'+p.preview+'" alt="">':'<span class="conv">'+(p.heic?'HEIC 轉檔中':'處理中')+'</span>')+'</div>').join('');
   h+='<button type="button" class="pick" data-pick="cam">'+camSVG+'<span>拍照</span></button><button type="button" class="pick" data-pick="lib">'+libSVG+'<span>從相簿選</span></button>';
   box.innerHTML=h;
 }
@@ -756,27 +757,64 @@ function saveEdit(){
   if(isNew){toast('已記下 '+(saved.price?'NT$ '+fmt(saved.price):'')+'，記得同步');setTimeout(()=>{const s=$('d-'+saved.date);if(s&&view==='feed')s.scrollIntoView({behavior:'smooth',block:'start'})},60)}
   else{toast('已更新，記得同步');openDetail(saved.id)}
 }
-function shrink(file){return new Promise(res=>{
-  if(file.type==='image/gif')return res(file);
-  const img=new Image(),u=URL.createObjectURL(file);
-  img.onload=()=>{const M=1600,s=Math.min(1,M/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.round(img.naturalWidth*s),h=Math.round(img.naturalHeight*s);
-    const cv=document.createElement('canvas');cv.width=w;cv.height=h;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);URL.revokeObjectURL(u);
-    cv.toBlob(b=>res(b||file),'image/jpeg',.86)};
-  img.onerror=()=>{URL.revokeObjectURL(u);res(file)};img.src=u})}
+/* ── 照片解碼（含 iPhone HEIC / HEIF）：與 food.html 相同做法 ──
+   1) 先用瀏覽器原生解碼（JPG/PNG/WebP；Safari 也能直接解 HEIC）
+   2) 失敗且檔頭是 HEIC/HEIF → 下載 heic-to（libheif）轉成 JPEG
+   一律縮到 1600px 內、輸出 JPEG 再上傳 ImgBB */
+const HEIC_CDNS=['https://cdn.jsdelivr.net/npm/heic-to@1.5.2/dist/iife/heic-to.js','https://unpkg.com/heic-to@1.5.2/dist/iife/heic-to.js'];
+let _heicLoading=null;
+function loadScriptOnce(src){return new Promise((res,rej)=>{const s=document.createElement('script');let done=false;
+  const t=setTimeout(()=>{if(!done){done=true;s.remove();rej(new Error('逾時'))}},40000);
+  s.src=src;s.onload=()=>{if(done)return;done=true;clearTimeout(t);window.HeicTo?res():rej(new Error('載入後找不到元件'))};
+  s.onerror=()=>{if(done)return;done=true;clearTimeout(t);s.remove();rej(new Error('下載失敗'))};document.head.appendChild(s)})}
+function loadHeicLib(){
+  if(window.HeicTo)return Promise.resolve();if(_heicLoading)return _heicLoading;
+  _heicLoading=(async()=>{for(const u of HEIC_CDNS){try{await loadScriptOnce(u);return}catch(e){console.warn('[HEIC 元件] 來源失敗',u,e.message)}}
+    _heicLoading=null;throw new Error('HEIC 轉檔元件無法下載')})();
+  return _heicLoading;
+}
+function looksHeic(f){return /hei[cf]/i.test(f.type||'')||/\.(heic|heif)$/i.test(f.name||'')}
+async function sniffHeic(file){try{const b=new Uint8Array(await file.slice(0,32).arrayBuffer());if(b.length<12)return false;
+  if(!(b[4]===0x66&&b[5]===0x74&&b[6]===0x79&&b[7]===0x70))return false;let s='';for(let i=8;i<Math.min(b.length,28);i++)s+=String.fromCharCode(b[i]);
+  return /heic|heix|hevc|hevx|heim|heis|hevm|hevs|mif1|msf1/i.test(s)}catch(e){return false}}
+function nativeJpeg(blob,M){return new Promise((res,rej)=>{
+  const u=URL.createObjectURL(blob),img=new Image();let done=false;
+  const fin=(fn,v)=>{if(done)return;done=true;clearTimeout(tm);URL.revokeObjectURL(u);fn(v)};
+  const tm=setTimeout(()=>fin(rej,new Error('原生解碼逾時')),15000);
+  img.onload=()=>{try{const W=img.naturalWidth,H=img.naturalHeight;if(!W||!H)throw new Error('尺寸為 0');
+    const s=Math.min(1,M/Math.max(W,H)),w=Math.round(W*s),h=Math.round(H*s),cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);
+    cv.toBlob(b=>b&&b.size>800?fin(res,b):fin(rej,new Error('解碼結果異常')),'image/jpeg',.86)}catch(e){fin(rej,e)}};
+  img.onerror=()=>fin(rej,new Error('原生無法解碼'));img.src=u})}
+async function toJpeg(file,p){
+  if(file.type==='image/gif')return file;               // 保留動畫
+  try{return await nativeJpeg(file,1600)}catch(e){console.warn('[原生解碼失敗，改用轉檔]',file.name,e.message)}
+  if(!(await sniffHeic(file))&&!looksHeic(file))throw new Error('不支援的圖片格式（'+(file.type||file.name||'未知')+'）');
+  if(p){p.heic=true;if(draft)paintShots()}
+  if(!window.HeicTo)toast('轉換 iPhone 照片中…（第一次需下載轉檔元件）');
+  await loadHeicLib();
+  let b;try{b=await window.HeicTo({blob:file,type:'image/jpeg',quality:.92})}
+  catch(e){console.error('[HeicTo 轉檔失敗]',e);throw new Error('HEIC 解碼失敗，可改用 JPG（iPhone：設定→相機→格式→最相容）')}
+  if(!b||!b.size)throw new Error('HEIC 轉檔結果為空');
+  return await nativeJpeg(b,1600);
+}
 async function uploadFiles(files){
   const key=lsGet(LS.imgbb,'');
-  const list=Array.from(files||[]).filter(f=>f.type&&f.type.indexOf('image/')===0);
+  const list=Array.from(files||[]).filter(f=>!f.type||f.type.indexOf('image/')===0||looksHeic(f));
   if(!list.length)return;
   if(!key){toast('上傳照片需要先設定 ImgBB API Key');openKeys();return}
   const d=draft;
   await Promise.all(list.map(async f=>{
-    const p={preview:URL.createObjectURL(f)};pend.push(p);paintShots();
-    try{const blob=await shrink(f),fd=new FormData();fd.append('image',blob,'photo.jpg');
+    const p={preview:null,heic:looksHeic(f)};pend.push(p);paintShots();
+    try{
+      const jpg=await toJpeg(f,p);
+      p.preview=URL.createObjectURL(jpg);if(d===draft)paintShots();
+      const fd=new FormData();fd.append('image',jpg,jpg.type==='image/gif'?'photo.gif':'photo.jpg');
       const r=await fetch('https://api.imgbb.com/1/upload?key='+encodeURIComponent(key),{method:'POST',body:fd});
       const j=await r.json();if(!j.success)throw new Error((j.error&&j.error.message)||('HTTP '+r.status));
       if(d===draft)d.photos.push(j.data.display_url||j.data.url);
-    }catch(e){toast('上傳失敗：'+e.message)}
-    pend=pend.filter(x=>x!==p);URL.revokeObjectURL(p.preview);if(d===draft)paintShots();
+    }catch(e){console.error('[照片處理失敗]',f.name,f.type,e);toast((f.name||'照片')+'：'+e.message)}
+    pend=pend.filter(x=>x!==p);if(p.preview)URL.revokeObjectURL(p.preview);if(d===draft)paintShots();
   }));
 }
 
