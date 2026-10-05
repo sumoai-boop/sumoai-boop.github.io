@@ -63,6 +63,24 @@
     grid-template-columns:repeat(5,1fr);
     gap:4px;
   }
+
+  /* ── 月份分段（買物帳式）── */
+  .mon{margin-bottom:34px;}
+  .mon-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 14px;
+    margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid rgba(255,200,150,.32);}
+  .mon-h h2{font-family:'Noto Sans TC',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:.04em;line-height:1.1;}
+  .mon-h h2 small{font-family:'Space Mono',monospace;font-size:12px;color:rgba(255,220,160,.5);font-weight:400;margin-left:8px;letter-spacing:0;}
+  .mon-h .r{display:flex;align-items:baseline;gap:14px;}
+  .mon-h .meta{font-family:'Space Mono',monospace;font-size:12px;color:rgba(255,220,160,.6);}
+  .mon-h .t{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:900;color:#FFD200;white-space:nowrap;}
+  .mon-h .t span{font-size:13px;font-weight:700;margin-right:2px;opacity:.85;}
+  .mon.nodate .mon-h h2{color:rgba(255,255,255,.6);}
+  @media(max-width:600px){
+    .mon{margin-bottom:26px;}
+    .mon-h h2{font-size:19px;}
+    .mon-h .t{font-size:16px;}
+    .mon-h .meta{font-size:11px;}
+  }
   .photo-card{
     position:relative;
     aspect-ratio:3/4;
@@ -483,7 +501,7 @@
 
   <!-- Photo Grid -->
   <div id="viewFood">
-    <div class="photo-grid" id="photoGrid"></div>
+    <div id="photoGrid"></div>
   </div>
 
   <!-- 統計頁 -->
@@ -1724,33 +1742,8 @@ function initImgObserver(){
   }, {rootMargin:'400px 0px'});
 }
 
-function render(){
-  let d=DATA.filter(r=>{
-    if(typeFilterSet.size>0 && !typeFilterSet.has(r.type)) return false;
-    if(!q) return true;
-    return r.name.includes(q)||(r.name1||'').includes(q)||(r.name2||'').includes(q)||(r.addr||'').includes(q)||(r.note||'').includes(q);
-  });
-  if(sortKey==='score-desc') d.sort((a,b)=>b.score-a.score);
-  else if(sortKey==='score-asc') d.sort((a,b)=>a.score-b.score);
-  else if(sortKey==='price-desc') d.sort((a,b)=>(b.price||0)-(a.price||0));
-  else if(sortKey==='price-asc') d.sort((a,b)=>(a.price||99999)-(b.price||99999));
-  else if(sortKey==='date-asc') d.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
-  else if(sortKey==='new') d.sort((a,b)=>b.createdAt-a.createdAt);
-  else d.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); // date-desc default
-
-  document.getElementById('countBadge').textContent=d.length+' 家';
-  const grid=document.getElementById('photoGrid');
-  grid.innerHTML='';
-  initImgObserver();
-
-  if(d.length===0){
-    const empty=document.createElement('div');
-    empty.className='empty-state';
-    empty.innerHTML=`<div class="empty-icon">🍴</div><div class="empty-text">還沒有食記，點「＋」開始記錄第一家吧！</div>`;
-    grid.appendChild(empty);
-  } else {
-    const _frag = document.createDocumentFragment();
-    d.forEach(item=>{
+/* ───── 單張卡片 ───── */
+function buildCard(item){
       const coverImg=item.img||(item.imgs&&item.imgs[0])||'';
       const card=document.createElement('div');
       card.className='photo-card'+(coverImg?'':' no-photo');
@@ -1862,10 +1855,100 @@ function render(){
         if(item.score>0) card.appendChild(scoreBadge);
       }
       card.addEventListener('click',()=>openDetail(item));
-      _frag.appendChild(card);
-      const _im = card.querySelector('img[data-src]');
-      if(_im && _imgObserver) _imgObserver.observe(_im);
-    });
+      return card;
+}
+
+/* ───── 取出一間店的所有造訪（日期正規化成 YYYY-MM-DD）───── */
+function foodVisitsOf(item){
+  const raw = (item.visitLog && item.visitLog.length) ? item.visitLog
+            : (item.date ? [{date:item.date, price:item.price}] : []);
+  return raw.map(v=>({...v, date:String(v.date||'').trim().replace(/\//g,'-')}))
+            .filter(v=>/^\d{4}-\d{2}/.test(v.date));
+}
+
+function render(){
+  let d=DATA.filter(r=>{
+    if(typeFilterSet.size>0 && !typeFilterSet.has(r.type)) return false;
+    if(!q) return true;
+    return r.name.includes(q)||(r.name1||'').includes(q)||(r.name2||'').includes(q)||(r.addr||'').includes(q)||(r.note||'').includes(q);
+  });
+  if(sortKey==='score-desc') d.sort((a,b)=>b.score-a.score);
+  else if(sortKey==='score-asc') d.sort((a,b)=>a.score-b.score);
+  else if(sortKey==='price-desc') d.sort((a,b)=>(b.price||0)-(a.price||0));
+  else if(sortKey==='price-asc') d.sort((a,b)=>(a.price||99999)-(b.price||99999));
+  else if(sortKey==='date-asc') d.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  else if(sortKey==='new') d.sort((a,b)=>b.createdAt-a.createdAt);
+  else d.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); // date-desc default
+
+  document.getElementById('countBadge').textContent=d.length+' 家';
+  const grid=document.getElementById('photoGrid');
+  grid.innerHTML='';
+  initImgObserver();
+
+  if(d.length===0){
+    const empty=document.createElement('div');
+    empty.className='empty-state';
+    empty.innerHTML=`<div class="empty-icon">🍴</div><div class="empty-text">還沒有食記，點「＋」開始記錄第一家吧！</div>`;
+    grid.appendChild(empty);
+  } else {
+    const _frag = document.createDocumentFragment();
+    const addCards=(container,items)=>{
+      items.forEach(it=>{
+        const card=buildCard(it);
+        container.appendChild(card);
+        const _im=card.querySelector('img[data-src]');
+        if(_im && _imgObserver) _imgObserver.observe(_im);
+      });
+    };
+    const byMonth = (sortKey==='date-desc' || sortKey==='date-asc');
+    if(!byMonth){
+      // 依評分／金額／新增順序排序時，不分月份
+      const g=document.createElement('div'); g.className='photo-grid';
+      addCards(g,d); _frag.appendChild(g);
+    } else {
+      // 依「造訪」分月：同一間店在不同月份去過，每個月都會出現
+      const asc = sortKey==='date-asc';
+      const months={}, noDate=[];
+      d.forEach(item=>{
+        const vs=foodVisitsOf(item);
+        if(!vs.length){ noDate.push(item); return; }
+        vs.forEach(v=>{
+          const ym=v.date.slice(0,7);
+          const g=months[ym]||(months[ym]={stores:new Map(),total:0,visits:0});
+          g.visits++;
+          if(v.price!=null && v.price!=='') g.total+=Number(v.price)||0;
+          const s=g.stores.get(item);
+          if(!s) g.stores.set(item,{item,last:v.date});
+          else if(v.date>s.last) s.last=v.date;
+        });
+      });
+      const keys=Object.keys(months).sort();
+      if(!asc) keys.reverse();
+      const section=(ym,items,g)=>{
+        const sec=document.createElement('section');
+        sec.className='mon'+(ym?'':' nodate');
+        const h=document.createElement('div'); h.className='mon-h';
+        if(ym){
+          h.innerHTML='<h2>'+(+ym.slice(5,7))+' 月<small>'+ym.slice(0,4)+'</small></h2>'+
+            '<div class="r"><span class="meta">'+items.length+' 間 · '+g.visits+' 次</span>'+
+            '<span class="t"><span>NT$</span>'+g.total.toLocaleString()+'</span></div>';
+        } else {
+          h.innerHTML='<h2>未記日期</h2><div class="r"><span class="meta">'+items.length+' 間</span></div>';
+        }
+        const grid=document.createElement('div'); grid.className='photo-grid';
+        sec.appendChild(h); sec.appendChild(grid);
+        addCards(grid,items);
+        return sec;
+      };
+      keys.forEach(ym=>{
+        const g=months[ym];
+        const items=[...g.stores.values()]
+          .sort((a,b)=>asc ? a.last.localeCompare(b.last) : b.last.localeCompare(a.last))
+          .map(s=>s.item);
+        _frag.appendChild(section(ym,items,g));
+      });
+      if(noDate.length) _frag.appendChild(section(null,noDate,null));
+    }
     grid.appendChild(_frag);
   }
 
