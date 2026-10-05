@@ -1,5 +1,35 @@
 [
   {
+    "id": "1791163084863",
+    "name": "麥當勞 新光信義",
+    "name1": "麥當勞",
+    "name2": "新光信義",
+    "type": "快餐",
+    "meal": "",
+    "price": 248,
+    "visits": 1,
+    "gscore": 2.5,
+    "addr": "110臺北市信義區西村里松高路12號號 B2",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E6%96%B0%E5%85%89%E4%BF%A1%E7%BE%A9%E9%A4%90%E5%BB%B3/@25.0380306,121.5645354,18z/data=!4m6!3m5!1s0x3442abba35ad0ac5:0x2f91606cfa7bcf6e!8m2!3d25.0380379!4d121.5666758!16s%2Fg%2F1pzv3kc9x?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-04",
+    "score": 3,
+    "visitLog": [
+      {
+        "date": "2026-10-04",
+        "meal": "晚餐",
+        "price": 248,
+        "menu": "辣味炸雞餐",
+        "score": 3
+      }
+    ],
+    "imgs": [
+      "https://i.ibb.co/rhv95sX/d02b12a7eef0.jpg"
+    ],
+    "img": "https://i.ibb.co/rhv95sX/d02b12a7eef0.jpg",
+    "createdAt": 1791163084863
+  },
+  {
     "id": "1790921763107",
     "name": "八方雲集 台北錦州店",
     "name1": "八方雲集",
