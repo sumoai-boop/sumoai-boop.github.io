@@ -73,6 +73,21 @@
   }
 
   /* ── 月份分段（買物帳式）── */
+  /* ── 年份切換 ── */
+  .yr-bar{position:sticky;top:28px;z-index:20;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 14px;
+    margin:0 -12px 18px;padding:10px 12px;background:rgba(247,228,220,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);}
+  .yr-pills{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+  .yr-pills::-webkit-scrollbar{display:none;}
+  .yr-pill{flex:0 0 auto;min-height:0;padding:7px 16px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--ink2);
+    font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:900;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+  .yr-pill:hover{border-color:var(--tomato);color:var(--tomato-d);}
+  .yr-pill.on{background:var(--tomato);border-color:var(--tomato);color:#fff;box-shadow:0 3px 10px rgba(214,58,36,.3);}
+  .yr-sum{display:flex;align-items:baseline;gap:12px;}
+  .yr-sum .meta{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink2);font-weight:700;}
+  .yr-sum .t{font-family:'Noto Sans TC',sans-serif;font-size:22px;font-weight:900;color:var(--tomato-d);white-space:nowrap;}
+  .yr-sum .t span{font-size:13px;font-weight:700;margin-right:2px;}
+  @media(max-width:600px){ .yr-pill{font-size:13px;padding:6px 13px;} .yr-sum .t{font-size:18px;} }
   .mon{margin-bottom:34px;}
   .mon-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 14px;
     margin:0 0 14px;padding-bottom:10px;border-bottom:2px dashed rgba(214,58,36,.45);}
@@ -817,6 +832,7 @@ function compressImage(dataUrl,maxW,maxH,quality){
   });
 }
 
+let foodYear=null; // 照片牆目前顯示的年份（'nodate' = 未記日期）
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set(), typeCountMap={};
 let currentTab='food';
 
@@ -1933,7 +1949,38 @@ function render(){
           else if(v.date>s.last) s.last=v.date;
         });
       });
-      const keys=Object.keys(months).sort();
+      // ── 年份切換：一次只顯示一年 ──
+      const yearStat={};
+      Object.keys(months).forEach(ym=>{
+        const y=ym.slice(0,4), g=months[ym];
+        const ys=yearStat[y]||(yearStat[y]={stores:new Set(),visits:0,total:0});
+        ys.visits+=g.visits; ys.total+=g.total; g.stores.forEach((_,it)=>ys.stores.add(it));
+      });
+      const years=Object.keys(yearStat).sort().reverse();
+      const tabs=years.slice(); if(noDate.length) tabs.push('nodate');
+      if(!tabs.includes(foodYear)) foodYear=tabs[0]||null;
+      if(tabs.length){
+        const bar=document.createElement('div'); bar.className='yr-bar';
+        const pills=document.createElement('div'); pills.className='yr-pills';
+        tabs.forEach(y=>{
+          const b=document.createElement('button'); b.type='button';
+          b.className='yr-pill'+(y===foodYear?' on':'');
+          b.textContent=y==='nodate'?'未記日期':y;
+          b.onclick=()=>{ if(foodYear===y) return; foodYear=y; render();
+            const gb=document.getElementById('photoGrid'); const top=gb.getBoundingClientRect().top+window.scrollY-40;
+            if(window.scrollY>top) window.scrollTo({top,behavior:'smooth'}); };
+          pills.appendChild(b);
+        });
+        bar.appendChild(pills);
+        if(foodYear!=='nodate' && yearStat[foodYear]){
+          const ys=yearStat[foodYear];
+          const sum=document.createElement('div'); sum.className='yr-sum';
+          sum.innerHTML='<span class="meta">'+ys.stores.size+' 間 · '+ys.visits+' 次</span><span class="t"><span>NT$</span>'+ys.total.toLocaleString()+'</span>';
+          bar.appendChild(sum);
+        }
+        _frag.appendChild(bar);
+      }
+      const keys=Object.keys(months).filter(ym=>ym.slice(0,4)===foodYear).sort();
       if(!asc) keys.reverse();
       const section=(ym,items,g)=>{
         const sec=document.createElement('section');
@@ -1958,7 +2005,7 @@ function render(){
           .map(s=>s.item);
         _frag.appendChild(section(ym,items,g));
       });
-      if(noDate.length) _frag.appendChild(section(null,noDate,null));
+      if(noDate.length && foodYear==='nodate') _frag.appendChild(section(null,noDate,null));
     }
     grid.appendChild(_frag);
   }
