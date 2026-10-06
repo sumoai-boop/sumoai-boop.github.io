@@ -73,6 +73,28 @@
   }
 
   /* ── 月份分段（買物帳式）── */
+  /* ── 每筆記錄的照片 ── */
+  .vp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .vp-th{position:relative;width:48px;height:48px;border-radius:7px;overflow:hidden;flex-shrink:0;border:1px solid var(--line);}
+  .vp-th img{width:100%;height:100%;object-fit:cover;display:block;}
+  .vp-th button{position:absolute;top:1px;right:1px;width:16px;height:16px;min-height:0;border-radius:50%;background:rgba(0,0,0,.65);border:none;color:#fff;font-size:9px;cursor:pointer;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .vp-add{min-height:0;height:48px;padding:0 12px;border-radius:7px;border:1.5px dashed rgba(214,58,36,.4);background:#fff;color:var(--tomato-d);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  .vp-add:hover{border-color:var(--tomato);background:rgba(214,58,36,.05);}
+  .vp-hint{font-size:11px;color:var(--ink3);}
+  .visit-grid > *{min-width:0;}
+  @media(max-width:600px){
+    .visit-grid{grid-template-columns:1fr 1fr 64px 34px !important;}
+    .visit-grid .visit-date{grid-column:1/3;}
+    .visit-grid .visit-meal{grid-column:3/5;width:auto !important;}
+    .visit-grid .visit-price{grid-column:1/3;}
+  }
+  #detailModal .d-cap{position:absolute;left:14px;top:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-size:12px;font-weight:700;
+    padding:4px 11px;border-radius:99px;font-family:'Space Mono',monospace;max-width:calc(100% - 80px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #detailModal .d-cap small{font-weight:400;opacity:.8;margin-left:6px;}
+  .dv-row{padding:7px 8px;border-bottom:1px solid rgba(120,50,30,0.08);cursor:pointer;border-left:3px solid transparent;border-radius:4px;transition:background .15s;}
+  .dv-row:hover{background:rgba(214,58,36,.05);}
+  .dv-row.on{background:rgba(214,58,36,.1);border-left-color:var(--tomato);}
+  .dv-cam{font-size:11px;color:var(--tomato-d);margin-left:6px;font-weight:700;}
   /* ── 年份切換 ── */
   .yr-bar{position:sticky;top:28px;z-index:20;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 14px;
     margin:0 -12px 18px;padding:10px 12px;background:rgba(247,228,220,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
@@ -600,7 +622,7 @@
 
       <!-- ── 多張照片上傳區 ── -->
       <div class="field-group">
-        <label class="field-label">照片 <span style="opacity:0.5;font-size:9px;">第一張為封面</span></label>
+        <label class="field-label">店家照片 <span style="opacity:0.6;font-size:10px;text-transform:none;letter-spacing:0;">每筆記錄可在下方「用餐記錄」各自上傳；都沒上傳時顯示這裡</span></label>
         <!-- 縮圖列 -->
         <div id="photoThumbRow" style="display:flex;gap:6px;flex-wrap:wrap;min-height:0;"></div>
         <!-- 上傳按鈕 -->
@@ -1396,28 +1418,70 @@ function resetFormPhotos(imgs){
 
 /* ───── 表單 Modal ───── */
 /* ───── 用餐記錄列表 ───── */
+function makeVisitRow(v){
+  v=v||{};
+  const row=document.createElement('div');
+  row.className='visit-row';
+  row.style.cssText='display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(120,50,30,0.05);border-radius:8px;border:1px solid rgba(184,48,26,0.14);';
+  const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  row.innerHTML=`
+    <div class="visit-grid" style="display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:6px;align-items:center;">
+      <input class="field-input visit-date" type="date" value="${esc(v.date)}" style="font-size:12px;padding:7px 10px;">
+      <select class="field-input visit-meal" style="font-size:12px;padding:7px 8px;background:#fff;color:#2B1A15;width:76px;">
+        <option value="" ${!v.meal?'selected':''}>—</option>
+        <option value="早餐" ${v.meal==='早餐'?'selected':''}>🌅 早</option>
+        <option value="午餐" ${v.meal==='午餐'?'selected':''}>☀️ 午</option>
+        <option value="晚餐" ${v.meal==='晚餐'?'selected':''}>🌙 晚</option>
+      </select>
+      <input class="field-input visit-price" type="number" min="0" placeholder="金額" value="${v.price===0||v.price?esc(v.price):''}" autocomplete="off" style="font-size:12px;padding:7px 10px;">
+      <input class="field-input visit-score" type="number" min="0" max="5" step="0.1" placeholder="評分" value="${v.score===0||v.score?esc(v.score):''}" autocomplete="off" style="font-size:12px;padding:7px 8px;width:64px;text-align:center;">
+      <button type="button" class="visit-del" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#B3261E;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+    </div>
+    <input class="field-input visit-menu" placeholder="🍽 點了什麼（選填）" value="${esc(v.menu)}" autocomplete="off" style="font-size:12px;padding:7px 10px;">
+    <div class="vp-row"></div>`;
+  row.querySelector('.visit-del').onclick=()=>{ row.remove(); updateAvgScore(); };
+  row._photos=(v.imgs||[]).map(u=>({dataUrl:u, url:String(u).startsWith('data:')?null:u}));
+  const inp=document.createElement('input');
+  inp.type='file'; inp.multiple=true; inp.accept='image/*,.heic,.heif,.HEIC,.HEIF'; inp.style.display='none';
+  inp.addEventListener('change', async ()=>{
+    const files=[...inp.files]; inp.value='';
+    if(!files.length) return;
+    let ok=0; const errs=[];
+    for(const file of files){
+      try{ row._photos.push({dataUrl: await fileToDataUrl(file), url:null}); ok++; renderVisitPhotos(row); }
+      catch(err){ console.error('[照片處理失敗]', file.name, err); errs.push((file.name||'照片')+'：'+(err&&err.message?err.message:'未知錯誤')); }
+    }
+    if(errs.length) showToast('❌ '+errs[0], true);
+    else if(ok) showToast('✦ 這筆記錄已加入 '+ok+' 張照片', false);
+  });
+  row._fileInput=inp;
+  row.appendChild(inp);
+  renderVisitPhotos(row);
+  return row;
+}
+function renderVisitPhotos(row){
+  const box=row.querySelector('.vp-row');
+  box.innerHTML='';
+  row._photos.forEach((p,i)=>{
+    const th=document.createElement('div'); th.className='vp-th';
+    const im=document.createElement('img'); im.src=p.url||p.dataUrl; im.alt='';
+    const del=document.createElement('button'); del.type='button'; del.textContent='✕';
+    del.onclick=e=>{ e.stopPropagation(); row._photos.splice(i,1); renderVisitPhotos(row); };
+    th.appendChild(im); th.appendChild(del); box.appendChild(th);
+  });
+  const add=document.createElement('button'); add.type='button'; add.className='vp-add';
+  add.textContent=row._photos.length?'📷 ＋':'📷 這次的照片';
+  add.onclick=()=>row._fileInput.click();
+  box.appendChild(add);
+  if(!row._photos.length){
+    const h=document.createElement('span'); h.className='vp-hint'; h.textContent='未上傳則沿用上一筆的照片';
+    box.appendChild(h);
+  }
+}
 function renderVisitsList(visits){
   const list=document.getElementById('visitsList');
   list.innerHTML='';
-  (visits||[]).forEach((v,i)=>{
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;flex-direction:column;gap:4px;padding:8px;background:rgba(120,50,30,0.05);border-radius:8px;border:1px solid rgba(184,48,26,0.14);';
-    row.innerHTML=`
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:6px;align-items:center;">
-        <input class="field-input visit-date" type="date" value="${v.date||''}" style="font-size:12px;padding:7px 10px;">
-        <select class="field-input visit-meal" style="font-size:12px;padding:7px 8px;background:#fff;color:#2B1A15;width:76px;">
-          <option value="" ${!v.meal?'selected':''}>—</option>
-          <option value="早餐" ${v.meal==='早餐'?'selected':''}>🌅 早</option>
-          <option value="午餐" ${v.meal==='午餐'?'selected':''}>☀️ 午</option>
-          <option value="晚餐" ${v.meal==='晚餐'?'selected':''}>🌙 晚</option>
-        </select>
-        <input class="field-input visit-price" type="number" min="0" placeholder="金額" value="${v.price||''}" autocomplete="off" style="font-size:12px;padding:7px 10px;">
-        <input class="field-input visit-score" type="number" min="0" max="5" step="0.1" placeholder="評分" value="${v.score||''}" autocomplete="off" style="font-size:12px;padding:7px 8px;width:64px;text-align:center;">
-        <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#B3261E;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').parentElement.remove()">✕</button>
-      </div>
-      <input class="field-input visit-menu" placeholder="🍽 點了什麼（選填）" value="${v.menu||''}" autocomplete="off" style="font-size:12px;padding:7px 10px;">`;
-    list.appendChild(row);
-  });
+  (visits||[]).forEach(v=>list.appendChild(makeVisitRow(v)));
 }
 function updateAvgScore(){
   const scores=[...document.querySelectorAll('#visitsList .visit-score')]
@@ -1452,29 +1516,14 @@ function getVisitsFromForm(){
     const menu=row.querySelector('.visit-menu')?.value.trim()||'';
     const sv=row.querySelector('.visit-score')?.value;
     const score=(sv!=null&&sv!=='')?Math.round(parseFloat(sv)*10)/10:null;
-    if(date) result.push({date,meal,price,menu,score});
+    if(date) result.push({date,meal,price,menu,score,_photos:row._photos||[]});
   });
-  return result.length ? result : [{date:new Date().toISOString().slice(0,10),meal:'',price:0,menu:'',score:null}];
+  return result.length ? result : [{date:new Date().toISOString().slice(0,10),meal:'',price:0,menu:'',score:null,_photos:[]}];
 }
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('addVisitBtn').addEventListener('click',()=>{
     const list=document.getElementById('visitsList');
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;flex-direction:column;gap:4px;padding:8px;background:rgba(120,50,30,0.05);border-radius:8px;border:1px solid rgba(184,48,26,0.14);';
-    row.innerHTML=`
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:6px;align-items:center;">
-        <input class="field-input visit-date" type="date" value="${new Date().toISOString().slice(0,10)}" style="font-size:12px;padding:7px 10px;">
-        <select class="field-input visit-meal" style="font-size:12px;padding:7px 8px;background:#fff;color:#2B1A15;width:76px;">
-          <option value="">—</option>
-          <option value="早餐">🌅 早</option>
-          <option value="午餐">☀️ 午</option>
-          <option value="晚餐">🌙 晚</option>
-        </select>
-        <input class="field-input visit-price" type="number" min="0" placeholder="金額" autocomplete="off" style="font-size:12px;padding:7px 10px;">
-        <input class="field-input visit-score" type="number" min="0" max="5" step="0.1" placeholder="評分" autocomplete="off" style="font-size:12px;padding:7px 8px;width:64px;text-align:center;">
-        <button type="button" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#B3261E;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="this.closest('div').parentElement.remove()">✕</button>
-      </div>
-      <input class="field-input visit-menu" placeholder="🍽 點了什麼（選填）" autocomplete="off" style="font-size:12px;padding:7px 10px;">`;
+    const row=makeVisitRow({date:new Date().toISOString().slice(0,10)});
     list.appendChild(row);
     row.querySelector('.visit-date').focus();
   });
@@ -1544,34 +1593,38 @@ document.getElementById('formSave').addEventListener('click',async()=>{
   }
   starVal=sv;
 
-  // 上傳新照片到 ImgBB，已有 URL 的直接用
+  // 上傳新照片到 ImgBB（店家照片 + 每筆記錄的照片），已有 URL 的直接用
   saveCropState(currentCropIdx);
   const snapshotPhotos=[...photosArr];
-  const _newCount = snapshotPhotos.filter(p=>!p.url).length;
-  if(_newCount) showToast('⏳ 上傳照片中… 0/'+_newCount, false);
-  const imgs=[];
+  const _allNew = snapshotPhotos.filter(p=>!p.url).length
+    + visitLog.reduce((n,v)=>n+(v._photos||[]).filter(p=>!p.url).length,0);
+  if(_allNew) showToast('⏳ 上傳照片中… 0/'+_allNew, false);
   let _uploaded=0;
-  for(let i=0;i<snapshotPhotos.length;i++){
-    const p=snapshotPhotos[i];
-    if(p.url){
-      // 已上傳過，直接用舊 URL
-      imgs.push(p.url);
-    } else {
-      // 新照片，壓縮後上傳 ImgBB
-      try{
-        showToast('⏳ 上傳照片中… '+(_uploaded+1)+'/'+_newCount, false);
-        const compressed = await compressImage(p.dataUrl, 1200, 1600, 0.82);
-        const url = await uploadToImgBB(compressed);
-        imgs.push(url);
-        _uploaded++;
-        // 更新 photosArr 裡的 url 避免重複上傳
-        if(photosArr[i]) photosArr[i].url = url;
-      } catch(err){
-        console.error('[上傳失敗]', err);
-        showToast('❌ 第 '+(_uploaded+1)+' 張上傳失敗：'+(err&&err.message?err.message:'未知錯誤'), true);
-        return;
-      }
+  const uploadList=async(list)=>{
+    const out=[];
+    for(const p of list){
+      if(p.url){ out.push(p.url); continue; }
+      showToast('⏳ 上傳照片中… '+(_uploaded+1)+'/'+_allNew, false);
+      const compressed = await compressImage(p.dataUrl, 1200, 1600, 0.82);
+      const url = await uploadToImgBB(compressed);
+      p.url = url;   // 避免重試時重複上傳
+      out.push(url); _uploaded++;
     }
+    return out;
+  };
+  let imgs;
+  try{
+    imgs = await uploadList(snapshotPhotos);
+    for(const v of visitLog){
+      const urls = await uploadList(v._photos||[]);
+      delete v._photos;
+      if(urls.length) v.imgs = urls;
+    }
+  }catch(err){
+    console.error('[上傳失敗]', err);
+    showToast('❌ 第 '+(_uploaded+1)+' 張上傳失敗：'+(err&&err.message?err.message:'未知錯誤'), true);
+    visitLog.forEach(v=>delete v._photos);
+    return;
   }
   const img=imgs[0]||'';
 
@@ -1602,7 +1655,7 @@ function starsHTMLDecimal(score){
   return h;
 }
 
-function openDetail(item){
+function openDetail(item, ctxDate){
   currentId=item.id;
   const line1=item.name1||item.name||'';
   const line2=item.name2||'';
@@ -1648,31 +1701,43 @@ function openDetail(item){
   const noteRow=document.getElementById('dNoteRow');
   if(item.note){document.getElementById('dNoteText').textContent=item.note;noteRow.style.display='block';}
   else noteRow.style.display='none';
-  // 用餐記錄（含菜單欄位，最多顯示5筆可捲動）
+  // 用餐記錄（含菜單欄位，可捲動；點一筆切換左側照片）
   const dVisitLog=document.getElementById('dVisitLog');
-  if(dVisitLog){
-    const allVisits=item.visitLog&&item.visitLog.length>0
-      ? [...item.visitLog].sort((a,b)=>(b.date||'').localeCompare(a.date||''))
-      : (item.date?[{date:item.date,price:item.price||0,meal:'',menu:''}]:[]);
-    let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6558;margin-bottom:6px;">用餐記錄</div>';
-    html+=`<div style="max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(214,58,36,0.5) rgba(120,50,30,0.07);border-radius:6px;">`;
-    html+=allVisits.map(v=>{
+  const allVisits=(item.visitLog&&item.visitLog.length>0
+      ? item.visitLog.map(v=>({...v,date:String(v.date||'').trim().replace(/\//g,'-')}))
+      : (item.date?[{date:String(item.date).replace(/\//g,'-'),price:item.price||0,meal:'',menu:''}]:[]))
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  let selIdx = ctxDate ? allVisits.findIndex(v=>v.date===ctxDate) : 0;
+  if(selIdx<0) selIdx=0;
+  const paintVisits=()=>{
+    if(!dVisitLog) return;
+    let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6558;margin-bottom:6px;">用餐記錄 <span style="text-transform:none;letter-spacing:0;opacity:.8;">· 點一筆看當天照片</span></div>';
+    html+=`<div class="dv-scroll" style="max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(214,58,36,0.5) rgba(120,50,30,0.07);border-radius:6px;">`;
+    html+=allVisits.map((v,i)=>{
       const mealSpan = v.meal ? '<span style="font-size:11px;color:#3F7D4E;margin-left:6px;">'+v.meal+'</span>' : '';
+      const camSpan = (v.imgs&&v.imgs.length) ? '<span class="dv-cam">📷'+v.imgs.length+'</span>' : '';
       const scoreSpan = (v.score!=null && v.score!=='') ? '<span style="font-size:12px;color:#9A5F00;margin-left:8px;font-weight:700;">★'+Number(v.score).toFixed(1)+'</span>' : '';
       const menuDiv = v.menu ? '<div style="font-size:11px;color:#6B4A3F;margin-top:2px;">🍽 '+v.menu+'</div>' : '';
       const priceSpan = (v.price!=null && v.price!=='') ? 'NT$'+Number(v.price).toLocaleString() : '—';
-      return '<div style="padding:7px 4px;border-bottom:1px solid rgba(120,50,30,0.08);">'
+      return '<div class="dv-row'+(i===selIdx?' on':'')+'" data-i="'+i+'">'
         + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#2B1A15;">'
-        + '<span>'+(v.date||'—')+mealSpan+'</span>'
+        + '<span>'+(v.date||'—')+mealSpan+camSpan+'</span>'
         + '<span style="display:flex;align-items:center;gap:2px;"><span style="color:#B8301A;font-weight:700;">'+priceSpan+'</span>'+scoreSpan+'</span>'
         + '</div>'
         + menuDiv
         + '</div>';
     }).join('');
     html+='</div>';
+    const sc=dVisitLog.querySelector('.dv-scroll'); const keep=sc?sc.scrollTop:0;
     dVisitLog.innerHTML=html;
-    dVisitLog.style.display='block';
-  }
+    dVisitLog.querySelector('.dv-scroll').scrollTop=keep;
+    dVisitLog.style.display=allVisits.length?'block':'none';
+    dVisitLog.onclick=e=>{
+      const r=e.target.closest('.dv-row'); if(!r) return;
+      const i=+r.dataset.i; if(i===selIdx) return;
+      selIdx=i; slideIdx=0; resolvePhotos(); paint(); paintVisits();
+    };
+  };
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
   if(item.maps){mapsLink.href=item.maps;mapsRow.style.display='flex';}else{mapsRow.style.display='none';}
@@ -1682,8 +1747,13 @@ function openDetail(item){
   // 照片（左欄：主圖 + 縮圖列）
   const wrap=document.getElementById('detailImgWrap');
   const thumbs=document.getElementById('detailThumbs');
-  const imgs=(item.imgs&&item.imgs.length)?item.imgs:(item.img?[item.img]:[]);
-  let slideIdx=0;
+  let imgs=[], phInfo=null, slideIdx=0;
+  const resolvePhotos=()=>{
+    const v=allVisits[selIdx];
+    phInfo=photosForVisit(item, v?v.date:null);
+    imgs=phInfo.imgs;
+  };
+  resolvePhotos();
   const paint=()=>{
     wrap.innerHTML='';
     thumbs.innerHTML='';
@@ -1699,6 +1769,12 @@ function openDetail(item){
     const im=document.createElement('img');
     im.src=src; im.alt=item.name||''; im.decoding='async';
     wrap.appendChild(im);
+    const v=allVisits[selIdx];
+    if(v && v.date){
+      const cap=document.createElement('div'); cap.className='d-cap';
+      cap.innerHTML='📅 '+v.date+(phInfo.own?'':'<small>'+(phInfo.from==='store'?'店家照片':'沿用 '+phInfo.from)+'</small>');
+      wrap.appendChild(cap);
+    }
     if(imgs.length>1){
       const mk=(cls,txt,dir)=>{
         const b=document.createElement('button');
@@ -1727,6 +1803,7 @@ function openDetail(item){
   wrap.ontouchstart=e=>{ _tx=e.touches[0].clientX; };
   wrap.ontouchend=e=>{ if(_tx==null) return; const dx=e.changedTouches[0].clientX-_tx; _tx=null; if(Math.abs(dx)>40) go(dx<0?1:-1); };
   paint();
+  paintVisits();
   document.getElementById('detailModal').scrollTop=0;
   document.querySelector('#detailModal .modal-body').scrollTop=0;
   document.getElementById('detailMask').classList.add('open');
@@ -1770,8 +1847,9 @@ function initImgObserver(){
 }
 
 /* ───── 單張卡片 ───── */
-function buildCard(item){
-      const coverImg=item.img||(item.imgs&&item.imgs[0])||'';
+function buildCard(item, ctxDate){
+      const _ph=photosForVisit(item, ctxDate);
+      const coverImg=_ph.imgs[0]||'';
       const card=document.createElement('div');
       card.className='photo-card'+(coverImg?'':' no-photo');
       const photoCount=(item.imgs&&item.imgs.length>1)?`<span style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;border-radius:99px;padding:2px 7px;letter-spacing:0.04em;">⧉ ${item.imgs.length}</span>`:'';
@@ -1794,7 +1872,7 @@ function buildCard(item){
       }
 
       if(coverImg){
-        const imgs = item.imgs && item.imgs.length > 0 ? item.imgs : [coverImg];
+        const imgs = _ph.imgs;
         let idx = 0;
 
         const img = document.createElement('img');
@@ -1881,7 +1959,7 @@ function buildCard(item){
         card.appendChild(visitBadge);
         if(item.score>0) card.appendChild(scoreBadge);
       }
-      card.addEventListener('click',()=>openDetail(item));
+      card.addEventListener('click',()=>openDetail(item, ctxDate));
       return card;
 }
 
@@ -1891,6 +1969,26 @@ function foodVisitsOf(item){
             : (item.date ? [{date:item.date, price:item.price}] : []);
   return raw.map(v=>({...v, date:String(v.date||'').trim().replace(/\//g,'-')}))
             .filter(v=>/^\d{4}-\d{2}/.test(v.date));
+}
+
+/* ───── 某次造訪要顯示的照片：自己的 → 往前最近一筆有照片的 → 店家照片 → 之後的記錄 ───── */
+function storeImgsOf(item){ return (item.imgs&&item.imgs.length)?item.imgs:(item.img?[item.img]:[]); }
+function photosForVisit(item, date){
+  const vs=foodVisitsOf(item).sort((a,b)=>a.date.localeCompare(b.date));
+  const d=date||'9999-99-99';
+  let own=null, prev=null;
+  for(const v of vs){
+    if(!(v.imgs&&v.imgs.length)) continue;
+    if(v.date===d && !own) own=v;
+    if(v.date<=d) prev=v;
+  }
+  if(own) return {imgs:own.imgs, own:true, from:own.date};
+  if(prev) return {imgs:prev.imgs, own:false, from:prev.date};
+  const st=storeImgsOf(item);
+  if(st.length) return {imgs:st, own:false, from:'store'};
+  const later=vs.find(v=>v.imgs&&v.imgs.length&&v.date>d);
+  if(later) return {imgs:later.imgs, own:false, from:later.date};
+  return {imgs:[], own:false, from:null};
 }
 
 function render(){
@@ -1921,7 +2019,7 @@ function render(){
     const _frag = document.createDocumentFragment();
     const addCards=(container,items)=>{
       items.forEach(it=>{
-        const card=buildCard(it);
+        const card=it&&it.item ? buildCard(it.item, it.date) : buildCard(it);
         container.appendChild(card);
         const _im=card.querySelector('img[data-src]');
         if(_im && _imgObserver) _imgObserver.observe(_im);
@@ -2002,7 +2100,7 @@ function render(){
         const g=months[ym];
         const items=[...g.stores.values()]
           .sort((a,b)=>asc ? a.last.localeCompare(b.last) : b.last.localeCompare(a.last))
-          .map(s=>s.item);
+          .map(s=>({item:s.item, date:s.last}));
         _frag.appendChild(section(ym,items,g));
       });
       if(noDate.length && foodYear==='nodate') _frag.appendChild(section(null,noDate,null));
