@@ -121,7 +121,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 .drow .pm{font-size:12px;color:var(--ink2);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .drow .add{color:var(--ink3);font-size:14px}
 .drow .gap{font-size:11px;color:var(--ink3);font-family:var(--mono);text-align:right;line-height:1.4}
-.pos{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--line);color:var(--ink)}
+.pos{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:0 6px;border-radius:5px;background:var(--line);color:var(--ink);border:1px solid transparent;line-height:16px}
+/* 位置配色：後衛藍/青、前鋒紫紅/橘、中鋒綠 */
+[data-p="PG"]{--pc:#2563EB;--pcb:#E4EDFE;--pct:#1D4ED8}
+[data-p="SG"]{--pc:#0E9AA7;--pcb:#DDF4F5;--pct:#0B7680}
+[data-p="SF"]{--pc:#C026D3;--pcb:#FAE6FC;--pct:#A21CAF}
+[data-p="PF"]{--pc:#D97706;--pcb:#FDF0DA;--pct:#B45309}
+[data-p="C"] {--pc:#65A30D;--pcb:#EAF5D9;--pct:#4D7C0F}
+.pos[data-p]{background:var(--pcb);color:var(--pct);border-color:color-mix(in srgb,var(--pc) 35%,transparent)}
+.pcard.out .pos[data-p]{filter:grayscale(.7)}
+.rh-pos span[data-p]{background:var(--pcb);color:var(--pct);border-color:color-mix(in srgb,var(--pc) 35%,transparent)}
+.rh-pos span[data-p] b{color:var(--pct)}
+#pPos button[data-p].on{background:var(--pc);border-color:var(--pc);color:#fff}
+#pPos button[data-p]:not(.on){color:var(--pct);border-color:color-mix(in srgb,var(--pc) 40%,transparent)}
 .team{font-family:var(--mono);font-size:11px;color:var(--ink2)}
 
 /* roster */
@@ -186,8 +198,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mv.in{background:#E7F6EE;color:var(--win)} .mv.out{background:#FCEBEA;color:var(--loss)}
 .mv.trade{background:#EAF1FB;color:var(--op)} .mv.draft{background:var(--meSoft);color:var(--me)}
 .plog{display:flex;flex-direction:column;gap:6px}
-.plog .r{display:grid;grid-template-columns:72px 74px 1fr auto;gap:8px;align-items:center;font-size:13px;background:var(--card2);border-radius:9px;padding:6px 8px}
-.plog .r .d{font-family:var(--mono);font-size:12px;color:var(--ink2)}
+.plog .r{display:grid;grid-template-columns:88px 74px 1fr auto;gap:8px;align-items:center;font-size:13px;background:var(--card2);border-radius:9px;padding:6px 8px}
+.plog .r .d{font-family:var(--mono);font-size:12px;color:var(--ink2);white-space:nowrap}
 .plog .r .n{color:var(--ink2);font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .plog .r button{border:0;background:none;color:var(--ink3);font-size:16px;cursor:pointer;line-height:1}
 .plog .r button:hover{color:var(--loss)}
@@ -202,7 +214,7 @@ button,input,select,textarea{font:inherit;color:inherit}
   .rh-pos span{font-size:10.5px;padding:2px 5px}
   .rh-r{flex:none}
   .tlr{grid-template-columns:42px 70px minmax(0,1fr);gap:8px;padding:10px 12px}
-  .plog .r{grid-template-columns:60px 70px 1fr auto}
+  .plog .r{grid-template-columns:84px 70px 1fr auto}
 }
 .rgroup{margin:6px 0 18px}
 .rgroup h3{font-size:13px;color:var(--ink2);font-weight:500;margin:0 0 8px;letter-spacing:.05em}
@@ -805,7 +817,7 @@ function renderBoard(){
     '<div class="sb"><div class="lb">最近一週</div>'+lastHtml+'</div>'+
     '<div class="sb"><div class="lb">陣容</div><div class="v">'+onTeam+'<small>人在隊</small></div><div class="f">選秀 '+Pl().filter(p=>p.how==='選秀').length+' / '+LG().rounds+' 輪</div></div>';
 }
-function posTags(p){return p.pos.map(x=>'<span class="pos">'+x+'</span>').join(' ')}
+function posTags(p){return p.pos.map(x=>'<span class="pos" data-p="'+x+'">'+x+'</span>').join(' ')}
 function teamTag(p,short){if(!p.nba)return '';if(!TC[p.nba])return '<span class="team">'+p.nba+'</span>';
   return '<span class="tchip"'+tmStyle(p.nba)+'><img src="'+logoUrl(p.nba)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()">'+p.nba+(short?'':' <small>'+teamZh(p.nba)+'</small>')+'</span>'}
 
@@ -857,7 +869,7 @@ function renderRoster(){
   const moves=[];Pl().forEach(p=>p.log.forEach(m=>moves.push({p,m})));
   const nIn=moves.filter(x=>x.m.a==='自由球員'||x.m.a==='交易').length,nOut=moves.filter(x=>isOut(x.m.a)).length;
   let h='<div class="rhead"><div class="rh-l"><div class="rh-n">'+on.length+'<small>人在隊</small></div><div class="rh-pos">'+
-    POS.map(k=>'<span>'+k+'<b>'+on.filter(p=>p.pos.includes(k)).length+'</b></span>').join('')+'</div></div>'+
+    POS.map(k=>'<span data-p="'+k+'">'+k+'<b>'+on.filter(p=>p.pos.includes(k)).length+'</b></span>').join('')+'</div></div>'+
     '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn sm danger" id="btnDropP">− 丟掉</button><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
   if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
   const ord=(a,b)=>(a.how==='選秀'?0:1)-(b.how==='選秀'?0:1)||(a.round||99)-(b.round||99)||String(a.date).localeCompare(String(b.date));
@@ -1058,7 +1070,7 @@ function openPlayer(id,preset){
   $('pMove').classList.toggle('hidden',!p);if(p)$('pMove').textContent=p.status==='在隊'?'− 丟掉':'＋ 撿回';
   show('playerModal');setTimeout(()=>$('pName').focus(),60);
 }
-function paintPos(){$('pPos').innerHTML=POS.map(k=>'<button type="button" data-k="'+k+'" class="'+(pPosSel.has(k)?'on':'')+'">'+k+'</button>').join('');
+function paintPos(){$('pPos').innerHTML=POS.map(k=>'<button type="button" data-k="'+k+'" data-p="'+k+'" class="'+(pPosSel.has(k)?'on':'')+'">'+k+'</button>').join('');
   $('pPos').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;pPosSel.has(k)?pPosSel.delete(k):pPosSel.add(k);b.classList.toggle('on')})}
 let pLogWork=null;
 function paintLog(){
