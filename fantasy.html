@@ -141,6 +141,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 .rh-mv{font-size:12.5px;color:var(--ink2)}
 .rh-mv b{font-family:var(--mono);color:var(--ink)}
 .pcard{position:relative}
+/* 統一球員卡：上=名字+PICK，第一排=位置，第二排=球隊+取得方式 */
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.pc-top .pn{padding-right:0!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-top .pick{flex:none;margin-top:2px}
+.pc-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:7px;min-height:18px}
+.pc-row+.pc-row{margin-top:6px}
+.pc-row .dim{font-size:11.5px;color:var(--ink3)}
+.pcard.empty-slot{border-style:dashed;box-shadow:none;background:transparent;display:flex;align-items:center;gap:12px;min-height:94px}
+.pcard.empty-slot .r{font-family:var(--disp);font-size:26px;color:var(--ink3);line-height:1}
+.pcard.empty-slot .t{font-size:13.5px;color:var(--ink2)}
+.pcard.empty-slot .t small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:3px}
+.pcard.empty-slot:hover{border-color:var(--me)}
+.pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
 .tm{position:relative;overflow:hidden;border-left:5px solid var(--tc)!important;
   background:linear-gradient(100deg,var(--card) 52%,color-mix(in srgb,var(--tc) 13%,#fff) 100%)!important}
@@ -413,7 +426,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="fld full"><label>備註</label><textarea id="pNote" placeholder="為什麼選他、傷病狀況、交易內容…"></textarea></div>
     </div>
     <div class="mact">
-      <button class="btn danger" id="pDel">刪除</button>
+      <div style="display:flex;gap:8px"><button class="btn danger" id="pDel">刪除</button><button class="btn" id="pMove">丟掉</button></div>
       <div class="r"><button class="btn" data-close="playerModal">取消</button><button class="btn pri" id="pSave">儲存</button></div>
     </div>
   </div>
@@ -424,6 +437,7 @@ button,input,select,textarea{font:inherit;color:inherit}
   <div class="mbox">
     <h3><span id="mvTitle">異動</span><button class="x" data-close="moveModal">×</button></h3>
     <div class="fg">
+      <div class="fld full" id="mvWhoBox"><label>要丟掉誰</label><select id="mvWho"></select></div>
       <div class="fld"><label>日期</label><input id="mvDate" type="date"></div>
       <div class="fld"><label>方式</label><select id="mvAct"></select></div>
       <div class="fld full" id="mvSwapBox"><label id="mvSwapLbl">同時</label><select id="mvSwap"></select></div>
@@ -795,6 +809,19 @@ function posTags(p){return p.pos.map(x=>'<span class="pos">'+x+'</span>').join('
 function teamTag(p,short){if(!p.nba)return '';if(!TC[p.nba])return '<span class="team">'+p.nba+'</span>';
   return '<span class="tchip"'+tmStyle(p.nba)+'><img src="'+logoUrl(p.nba)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()">'+p.nba+(short?'':' <small>'+teamZh(p.nba)+'</small>')+'</span>'}
 
+function lastOut(p){for(let i=p.log.length-1;i>=0;i--)if(isOut(p.log[i].a))return p.log[i];return null}
+function howChip(p){
+  const cls={'選秀':'draft','自由球員':'fa','交易':'trade'}[p.how];
+  if(p.how==='選秀'){const o=p.round&&LG().slot?overallPick(p.round):0;return '<span class="how draft">選秀 R'+(p.round||'?')+(o?' · #'+o:'')+'</span>'}
+  return '<span class="how '+cls+'">'+p.how+(p.date?' '+md(p.date):'')+'</span>';
+}
+function pcardHTML(p){
+  const out=p.status!=='在隊',lo=out?lastOut(p):null;
+  return '<div class="pcard'+(out?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+
+    '<div class="pc-top"><div class="pn">'+esc(p.name)+'</div>'+(pickOf(p)?'<span class="pick big"><small>PICK</small>'+pickOf(p)+'</span>':'')+'</div>'+
+    '<div class="pc-row">'+(p.pos.length?posTags(p):'<span class="dim">位置未填</span>')+'</div>'+
+    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div></div>';
+}
 function renderDraft(){
   const L=LG(),el=$('v-draft');
   let h='<div class="bar"><h2>我的選秀</h2><span class="hint">'+L.teams+' 隊・'+L.rounds+' 輪・蛇形順序（奇數輪正序、偶數輪倒序）</span></div>';
@@ -810,19 +837,18 @@ function renderDraft(){
       (next?'<span class="chip">下一個：第 <b>'+next+'</b> 輪・總第 <b>'+overallPick(next)+'</b> 順位</span>':'<span class="chip">選秀完成 🏀</span>')+
       '<span class="chip">兩次選人最長間隔 <b>'+Math.max.apply(null,gaps.concat([0]))+'</b> 順位</span></div>';
   }
-  h+='<div class="dlist">';
+  h+='<div class="plist">';
   for(let r=1;r<=L.rounds;r++){
     const p=draftedIn(r);
+    if(p){h+=pcardHTML(p).replace('data-id=','data-round="'+r+'" data-id=');continue}
     const o=L.slot?overallPick(r):null, nextO=L.slot&&r<L.rounds?overallPick(r+1):null;
-    h+='<div class="drow'+(p?' got':'')+(p&&TC[p.nba]?' tm':'')+'"'+(p?tmStyle(p.nba):'')+' data-round="'+r+'">'+(p?tmLogo(p.nba):'')+'<div class="rd"><div class="r">R'+r+'</div><div class="o">'+(o?'#'+o:'—')+'</div></div>';
-    if(p)h+='<div><div class="pn">'+esc(p.name)+'</div><div class="pm">'+posTags(p)+teamTag(p)+(pickOf(p)?'<span class="pick"><small>PICK</small>'+pickOf(p)+'</span>':'')+(p.status!=='在隊'?'<span class="how">'+p.status+'</span>':'')+'</div></div>';
-    else h+='<div class="add">＋ 填入第 '+r+' 輪選中的球員</div>';
-    h+='<div class="gap">'+(L.slot?('本輪第 '+pickInRound(r)+' 位'+(nextO?'<br>下次等 '+(nextO-o-1)+' 人':'')):'')+'</div></div>';
+    h+='<div class="pcard empty-slot" data-round="'+r+'"><span class="r">R'+r+'</span><span class="t">＋ 填入第 '+r+' 輪選中的球員'+
+      (L.slot?'<small>總第 '+o+' 順位・本輪第 '+pickInRound(r)+' 位'+(nextO?'・下次等 '+(nextO-o-1)+' 人':'')+'</small>':'')+'</span></div>';
   }
   h+='</div>';
   el.innerHTML=h;
   $('slotSel').onchange=e=>{LG().slot=+e.target.value;markDirty(LG())};
-  el.querySelectorAll('.drow').forEach(d=>d.onclick=()=>{const r=+d.dataset.round,p=draftedIn(r);openPlayer(p?p.id:null,{how:'選秀',round:r})});
+  el.querySelectorAll('.pcard[data-round]').forEach(d=>d.onclick=()=>{const r=+d.dataset.round,p=draftedIn(r);openPlayer(p?p.id:null,{how:'選秀',round:r})});
 }
 
 function renderRoster(){
@@ -832,14 +858,10 @@ function renderRoster(){
   const nIn=moves.filter(x=>x.m.a==='自由球員'||x.m.a==='交易').length,nOut=moves.filter(x=>isOut(x.m.a)).length;
   let h='<div class="rhead"><div class="rh-l"><div class="rh-n">'+on.length+'<small>人在隊</small></div><div class="rh-pos">'+
     POS.map(k=>'<span>'+k+'<b>'+on.filter(p=>p.pos.includes(k)).length+'</b></span>').join('')+'</div></div>'+
-    '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
-  if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});return}
+    '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn sm danger" id="btnDropP">− 丟掉</button><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
+  if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
   const ord=(a,b)=>(a.how==='選秀'?0:1)-(b.how==='選秀'?0:1)||(a.round||99)-(b.round||99)||String(a.date).localeCompare(String(b.date));
-  const lastOut=p=>{for(let i=p.log.length-1;i>=0;i--)if(isOut(p.log[i].a))return p.log[i];return null};
-  const card=p=>'<div class="pcard'+(p.status!=='在隊'?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+(p.status==='在隊'?'<button class="act" data-drop="'+p.id+'">丟掉</button>':'<button class="act back" data-back="'+p.id+'">撿回</button>')+
-    '<div class="pn">'+esc(p.name)+'</div><div class="pm">'+posTags(p)+teamTag(p,p.pos.length>2)+
-    '<span class="how '+({'選秀':'draft','自由球員':'fa','交易':'trade'}[p.how])+'">'+(p.how==='選秀'&&p.round?'選秀 R'+p.round:p.how)+'</span>'+(pickOf(p)?'<span class="pick"><small>PICK</small>'+pickOf(p)+'</span>':'')+
-    (p.status!=='在隊'?'<span class="how">'+p.status+(lastOut(p)&&lastOut(p).d?' '+md(lastOut(p).d):'')+'</span>':(p.how!=='選秀'&&p.date?'<span class="team">'+md(p.date)+'</span>':''))+'</div></div>';
+  const card=pcardHTML;
   h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3><div class="plist">'+on.sort(ord).map(card).join('')+'</div></div>';
   /* 異動紀錄：選秀併成一行，其他每筆都列 */
   const drafted=moves.filter(x=>x.m.a==='選秀'),other=moves.filter(x=>x.m.a!=='選秀').sort((a,b)=>String(b.m.d).localeCompare(String(a.m.d))||(b.m.t||0)-(a.m.t||0));
@@ -854,8 +876,7 @@ function renderRoster(){
   $('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});
   el.querySelectorAll('.pcard').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   el.querySelectorAll('.tlr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
-  el.querySelectorAll('[data-drop]').forEach(b=>b.onclick=e=>{e.stopPropagation();openMove(b.dataset.drop,'out')});
-  el.querySelectorAll('[data-back]').forEach(b=>b.onclick=e=>{e.stopPropagation();openMove(b.dataset.back,'in')});
+  $('btnDropP').onclick=()=>openMove(null,'out');
 }
 
 function weekRows(w){
@@ -1034,6 +1055,7 @@ function openPlayer(id,preset){
   $('pPick').value=v.pick||'';
   pPosSel=new Set(v.pos);paintPos();syncHow();
   $('pDel').classList.toggle('hidden',!p);
+  $('pMove').classList.toggle('hidden',!p);if(p)$('pMove').textContent=p.status==='在隊'?'− 丟掉':'＋ 撿回';
   show('playerModal');setTimeout(()=>$('pName').focus(),60);
 }
 function paintPos(){$('pPos').innerHTML=POS.map(k=>'<button type="button" data-k="'+k+'" class="'+(pPosSel.has(k)?'on':'')+'">'+k+'</button>').join('');
@@ -1063,14 +1085,19 @@ $('pSave').onclick=()=>{
   }
   hide('playerModal');markDirty(p);toast(msg);
 };
+$('pMove').onclick=()=>{const p=Pl().find(x=>x.id===curP);if(!p)return;hide('playerModal');setTimeout(()=>openMove(p.id,p.status==='在隊'?'out':'in'),150)};
 $('pDel').onclick=()=>{const p=Pl().find(x=>x.id===curP);if(!p)return;
   if(!confirm('刪除 '+p.name+'？整筆資料和異動紀錄都會消失。\n（球員只是被丟掉的話，按卡片上的「丟掉」就好，紀錄會留著）'))return;
   D.players=D.players.filter(x=>x.id!==curP);delItem(curP);hide('playerModal');toast('已刪除')};
 /* 丟掉 / 撿回 */
 let mvP=null,mvDir='out';
 function openMove(id,dir){
-  const p=Pl().find(x=>x.id===id);if(!p)return;mvP=p.id;mvDir=dir;
-  $('mvTitle').textContent=(dir==='out'?'丟掉 ':'撿回 ')+p.name;
+  const pick=!id;
+  if(pick){const on=Pl().filter(x=>x.status==='在隊');if(!on.length){toast('還沒有在隊球員');return}
+    $('mvWho').innerHTML='<option value="">選一位球員</option>'+on.map(x=>'<option value="'+x.id+'">'+esc(x.name)+(x.nba?'（'+x.nba+'）':'')+'</option>').join('')}
+  $('mvWhoBox').classList.toggle('hidden',!pick);
+  const p=pick?null:Pl().find(x=>x.id===id);if(!pick&&!p)return;mvP=p?p.id:null;mvDir=dir;
+  $('mvTitle').textContent=(dir==='out'?'丟掉':'撿回')+(p?' '+p.name:'球員');
   $('mvDate').value=todayStr();$('mvNote').value='';
   $('mvAct').innerHTML=dir==='out'?'<option value="釋出">丟掉（釋出）</option><option value="交易出">交易換出</option>':'<option value="自由球員">從自由球員撿回</option><option value="交易">交易換回</option>';
   if(dir==='out'){
@@ -1082,8 +1109,9 @@ function openMove(id,dir){
   }
   show('moveModal');
 }
+$('mvWho').onchange=()=>{mvP=$('mvWho').value||null;const p=Pl().find(x=>x.id===mvP);$('mvTitle').textContent='丟掉'+(p?' '+p.name:'球員')};
 $('mvSave').onclick=()=>{
-  const p=Pl().find(x=>x.id===mvP);if(!p)return;
+  const p=Pl().find(x=>x.id===mvP);if(!p){toast('先選要丟掉哪一位');return}
   const d=$('mvDate').value||todayStr(),a=$('mvAct').value,n=$('mvNote').value.trim(),sv=$('mvSwap').value;
   let other=sv&&sv!=='__new'?Pl().find(x=>x.id===sv):null,msg;
   if(mvDir==='out'){
