@@ -150,6 +150,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .drow.tm .tmlogo{right:64px;bottom:-22px;width:84px;height:84px;opacity:.16}
 .pcard.out.tm{border-left-color:var(--line2)!important;background:var(--card2)!important}
 .pcard.out .tmlogo{filter:grayscale(1);opacity:.1}
+.pick{display:inline-flex;align-items:baseline;gap:3px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink);background:var(--card);border:1px solid var(--line2);border-radius:5px;padding:0 6px;line-height:17px}
+.pick small{font-size:9.5px;font-weight:400;color:var(--ink3);letter-spacing:.04em}
 .tchip{display:inline-flex;align-items:center;gap:4px;background:var(--tc);color:var(--tci);font-family:var(--mono);font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px 1px 2px;line-height:16px;white-space:nowrap}
 .tchip img{width:14px;height:14px;object-fit:contain;background:#fff;border-radius:50%;padding:1px}
 .tchip.noimg{padding-left:6px}
@@ -404,6 +406,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="fld"><label>取得方式</label><select id="pHow"><option>選秀</option><option>自由球員</option><option>交易</option></select></div>
       <div class="fld full"><label>位置（可複選）</label><div class="toggles" id="pPos"></div></div>
       <div class="fld" id="pRoundBox"><label>選秀輪次</label><select id="pRound"></select></div>
+      <div class="fld" id="pPickBox"><label>Pick（FB 排名）</label><input id="pPick" type="number" min="1" max="999" inputmode="numeric" placeholder="例：12"><span class="help">手動填，空著就不顯示</span></div>
       <div class="fld"><label>加入日期</label><input id="pDate" type="date"></div>
       <div class="fld full" id="pSwapBox"><label>同時丟掉（選填）</label><select id="pSwap"></select><span class="help">撿人通常要丟一個人，在這裡選，兩筆異動會一起記下來</span></div>
       <div class="fld full" id="pLogBox"><label>異動紀錄</label><div class="plog" id="pLog"></div></div>
@@ -602,7 +605,7 @@ function normP(p){
   if(!log.length){log=[{a:how,d:date,n:'',t:1}];if(p.status==='已釋出'||p.status==='交易出')log.push({a:p.status==='交易出'?'交易出':'釋出',d:date,n:'',t:2})}
   sortLog(log);
   return {id:p.id||uid('p'),lg:p.lg||'lg1',name:String(p.name||'').trim(),nba:p.nba||'',pos:Array.isArray(p.pos)?p.pos.filter(x=>POS.includes(x)):[],
-    how,round:+p.round||0,date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
+    how,round:+p.round||0,pick:+p.pick||0,date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
 }
 function addMove(p,a,d,n){p.log.push({a,d,n:n||'',t:Date.now()+p.log.length});sortLog(p.log);p.status=statusFrom(p.log);p.u=Date.now()}
 function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&&w.me[c.k],b=w.op&&w.op[c.k];if(a!=null&&a!==''&&isFinite(+a))me[c.k]=+a;if(b!=null&&b!==''&&isFinite(+b))op[c.k]=+b});
@@ -720,6 +723,8 @@ async function init(force){
 /* ===== 選秀計算（蛇形） ===== */
 function pickInRound(r){const L=LG();return r%2===1?L.slot:L.teams+1-L.slot}
 function overallPick(r){return (r-1)*LG().teams+pickInRound(r)}
+/* Pick：FB 排名，手動輸入 */
+function pickOf(p){return +p.pick||0}
 function draftedIn(r){return Pl().find(p=>p.how==='選秀'&&p.round===r)}
 
 /* ===== 統計 ===== */
@@ -810,7 +815,7 @@ function renderDraft(){
     const p=draftedIn(r);
     const o=L.slot?overallPick(r):null, nextO=L.slot&&r<L.rounds?overallPick(r+1):null;
     h+='<div class="drow'+(p?' got':'')+(p&&TC[p.nba]?' tm':'')+'"'+(p?tmStyle(p.nba):'')+' data-round="'+r+'">'+(p?tmLogo(p.nba):'')+'<div class="rd"><div class="r">R'+r+'</div><div class="o">'+(o?'#'+o:'—')+'</div></div>';
-    if(p)h+='<div><div class="pn">'+esc(p.name)+'</div><div class="pm">'+posTags(p)+teamTag(p)+(p.status!=='在隊'?'<span class="how">'+p.status+'</span>':'')+'</div></div>';
+    if(p)h+='<div><div class="pn">'+esc(p.name)+'</div><div class="pm">'+posTags(p)+teamTag(p)+(pickOf(p)?'<span class="pick"><small>PICK</small>'+pickOf(p)+'</span>':'')+(p.status!=='在隊'?'<span class="how">'+p.status+'</span>':'')+'</div></div>';
     else h+='<div class="add">＋ 填入第 '+r+' 輪選中的球員</div>';
     h+='<div class="gap">'+(L.slot?('本輪第 '+pickInRound(r)+' 位'+(nextO?'<br>下次等 '+(nextO-o-1)+' 人':'')):'')+'</div></div>';
   }
@@ -832,8 +837,8 @@ function renderRoster(){
   const ord=(a,b)=>(a.how==='選秀'?0:1)-(b.how==='選秀'?0:1)||(a.round||99)-(b.round||99)||String(a.date).localeCompare(String(b.date));
   const lastOut=p=>{for(let i=p.log.length-1;i>=0;i--)if(isOut(p.log[i].a))return p.log[i];return null};
   const card=p=>'<div class="pcard'+(p.status!=='在隊'?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+(p.status==='在隊'?'<button class="act" data-drop="'+p.id+'">丟掉</button>':'<button class="act back" data-back="'+p.id+'">撿回</button>')+
-    '<div class="pn">'+esc(p.name)+'</div><div class="pm">'+posTags(p)+teamTag(p)+
-    '<span class="how '+({'選秀':'draft','自由球員':'fa','交易':'trade'}[p.how])+'">'+p.how+(p.how==='選秀'&&p.round?' R'+p.round:'')+'</span>'+
+    '<div class="pn">'+esc(p.name)+'</div><div class="pm">'+posTags(p)+teamTag(p,p.pos.length>2)+
+    '<span class="how '+({'選秀':'draft','自由球員':'fa','交易':'trade'}[p.how])+'">'+(p.how==='選秀'&&p.round?'選秀 R'+p.round:p.how)+'</span>'+(pickOf(p)?'<span class="pick"><small>PICK</small>'+pickOf(p)+'</span>':'')+
     (p.status!=='在隊'?'<span class="how">'+p.status+(lastOut(p)&&lastOut(p).d?' '+md(lastOut(p).d):'')+'</span>':(p.how!=='選秀'&&p.date?'<span class="team">'+md(p.date)+'</span>':''))+'</div></div>';
   h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3><div class="plist">'+on.sort(ord).map(card).join('')+'</div></div>';
   /* 異動紀錄：選秀併成一行，其他每筆都列 */
@@ -1026,6 +1031,7 @@ function openPlayer(id,preset){
   $('pSwap').innerHTML='<option value="">不用</option>'+Pl().filter(x=>x.status==='在隊').map(x=>'<option value="'+x.id+'">'+esc(x.name)+(x.nba?'（'+x.nba+'）':'')+'</option>').join('');
   let ro='<option value="0">—</option>';for(let r=1;r<=LG().rounds;r++){const t=draftedIn(r);ro+='<option value="'+r+'"'+(v.round===r?' selected':'')+'>第 '+r+' 輪'+(t&&t.id!==curP?'（已有 '+esc(t.name)+'）':'')+'</option>'}
   $('pRound').innerHTML=ro;
+  $('pPick').value=v.pick||'';
   pPosSel=new Set(v.pos);paintPos();syncHow();
   $('pDel').classList.toggle('hidden',!p);
   show('playerModal');setTimeout(()=>$('pName').focus(),60);
@@ -1047,7 +1053,7 @@ $('pSave').onclick=()=>{
   const clash=round?draftedIn(round):null;
   if(clash&&clash.id!==curP){toast('第 '+round+' 輪已經有 '+clash.name+'，先改掉那一位');return}
   const date=$('pDate').value||todayStr();
-  const data={name,nba:$('pTeam').value,pos:POS.filter(k=>pPosSel.has(k)),how,round,date,note:$('pNote').value.trim()};
+  const data={name,nba:$('pTeam').value,pos:POS.filter(k=>pPosSel.has(k)),how,round,pick:Math.max(0,Math.round(+$('pPick').value||0)),date,note:$('pNote').value.trim()};
   let p=curP&&Pl().find(x=>x.id===curP),msg='已儲存 '+name;
   if(p){Object.assign(p,data);p.log=pLogWork&&pLogWork.length?pLogWork:[{a:how,d:date,n:'',t:1}];p.log[0].a=how;p.log[0].d=date;sortLog(p.log);p.status=statusFrom(p.log)}
   else{
