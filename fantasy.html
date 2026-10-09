@@ -3,25 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0E1116">
+<meta name="theme-color" content="#FFFFFF">
 <title>夢幻籃球</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0E1116; --card:#161A21; --card2:#1C212A; --line:#262C36; --line2:#323946;
-  --ink:#EDEFF3; --ink2:#A3AAB6; --ink3:#6B7380;
-  --me:#E06A22; --me2:#F08A48; --op:#4F8DDB;
-  --win:#3DBE7A; --loss:#E5534B; --tie:#9AA3AF;
+  --bg:#FFFFFF; --card:#FFFFFF; --card2:#F5F6F8; --line:#E8EAEE; --line2:#D6DAE0;
+  --ink:#16181D; --ink2:#5B6270; --ink3:#8A919D;
+  --me:#D9621C; --me2:#C2540F; --op:#3B7BD0; --meSoft:#FFF2E8; --meLine:#F4CDB0;
+  --win:#1F9D5C; --loss:#D9443B; --tie:#8A919D;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.04);
   --sans:'Noto Sans TC',system-ui,-apple-system,sans-serif; --mono:'Space Mono',ui-monospace,monospace; --disp:'Bebas Neue','Oswald',Impact,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(900px 420px at 85% -120px,rgba(224,106,34,.16),transparent 70%),
-             radial-gradient(700px 380px at -10% 10%,rgba(79,141,219,.08),transparent 70%)}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px 120px}
 .hidden{display:none!important}
@@ -41,7 +39,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .lg .ball{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:14px;background:var(--line);color:var(--ink2)}
 .lg .nm{font-weight:700;font-size:14.5px;line-height:1.2}
 .lg .mt{font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-top:2px;letter-spacing:.04em}
-.lg.on{border-color:var(--me);background:linear-gradient(135deg,#2a1608,var(--card) 80%)}
+.lg.on{border-color:var(--me);background:var(--meSoft)}
 .lg.on .ball{background:var(--me);color:#fff}
 .lg.add{border-style:dashed;color:var(--ink2);font-size:13.5px;padding:9px 14px}
 .sub{color:var(--ink2);font-size:13.5px;margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -53,7 +51,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn:active{transform:scale(.97)}
 .btn.pri{background:var(--me);border-color:var(--me);color:#fff}
 .btn.pri:hover{background:var(--me2);border-color:var(--me2)}
-.btn.danger{color:var(--loss);border-color:#5a2a28}
+.btn.danger{color:var(--loss);border-color:#F2C6C2}
 .btn.danger:hover{background:var(--loss);color:#fff;border-color:var(--loss)}
 .btn.icon{padding:8px 12px;line-height:1}
 .btn.sm{font-size:12.5px;padding:5px 11px}
@@ -64,28 +62,28 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sync.busy .dot{background:var(--op);animation:pulse .8s infinite}
 .sync.err .dot{background:var(--loss)}
 .sync.demo .dot{background:var(--ink3)}
-.sync.err{color:#F3A39E;border-color:#5a2a28}
+.sync.err{color:#B42318;border-color:#F2C6C2}
 @keyframes pulse{50%{opacity:.35}}
-.menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:6px;min-width:210px;display:none;z-index:40;box-shadow:0 12px 34px rgba(0,0,0,.45)}
+.menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:6px;min-width:210px;display:none;z-index:40;box-shadow:0 12px 34px rgba(16,24,40,.14)}
 .menu.open{display:block}
 .menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:9px 12px;border-radius:8px;font-size:13.5px;cursor:pointer}
 .menu button:hover{background:var(--line)}
 
-.demo-bar{display:none;margin:12px 0 0;background:#2a2116;border:1px solid #5b3d1d;color:#F5C79C;border-radius:12px;padding:10px 14px;font-size:13px;align-items:center;justify-content:space-between;gap:10px}
+.demo-bar{display:none;margin:12px 0 0;background:#FFF6EA;border:1px solid #F5D3A8;color:#8A4B0F;border-radius:12px;padding:10px 14px;font-size:13px;align-items:center;justify-content:space-between;gap:10px}
 .demo-bar.on{display:flex}
-.demo-bar button{background:none;border:1px solid #8a5a2b;color:#F5C79C;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:12.5px}
+.demo-bar button{background:none;border:1px solid #E2B47F;color:#8A4B0F;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:12.5px}
 
 /* scoreboard */
 .board{margin:20px 0 6px;display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:12px}
-.sb{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;position:relative;overflow:hidden}
+.sb{box-shadow:var(--shadow);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;position:relative;overflow:hidden}
 .sb .lb{font-size:12px;color:var(--ink2);letter-spacing:.04em}
 .sb .v{font-family:var(--disp);font-size:44px;line-height:1;margin-top:6px;letter-spacing:.02em}
 .sb .v small{font-family:var(--sans);font-size:13px;color:var(--ink2);margin-left:6px;letter-spacing:0}
 .sb .f{font-size:12px;color:var(--ink3);margin-top:6px}
-.sb.hero{background:linear-gradient(135deg,#2a1608 0%,var(--card) 70%);border-color:#4a2a14}
+.sb.hero{background:linear-gradient(135deg,var(--meSoft) 0%,#FFFFFF 75%);border-color:var(--meLine)}
 .sb.hero::after{content:"";position:absolute;right:-30px;bottom:-30px;width:130px;height:130px;border-radius:50%;
-  border:2px solid rgba(224,106,34,.25);box-shadow:inset 0 0 0 26px transparent}
-.sb.hero .v{color:#fff;font-size:54px}
+  border:2px solid rgba(217,98,28,.18);box-shadow:inset 0 0 0 26px transparent}
+.sb.hero .v{color:var(--ink);font-size:54px}
 .wlt b{font-weight:400}
 .wlt .w{color:var(--win)} .wlt .l{color:var(--loss)} .wlt .t{color:var(--tie)}
 
@@ -101,7 +99,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;flex-wrap:wrap}
 .bar h2{font-size:17px;font-weight:700}
 .bar .hint{font-size:12.5px;color:var(--ink3)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.card{box-shadow:var(--shadow);background:var(--card);border:1px solid var(--line);border-radius:16px}
 .empty{padding:38px 20px;text-align:center;color:var(--ink2);font-size:14px;line-height:1.8}
 .empty .big{font-size:34px;margin-bottom:6px}
 
@@ -112,12 +110,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink2)}
 .chip b{color:var(--ink);font-family:var(--mono);font-weight:700}
 .dlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
-.drow{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px 10px 10px;cursor:pointer;transition:border-color .15s,transform .15s}
+.drow{box-shadow:var(--shadow);display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px 10px 10px;cursor:pointer;transition:border-color .15s,transform .15s}
 .drow:hover{border-color:var(--line2);transform:translateY(-1px)}
 .drow .rd{background:var(--card2);border-radius:10px;text-align:center;padding:6px 0}
 .drow .rd .r{font-family:var(--disp);font-size:24px;line-height:1}
 .drow .rd .o{font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-top:2px}
-.drow.got .rd{background:#2a1608}
+.drow.got .rd{background:var(--meSoft)}
 .drow.got .rd .r{color:var(--me2)}
 .drow .pn{font-weight:700;font-size:15px;line-height:1.3}
 .drow .pm{font-size:12px;color:var(--ink2);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
@@ -134,19 +132,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 .rgroup{margin:6px 0 18px}
 .rgroup h3{font-size:13px;color:var(--ink2);font-weight:500;margin:0 0 8px;letter-spacing:.05em}
 .plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
-.pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.pcard{box-shadow:var(--shadow);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
 .pcard:hover{border-color:var(--line2)}
 .pcard.out{opacity:.55}
 .pcard .pn{font-weight:700;font-size:15px}
 .pcard .pm{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--ink2)}
 .how{font-size:11px;padding:1px 7px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2)}
-.how.draft{border-color:#5b3d1d;color:var(--me2)}
-.how.fa{border-color:#1f4a35;color:var(--win)}
-.how.trade{border-color:#22395a;color:#8DB6EC}
+.how.draft{border-color:var(--meLine);color:var(--me2)}
+.how.fa{border-color:#BFE3CE;color:var(--win)}
+.how.trade{border-color:#C7D9F1;color:#2F66B0}
 
 /* weeks */
 .wlist{display:flex;flex-direction:column;gap:10px}
-.wk{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.wk{box-shadow:var(--shadow);background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .wk-h{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:12px 16px;cursor:pointer}
 .wk-n{font-family:var(--disp);font-size:28px;line-height:1;color:var(--ink2);min-width:44px}
 .wk-n small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink3)}
@@ -166,9 +164,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .box td{padding:7px 10px;border-top:1px solid var(--line);text-align:right;font-family:var(--mono)}
 .box td:first-child{text-align:left;font-family:var(--mono);color:var(--ink2);font-size:12.5px}
 .box td .v{display:inline-block;padding:2px 8px;border-radius:7px;min-width:56px}
-.box td.win{color:#fff;font-weight:700}
-.box td.me.win .v{background:rgba(224,106,34,.22);box-shadow:inset 0 0 0 1px rgba(224,106,34,.5)}
-.box td.op.win .v{background:rgba(79,141,219,.2);box-shadow:inset 0 0 0 1px rgba(79,141,219,.5)}
+.box td.win{color:var(--ink);font-weight:700}
+.box td.me.win .v{background:rgba(217,98,28,.12);box-shadow:inset 0 0 0 1px rgba(217,98,28,.45)}
+.box td.op.win .v{background:rgba(59,123,208,.11);box-shadow:inset 0 0 0 1px rgba(59,123,208,.42)}
 .box td.dim{color:var(--ink3)}
 .box .lowtag{font-size:10px;color:var(--ink3);margin-left:4px}
 .wk-note{font-size:13px;color:var(--ink2);margin-top:10px;white-space:pre-wrap}
@@ -177,7 +175,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* stats */
 .sgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 .sgrid>*{min-width:0}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.panel{box-shadow:var(--shadow);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
 .panel h3{font-size:15px;font-weight:700;margin-bottom:4px}
 .panel .ps{font-size:12px;color:var(--ink3);margin-bottom:12px}
 .panel.full{grid-column:1/-1}
@@ -198,7 +196,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .catpick button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .chartbox{position:relative}
 .chartbox svg{display:block;width:100%;height:auto;overflow:visible}
-.ctip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:8px 11px;font-size:12px;min-width:130px;box-shadow:0 10px 28px rgba(0,0,0,.45);display:none;z-index:5}
+.ctip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:8px 11px;font-size:12px;min-width:130px;box-shadow:0 10px 28px rgba(16,24,40,.14);display:none;z-index:5}
 .ctip .t{color:var(--ink2);margin-bottom:4px}
 .ctip .r{display:flex;justify-content:space-between;gap:14px;font-family:var(--mono)}
 .ctip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
@@ -211,7 +209,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .avgtbl td.better{color:var(--me2)}
 
 /* modal */
-.modal{position:fixed;inset:0;background:rgba(5,7,10,.66);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:5vh 14px;overflow-y:auto}
+.modal{position:fixed;inset:0;background:rgba(22,24,29,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:5vh 14px;overflow-y:auto}
 .modal.open{display:flex}
 .mbox{background:var(--card);border:1px solid var(--line2);border-radius:18px;width:100%;max-width:560px;padding:20px 22px 18px;animation:pop .2s ease;margin:auto 0}
 .mbox.wide{max-width:640px}
@@ -222,12 +220,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .fld{display:flex;flex-direction:column;gap:5px}
 .fld.full{grid-column:1/-1}
 .fld label{font-size:12px;color:var(--ink2)}
-.fld input,.fld select,.fld textarea{background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:9px 11px;font-size:14.5px;width:100%;outline:none}
+.fld input,.fld select,.fld textarea{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:9px 11px;font-size:14.5px;width:100%;outline:none}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--me)}
 .fld textarea{resize:vertical;min-height:70px}
 .fld .help{font-size:11.5px;color:var(--ink3);line-height:1.5}
 .toggles{display:flex;gap:6px;flex-wrap:wrap}
-.toggles button{border:1px solid var(--line2);background:var(--bg);border-radius:8px;padding:6px 11px;font-family:var(--mono);font-size:12.5px;cursor:pointer;color:var(--ink2)}
+.toggles button{border:1px solid var(--line2);background:var(--card2);border-radius:8px;padding:6px 11px;font-family:var(--mono);font-size:12.5px;cursor:pointer;color:var(--ink2)}
 .toggles button.on{background:var(--me);border-color:var(--me);color:#fff}
 .mact{display:flex;justify-content:space-between;gap:8px;margin-top:18px;align-items:center}
 .mact .r{display:flex;gap:8px;margin-left:auto}
@@ -236,11 +234,36 @@ button,input,select,textarea{font:inherit;color:inherit}
 .statin th:first-child{text-align:left}
 .statin td{padding:3px 4px}
 .statin td:first-child{font-family:var(--mono);font-size:12.5px;color:var(--ink2);white-space:nowrap;padding-right:8px}
-.statin input{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:14px;text-align:right;outline:none}
+.statin input{width:100%;background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:14px;text-align:right;outline:none}
 .statin input:focus{border-color:var(--me)}
+.wgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.wgrid label{display:flex;flex-direction:column;gap:3px;font-family:var(--mono);font-size:11px;color:var(--ink2)}
+.wgrid input{background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:7px 6px;font-family:var(--mono);font-size:13.5px;text-align:right;width:100%;outline:none}
+.statin tr.sep td{padding-top:12px;font-size:11px;color:var(--ink3);font-family:var(--sans)}
+.statin tr.main input{font-size:16px;font-weight:700;border-color:var(--meLine);background:var(--meSoft)}
+.ptsline{font-family:var(--disp);letter-spacing:.03em}
+.ptsline .me{color:var(--ink)} .ptsline .op{color:var(--ink2)}
+.ptsline small{font-family:var(--sans);font-size:12px;color:var(--ink3);margin:0 4px}
+.wk-s.pt{font-size:26px}
+.sb .v.ptsline{font-size:32px;white-space:nowrap}
+.sb .v.ptsline small{margin:0 3px}
+@media (max-width:640px){.sb .v.ptsline{font-size:24px}}
+.srcrow{display:grid;grid-template-columns:52px 1fr 120px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.srcrow .ck{font-family:var(--mono);font-size:12px;color:var(--ink2)}
+.srcrow .track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.srcrow .fill{height:100%;background:var(--me);border-radius:0 4px 4px 0}
+.srcrow .fill.neg{background:var(--loss)}
+.srcrow .vv{font-family:var(--mono);text-align:right;font-size:12.5px}
+.srcrow .vv span{color:var(--ink3)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv div{background:var(--card2);border-radius:12px;padding:10px 12px}
+.kv .k{font-size:11.5px;color:var(--ink3)}
+.kv .v{font-family:var(--disp);font-size:28px;line-height:1.1;margin-top:2px}
+.kv .v small{font-family:var(--sans);font-size:11.5px;color:var(--ink3);margin-left:4px}
+@media (max-width:640px){.wgrid{grid-template-columns:repeat(3,1fr)}}
 .statin td.flag{width:34px;text-align:center;font-family:var(--disp);font-size:16px}
 .statin td.flag.W{color:var(--win)} .statin td.flag.L{color:var(--loss)} .statin td.flag.T{color:var(--tie)}
-.livescore{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px;font-family:var(--disp);font-size:28px;letter-spacing:.04em}
+.livescore{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px;font-family:var(--disp);font-size:28px;letter-spacing:.04em}
 .livescore .res{width:34px;height:34px;font-size:18px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;z-index:200;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
@@ -342,8 +365,8 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="fld"><label>結束</label><input id="wEnd" type="date"></div>
       <div class="fld full"><label>季後賽</label><select id="wPlayoff"><option value="0">例行賽</option><option value="1">季後賽</option></select></div>
     </div>
-    <table class="statin"><thead><tr><th>類別</th><th>我</th><th>對手</th><th></th></tr></thead><tbody id="statRows"></tbody></table>
-    <div class="fld full" style="margin-top:4px"><span class="help">百分比可輸入 .475 或 47.5，都會換算成 .475。TO、TECH 是越少越好。數字還沒出來可以先空著，週中也能先存。</span></div>
+    <table class="statin"><thead><tr><th id="wColHead">類別</th><th>我</th><th>對手</th><th></th></tr></thead><tbody id="statRows"></tbody></table>
+    <div class="fld full" style="margin-top:4px"><span class="help" id="wHelp"></span></div>
     <div class="livescore" id="liveScore"></div>
     <div class="fld full" style="margin-top:12px"><label>備註</label><textarea id="wNote" placeholder="這週的關鍵：誰受傷、哪個類別差一點…"></textarea></div>
     <div class="mact">
@@ -365,7 +388,9 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="fld"><label>我的選秀順位</label><select id="sSlot"></select></div>
       <div class="fld"><label>第 1 週開始日</label><input id="sWeek1" type="date"><span class="help">之後每週的日期會自動帶入</span></div>
       <div class="fld full"><label>Yahoo 聯盟網址</label><input id="sUrl"></div>
-      <div class="fld full"><label>計分類別</label><div class="toggles" id="sCats"></div></div>
+      <div class="fld full"><label>玩法</label><select id="sMode"><option value="cat">Head-to-Head 類別制（逐項比勝負）</option><option value="pts">Head-to-Head 積分制（比 Fan Pts 總分）</option></select></div>
+      <div class="fld full" id="sCatsBox"><label>計分類別</label><div class="toggles" id="sCats"></div></div>
+      <div class="fld full hidden" id="sWBox"><label>計分公式（每 1 單位換幾分）</label><div class="wgrid" id="sW"></div><span class="help">預設是 Yahoo 積分制的標準設定；你們聯盟如果不一樣，照 League → Settings 改。填了每週的 PTS / REB… 數字後，統計頁會用這個公式算出得分來源。</span></div>
       <div class="fld full"><label>其他隊伍（一行一隊）</label><textarea id="sOpps" rows="5" placeholder="選秀後把其他隊伍的隊名貼進來，填對戰時可以直接選"></textarea></div>
     </div>
     <div class="mact"><button class="btn danger" id="sDel">刪除聯盟</button><div class="r"><button class="btn" data-close="setModal">取消</button><button class="btn pri" id="sSave">儲存</button></div></div>
@@ -397,6 +422,10 @@ const CATS=[
   {k:'PTS',l:'PTS'},{k:'OREB',l:'OREB'},{k:'REB',l:'REB'},{k:'AST',l:'AST'},{k:'ST',l:'ST'},{k:'BLK',l:'BLK'},
   {k:'TO',l:'TO',low:1},{k:'AT',l:'A/T',dec:2},{k:'TECH',l:'TECH',low:1},{k:'DD',l:'DD'}];
 const POS=['PG','SG','SF','PF','C'];
+/* 積分制：總分、預估分，以及可選填的六項數據（和 Yahoo 對戰頁的欄位一樣） */
+const EXTRA=[{k:'FP',l:'Fan Pts',dec:2},{k:'PROJ',l:'原始預估',dec:2}];
+const PSTATS=['PTS','REB','AST','BLK','ST','TO'];
+const DEF_W={PTS:1,REB:1.2,AST:1.5,BLK:3,ST:3,TO:-1};
 const NBA=[['ATL','老鷹'],['BOS','塞爾提克'],['BKN','籃網'],['CHA','黃蜂'],['CHI','公牛'],['CLE','騎士'],['DAL','獨行俠'],['DEN','金塊'],['DET','活塞'],['GSW','勇士'],
   ['HOU','火箭'],['IND','溜馬'],['LAC','快艇'],['LAL','湖人'],['MEM','灰熊'],['MIA','熱火'],['MIL','公鹿'],['MIN','灰狼'],['NOP','鵜鶘'],['NYK','尼克'],
   ['OKC','雷霆'],['ORL','魔術'],['PHI','七六人'],['PHX','太陽'],['POR','拓荒者'],['SAC','國王'],['SAS','馬刺'],['TOR','暴龍'],['UTA','爵士'],['WAS','巫師']];
@@ -423,11 +452,12 @@ function todayStr(){return dstr(new Date())}
 function addDays(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dstr(d)}
 function md(s){return s?(+s.slice(5,7))+'/'+(+s.slice(8,10)):''}
 function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function catOf(k){return CATS.find(c=>c.k===k)}
+function catOf(k){return CATS.find(c=>c.k===k)||EXTRA.find(c=>c.k===k)}
 function LG(){return D.leagues.find(l=>l.id===curLg)||D.leagues[0]||normL(SEEDS[0])}
 function Pl(){const id=LG().id;return D.players.filter(p=>p.lg===id)}
 function Wk(){const id=LG().id;return D.weeks.filter(w=>w.lg===id)}
 function setLg(id){curLg=id;lsSet('fb_cur',id)}
+function isPts(lg){return (lg||LG()).mode==='pts'}
 function activeCats(){const a=(LG().cats||[]).filter(k=>catOf(k));return (a.length?a:CATS.map(c=>c.k)).map(catOf)}
 function teamZh(a){const t=NBA.find(x=>x[0]===a);return t?t[1]:''}
 let _tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2600)}
@@ -459,6 +489,12 @@ function judge(cat,a,b){
 }
 function scoreWeek(w){return scoreWeekFor(w,LG())}
 function scoreWeekFor(w,lg){
+  if(isPts(lg)){
+    const a=(w.me||{}).FP,b=(w.op||{}).FP;
+    if(a==null||b==null)return {W:0,L:0,T:0,n:0,per:{},res:null,done:false,a,b};
+    const x=Math.round(a*100),y=Math.round(b*100),res=x===y?'T':x>y?'W':'L';
+    return {W:+(res==='W'),L:+(res==='L'),T:+(res==='T'),n:1,per:{FP:res},res,done:!w.end||w.end<todayStr(),a,b};
+  }
   const cats=(lg.cats||[]).map(catOf).filter(Boolean);
   let W=0,L=0,T=0,n=0;const per={};
   cats.forEach(c=>{const r=judge(c,(w.me||{})[c.k],(w.op||{})[c.k]);per[c.k]=r;if(r){n++;if(r==='W')W++;else if(r==='L')L++;else T++}});
@@ -470,11 +506,13 @@ function scoreWeekFor(w,lg){
 /* ===== 正規化 ===== */
 function normP(p){return {id:p.id||uid('p'),lg:p.lg||'lg1',name:String(p.name||'').trim(),nba:p.nba||'',pos:Array.isArray(p.pos)?p.pos.filter(x=>POS.includes(x)):[],
   how:['選秀','自由球員','交易'].includes(p.how)?p.how:'選秀',round:+p.round||0,date:p.date||'',status:['在隊','已釋出','交易出'].includes(p.status)?p.status:'在隊',note:p.note||'',u:+p.u||0}}
-function normW(w){const me={},op={};CATS.forEach(c=>{const a=w.me&&w.me[c.k],b=w.op&&w.op[c.k];if(a!=null&&a!==''&&isFinite(+a))me[c.k]=+a;if(b!=null&&b!==''&&isFinite(+b))op[c.k]=+b});
+function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&&w.me[c.k],b=w.op&&w.op[c.k];if(a!=null&&a!==''&&isFinite(+a))me[c.k]=+a;if(b!=null&&b!==''&&isFinite(+b))op[c.k]=+b});
   return {id:w.id||uid('w'),lg:w.lg||'lg1',week:+w.week||0,start:w.start||'',end:w.end||'',opp:String(w.opp||'').trim(),playoff:!!w.playoff,me,op,note:w.note||'',u:+w.u||0}}
 function normL(l){l=Object.assign({},DEF_LEAGUE,l||{});l.id=l.id||uid('lg');l.name=String(l.name||'').trim();l.teams=Math.min(20,Math.max(2,+l.teams||14));l.rounds=Math.min(30,Math.max(1,+l.rounds||13));
   l.slot=+l.slot||0;if(l.slot>l.teams)l.slot=0;l.opps=Array.isArray(l.opps)?l.opps.map(s=>String(s).trim()).filter(Boolean):[];
-  l.cats=Array.isArray(l.cats)?l.cats.filter(k=>catOf(k)):DEF_LEAGUE.cats.slice();l.url=String(l.url||'').trim();l.u=+l.u||0;return l}
+  l.cats=Array.isArray(l.cats)?l.cats.filter(k=>CATS.some(c=>c.k===k)):DEF_LEAGUE.cats.slice();
+  l.mode=l.mode==='pts'||l.mode==='cat'?l.mode:(/pts|points|積分/i.test(l.name)?'pts':'cat');
+  const w0=l.w&&typeof l.w==='object'?l.w:{};l.w={};PSTATS.forEach(k=>{l.w[k]=isFinite(+w0[k])&&w0[k]!==''&&w0[k]!=null?+w0[k]:DEF_W[k]});l.url=String(l.url||'').trim();l.u=+l.u||0;return l}
 function normAll(j){
   if(!j||typeof j!=='object'||Array.isArray(j))return null;
   const deleted=Array.isArray(j.deleted)?j.deleted:[];
@@ -589,7 +627,10 @@ function draftedIn(r){return Pl().find(p=>p.how==='選秀'&&p.round===r)}
 function sortedWeeks(){return Wk().slice().sort((a,b)=>a.week-b.week||(a.playoff-b.playoff))}
 function season(){
   const o={mW:0,mL:0,mT:0,cW:0,cL:0,cT:0,played:0};
-  Wk().forEach(w=>{const s=scoreWeek(w);if(!s.n)return;o.played++;o.cW+=s.W;o.cL+=s.L;o.cT+=s.T;if(s.res==='W')o.mW++;else if(s.res==='L')o.mL++;else o.mT++});
+  o.pf=0;o.pa=0;o.pn=0;
+  Wk().forEach(w=>{const s=scoreWeek(w);if(!s.n)return;o.cW+=s.W;o.cL+=s.L;o.cT+=s.T;
+    if(s.a!=null){o.pf+=s.a;o.pa+=s.b;o.pn++}
+    if(!s.done)return;o.played++;if(s.res==='W')o.mW++;else if(s.res==='L')o.mL++;else o.mT++});
   return o;
 }
 function catStats(){
@@ -600,12 +641,13 @@ function catStats(){
   });
 }
 function wlt(W,L,T){return '<span class="wlt"><b class="w">'+W+'</b>-<b class="l">'+L+'</b>-<b class="t">'+T+'</b></span>'}
+function fp(v){return v==null||!isFinite(v)?'—':(+v).toFixed(1)}
 function pctTxt(x){return x==null?'—':(x*100).toFixed(0)+'%'}
 
 /* ===== 渲染 ===== */
 function render(){
   const L=LG();
-  $('kick').textContent='YAHOO FANTASY NBA · '+L.teams+' TEAMS · '+activeCats().length+'-CAT';
+  $('kick').textContent='YAHOO FANTASY NBA · '+L.teams+' TEAMS · '+(isPts(L)?'H2H POINTS':activeCats().length+'-CAT');
   $('leagueName').textContent=L.team?('我的隊伍：'+L.team):'還沒填隊名（⋯ → 這個聯盟的設定）';
   $('yLink').href=L.url||YAHOO;$('yLink').textContent=L.url?'開啟 Yahoo 聯盟 ↗':'Yahoo 夢幻籃球 ↗（聯盟網址可在設定填入）';
   renderLgs();
@@ -619,7 +661,7 @@ function renderLgs(){
   $('lgs').innerHTML=D.leagues.map(l=>{const n=D.weeks.filter(w=>w.lg===l.id);let W=0,Ls=0,T=0;
       n.forEach(w=>{const s=scoreWeekFor(w,l);if(s.done){if(s.res==='W')W++;else if(s.res==='L')Ls++;else T++}});
       return '<button class="lg'+(l.id===cur?' on':'')+'" data-lg="'+l.id+'"><span class="ball">'+esc(Array.from(l.name||'?')[0])+'</span><span><div class="nm">'+esc(l.name||'未命名聯盟')+'</div>'+
-        '<div class="mt">'+l.teams+' 隊 · '+l.cats.length+'-CAT'+(W+Ls+T?' · '+W+'-'+Ls+'-'+T:'')+'</div></span></button>'}).join('')+
+        '<div class="mt">'+l.teams+' 隊 · '+(isPts(l)?'積分制':l.cats.length+'-CAT')+(W+Ls+T?' · '+W+'-'+Ls+'-'+T:'')+'</div></span></button>'}).join('')+
     '<button class="lg add" id="lgAdd">＋ 聯盟</button>';
   $('lgs').querySelectorAll('[data-lg]').forEach(b=>b.onclick=()=>{if(b.dataset.lg===LG().id)return;setLg(b.dataset.lg);openWeeks.clear();render();window.scrollTo({top:0,behavior:'smooth'})});
   $('lgAdd').onclick=()=>openSettings(true);
@@ -630,6 +672,15 @@ function renderBoard(){
   const rate=(s.cW+s.cL+s.cT)?((s.cW+s.cT*.5)/(s.cW+s.cL+s.cT)):null;
   let lastHtml='<div class="v">—</div><div class="f">還沒有對戰紀錄</div>';
   if(last){const sc=scoreWeek(last);lastHtml='<div class="v">'+sc.W+'-'+sc.L+'-'+sc.T+'<small>'+(sc.done?({W:'勝',L:'敗',T:'和'}[sc.res]):'進行中')+'</small></div><div class="f">第 '+last.week+' 週 vs '+esc(last.opp||'—')+'</div>'}
+  if(isPts()){
+    if(last){const sc=scoreWeek(last);lastHtml='<div class="v ptsline">'+fp(sc.a)+'<small>:</small><span class="op">'+fp(sc.b)+'</span><small>'+(sc.done?({W:'勝',L:'敗',T:'和'}[sc.res]):'進行中')+'</small></div><div class="f">第 '+last.week+' 週 vs '+esc(last.opp||'—')+'</div>'}
+    $('board').innerHTML=
+      '<div class="sb hero"><div class="lb">對戰戰績</div><div class="v">'+s.mW+'-'+s.mL+'-'+s.mT+'</div><div class="f">'+(s.played?'已打 '+s.played+' 週':'選秀後開打')+'</div></div>'+
+      '<div class="sb"><div class="lb">每週平均得分</div><div class="v">'+(s.pn?fp(s.pf/s.pn):'—')+'</div><div class="f">'+(s.pn?'失分 '+fp(s.pa/s.pn)+' · 淨勝 '+(s.pf>=s.pa?'+':'−')+fp(Math.abs(s.pf-s.pa)/s.pn):'積分制 · 比 Fan Pts 總分')+'</div></div>'+
+      '<div class="sb"><div class="lb">最近一週</div>'+lastHtml+'</div>'+
+      '<div class="sb"><div class="lb">陣容</div><div class="v">'+onTeam+'<small>人在隊</small></div><div class="f">選秀 '+Pl().filter(p=>p.how==='選秀').length+' / '+LG().rounds+' 輪</div></div>';
+    return;
+  }
   $('board').innerHTML=
     '<div class="sb hero"><div class="lb">對戰戰績</div><div class="v">'+s.mW+'-'+s.mL+'-'+s.mT+'</div><div class="f">'+(s.played?'已打 '+s.played+' 週':'選秀後開打')+'</div></div>'+
     '<div class="sb"><div class="lb">類別戰績</div><div class="v">'+wlt(s.cW,s.cL,s.cT)+'</div><div class="f">類別勝率 '+pctTxt(rate)+'</div></div>'+
@@ -687,21 +738,26 @@ function renderRoster(){
   el.querySelectorAll('.pcard').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
 }
 
+function weekRows(w){
+  if(!isPts())return activeCats();
+  return ['FP','PROJ'].concat(PSTATS).map(catOf).filter(c=>c.k==='FP'||w.me[c.k]!=null||w.op[c.k]!=null);
+}
 function renderWeeks(){
   const el=$('v-weeks'),ws=sortedWeeks().reverse();
   let h='<div class="bar"><h2>每週對戰</h2><button class="btn pri sm" id="btnAddW">＋ 新增一週</button></div>';
-  if(!ws.length){el.innerHTML=h+'<div class="card empty"><div class="big">📋</div>每週對戰結束後，把 Yahoo 對戰頁上 13 個類別的數字填進來，<br>勝負會自動算好。</div>';$('btnAddW').onclick=()=>openWeek(null);return}
+  if(!ws.length){el.innerHTML=h+'<div class="card empty"><div class="big">📋</div>'+(isPts()?'每週對戰結束後，把 Yahoo 對戰頁上雙方的 Fan Pts 總分填進來，<br>勝負會自動算好。原始預估和 PTS、REB 這些數字可以選填。':'每週對戰結束後，把 Yahoo 對戰頁上每個類別的數字填進來，<br>勝負會自動算好。')+'</div>';$('btnAddW').onclick=()=>openWeek(null);return}
   h+='<div class="wlist">';
   ws.forEach(w=>{
     const s=scoreWeek(w);
     h+='<div class="wk'+(openWeeks.has(w.id)?' open':'')+'" data-id="'+w.id+'"><div class="wk-h">'+
       '<div class="wk-n"><small>'+(w.playoff?'PLAYOFF':'WEEK')+'</small>'+w.week+'</div>'+
       '<div class="wk-o">vs '+esc(w.opp||'—')+'<span class="d">'+(w.start?md(w.start)+' – '+md(w.end):'')+'</span></div>'+
-      '<div class="wk-s">'+(s.n?wlt(s.W,s.L,s.T):'<span style="color:var(--ink3);font-size:18px">未填</span>')+'</div>'+
+      (isPts()?'<div class="wk-s pt ptsline">'+(s.n?'<span class="me">'+fp(s.a)+'</span><small>:</small><span class="op">'+fp(s.b)+'</span>':'<span style="color:var(--ink3);font-size:18px">未填</span>')+'</div>'
+        :'<div class="wk-s">'+(s.n?wlt(s.W,s.L,s.T):'<span style="color:var(--ink3);font-size:18px">未填</span>')+'</div>')+
       '<div class="res '+(s.done&&s.res?s.res:'P')+'">'+(s.done&&s.res?s.res:'進行')+'</div></div><div class="wk-b">';
-    h+='<table class="box"><thead><tr><th>類別</th><th>我</th><th>'+esc(w.opp||'對手')+'</th></tr></thead><tbody>';
-    activeCats().forEach(c=>{
-      const r=s.per[c.k];
+    h+='<table class="box"><thead><tr><th>'+(isPts()?'項目':'類別')+'</th><th>我</th><th>'+esc(w.opp||'對手')+'</th></tr></thead><tbody>';
+    weekRows(w).forEach(c=>{
+      const r=c.k==='FP'?s.per.FP:(isPts()?null:s.per[c.k]);
       h+='<tr><td>'+c.l+(c.low?'<span class="lowtag">↓</span>':'')+'</td><td class="me '+(r==='W'?'win':r==='L'?'dim':'')+'"><span class="v">'+fmtVal(c,w.me[c.k])+'</span></td><td class="op '+(r==='L'?'win':r==='W'?'dim':'')+'"><span class="v">'+fmtVal(c,w.op[c.k])+'</span></td></tr>';
     });
     h+='</tbody></table>'+(w.note?'<div class="wk-note">'+esc(w.note)+'</div>':'')+'<div class="wk-act"><button class="btn sm" data-edit="'+w.id+'">編輯</button></div></div></div>';
@@ -712,7 +768,51 @@ function renderWeeks(){
   el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=e=>{e.stopPropagation();openWeek(b.dataset.edit)});
 }
 
+function renderPtsStats(){
+  const el=$('v-stats'),ws=sortedWeeks().filter(w=>scoreWeek(w).n),L=LG();
+  let h='<div class="bar"><h2>統計</h2><span class="hint">只計算雙方都有 Fan Pts 的週</span></div>';
+  if(!ws.length){el.innerHTML=h+'<div class="card empty"><div class="big">📈</div>有對戰紀錄後，這裡會顯示每週得分走勢、得失分、<br>和預估比起來是超前還是落後。</div>';return}
+  const S=ws.map(w=>Object.assign({w},scoreWeek(w)));
+  const pf=S.reduce((a,x)=>a+x.a,0),pa=S.reduce((a,x)=>a+x.b,0),n=S.length;
+  const hi=S.reduce((m,x)=>x.a>m.a?x:m,S[0]),lo=S.reduce((m,x)=>x.a<m.a?x:m,S[0]);
+  const pj=S.filter(x=>x.w.me.PROJ!=null),beat=pj.filter(x=>x.a>=x.w.me.PROJ).length;
+  const close=S.filter(x=>x.done&&Math.abs(x.a-x.b)<15);
+  h+='<div class="sgrid">';
+  h+='<div class="panel"><h3>得失分</h3><div class="ps">共 '+n+' 週</div><div class="kv">'+
+    '<div><div class="k">平均得分</div><div class="v">'+fp(pf/n)+'</div></div>'+
+    '<div><div class="k">平均失分</div><div class="v">'+fp(pa/n)+'</div></div>'+
+    '<div><div class="k">最高單週</div><div class="v">'+fp(hi.a)+'<small>W'+hi.w.week+'</small></div></div>'+
+    '<div><div class="k">最低單週</div><div class="v">'+fp(lo.a)+'<small>W'+lo.w.week+'</small></div></div>'+
+    '<div><div class="k">總得分</div><div class="v">'+fp(pf)+'</div></div>'+
+    '<div><div class="k">總失分</div><div class="v">'+fp(pa)+'</div></div>'+
+    '<div><div class="k">超過預估</div><div class="v">'+(pj.length?beat+'<small>/ '+pj.length+' 週</small>':'—')+'</div></div>'+
+    '<div><div class="k">差距 15 分內</div><div class="v">'+(close.length?close.filter(x=>x.res==='W').length+'-'+close.filter(x=>x.res==='L').length+'<small>險勝-惜敗</small>':'—')+'</div></div>'+
+    '</div></div>';
+  /* 得分來源 */
+  const tot={};let any=0;PSTATS.forEach(k=>{tot[k]=0});
+  S.forEach(x=>PSTATS.forEach(k=>{if(x.w.me[k]!=null){tot[k]+=x.w.me[k]*L.w[k];any++}}));
+  h+='<div class="panel"><h3>我的得分來源</h3><div class="ps">'+(any?'用計分公式把每週填的數據換算成分數（PTS×'+L.w.PTS+'、REB×'+L.w.REB+'、AST×'+L.w.AST+'…）':'對戰時順便填 PTS、REB、AST、BLK、ST、TO，就能看出分數主要從哪裡來')+'</div>';
+  if(any){const sum=PSTATS.reduce((a,k)=>a+Math.max(0,tot[k]),0)||1,mx=Math.max.apply(null,PSTATS.map(k=>Math.abs(tot[k])))||1;
+    PSTATS.forEach(k=>{const v=tot[k];h+='<div class="srcrow" title="'+k+'：'+fp(v)+' 分"><span class="ck">'+k+'</span><div class="track"><div class="fill'+(v<0?' neg':'')+'" style="width:'+(Math.abs(v)/mx*100)+'%"></div></div><span class="vv">'+(v<0?'−':'')+fp(Math.abs(v))+' <span>'+(v>0?Math.round(v/sum*100)+'%':'')+'</span></span></div>'})}
+  else h+='<div class="empty" style="padding:22px 10px">還沒有數據</div>';
+  h+='</div>';
+  /* 走勢 */
+  const keys=['FP'].concat(PSTATS.filter(k=>S.some(x=>x.w.me[k]!=null||x.w.op[k]!=null)));
+  const curCat=keys.includes(lsGet(LS.cat+'_p','FP'))?lsGet(LS.cat+'_p','FP'):'FP';
+  h+='<div class="panel full"><h3>每週走勢</h3><div class="ps">我和當週對手的 Fan Pts'+(keys.length>1?'，也可以切換看單項數據':'')+'</div><div class="catpick" id="catPick">'+
+     keys.map(k=>'<button data-k="'+k+'" class="'+(k===curCat?'on':'')+'">'+catOf(k).l+'</button>').join('')+'</div>'+
+     '<div class="legend"><span><i style="background:var(--me)"></i>我</span><span><i style="background:var(--op)"></i>對手</span></div><div class="chartbox" id="trend"></div></div>';
+  /* 對手 */
+  const by={};S.forEach(x=>{const k=x.w.opp||'（未填）';const o=by[k]||(by[k]={n:0,W:0,L:0,T:0,pf:0,pa:0});o.n++;o.pf+=x.a;o.pa+=x.b;if(x.done)o[x.res]++});
+  h+='<div class="panel full"><h3>對每一隊的戰績</h3><div class="ps">得分、失分是每次碰面的平均</div><div class="scroll-x"><table class="tbl"><thead><tr><th>對手</th><th>碰過</th><th>對戰</th><th>平均得分</th><th>平均失分</th><th>淨勝</th></tr></thead><tbody>'+
+     Object.keys(by).sort((a,b)=>by[b].n-by[a].n).map(k=>{const o=by[k],d=(o.pf-o.pa)/o.n;return '<tr><td>'+esc(k)+'</td><td>'+o.n+'</td><td>'+wlt(o.W,o.L,o.T)+'</td><td>'+fp(o.pf/o.n)+'</td><td>'+fp(o.pa/o.n)+'</td><td style="color:'+(d>=0?'var(--win)':'var(--loss)')+'">'+(d>=0?'+':'−')+fp(Math.abs(d))+'</td></tr>'}).join('')+
+     '</tbody></table></div></div></div>';
+  el.innerHTML=h;
+  drawTrend(curCat);
+  $('catPick').querySelectorAll('button').forEach(b=>b.onclick=()=>{lsSet(LS.cat+'_p',b.dataset.k);$('catPick').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));drawTrend(b.dataset.k)});
+}
 function renderStats(){
+  if(isPts())return renderPtsStats();
   const el=$('v-stats'),cs=catStats(),played=cs.some(x=>x.n);
   let h='<div class="bar"><h2>統計</h2><span class="hint">只計算兩邊都有數字的類別</span></div>';
   if(!played){el.innerHTML=h+'<div class="card empty"><div class="big">📈</div>有對戰紀錄後，這裡會顯示每個類別的勝率、平均數字和走勢，<br>幫你看出哪些類別該加強、哪些可以放棄（punt）。</div>';return}
@@ -755,27 +855,27 @@ function drawTrend(k){
   const c=catOf(k),box=$('trend');
   const pts=sortedWeeks().filter(w=>w.me[k]!=null||w.op[k]!=null);
   if(!pts.length){box.innerHTML='<div class="empty" style="padding:24px">這個類別還沒有數字</div>';return}
-  const W=760,H=260,ml=46,mr=44,mt=14,mb=30,iw=W-ml-mr,ih=H-mt-mb;
+  const W=Math.round(Math.max(320,Math.min(760,box.clientWidth||760))),H=W<500?220:260,ml=W<500?40:46,mr=W<500?38:44,mt=14,mb=30,iw=W-ml-mr,ih=H-mt-mb;
   const vals=[];pts.forEach(w=>{if(w.me[k]!=null)vals.push(w.me[k]);if(w.op[k]!=null)vals.push(w.op[k])});
   let lo=Math.min.apply(null,vals),hi=Math.max.apply(null,vals);
   if(lo===hi){lo-=lo?Math.abs(lo)*.1:1;hi+=hi?Math.abs(hi)*.1:1}
   const pad=(hi-lo)*.12;lo-=pad;hi+=pad;if(!c.pct&&lo<0&&Math.min.apply(null,vals)>=0)lo=0;
   const X=i=>ml+(pts.length===1?iw/2:i*iw/(pts.length-1)),Y=v=>mt+ih-(v-lo)/(hi-lo)*ih;
   let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+c.l+' 每週走勢">';
-  for(let g=0;g<=4;g++){const v=lo+(hi-lo)*g/4,y=Y(v);s+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+y+'" y2="'+y+'" stroke="#262C36" stroke-width="1"/>'+
-    '<text x="'+(ml-8)+'" y="'+(y+4)+'" text-anchor="end" font-family="Space Mono" font-size="10.5" fill="#6B7380">'+fmtVal(c,v)+'</text>'}
-  const step=Math.max(1,Math.ceil(pts.length/12));
-  pts.forEach((w,i)=>{if(i%step===0||i===pts.length-1)s+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" font-family="Space Mono" font-size="10.5" fill="#6B7380">W'+w.week+'</text>'});
+  for(let g=0;g<=4;g++){const v=lo+(hi-lo)*g/4,y=Y(v);s+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+y+'" y2="'+y+'" stroke="#E8EAEE" stroke-width="1"/>'+
+    '<text x="'+(ml-8)+'" y="'+(y+4)+'" text-anchor="end" font-family="Space Mono" font-size="10.5" fill="#8A919D">'+fmtVal(c,v)+'</text>'}
+  const step=Math.max(1,Math.ceil(pts.length/(W<500?6:12)));
+  pts.forEach((w,i)=>{if(i%step===0||i===pts.length-1)s+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" font-family="Space Mono" font-size="10.5" fill="#8A919D">W'+w.week+'</text>'});
   const line=(side,col)=>{let d='',started=false,dots='';pts.forEach((w,i)=>{const v=w[side][k];if(v==null){started=false;return}d+=(started?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);started=true;
-      dots+='<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="4.5" fill="'+col+'" stroke="#161A21" stroke-width="2"/>'});
+      dots+='<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="4.5" fill="'+col+'" stroke="#FFFFFF" stroke-width="2"/>'});
     return '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+dots};
-  s+=line('op','#4F8DDB')+line('me','#E06A22');
+  s+=line('op','#3B7BD0')+line('me','#D9621C');
   /* 線尾直接標籤 */
   const lastOf=side=>{for(let i=pts.length-1;i>=0;i--)if(pts[i][side][k]!=null)return [i,pts[i][side][k]];return null};
   const lm=lastOf('me'),lp=lastOf('op');
   if(lm&&lp){let ym=Y(lm[1]),yp=Y(lp[1]);if(Math.abs(ym-yp)<14){if(ym<=yp){ym-=7;yp+=7}else{ym+=7;yp-=7}}
-    s+='<text x="'+(X(lm[0])+9)+'" y="'+(ym+4)+'" font-size="11.5" fill="#EDEFF3">我</text><text x="'+(X(lp[0])+9)+'" y="'+(yp+4)+'" font-size="11.5" fill="#A3AAB6">對手</text>'}
-  s+='<line id="xhair" x1="0" x2="0" y1="'+mt+'" y2="'+(mt+ih)+'" stroke="#6B7380" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>';
+    s+='<text x="'+(X(lm[0])+9)+'" y="'+(ym+4)+'" font-size="11.5" fill="#16181D">我</text><text x="'+(X(lp[0])+9)+'" y="'+(yp+4)+'" font-size="11.5" fill="#5B6270">對手</text>'}
+  s+='<line id="xhair" x1="0" x2="0" y1="'+mt+'" y2="'+(mt+ih)+'" stroke="#8A919D" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>';
   pts.forEach((w,i)=>{const x0=pts.length===1?ml:(i===0?ml:(X(i-1)+X(i))/2),x1=pts.length===1?W-mr:(i===pts.length-1?W-mr:(X(i)+X(i+1))/2);
     s+='<rect class="hit" data-i="'+i+'" x="'+x0+'" y="'+mt+'" width="'+(x1-x0)+'" height="'+ih+'" fill="transparent"/>'});
   s+='</svg><div class="ctip" id="ctip"></div>';
@@ -785,7 +885,7 @@ function drawTrend(k){
     r.addEventListener('pointerenter',()=>{
       const i=+r.dataset.i,w=pts[i],res=judge(c,w.me[k],w.op[k]);
       xh.setAttribute('x1',X(i));xh.setAttribute('x2',X(i));xh.style.display='';
-      tip.innerHTML='<div class="t">第 '+w.week+' 週 vs '+esc(w.opp||'—')+'</div><div class="r"><span><i style="background:#E06A22"></i>我</span><b>'+fmtVal(c,w.me[k])+'</b></div><div class="r"><span><i style="background:#4F8DDB"></i>對手</span><b>'+fmtVal(c,w.op[k])+'</b></div>'+
+      tip.innerHTML='<div class="t">第 '+w.week+' 週 vs '+esc(w.opp||'—')+'</div><div class="r"><span><i style="background:#D9621C"></i>我</span><b>'+fmtVal(c,w.me[k])+'</b></div><div class="r"><span><i style="background:#3B7BD0"></i>對手</span><b>'+fmtVal(c,w.op[k])+'</b></div>'+
         (res?'<div class="r" style="margin-top:4px;color:'+({W:'var(--win)',L:'var(--loss)',T:'var(--tie)'}[res])+'"><span>結果</span><b>'+({W:'勝',L:'敗',T:'和'}[res])+'</b></div>':'');
       tip.style.display='block';
       const sc=svg.getBoundingClientRect().width/W,bx=box.getBoundingClientRect().width;
@@ -839,22 +939,39 @@ function openWeek(id){
   $('wNum').value=nextN;$('wOpp').value=w?w.opp:'';$('wPlayoff').value=w&&w.playoff?'1':'0';$('wNote').value=w?w.note:'';
   const dd=weekDates(nextN);$('wStart').value=w?w.start:(dd?dd[0]:'');$('wEnd').value=w?w.end:(dd?dd[1]:'');
   $('oppList').innerHTML=LG().opps.map(o=>'<option value="'+esc(o)+'">').join('');
-  $('statRows').innerHTML=activeCats().map(c=>'<tr><td>'+c.l+(c.low?' ↓':'')+'</td><td><input data-s="me" data-k="'+c.k+'" inputmode="decimal" value="'+(w&&w.me[c.k]!=null?fmtVal(c,w.me[c.k]):'')+'"></td>'+
-    '<td><input data-s="op" data-k="'+c.k+'" inputmode="decimal" value="'+(w&&w.op[c.k]!=null?fmtVal(c,w.op[c.k]):'')+'"></td><td class="flag" data-f="'+c.k+'"></td></tr>').join('');
+  const row=(c,cls)=>'<tr class="'+(cls||'')+'"><td>'+c.l+(c.low?' ↓':'')+'</td><td><input data-s="me" data-k="'+c.k+'" inputmode="decimal" value="'+(w&&w.me[c.k]!=null?fmtVal(c,w.me[c.k]):'')+'"></td>'+
+    '<td><input data-s="op" data-k="'+c.k+'" inputmode="decimal" value="'+(w&&w.op[c.k]!=null?fmtVal(c,w.op[c.k]):'')+'"></td><td class="flag" data-f="'+c.k+'"></td></tr>';
+  $('statRows').innerHTML=isPts()
+    ?row(catOf('FP'),'main')+row(catOf('PROJ'))+'<tr class="sep"><td colspan="4">以下選填：整週的數據合計（Yahoo 對戰頁最下面那一列）</td></tr>'+PSTATS.map(k=>row(catOf(k))).join('')
+    :activeCats().map(c=>row(c)).join('');
+  $('wColHead').textContent=isPts()?'項目':'類別';
+  $('wHelp').textContent=isPts()?'Fan Pts 填雙方本週總分，誰高誰贏；週還沒結束就先存，會顯示「進行」。':'百分比可輸入 .475 或 47.5，都會換算成 .475。TO、TECH 是越少越好。數字還沒出來可以先空著，週中也能先存。';
   $('statRows').querySelectorAll('input').forEach(i=>{i.addEventListener('input',liveScore);i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const all=Array.from($('statRows').querySelectorAll('input'));const n=all[all.indexOf(i)+1];if(n)n.focus();else $('wSave').focus()}})});
   $('wDel').classList.toggle('hidden',!w);
   liveScore();show('weekModal');
 }
 $('wNum').addEventListener('change',()=>{if(curW)return;const dd=weekDates(+$('wNum').value);if(dd){$('wStart').value=dd[0];$('wEnd').value=dd[1]}});
 $('wStart').addEventListener('change',()=>{const s=$('wStart').value;if(s&&!$('wEnd').value)$('wEnd').value=addDays(s,6)});
+$('wEnd').addEventListener('change',()=>liveScore());
+/* 用計分公式從六項數據算 Fan Pts（全部空白就回傳 null） */
+function fpFrom(o){const L=LG();let t=0,any=false;PSTATS.forEach(k=>{if(o&&o[k]!=null){t+=o[k]*L.w[k];any=true}});return any?t:null}
 function readStatForm(){const me={},op={};$('statRows').querySelectorAll('input').forEach(i=>{const c=catOf(i.dataset.k),v=parseVal(c,i.value);if(v!=null)(i.dataset.s==='me'?me:op)[c.k]=v});return {me,op}}
 function liveScore(){
-  const f=readStatForm(),s=scoreWeek(f);
+  const f=readStatForm();f.end=$('wEnd').value;const s=scoreWeek(f);
+  if(isPts()){
+    const td=$('statRows').querySelector('[data-f="FP"]'),r=s.per.FP;td.className='flag'+(r?' '+r:'');td.textContent=r||'';
+    const calc=fpFrom(f.me),calcO=fpFrom(f.op);
+    $('liveScore').innerHTML=s.n?'<span class="ptsline">'+fp(s.a)+'<small>:</small>'+fp(s.b)+'</span><span class="res '+(s.done?s.res:'P')+'">'+(s.done?s.res:'進行')+'</span>'
+      :'<span style="font-family:var(--sans);font-size:13px;color:var(--ink3)">填入雙方 Fan Pts 後自動算勝負</span>';
+    if(calc!=null||calcO!=null)$('liveScore').insertAdjacentHTML('beforeend','<span style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin-left:6px">依公式：我 '+fp(calc)+'・對手 '+fp(calcO)+'</span>');
+    return;
+  }
   activeCats().forEach(c=>{const td=$('statRows').querySelector('[data-f="'+c.k+'"]'),r=s.per[c.k];td.className='flag'+(r?' '+r:'');td.textContent=r||''});
   $('liveScore').innerHTML=s.n?wlt(s.W,s.L,s.T)+'<span class="res '+(s.done?s.res:'P')+'">'+(s.done?s.res:'進行')+'</span>':'<span style="font-family:var(--sans);font-size:13px;color:var(--ink3)">填入數字後自動算勝負</span>';
 }
 $('wSave').onclick=()=>{
   const n=+$('wNum').value;if(!n||n<1){toast('請填第幾週');return}
+  if(isPts()){const f0=readStatForm();if((f0.me.FP==null)!==(f0.op.FP==null)){toast('Fan Pts 要兩邊都填（還沒出來可以都空著）');return}}
   const playoff=$('wPlayoff').value==='1';
   const dup=Wk().find(x=>x.week===n&&x.playoff===playoff&&x.id!==curW);
   if(dup){toast('第 '+n+' 週已經有紀錄了');return}
@@ -878,18 +995,25 @@ function openSettings(isNew){
   $('sUrl').placeholder=YAHOO+'/聯盟編號';
   fillSlot(L.teams,L.slot);
   sCatSel=new Set(L.cats);
+  $('sMode').value=L.mode;syncMode();
+  $('sW').innerHTML=PSTATS.map(k=>'<label>'+k+'<input data-w="'+k+'" inputmode="decimal" value="'+L.w[k]+'"></label>').join('');
   $('sCats').innerHTML=CATS.map(c=>'<button type="button" data-k="'+c.k+'" class="'+(sCatSel.has(c.k)?'on':'')+'">'+c.l+'</button>').join('');
   $('sCats').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;sCatSel.has(k)?sCatSel.delete(k):sCatSel.add(k);b.classList.toggle('on')});
   $('sDel').classList.toggle('hidden',isNew||D.leagues.length<2);
   show('setModal');if(isNew)setTimeout(()=>$('sLeague').focus(),60);
 }
+function syncMode(){const p=$('sMode').value==='pts';$('sCatsBox').classList.toggle('hidden',p);$('sWBox').classList.toggle('hidden',!p)}
+$('sMode').onchange=syncMode;
 function fillSlot(n,cur){let h='<option value="0">還不知道</option>';for(let i=1;i<=n;i++)h+='<option value="'+i+'"'+(cur===i?' selected':'')+'>第 '+i+' 順位</option>';$('sSlot').innerHTML=h}
 $('sTeams').addEventListener('input',()=>fillSlot(Math.min(20,Math.max(2,+$('sTeams').value||14)),+$('sSlot').value));
 $('sSave').onclick=()=>{
   const name=$('sLeague').value.trim();if(!name){toast('請輸入聯盟名稱');$('sLeague').focus();return}
-  if(!sCatSel.size){toast('至少要選一個計分類別');return}
+  const mode=$('sMode').value;
+  if(mode==='cat'&&!sCatSel.size){toast('至少要選一個計分類別');return}
+  const wts={};let bad=false;$('sW').querySelectorAll('input').forEach(i=>{const v=parseFloat(i.value);if(!isFinite(v))bad=true;wts[i.dataset.w]=v});
+  if(mode==='pts'&&bad){toast('計分公式要填數字');return}
   const data={name,team:$('sTeam').value.trim(),teams:+$('sTeams').value,rounds:+$('sRounds').value,
-    slot:+$('sSlot').value,week1:$('sWeek1').value,url:$('sUrl').value.trim(),cats:CATS.map(c=>c.k).filter(k=>sCatSel.has(k)),
+    slot:+$('sSlot').value,week1:$('sWeek1').value,url:$('sUrl').value.trim(),cats:CATS.map(c=>c.k).filter(k=>sCatSel.has(k)),mode,w:bad?undefined:wts,
     opps:Array.from(new Set($('sOpps').value.split('\n').map(s=>s.trim()).filter(Boolean)))};
   let L;
   if(editLg){L=D.leagues.find(l=>l.id===editLg);Object.assign(L,normL(Object.assign({},L,data)))}
@@ -926,8 +1050,16 @@ function demoData(){
   const players2=names.slice().reverse().map((n,i)=>normP({id:'dq'+i,lg:'lg2',name:n[0],nba:n[1],pos:n[2],how:'選秀',round:i+1,date:'2026-10-19'}));
   const opps2=['騰訊總部','微信支付','QQ 堂','鵝廠','王者榮耀'];
   const weeks2=[];for(let i=0;i<5;i++){const me=gen2(i%2?0:1),op=gen2(i%2?1:0);weeks2.push(normW({id:'dv'+i,lg:'lg2',week:i+1,start:addDays('2026-10-20',i*7),end:addDays('2026-10-26',i*7),opp:opps2[i],me,op}))}
-  return {leagues:[normL(Object.assign({},SEEDS[0],{team:'Banqiao Ballers',slot:5,week1:'2026-10-20',opps})),normL(Object.assign({},SEEDS[1],{team:'板橋大三元',slot:12,week1:'2026-10-20',opps:opps2}))],
-    players:players.concat(players2),weeks:weeks.concat(weeks2)};
+  /* 第三個聯盟：積分制 */
+  const opps3=["Shan Liao's Expert Team",'Dunk City','Free Throw Merchants','Big Men Only','Bench Mob','Clutch Gene'];
+  const weeks3=[];for(let i=0;i<6;i++){const g=()=>({PTS:Math.round(500+rnd2()*130),REB:Math.round(190+rnd2()*60),AST:Math.round(110+rnd2()*45),BLK:Math.round(18+rnd2()*14),ST:Math.round(28+rnd2()*14),TO:Math.round(55+rnd2()*20)});
+    const me=g(),op=g(),f=o=>+(o.PTS+o.REB*1.2+o.AST*1.5+o.BLK*3+o.ST*3-o.TO).toFixed(2);me.FP=f(me);op.FP=f(op);me.PROJ=+(me.FP+(rnd2()-.5)*80).toFixed(2);op.PROJ=+(op.FP+(rnd2()-.5)*80).toFixed(2);
+    if(i===5){PSTATS.forEach(k=>{delete me[k];delete op[k]})}
+    const st=addDays(todayStr(),-(6-i)*7-7);weeks3.push(normW({id:'du'+i,lg:'lg3demo',week:i+1,start:st,end:addDays(st,6),opp:opps3[i],me,op}))}
+  const players3=names.slice(0,8).map((n,i)=>normP({id:'dr'+i,lg:'lg3demo',name:n[0],nba:n[1],pos:n[2],how:'選秀',round:i+1,date:'2026-10-17'}));
+  return {leagues:[normL(Object.assign({},SEEDS[0],{team:'Banqiao Ballers',slot:5,week1:'2026-10-20',opps})),normL(Object.assign({},SEEDS[1],{team:'板橋大三元',slot:12,week1:'2026-10-20',opps:opps2})),
+      normL({id:'lg3demo',name:'Yahoo H2H-Pts 231351',mode:'pts',team:'雞屁股',teams:10,rounds:13,slot:2,week1:'2026-10-20',opps:opps3,url:YAHOO+'/231351'})],
+    players:players.concat(players2,players3),weeks:weeks.concat(weeks2,weeks3)};
 }
 function loadDemo(){isDemo=true;D=demoData();$('demoBar').classList.add('on');setSync();render()}
 function exitDemo(){isDemo=false;$('demoBar').classList.remove('on');D=readLocal()||emptyD();setSync();render()}
