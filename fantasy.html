@@ -165,6 +165,27 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pcard.empty-slot .t{font-size:13.5px;color:var(--ink2)}
 .pcard.empty-slot .t small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:3px}
 .pcard.empty-slot:hover{border-color:var(--me)}
+.sline{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin-top:10px;padding-top:9px;border-top:1px dashed var(--line2)}
+.sline div{text-align:center;min-width:0}
+.sline .k{font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:.03em}
+.sline .v{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
+.sline .fp{background:var(--meSoft);border-radius:6px}
+.sline .fp .v{color:var(--me)}
+.smeta{font-size:11px;color:var(--ink3);margin-top:6px;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.smeta b{color:var(--ink2);font-weight:700}
+.smeta .up{color:var(--win)} .smeta .dn{color:var(--loss)}
+.nostat{font-size:11.5px;color:var(--ink3);margin-top:10px;padding-top:9px;border-top:1px dashed var(--line2)}
+.sttbl th{cursor:pointer;user-select:none}
+.sttbl th.on{color:var(--me)}
+.sttbl th.on::after{content:" ↓"}
+.sttbl th.on.asc::after{content:" ↑"}
+.sttbl td.hi{color:var(--me);font-weight:700}
+.sttbl tfoot td{border-top:2px solid var(--line2);font-weight:700;color:var(--ink2)}
+.stin{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.stin label{display:flex;flex-direction:column;gap:3px;font-family:var(--mono);font-size:10.5px;color:var(--ink2)}
+.stin input{background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:7px 6px;font-family:var(--mono);font-size:13.5px;text-align:right;width:100%;outline:none}
+.stin input:focus{border-color:var(--me)}
+@media (max-width:640px){.stin{grid-template-columns:repeat(4,minmax(0,1fr))}.sline .v{font-size:12px}}
 .pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
 .tm{position:relative;overflow:hidden;border-left:5px solid var(--tc)!important;
@@ -434,6 +455,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="fld" id="pPickBox"><label>Pick（FB 排名）</label><input id="pPick" type="number" min="1" max="999" inputmode="numeric" placeholder="例：12"><span class="help">手動填，空著就不顯示</span></div>
       <div class="fld"><label>加入日期</label><input id="pDate" type="date"></div>
       <div class="fld full" id="pSwapBox"><label>同時丟掉（選填）</label><select id="pSwap"></select><span class="help">撿人通常要丟一個人，在這裡選，兩筆異動會一起記下來</span></div>
+      <div class="fld full"><label>上季數據（<span class="sznL"></span>，每場平均）</label><div class="stin" id="pStats"></div><span class="help">照 Yahoo 球員頁的數字填，空著就不顯示</span></div>
       <div class="fld full" id="pLogBox"><label>異動紀錄</label><div class="plog" id="pLog"></div></div>
       <div class="fld full"><label>備註</label><textarea id="pNote" placeholder="為什麼選他、傷病狀況、交易內容…"></textarea></div>
     </div>
@@ -620,6 +642,33 @@ function scoreWeekFor(w,lg){
 }
 
 /* ===== 正規化 ===== */
+/* 上季數據（每場平均）。mpg 存成 "35:46" 文字 */
+const SZN='2025-26';
+const STK=[['gp','GP'],['mpg','MPG'],['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK'],['to','TO'],['fp','Fan Pts'],['cur','目前排名'],['start','% Start']];
+function normSt(s){if(!s||typeof s!=='object')return null;const o={};let any=false;
+  STK.forEach(([k])=>{const v=s[k];if(v==null||v==='')return;if(k==='mpg'){o.mpg=String(v).trim();any=true;return}const n=parseFloat(v);if(isFinite(n)){o[k]=n;any=true}});
+  return any?o:null}
+/* Aaron 截圖裡積分盟 13 位的上季數據（Yahoo 球員頁），只在球員還沒有數據時補上一次 */
+const SEED_ST={
+  'Luka Dončić':{gp:64,mpg:'35:46',pts:33.5,reb:7.7,ast:8.3,st:1.6,blk:0.5,to:4.0,fp:57.49,cur:2,start:97},
+  'Austin Reaves':{gp:51,mpg:'34:33',pts:23.3,reb:4.7,ast:5.5,st:1.1,blk:0.4,to:3.0,fp:38.69,cur:37,start:95},
+  'Deni Avdija':{gp:66,mpg:'33:19',pts:24.2,reb:6.9,ast:6.7,st:0.8,blk:0.6,to:3.8,fp:42.93,cur:17,start:91},
+  'Michael Porter Jr.':{gp:52,mpg:'32:28',pts:24.2,reb:7.1,ast:3.0,st:1.1,blk:0.3,to:2.3,fp:39.12,cur:36,start:80},
+  'Julius Randle':{gp:79,mpg:'33:02',pts:21.1,reb:6.7,ast:5.0,st:1.1,blk:0.2,to:2.7,fp:37.84,cur:43,start:77},
+  'Miles Bridges':{gp:77,mpg:'31:00',pts:17.1,reb:5.8,ast:3.2,st:0.6,blk:0.4,to:1.4,fp:30.46,cur:95,start:41},
+  'Onyeka Okongwu':{gp:74,mpg:'31:02',pts:15.2,reb:7.6,ast:3.1,st:1.1,blk:1.1,to:1.7,fp:33.87,cur:60,start:87},
+  'Donovan Clingan':{gp:77,mpg:'27:11',pts:12.1,reb:11.6,ast:2.1,st:0.6,blk:1.7,to:1.2,fp:34.87,cur:53,start:92},
+  'Tyler Herro':{gp:33,mpg:'31:18',pts:20.5,reb:4.8,ast:4.1,st:0.7,blk:0.4,to:1.9,fp:33.81,cur:61,start:74},
+  'Ja Morant':{gp:20,mpg:'28:27',pts:19.5,reb:3.3,ast:8.1,st:1.0,blk:0.3,to:3.6,fp:35.91,cur:48,start:51},
+  'Keegan Murray':{gp:23,mpg:'34:28',pts:14.0,reb:5.7,ast:1.7,st:1.0,blk:1.6,to:1.2,fp:29.99,cur:100,start:19},
+  'Sandro Mamukelashvili':{gp:80,mpg:'21:53',pts:11.2,reb:4.9,ast:1.9,st:0.8,blk:0.5,to:0.8,fp:23.03,cur:178,start:16},
+  'Ajay Mitchell':{gp:57,mpg:'25:50',pts:13.6,reb:3.3,ast:3.6,st:1.2,blk:0.3,to:1.4,fp:26.06,cur:142,start:9}};
+function seedStats(){
+  if(isDemo)return 0;let n=0;
+  D.players.forEach(p=>{const L=D.leagues.find(l=>l.id===p.lg);if(!p.st&&SEED_ST[p.name]&&L&&L.mode==='pts'){p.st=normSt(SEED_ST[p.name]);p.u=Date.now();n++}});
+  return n;
+}
+
 /* 異動：每位球員有自己的 log，最後一筆決定在不在隊 */
 const MOVE={'選秀':{c:'draft',l:'＋ 選秀'},'自由球員':{c:'in',l:'＋ 撿人'},'交易':{c:'trade',l:'⇄ 換進'},'釋出':{c:'out',l:'− 丟掉'},'交易出':{c:'trade',l:'⇄ 換出'}};
 function isOut(a){return a==='釋出'||a==='交易出'}
@@ -631,7 +680,7 @@ function normP(p){
   if(!log.length){log=[{a:how,d:date,n:'',t:1}];if(p.status==='已釋出'||p.status==='交易出')log.push({a:p.status==='交易出'?'交易出':'釋出',d:date,n:'',t:2})}
   sortLog(log);
   return {id:p.id||uid('p'),lg:p.lg||'lg1',name:String(p.name||'').trim(),nba:p.nba||'',pos:Array.isArray(p.pos)?p.pos.filter(x=>POS.includes(x)):[],
-    how,round:+p.round||0,pick:+p.pick||0,date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
+    how,round:+p.round||0,pick:+p.pick||0,st:normSt(p.st),date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
 }
 function addMove(p,a,d,n){p.log.push({a,d,n:n||'',t:Date.now()+p.log.length});sortLog(p.log);p.status=statusFrom(p.log);p.u=Date.now()}
 function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&&w.me[c.k],b=w.op&&w.op[c.k];if(a!=null&&a!==''&&isFinite(+a))me[c.k]=+a;if(b!=null&&b!==''&&isFinite(+b))op[c.k]=+b});
@@ -742,7 +791,9 @@ async function init(force){
       saveLocal();
     }
   }catch(e){if(!local)D=emptyD();toast('讀不到雲端資料（'+e.message+'），先顯示本機資料')}
-  loading=false;setSync();render();
+  loading=false;
+  const seeded=seedStats();if(seeded){saveLocal();setDirty(getDirty()+1)}
+  setSync();render();
   if(getDirty()>0)scheduleSync(800);
 }
 
@@ -827,12 +878,42 @@ function howChip(p){
   if(p.how==='選秀'){const o=p.round&&LG().slot?overallPick(p.round):0;return '<span class="how draft">選秀 R'+(p.round||'?')+(o?' · #'+o:'')+'</span>'}
   return '<span class="how '+cls+'">'+p.how+(p.date?' '+md(p.date):'')+'</span>';
 }
-function pcardHTML(p){
+function fmtS(k,v){if(v==null)return '—';if(k==='fp')return (+v).toFixed(1);if(k==='gp'||k==='cur')return String(Math.round(v));return (+v).toFixed(1)}
+function statsHTML(p){
+  const s=p.st;if(!s)return '<div class="nostat">還沒有上季數據・點卡片填入</div>';
+  const cols=[['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK'],['to','TO']];
+  const fpCell=s.fp!=null?'<div class="fp"><div class="k">FP</div><div class="v">'+fmtS('fp',s.fp)+'</div></div>':'';
+  const list=fpCell?cols:cols.concat([['gp','GP']]);
+  let meta=[];
+  if(s.gp!=null&&fpCell)meta.push('<b>'+Math.round(s.gp)+'</b> 場');
+  if(s.mpg)meta.push('<b>'+esc(s.mpg)+'</b> 分');
+  if(s.cur!=null){const pre=pickOf(p);meta.push((pre?pre+'→':'排名 ')+'<b>'+Math.round(s.cur)+'</b>'+(pre&&s.cur!==pre?' <span class="'+(s.cur<pre?'up':'dn')+'">'+(s.cur<pre?'▲':'▼')+Math.abs(pre-s.cur)+'</span>':''))}
+  return '<div class="sline">'+list.map(([k,l])=>'<div><div class="k">'+l+'</div><div class="v">'+fmtS(k,s[k])+'</div></div>').join('')+fpCell+'</div>'+
+    (meta.length?'<div class="smeta" title="'+SZN+' 上季・出賽・上場時間・季前排名→目前排名">'+meta.join(' · ')+'</div>':'');
+}
+function pcardHTML(p,withStats){
   const out=p.status!=='在隊',lo=out?lastOut(p):null;
   return '<div class="pcard'+(out?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+
     '<div class="pc-top"><div class="pn">'+esc(p.name)+'</div>'+(pickOf(p)?'<span class="pick big"><small>PICK</small>'+pickOf(p)+'</span>':'')+'</div>'+
     '<div class="pc-row">'+(p.pos.length?posTags(p):'<span class="dim">位置未填</span>')+'</div>'+
-    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div></div>';
+    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div>'+(withStats?statsHTML(p):'')+'</div>';
+}
+let stSort={k:'round',asc:true};
+function statTableHTML(){
+  const ps=Pl().filter(p=>p.how==='選秀');if(!ps.length)return '';
+  const withSt=ps.filter(p=>p.st);
+  const cols=[['round','輪'],['gp','GP'],['mpg','MPG'],['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK'],['to','TO'],['fp','FP'],['pick','PICK'],['cur','目前']];
+  const val=(p,k)=>k==='round'?p.round:k==='pick'?(pickOf(p)||null):k==='mpg'?(p.st&&p.st.mpg?(+p.st.mpg.split(':')[0])+(+(p.st.mpg.split(':')[1]||0))/60:null):(p.st?p.st[k]:null);
+  const rows=ps.slice().sort((a,b)=>{const x=val(a,stSort.k),y=val(b,stSort.k);if(x==null&&y==null)return a.round-b.round;if(x==null)return 1;if(y==null)return -1;return stSort.asc?x-y:y-x});
+  const best={};['pts','reb','ast','st','blk','fp'].forEach(k=>{const vs=withSt.map(p=>p.st[k]).filter(v=>v!=null);if(vs.length)best[k]=Math.max.apply(null,vs)});
+  const avg=k=>{const vs=withSt.map(p=>p.st[k]).filter(v=>v!=null);return vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null};
+  let h='<div class="panel" style="margin-top:16px"><h3>選秀球員上季數據</h3><div class="ps">'+SZN+' 每場平均・點欄位排序・點一列可以編輯'+(withSt.length<ps.length?'・還有 '+(ps.length-withSt.length)+' 位沒填':'')+'</div><div class="scroll-x"><table class="tbl sttbl"><thead><tr><th>球員</th>'+
+    cols.map(([k,l])=>'<th data-k="'+k+'" class="'+(stSort.k===k?'on'+(stSort.asc?' asc':''):'')+'">'+l+'</th>').join('')+'</tr></thead><tbody>';
+  rows.forEach(p=>{const s=p.st||{};h+='<tr data-id="'+p.id+'" style="cursor:pointer"><td>'+esc(p.name)+(p.status!=='在隊'?' <span class="team">（'+p.status+'）</span>':'')+'</td><td>R'+p.round+'</td>'+
+    ['gp','mpg','pts','reb','ast','st','blk','to','fp'].map(k=>'<td class="'+(best[k]!=null&&s[k]===best[k]?'hi':'')+'">'+(k==='mpg'?esc(s.mpg||'—'):fmtS(k,s[k]))+'</td>').join('')+
+    '<td>'+(pickOf(p)||'—')+'</td><td>'+(s.cur!=null?Math.round(s.cur):'—')+'</td></tr>'});
+  h+='</tbody>'+(withSt.length?'<tfoot><tr><td>平均</td><td></td><td>'+fmtS('gp',avg('gp'))+'</td><td></td>'+['pts','reb','ast','st','blk','to','fp'].map(k=>'<td>'+fmtS(k,avg(k))+'</td>').join('')+'<td></td><td></td></tr></tfoot>':'')+'</table></div></div>';
+  return h;
 }
 function renderDraft(){
   const L=LG(),el=$('v-draft');
@@ -852,13 +933,15 @@ function renderDraft(){
   h+='<div class="plist">';
   for(let r=1;r<=L.rounds;r++){
     const p=draftedIn(r);
-    if(p){h+=pcardHTML(p).replace('data-id=','data-round="'+r+'" data-id=');continue}
+    if(p){h+=pcardHTML(p,true).replace('data-id=','data-round="'+r+'" data-id=');continue}
     const o=L.slot?overallPick(r):null, nextO=L.slot&&r<L.rounds?overallPick(r+1):null;
     h+='<div class="pcard empty-slot" data-round="'+r+'"><span class="r">R'+r+'</span><span class="t">＋ 填入第 '+r+' 輪選中的球員'+
       (L.slot?'<small>總第 '+o+' 順位・本輪第 '+pickInRound(r)+' 位'+(nextO?'・下次等 '+(nextO-o-1)+' 人':'')+'</small>':'')+'</span></div>';
   }
-  h+='</div>';
+  h+='</div>'+statTableHTML();
   el.innerHTML=h;
+  el.querySelectorAll('.sttbl th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;stSort=stSort.k===k?{k,asc:!stSort.asc}:{k,asc:k==='cur'||k==='to'||k==='round'};renderDraft()});
+  el.querySelectorAll('.sttbl tbody tr[data-id]').forEach(tr=>tr.onclick=()=>openPlayer(tr.dataset.id));
   $('slotSel').onchange=e=>{LG().slot=+e.target.value;markDirty(LG())};
   el.querySelectorAll('.pcard[data-round]').forEach(d=>d.onclick=()=>{const r=+d.dataset.round,p=draftedIn(r);openPlayer(p?p.id:null,{how:'選秀',round:r})});
 }
@@ -1065,6 +1148,8 @@ function openPlayer(id,preset){
   let ro='<option value="0">—</option>';for(let r=1;r<=LG().rounds;r++){const t=draftedIn(r);ro+='<option value="'+r+'"'+(v.round===r?' selected':'')+'>第 '+r+' 輪'+(t&&t.id!==curP?'（已有 '+esc(t.name)+'）':'')+'</option>'}
   $('pRound').innerHTML=ro;
   $('pPick').value=v.pick||'';
+  document.querySelectorAll('.sznL').forEach(x=>x.textContent=SZN);
+  $('pStats').innerHTML=STK.map(([k,l])=>'<label>'+l+'<input data-st="'+k+'" '+(k==='mpg'?'placeholder="35:46"':'inputmode="decimal"')+' value="'+(v.st&&v.st[k]!=null?esc(v.st[k]):'')+'"></label>').join('');
   pPosSel=new Set(v.pos);paintPos();syncHow();
   $('pDel').classList.toggle('hidden',!p);
   $('pMove').classList.toggle('hidden',!p);if(p)$('pMove').textContent=p.status==='在隊'?'− 丟掉':'＋ 撿回';
@@ -1087,7 +1172,7 @@ $('pSave').onclick=()=>{
   const clash=round?draftedIn(round):null;
   if(clash&&clash.id!==curP){toast('第 '+round+' 輪已經有 '+clash.name+'，先改掉那一位');return}
   const date=$('pDate').value||todayStr();
-  const data={name,nba:$('pTeam').value,pos:POS.filter(k=>pPosSel.has(k)),how,round,pick:Math.max(0,Math.round(+$('pPick').value||0)),date,note:$('pNote').value.trim()};
+  const data={name,nba:$('pTeam').value,pos:POS.filter(k=>pPosSel.has(k)),how,round,pick:Math.max(0,Math.round(+$('pPick').value||0)),st:(()=>{const o={};$('pStats').querySelectorAll('input').forEach(i=>{o[i.dataset.st]=i.value.trim()});return normSt(o)})(),date,note:$('pNote').value.trim()};
   let p=curP&&Pl().find(x=>x.id===curP),msg='已儲存 '+name;
   if(p){Object.assign(p,data);p.log=pLogWork&&pLogWork.length?pLogWork:[{a:how,d:date,n:'',t:1}];p.log[0].a=how;p.log[0].d=date;sortLog(p.log);p.status=statusFrom(p.log)}
   else{
