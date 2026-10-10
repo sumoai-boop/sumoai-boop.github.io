@@ -12,11 +12,11 @@
     "addr": "320桃園市中壢區興南里九和一街3號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E6%A5%B5%E6%B8%85%E6%8B%89%E9%BA%B5/@24.9619167,121.2209036,17z/data=!3m1!4b1!4m6!3m5!1s0x34682365d3b67749:0x78617ec4c201054a!8m2!3d24.9619119!4d121.2234785!16s%2Fg%2F11gy0sd0bw?entry=ttu&g_ep=EgoyMDI2MTAwNi4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-10-09",
+    "date": "2026-10-08",
     "score": 4.7,
     "visitLog": [
       {
-        "date": "2026-10-09",
+        "date": "2026-10-08",
         "meal": "晚餐",
         "price": 389,
         "menu": "燒鹽拉麵+炸雞",
@@ -28,7 +28,8 @@
     ],
     "imgs": [],
     "img": "",
-    "createdAt": 1791518048826
+    "createdAt": 1791518048826,
+    "updatedAt": 1791646205659
   },
   {
     "id": "1791163084863",
