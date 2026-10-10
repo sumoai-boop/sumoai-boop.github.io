@@ -186,6 +186,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .stin input{background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:7px 6px;font-family:var(--mono);font-size:13.5px;text-align:right;width:100%;outline:none}
 .stin input:focus{border-color:var(--me)}
 @media (max-width:640px){.stin{grid-template-columns:repeat(4,minmax(0,1fr))}.sline .v{font-size:12px}}
+.pstbl{width:100%;border-collapse:collapse;min-width:520px}
+.pstbl th{font-size:11px;font-weight:500;color:var(--ink3);text-align:center;padding:4px 3px;font-family:var(--mono)}
+.pstbl th:first-child{text-align:left}
+.pstbl td{padding:2px 3px}
+.pstbl td:first-child{font-size:12.5px;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.pstbl input{width:100%;min-width:44px;background:var(--card2);border:1px solid var(--line2);border-radius:7px;padding:5px 5px;font-family:var(--mono);font-size:13px;text-align:right;outline:none}
+.pstbl input:focus{border-color:var(--me)}
+.pstbl tr.off td:first-child{color:var(--ink3)}
+.wkps{margin-top:14px}
+.wkps h4{font-size:12px;font-weight:500;color:var(--ink3);margin-bottom:4px;letter-spacing:.04em}
+.scap{font-size:10.5px;color:var(--ink3);margin-top:5px;font-family:var(--mono);text-align:right}
 .pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
 .tm{position:relative;overflow:hidden;border-left:5px solid var(--tc)!important;
@@ -495,6 +506,9 @@ button,input,select,textarea{font:inherit;color:inherit}
     <table class="statin"><thead><tr><th id="wColHead">類別</th><th>我</th><th>對手</th><th></th></tr></thead><tbody id="statRows"></tbody></table>
     <div class="fld full" style="margin-top:4px"><span class="help" id="wHelp"></span></div>
     <div class="livescore" id="liveScore"></div>
+    <div class="fld full" style="margin-top:14px"><label>球員本週數據（選填・整週合計）</label>
+      <div class="scroll-x"><table class="pstbl"><thead id="wPsHead"></thead><tbody id="wPs"></tbody></table></div>
+      <span class="help">照 Yahoo 對戰頁每位球員那一列填；GP 是本週出賽場數，有填的話陣容頁會算場均，沒填就算每週平均。</span></div>
     <div class="fld full" style="margin-top:12px"><label>備註</label><textarea id="wNote" placeholder="這週的關鍵：誰受傷、哪個類別差一點…"></textarea></div>
     <div class="mact">
       <button class="btn danger" id="wDel">刪除</button>
@@ -683,8 +697,15 @@ function normP(p){
     how,round:+p.round||0,pick:+p.pick||0,st:normSt(p.st),date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
 }
 function addMove(p,a,d,n){p.log.push({a,d,n:n||'',t:Date.now()+p.log.length});sortLog(p.log);p.status=statusFrom(p.log);p.u=Date.now()}
+/* 球員每週數據 */
+function psKeys(lg){return ['gp','pts','reb','ast','st','blk','to'].concat(isPts(lg)?['fp']:[])}
+const PSL={gp:'GP',pts:'PTS',reb:'REB',ast:'AST',st:'ST',blk:'BLK',to:'TO',fp:'FP'};
+function normPs(o){const out={};if(!o||typeof o!=='object')return out;
+  Object.keys(o).forEach(id=>{const s=o[id];if(!s||typeof s!=='object')return;const r={};let any=false;
+    Object.keys(PSL).forEach(k=>{const v=s[k];if(v!=null&&v!==''&&isFinite(+v)){r[k]=+v;any=true}});if(any)out[id]=r});
+  return out}
 function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&&w.me[c.k],b=w.op&&w.op[c.k];if(a!=null&&a!==''&&isFinite(+a))me[c.k]=+a;if(b!=null&&b!==''&&isFinite(+b))op[c.k]=+b});
-  return {id:w.id||uid('w'),lg:w.lg||'lg1',week:+w.week||0,start:w.start||'',end:w.end||'',opp:String(w.opp||'').trim(),playoff:!!w.playoff,me,op,note:w.note||'',u:+w.u||0}}
+  return {id:w.id||uid('w'),lg:w.lg||'lg1',week:+w.week||0,start:w.start||'',end:w.end||'',opp:String(w.opp||'').trim(),playoff:!!w.playoff,me,op,ps:normPs(w.ps),note:w.note||'',u:+w.u||0}}
 function normL(l){l=Object.assign({},DEF_LEAGUE,l||{});l.id=l.id||uid('lg');l.name=String(l.name||'').trim();l.teams=Math.min(20,Math.max(2,+l.teams||14));l.rounds=Math.min(30,Math.max(1,+l.rounds||13));
   l.slot=+l.slot||0;if(l.slot>l.teams)l.slot=0;l.opps=Array.isArray(l.opps)?l.opps.map(s=>String(s).trim()).filter(Boolean):[];
   l.cats=Array.isArray(l.cats)?l.cats.filter(k=>CATS.some(c=>c.k===k)):DEF_LEAGUE.cats.slice();
@@ -879,6 +900,19 @@ function howChip(p){
   return '<span class="how '+cls+'">'+p.how+(p.date?' '+md(p.date):'')+'</span>';
 }
 function fmtS(k,v){if(v==null)return '—';if(k==='fp')return (+v).toFixed(1);if(k==='gp'||k==='cur')return String(Math.round(v));return (+v).toFixed(1)}
+/* 本季平均：全部週都有 GP 就算場均，否則算週均 */
+function seasonOf(p){
+  const ws=Wk().filter(w=>w.ps&&w.ps[p.id]);if(!ws.length)return null;
+  const t={};['pts','reb','ast','st','blk','to','fp'].forEach(k=>t[k]=0);let g=0,allGp=true;
+  ws.forEach(w=>{const s=w.ps[p.id];if(!(s.gp>0))allGp=false;g+=s.gp||0;Object.keys(t).forEach(k=>{if(s[k]!=null)t[k]+=s[k]})});
+  const div=allGp&&g>0?g:ws.length,o={per:allGp&&g>0?'g':'w',gp:g,wk:ws.length};Object.keys(t).forEach(k=>o[k]=t[k]/div);return o;
+}
+function seasonHTML(p){
+  const s=seasonOf(p);if(!s)return '<div class="nostat" title="在「每週對戰」填球員本週數據後會自動平均">本季尚無數據</div>';
+  return '<div class="sline" title="本季'+(s.per==='g'?'場均':'每週平均')+'">'+[['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK']]
+    .map(([k,l])=>'<div><div class="k">'+l+'</div><div class="v">'+(+s[k]).toFixed(1)+'</div></div>').join('')+'</div>'+
+    '<div class="scap">本季'+(s.per==='g'?'場均・'+s.gp+' 場':'每週平均・'+s.wk+' 週')+'</div>';
+}
 function statsHTML(p){
   const s=p.st;if(!s)return '<div class="nostat">還沒有上季數據・點卡片填入</div>';
   return '<div class="sline" title="'+SZN+' 每場平均">'+[['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK']]
@@ -889,7 +923,7 @@ function pcardHTML(p,withStats){
   return '<div class="pcard'+(out?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+
     '<div class="pc-top"><div class="pn">'+esc(p.name)+'</div>'+(pickOf(p)?'<span class="pick big"><small>PICK</small>'+pickOf(p)+'</span>':'')+'</div>'+
     '<div class="pc-row">'+(p.pos.length?posTags(p):'<span class="dim">位置未填</span>')+'</div>'+
-    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div>'+(withStats?statsHTML(p):'')+'</div>';
+    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div>'+(withStats==='season'?seasonHTML(p):withStats===true?statsHTML(p):'')+'</div>';
 }
 let stSort={k:'round',asc:true};
 function statTableHTML(){
@@ -949,7 +983,7 @@ function renderRoster(){
     '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn sm danger" id="btnDropP">− 丟掉</button><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
   if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
   const ord=(a,b)=>(a.how==='選秀'?0:1)-(b.how==='選秀'?0:1)||(a.round||99)-(b.round||99)||String(a.date).localeCompare(String(b.date));
-  const card=pcardHTML;
+  const card=p=>pcardHTML(p,'season');
   h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3><div class="plist">'+on.sort(ord).map(card).join('')+'</div></div>';
   /* 異動紀錄：選秀併成一行，其他每筆都列 */
   const drafted=moves.filter(x=>x.m.a==='選秀'),other=moves.filter(x=>x.m.a!=='選秀').sort((a,b)=>String(b.m.d).localeCompare(String(a.m.d))||(b.m.t||0)-(a.m.t||0));
@@ -989,7 +1023,11 @@ function renderWeeks(){
       const r=c.k==='FP'?s.per.FP:(isPts()?null:s.per[c.k]);
       h+='<tr><td>'+c.l+(c.low?'<span class="lowtag">↓</span>':'')+'</td><td class="me '+(r==='W'?'win':r==='L'?'dim':'')+'"><span class="v">'+fmtVal(c,w.me[c.k])+'</span></td><td class="op '+(r==='L'?'win':r==='W'?'dim':'')+'"><span class="v">'+fmtVal(c,w.op[c.k])+'</span></td></tr>';
     });
-    h+='</tbody></table>'+(w.note?'<div class="wk-note">'+esc(w.note)+'</div>':'')+'<div class="wk-act"><button class="btn sm" data-edit="'+w.id+'">編輯</button></div></div></div>';
+    h+='</tbody></table>';
+    const pids=Object.keys(w.ps||{}).filter(id=>Pl().some(p=>p.id===id));
+    if(pids.length){const ks=psKeys();h+='<div class="wkps"><h4>球員本週數據</h4><div class="scroll-x"><table class="tbl"><thead><tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr></thead><tbody>'+
+      pids.map(id=>{const p=Pl().find(x=>x.id===id),s=w.ps[id];return '<tr><td>'+esc(p.name)+'</td>'+ks.map(k=>'<td>'+(s[k]!=null?(k==='gp'?s[k]:(+s[k]).toFixed(k==='fp'?1:0)):'—')+'</td>').join('')+'</tr>'}).join('')+'</tbody></table></div></div>'}
+    h+=(w.note?'<div class="wk-note">'+esc(w.note)+'</div>':'')+'<div class="wk-act"><button class="btn sm" data-edit="'+w.id+'">編輯</button></div></div></div>';
   });
   el.innerHTML=h+'</div>';
   $('btnAddW').onclick=()=>openWeek(null);
@@ -1236,6 +1274,12 @@ function openWeek(id){
   $('wHelp').textContent=isPts()?'Fan Pts 填雙方本週總分，誰高誰贏；週還沒結束就先存，會顯示「進行」。':'百分比可輸入 .475 或 47.5，都會換算成 .475。TO、TECH 是越少越好。數字還沒出來可以先空著，週中也能先存。';
   $('statRows').querySelectorAll('input').forEach(i=>{i.addEventListener('input',liveScore);i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const all=Array.from($('statRows').querySelectorAll('input'));const n=all[all.indexOf(i)+1];if(n)n.focus();else $('wSave').focus()}})});
   $('wDel').classList.toggle('hidden',!w);
+  const ks=psKeys(),ps=w?w.ps:{};
+  const ord=(a,b)=>(a.how==='選秀'?0:1)-(b.how==='選秀'?0:1)||(a.round||99)-(b.round||99)||String(a.date).localeCompare(String(b.date));
+  const rows=Pl().filter(p=>p.status==='在隊'||ps[p.id]).sort(ord);
+  $('wPsHead').innerHTML='<tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr>';
+  $('wPs').innerHTML=rows.length?rows.map(p=>'<tr class="'+(p.status!=='在隊'?'off':'')+'" data-pid="'+p.id+'"><td title="'+esc(p.name)+'">'+esc(p.name)+'</td>'+ks.map(k=>'<td><input data-ps="'+k+'" inputmode="decimal" value="'+(ps[p.id]&&ps[p.id][k]!=null?ps[p.id][k]:'')+'"></td>').join('')+'</tr>').join('')
+    :'<tr><td colspan="'+(ks.length+1)+'" style="color:var(--ink3);font-size:12.5px;padding:8px 0">陣容裡還沒有球員</td></tr>';
   liveScore();show('weekModal');
 }
 $('wNum').addEventListener('change',()=>{if(curW)return;const dd=weekDates(+$('wNum').value);if(dd){$('wStart').value=dd[0];$('wEnd').value=dd[1]}});
@@ -1264,7 +1308,8 @@ $('wSave').onclick=()=>{
   const dup=Wk().find(x=>x.week===n&&x.playoff===playoff&&x.id!==curW);
   if(dup){toast('第 '+n+' 週已經有紀錄了');return}
   const f=readStatForm(),opp=$('wOpp').value.trim();
-  const data={week:n,start:$('wStart').value,end:$('wEnd').value,opp,playoff,me:f.me,op:f.op,note:$('wNote').value.trim()};
+  const psIn={};$('wPs').querySelectorAll('tr[data-pid]').forEach(tr=>{const o={};tr.querySelectorAll('input').forEach(i=>{o[i.dataset.ps]=i.value.trim()});psIn[tr.dataset.pid]=o});
+  const data={week:n,start:$('wStart').value,end:$('wEnd').value,opp,playoff,me:f.me,op:f.op,ps:normPs(psIn),note:$('wNote').value.trim()};
   let w=curW&&Wk().find(x=>x.id===curW);
   if(w)Object.assign(w,data);else{w=normW(Object.assign({lg:LG().id},data));D.weeks.push(w)}
   openWeeks.add(w.id);
