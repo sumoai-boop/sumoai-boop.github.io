@@ -1,5 +1,36 @@
 [
   {
+    "id": "1791646348898",
+    "name": "旭成鐵板料理",
+    "name1": "旭成鐵板料理",
+    "name2": "",
+    "type": "牛排",
+    "meal": "",
+    "price": 350,
+    "visits": 1,
+    "gscore": 2.1,
+    "addr": "320桃園市中壢區青埔里春德路189號3號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%97%AD%E6%88%90%E9%90%B5%E6%9D%BF%E6%96%99%E7%90%86/@25.0146071,121.2126481,21z/data=!3m1!5s0x3468210709010e59:0x468ccb61103fae62!4m6!3m5!1s0x34682170eba3f451:0x2e2d10d59f7401ef!8m2!3d25.0146071!4d121.212809!16s%2Fg%2F11svjsv02f?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-10",
+    "score": 2,
+    "visitLog": [
+      {
+        "date": "2026-10-10",
+        "meal": "晚餐",
+        "price": 350,
+        "menu": "雞腿魚排套餐",
+        "score": 2,
+        "imgs": [
+          "https://i.ibb.co/R49LDN36/e9537c3dfbdd.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1791646348898
+  },
+  {
     "id": "1791518048826",
     "name": "極清拉麵",
     "name1": "極清拉麵",
