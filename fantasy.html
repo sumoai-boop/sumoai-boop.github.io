@@ -197,6 +197,20 @@ button,input,select,textarea{font:inherit;color:inherit}
 .wkps{margin-top:14px}
 .wkps h4{font-size:12px;font-weight:500;color:var(--ink3);margin-bottom:4px;letter-spacing:.04em}
 .scap{font-size:10.5px;color:var(--ink3);margin-top:5px;font-family:var(--mono);text-align:right}
+.pick .dl{font-size:10px;margin-left:2px} .pick .dl.up{color:var(--win)} .pick .dl.dn{color:var(--loss)}
+.pkpick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pkpick button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--card);color:var(--ink2);border-radius:999px;padding:4px 11px 4px 8px;font-size:12.5px;cursor:pointer}
+.pkpick button i{width:10px;height:10px;border-radius:50%;background:var(--line2);flex:none}
+.pkpick button.on{color:var(--ink);border-color:var(--ink3);font-weight:600}
+.pkpick button:disabled{opacity:.4;cursor:not-allowed}
+.pktbl td .dl{font-size:10.5px;margin-left:3px} .pktbl td .dl.up{color:var(--win)} .pktbl td .dl.dn{color:var(--loss)}
+.pktbl td.best{font-weight:700;color:var(--ink)}
+.pastebox{background:var(--meSoft);border:1px solid var(--meLine);border-radius:12px;padding:12px;margin:0 0 14px}
+.pastebox textarea{width:100%;min-height:110px;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:9px 10px;font-family:var(--mono);font-size:12px;outline:none;resize:vertical}
+.pastebox textarea:focus{border-color:var(--me)}
+.pastebox .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.pastebox .msg{font-size:12px;color:var(--ink2)}
+.pastebox .msg.err{color:var(--loss)}
 .pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
 .tm{position:relative;overflow:hidden;border-left:5px solid var(--tc)!important;
@@ -495,7 +509,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 <!-- 對戰 -->
 <div class="modal" id="weekModal">
   <div class="mbox wide">
-    <h3><span id="wmTitle">每週對戰</span><button class="x" data-close="weekModal">×</button></h3>
+    <h3><span id="wmTitle">每週對戰</span><span style="display:flex;gap:6px;align-items:center"><button class="btn sm" id="wPasteBtn" type="button">📋 貼上資料</button><button class="x" data-close="weekModal">×</button></span></h3>
+    <div class="pastebox hidden" id="wPasteBox">
+      <textarea id="wPasteTxt" placeholder="把截圖傳給 Claude，把它回給你的那段資料整段貼在這裡（{ 開頭的那段）"></textarea>
+      <div class="row"><span class="msg" id="wPasteMsg">貼上後按「填入」，會自動填好下面的欄位，確認沒問題再按儲存。</span><button class="btn pri sm" id="wPasteGo" type="button">填入</button></div>
+    </div>
     <div class="fg">
       <div class="fld"><label>第幾週</label><input id="wNum" type="number" min="1" max="30" inputmode="numeric"></div>
       <div class="fld"><label>對手</label><input id="wOpp" list="oppList" placeholder="對手隊名" autocomplete="off"><datalist id="oppList"></datalist></div>
@@ -508,7 +526,7 @@ button,input,select,textarea{font:inherit;color:inherit}
     <div class="livescore" id="liveScore"></div>
     <div class="fld full" style="margin-top:14px"><label>球員本週數據（選填・整週合計）</label>
       <div class="scroll-x"><table class="pstbl"><thead id="wPsHead"></thead><tbody id="wPs"></tbody></table></div>
-      <span class="help">照 Yahoo 對戰頁每位球員那一列填；GP 是本週出賽場數，有填的話陣容頁會算場均，沒填就算每週平均。</span></div>
+      <span class="help">PICK 填這週的 FB 排名（統計頁會畫成曲線）；其他照 Yahoo 對戰頁每位球員那一列填；GP 是本週出賽場數，有填的話陣容頁會算場均，沒填就算每週平均。</span></div>
     <div class="fld full" style="margin-top:12px"><label>備註</label><textarea id="wNote" placeholder="這週的關鍵：誰受傷、哪個類別差一點…"></textarea></div>
     <div class="mact">
       <button class="btn danger" id="wDel">刪除</button>
@@ -698,8 +716,8 @@ function normP(p){
 }
 function addMove(p,a,d,n){p.log.push({a,d,n:n||'',t:Date.now()+p.log.length});sortLog(p.log);p.status=statusFrom(p.log);p.u=Date.now()}
 /* 球員每週數據 */
-function psKeys(lg){return ['gp','pts','reb','ast','st','blk','to'].concat(isPts(lg)?['fp']:[])}
-const PSL={gp:'GP',pts:'PTS',reb:'REB',ast:'AST',st:'ST',blk:'BLK',to:'TO',fp:'FP'};
+function psKeys(lg){return ['pick','gp','pts','reb','ast','st','blk','to'].concat(isPts(lg)?['fp']:[])}
+const PSL={pick:'PICK',gp:'GP',pts:'PTS',reb:'REB',ast:'AST',st:'ST',blk:'BLK',to:'TO',fp:'FP'};
 function normPs(o){const out={};if(!o||typeof o!=='object')return out;
   Object.keys(o).forEach(id=>{const s=o[id];if(!s||typeof s!=='object')return;const r={};let any=false;
     Object.keys(PSL).forEach(k=>{const v=s[k];if(v!=null&&v!==''&&isFinite(+v)){r[k]=+v;any=true}});if(any)out[id]=r});
@@ -823,6 +841,10 @@ function pickInRound(r){const L=LG();return r%2===1?L.slot:L.teams+1-L.slot}
 function overallPick(r){return (r-1)*LG().teams+pickInRound(r)}
 /* Pick：FB 排名，手動輸入 */
 function pickOf(p){return +p.pick||0}
+/* 每週 PICK：依週次排出 [{w, v}]，季前 = 手動填的 PICK */
+function pickSeries(p){return sortedWeeks().filter(w=>w.ps&&w.ps[p.id]&&w.ps[p.id].pick>0).map(w=>({w,v:w.ps[p.id].pick}))}
+function curPick(p){const s=pickSeries(p);if(!s.length)return {v:pickOf(p),prev:null};return {v:s[s.length-1].v,prev:s.length>1?s[s.length-2].v:(pickOf(p)||null)}}
+function dlHTML(v,prev){if(!prev||!v||v===prev)return '';return '<span class="dl '+(v<prev?'up':'dn')+'">'+(v<prev?'▲':'▼')+Math.abs(prev-v)+'</span>'}
 function draftedIn(r){return Pl().find(p=>p.how==='選秀'&&p.round===r)}
 
 /* ===== 統計 ===== */
@@ -856,7 +878,7 @@ function render(){
   renderBoard();
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===view));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+view));
-  if(view==='draft')renderDraft();else if(view==='roster')renderRoster();else if(view==='weeks')renderWeeks();else renderStats();
+  if(view==='draft')renderDraft();else if(view==='roster')renderRoster();else if(view==='weeks')renderWeeks();else{renderStats();appendPickPanel()}
 }
 function renderLgs(){
   const cur=LG().id;
@@ -902,7 +924,8 @@ function howChip(p){
 function fmtS(k,v){if(v==null)return '—';if(k==='fp')return (+v).toFixed(1);if(k==='gp'||k==='cur')return String(Math.round(v));return (+v).toFixed(1)}
 /* 本季平均：全部週都有 GP 就算場均，否則算週均 */
 function seasonOf(p){
-  const ws=Wk().filter(w=>w.ps&&w.ps[p.id]);if(!ws.length)return null;
+  const hasSt=s=>['gp','pts','reb','ast','st','blk','to','fp'].some(k=>s[k]!=null);
+  const ws=Wk().filter(w=>w.ps&&w.ps[p.id]&&hasSt(w.ps[p.id]));if(!ws.length)return null;
   const t={};['pts','reb','ast','st','blk','to','fp'].forEach(k=>t[k]=0);let g=0,allGp=true;
   ws.forEach(w=>{const s=w.ps[p.id];if(!(s.gp>0))allGp=false;g+=s.gp||0;Object.keys(t).forEach(k=>{if(s[k]!=null)t[k]+=s[k]})});
   const div=allGp&&g>0?g:ws.length,o={per:allGp&&g>0?'g':'w',gp:g,wk:ws.length};Object.keys(t).forEach(k=>o[k]=t[k]/div);return o;
@@ -921,7 +944,7 @@ function statsHTML(p){
 function pcardHTML(p,withStats){
   const out=p.status!=='在隊',lo=out?lastOut(p):null;
   return '<div class="pcard'+(out?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+
-    '<div class="pc-top"><div class="pn">'+esc(p.name)+'</div>'+(pickOf(p)?'<span class="pick big"><small>PICK</small>'+pickOf(p)+'</span>':'')+'</div>'+
+    '<div class="pc-top"><div class="pn">'+esc(p.name)+'</div>'+(()=>{const c=withStats==='season'?curPick(p):{v:pickOf(p),prev:null};return c.v?'<span class="pick big" title="'+(withStats==='season'?'最新一週的 PICK（▲▼ 跟上一次比）':'季前 PICK')+'"><small>PICK</small>'+c.v+dlHTML(c.v,c.prev)+'</span>':''})()+'</div>'+
     '<div class="pc-row">'+(p.pos.length?posTags(p):'<span class="dim">位置未填</span>')+'</div>'+
     '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div>'+(withStats==='season'?seasonHTML(p):withStats===true?statsHTML(p):'')+'</div>';
 }
@@ -1007,8 +1030,8 @@ function weekRows(w){
 }
 function renderWeeks(){
   const el=$('v-weeks'),ws=sortedWeeks().reverse();
-  let h='<div class="bar"><h2>每週對戰</h2><button class="btn pri sm" id="btnAddW">＋ 新增一週</button></div>';
-  if(!ws.length){el.innerHTML=h+'<div class="card empty"><div class="big">📋</div>'+(isPts()?'每週對戰結束後，把 Yahoo 對戰頁上雙方的 Fan Pts 總分填進來，<br>勝負會自動算好。原始預估和 PTS、REB 這些數字可以選填。':'每週對戰結束後，把 Yahoo 對戰頁上每個類別的數字填進來，<br>勝負會自動算好。')+'</div>';$('btnAddW').onclick=()=>openWeek(null);return}
+  let h='<div class="bar"><h2>每週對戰</h2><div style="display:flex;gap:8px"><button class="btn sm" id="btnPasteW">📋 貼上截圖資料</button><button class="btn pri sm" id="btnAddW">＋ 新增一週</button></div></div>';
+  if(!ws.length){el.innerHTML=h+'<div class="card empty"><div class="big">📋</div>'+(isPts()?'每週對戰結束後，把 Yahoo 對戰頁上雙方的 Fan Pts 總分填進來，<br>勝負會自動算好。原始預估和 PTS、REB 這些數字可以選填。':'每週對戰結束後，把 Yahoo 對戰頁上每個類別的數字填進來，<br>勝負會自動算好。')+'</div>';$('btnAddW').onclick=()=>openWeek(null);$('btnPasteW').onclick=()=>openWeek(null,true);return}
   h+='<div class="wlist">';
   ws.forEach(w=>{
     const s=scoreWeek(w);
@@ -1026,11 +1049,11 @@ function renderWeeks(){
     h+='</tbody></table>';
     const pids=Object.keys(w.ps||{}).filter(id=>Pl().some(p=>p.id===id));
     if(pids.length){const ks=psKeys();h+='<div class="wkps"><h4>球員本週數據</h4><div class="scroll-x"><table class="tbl"><thead><tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr></thead><tbody>'+
-      pids.map(id=>{const p=Pl().find(x=>x.id===id),s=w.ps[id];return '<tr><td>'+esc(p.name)+'</td>'+ks.map(k=>'<td>'+(s[k]!=null?(k==='gp'?s[k]:(+s[k]).toFixed(k==='fp'?1:0)):'—')+'</td>').join('')+'</tr>'}).join('')+'</tbody></table></div></div>'}
+      pids.map(id=>{const p=Pl().find(x=>x.id===id),s=w.ps[id];return '<tr><td>'+esc(p.name)+'</td>'+ks.map(k=>'<td>'+(s[k]!=null?(k==='gp'||k==='pick'?s[k]:(+s[k]).toFixed(k==='fp'?1:0)):'—')+'</td>').join('')+'</tr>'}).join('')+'</tbody></table></div></div>'}
     h+=(w.note?'<div class="wk-note">'+esc(w.note)+'</div>':'')+'<div class="wk-act"><button class="btn sm" data-edit="'+w.id+'">編輯</button></div></div></div>';
   });
   el.innerHTML=h+'</div>';
-  $('btnAddW').onclick=()=>openWeek(null);
+  $('btnAddW').onclick=()=>openWeek(null);$('btnPasteW').onclick=()=>openWeek(null,true);
   el.querySelectorAll('.wk-h').forEach(x=>x.onclick=()=>{const k=x.parentNode,id=k.dataset.id;k.classList.toggle('open');if(k.classList.contains('open'))openWeeks.add(id);else openWeeks.delete(id)});
   el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=e=>{e.stopPropagation();openWeek(b.dataset.edit)});
 }
@@ -1077,6 +1100,64 @@ function renderPtsStats(){
   el.innerHTML=h;
   drawTrend(curCat);
   $('catPick').querySelectorAll('button').forEach(b=>b.onclick=()=>{lsSet(LS.cat+'_p',b.dataset.k);$('catPick').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));drawTrend(b.dataset.k)});
+}
+/* ===== 球員每週 PICK 曲線 ===== */
+const PK_COL=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
+function pkSel(){let a=[];try{a=JSON.parse(lsGet('fb_pk_'+LG().id,'null'))}catch(e){}return Array.isArray(a)?a.filter(x=>x&&Pl().some(p=>p.id===x.id)&&x.s>=0&&x.s<8):null}
+function pkSave(a){lsSet('fb_pk_'+LG().id,JSON.stringify(a))}
+function appendPickPanel(){
+  const el=$('v-stats');const ps=Pl().slice().sort((a,b)=>(a.how==='選秀'?0:1)-(b.how==='選秀'?0:1)||(a.round||99)-(b.round||99));
+  if(!ps.length)return;
+  const ws=sortedWeeks().filter(w=>w.ps&&Object.values(w.ps).some(s=>s.pick>0));
+  let sel=pkSel();
+  if(!sel){sel=ps.filter(p=>p.status==='在隊').slice(0,5).map((p,i)=>({id:p.id,s:i}));pkSave(sel)}
+  let h='<div class="panel full" id="pkPanel" style="margin-top:14px"><h3>球員每週 PICK</h3><div class="ps">越上面排名越好・第一個點是季前 PICK・最多同時比較 8 位，點名字切換</div>';
+  if(!ws.length){el.insertAdjacentHTML('beforeend',h+'<div class="empty" style="padding:22px 10px">在「每週對戰」的球員本週數據填 PICK，這裡就會畫出每位球員的排名變化。</div></div>');return}
+  h+='<div class="pkpick" id="pkPick">'+ps.map(p=>{const x=sel.find(s=>s.id===p.id);return '<button data-id="'+p.id+'" class="'+(x?'on':'')+'"'+(!x&&sel.length>=8?' disabled':'')+'><i style="'+(x?'background:'+PK_COL[x.s]:'')+'"></i>'+esc(p.name)+'</button>'}).join('')+'</div>'+
+    '<div class="chartbox" id="pkChart"></div>';
+  /* 表格：全部球員 × 每週 */
+  h+='<div class="scroll-x" style="margin-top:14px"><table class="tbl pktbl"><thead><tr><th>球員</th><th>季前</th>'+ws.map(w=>'<th>W'+w.week+'</th>').join('')+'<th>變化</th></tr></thead><tbody>'+
+    ps.map(p=>{let prev=pickOf(p)||null;const first=prev;let last=null;const cells=ws.map(w=>{const v=w.ps[p.id]&&w.ps[p.id].pick>0?w.ps[p.id].pick:null;if(v==null)return '<td>—</td>';const c='<td>'+v+dlHTML(v,prev)+'</td>';prev=v;last=v;return c}).join('');
+      const d=first&&last?first-last:null;
+      return '<tr><td>'+esc(p.name)+(p.status!=='在隊'?' <span class="team">（'+p.status+'）</span>':'')+'</td><td>'+(first||'—')+'</td>'+cells+'<td style="color:'+(d>0?'var(--win)':d<0?'var(--loss)':'var(--ink3)')+'">'+(d==null?'—':d>0?'▲'+d:d<0?'▼'+(-d):'—')+'</td></tr>'}).join('')+
+    '</tbody></table></div></div>';
+  el.insertAdjacentHTML('beforeend',h);
+  $('pkPick').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    let s=pkSel()||[];const i=s.findIndex(x=>x.id===b.dataset.id);
+    if(i>=0)s.splice(i,1);else{if(s.length>=8)return;const used=new Set(s.map(x=>x.s));let k=0;while(used.has(k))k++;s.push({id:b.dataset.id,s:k})}
+    pkSave(s);$('pkPanel').remove();appendPickPanel();
+  });
+  drawPickChart(ws,sel);
+}
+function drawPickChart(ws,sel){
+  const box=$('pkChart');if(!box)return;
+  const cols=[{lab:'季前',w:null}].concat(ws.map(w=>({lab:'W'+w.week,w})));
+  const lines=sel.map(x=>{const p=Pl().find(q=>q.id===x.id);return {p,c:PK_COL[x.s],pts:cols.map(c=>c.w?(c.w.ps[p.id]&&c.w.ps[p.id].pick>0?c.w.ps[p.id].pick:null):(pickOf(p)||null))}});
+  const all=[];lines.forEach(l=>l.pts.forEach(v=>{if(v!=null)all.push(v)}));
+  if(!all.length){box.innerHTML='<div class="empty" style="padding:22px">選的球員還沒有 PICK 紀錄</div>';return}
+  const W=Math.round(Math.max(320,Math.min(900,box.clientWidth||900))),H=W<500?260:300,ml=40,mr=W<500?70:110,mt=14,mb=30,iw=W-ml-mr,ih=H-mt-mb;
+  let lo=Math.min.apply(null,all),hi=Math.max.apply(null,all);const pad=Math.max(2,(hi-lo)*.1);lo=Math.max(1,Math.floor(lo-pad));hi=Math.ceil(hi+pad);if(hi===lo)hi=lo+1;
+  const X=i=>ml+(cols.length===1?iw/2:i*iw/(cols.length-1)),Y=v=>mt+(v-lo)/(hi-lo)*ih;   /* 排名小在上面 */
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="球員每週 PICK 排名">';
+  for(let g=0;g<=4;g++){const v=Math.round(lo+(hi-lo)*g/4),y=Y(v);s+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+y+'" y2="'+y+'" stroke="#E8EAEE"/><text x="'+(ml-8)+'" y="'+(y+4)+'" text-anchor="end" font-family="Space Mono" font-size="10.5" fill="#8A919D">'+v+'</text>'}
+  const step=Math.max(1,Math.ceil(cols.length/(W<500?6:12)));
+  cols.forEach((c,i)=>{if(i%step===0||i===cols.length-1)s+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" font-family="Space Mono" font-size="10.5" fill="#8A919D">'+c.lab+'</text>'});
+  const ends=[];
+  lines.forEach(l=>{let d='',on=false,dots='';l.pts.forEach((v,i)=>{if(v==null){on=false;return}d+=(on?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);on=true;dots+='<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="4" fill="'+l.c+'" stroke="#fff" stroke-width="2"/>'});
+    s+='<path d="'+d+'" fill="none" stroke="'+l.c+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+dots;
+    for(let i=l.pts.length-1;i>=0;i--)if(l.pts[i]!=null){ends.push({i,y:Y(l.pts[i]),l});break}});
+  /* 線尾名字，互相推開避免重疊 */
+  ends.sort((a,b)=>a.y-b.y);for(let k=1;k<ends.length;k++)if(ends[k].y-ends[k-1].y<13)ends[k].y=ends[k-1].y+13;
+  ends.forEach(e=>{const nm=e.l.p.name.split(' ').slice(-1)[0];s+='<text x="'+(X(e.i)+9)+'" y="'+(e.y+4)+'" font-size="11" fill="#16181D">'+esc(W<500?nm.slice(0,8):nm)+'</text>'});
+  s+='<line id="pkX" x1="0" x2="0" y1="'+mt+'" y2="'+(mt+ih)+'" stroke="#8A919D" stroke-dasharray="3 3" style="display:none"/>';
+  cols.forEach((c,i)=>{const x0=cols.length===1?ml:(i===0?ml:(X(i-1)+X(i))/2),x1=cols.length===1?W-mr:(i===cols.length-1?W-mr:(X(i)+X(i+1))/2);s+='<rect class="hit" data-i="'+i+'" x="'+x0+'" y="'+mt+'" width="'+(x1-x0)+'" height="'+ih+'" fill="transparent"/>'});
+  s+='</svg><div class="ctip" id="pkTip"></div>';box.innerHTML=s;
+  const svg=box.querySelector('svg'),tip=$('pkTip'),xh=box.querySelector('#pkX');
+  box.querySelectorAll('.hit').forEach(r=>r.addEventListener('pointerenter',()=>{const i=+r.dataset.i;xh.setAttribute('x1',X(i));xh.setAttribute('x2',X(i));xh.style.display='';
+    const rows=lines.map(l=>({l,v:l.pts[i]})).filter(x=>x.v!=null).sort((a,b)=>a.v-b.v);
+    tip.innerHTML='<div class="t">'+cols[i].lab+(cols[i].w&&cols[i].w.opp?' vs '+esc(cols[i].w.opp):'')+'</div>'+(rows.length?rows.map(x=>'<div class="r"><span><i style="background:'+x.l.c+'"></i>'+esc(x.l.p.name)+'</span><b>'+x.v+'</b></div>').join(''):'<div class="r"><span>沒有資料</span></div>');
+    tip.style.display='block';const sc=svg.getBoundingClientRect().width/W,bw=box.getBoundingClientRect().width;let left=X(i)*sc+12;if(left+tip.offsetWidth>bw)left=X(i)*sc-tip.offsetWidth-12;tip.style.left=Math.max(0,left)+'px';tip.style.top='8px'}));
+  svg.addEventListener('pointerleave',()=>{tip.style.display='none';xh.style.display='none'});
 }
 function renderStats(){
   if(isPts())return renderPtsStats();
@@ -1258,8 +1339,9 @@ function delItem(id){if(!isDemo){const t=getTomb();t.push({id,t:Date.now()});set
 
 /* ===== 對戰表單 ===== */
 function weekDates(n){const w1=LG().week1;if(!w1||!n)return null;const s=addDays(w1,(n-1)*7);return [s,addDays(s,6)]}
-function openWeek(id){
+function openWeek(id,paste){
   const w=id?Wk().find(x=>x.id===id):null;curW=w?w.id:null;
+  $('wPasteBox').classList.toggle('hidden',!paste);$('wPasteMsg').className='msg';$('wPasteMsg').textContent='貼上後按「填入」，會自動填好下面的欄位，確認沒問題再按儲存。';if(!paste)$('wPasteTxt').value='';
   const nextN=w?w.week:(Wk().reduce((m,x)=>Math.max(m,x.week),0)+1);
   $('wmTitle').textContent=w?'第 '+w.week+' 週':'新增一週';
   $('wNum').value=nextN;$('wOpp').value=w?w.opp:'';$('wPlayoff').value=w&&w.playoff?'1':'0';$('wNote').value=w?w.note:'';
@@ -1280,13 +1362,58 @@ function openWeek(id){
   $('wPsHead').innerHTML='<tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr>';
   $('wPs').innerHTML=rows.length?rows.map(p=>'<tr class="'+(p.status!=='在隊'?'off':'')+'" data-pid="'+p.id+'"><td title="'+esc(p.name)+'">'+esc(p.name)+'</td>'+ks.map(k=>'<td><input data-ps="'+k+'" inputmode="decimal" value="'+(ps[p.id]&&ps[p.id][k]!=null?ps[p.id][k]:'')+'"></td>').join('')+'</tr>').join('')
     :'<tr><td colspan="'+(ks.length+1)+'" style="color:var(--ink3);font-size:12.5px;padding:8px 0">陣容裡還沒有球員</td></tr>';
-  liveScore();show('weekModal');
+  liveScore();show('weekModal');if(paste)setTimeout(()=>$('wPasteTxt').focus(),80);
 }
 $('wNum').addEventListener('change',()=>{if(curW)return;const dd=weekDates(+$('wNum').value);if(dd){$('wStart').value=dd[0];$('wEnd').value=dd[1]}});
 $('wStart').addEventListener('change',()=>{const s=$('wStart').value;if(s&&!$('wEnd').value)$('wEnd').value=addDays(s,6)});
 $('wEnd').addEventListener('change',()=>liveScore());
 /* 用計分公式從六項數據算 Fan Pts（全部空白就回傳 null） */
 function fpFrom(o){const L=LG();let t=0,any=false;PSTATS.forEach(k=>{if(o&&o[k]!=null){t+=o[k]*L.w[k];any=true}});return any?t:null}
+/* ===== 貼上截圖資料 ===== */
+function normName(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+function findPlayer(name){
+  const ps=Pl(),n=normName(name);if(!n)return null;
+  let p=ps.find(x=>x.name===name)||ps.find(x=>normName(x.name)===n);if(p)return p;
+  const last=normName(String(name).trim().split(/\s+/).slice(-1)[0]);
+  const c=ps.filter(x=>normName(x.name.split(/\s+/).slice(-1)[0])===last);return c.length===1?c[0]:null;
+}
+const CAT_ALIAS={'FG%':'FGP','FGP':'FGP','FT%':'FTP','FTP':'FTP','3PTM':'3PTM','3PM':'3PTM','3PT%':'3PP','3PP':'3PP','PTS':'PTS','OREB':'OREB','REB':'REB','AST':'AST','ST':'ST','STL':'ST','BLK':'BLK','TO':'TO','A/T':'AT','AT':'AT','TECH':'TECH','DD':'DD','FP':'FP','FANPTS':'FP','FAN PTS':'FP','PROJ':'PROJ'};
+function parsePaste(txt){
+  txt=String(txt||'').replace(/```[a-z]*|```/gi,'');const i=txt.indexOf('{'),j=txt.lastIndexOf('}');
+  if(i<0||j<i)throw new Error('找不到 { } 包住的資料');
+  return JSON.parse(txt.slice(i,j+1));
+}
+function applyPaste(d){
+  const notes=[],miss=[];let filled=0;
+  if(d.week)$('wNum').value=d.week;
+  if(d.opp)$('wOpp').value=d.opp;
+  if(d.start)$('wStart').value=d.start;
+  if(d.end)$('wEnd').value=d.end;else if(d.start&&!$('wEnd').value)$('wEnd').value=addDays(d.start,6);
+  if(d.playoff!=null)$('wPlayoff').value=d.playoff?'1':'0';
+  ['me','op'].forEach(side=>{const o=d[side]||{};Object.keys(o).forEach(k0=>{const k=CAT_ALIAS[String(k0).toUpperCase()]||k0,inp=$('statRows').querySelector('input[data-s="'+side+'"][data-k="'+k+'"]');
+    if(inp&&o[k0]!=null&&o[k0]!==''){inp.value=o[k0];filled++}})});
+  const put=(name,key,val)=>{const p=findPlayer(name);if(!p){if(!miss.includes(name))miss.push(name);return false}
+    const inp=$('wPs').querySelector('tr[data-pid="'+p.id+'"] input[data-ps="'+key+'"]');if(!inp){if(!miss.includes(name+'（不在陣容）'))miss.push(name+'（不在陣容）');return false}
+    inp.value=val;return true};
+  let np=0,ns=0;
+  if(d.pick&&typeof d.pick==='object')Object.keys(d.pick).forEach(n=>{if(put(n,'pick',d.pick[n]))np++});
+  if(d.ps&&typeof d.ps==='object')Object.keys(d.ps).forEach(n=>{const s=d.ps[n]||{};let ok=false;Object.keys(s).forEach(k=>{const kk=String(k).toLowerCase()==='stl'?'st':String(k).toLowerCase();if(PSL[kk]&&put(n,kk,s[k]))ok=true});if(ok)ns++});
+  liveScore();
+  if(filled)notes.push('對戰 '+filled+' 格');if(np)notes.push(np+' 位 PICK');if(ns)notes.push(ns+' 位球員數據');
+  return {msg:(notes.length?'已填入：'+notes.join('、'):'沒有填到任何欄位')+(miss.length?'。對不上的名字：'+miss.join('、'):''),warn:!notes.length||miss.length>0};
+}
+$('wPasteBtn').onclick=()=>{$('wPasteBox').classList.toggle('hidden');if(!$('wPasteBox').classList.contains('hidden'))$('wPasteTxt').focus()};
+$('wPasteGo').onclick=()=>{
+  let d;try{d=parsePaste($('wPasteTxt').value)}catch(e){$('wPasteMsg').className='msg err';$('wPasteMsg').textContent='讀不懂這段資料：'+e.message;return}
+  /* 資料指定了別的聯盟 → 切過去再開 */
+  if(d.league){const L=D.leagues.find(l=>l.name===d.league)||D.leagues.find(l=>normName(l.name).includes(normName(d.league))||normName(d.league).includes(normName(l.name)));
+    if(L&&L.id!==LG().id){hide('weekModal');setLg(L.id);render();const t=$('wPasteTxt').value;openWeek(pasteTarget(d),true);$('wPasteTxt').value=t;return $('wPasteGo').onclick()}}
+  /* 同一週已經有紀錄 → 改開那一週，避免重複 */
+  const tgt=pasteTarget(d);
+  if(tgt&&tgt!==curW){const t=$('wPasteTxt').value;openWeek(tgt,true);$('wPasteTxt').value=t}
+  const r=applyPaste(d);$('wPasteMsg').className='msg'+(r.warn?' err':'');$('wPasteMsg').textContent=r.msg;
+};
+function pasteTarget(d){if(!d.week)return curW;const w=Wk().find(x=>x.week===+d.week&&!!x.playoff===!!d.playoff);return w?w.id:curW}
 function readStatForm(){const me={},op={};$('statRows').querySelectorAll('input').forEach(i=>{const c=catOf(i.dataset.k),v=parseVal(c,i.value);if(v!=null)(i.dataset.s==='me'?me:op)[c.k]=v});return {me,op}}
 function liveScore(){
   const f=readStatForm();f.end=$('wEnd').value;const s=scoreWeek(f);
