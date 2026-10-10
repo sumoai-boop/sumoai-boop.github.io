@@ -693,7 +693,7 @@ function tileHTML(it,i){
 function dayGroups(a,startK){
   const g={},order=[];a.forEach(it=>{const d=it.date||'未記日期';if(!g[d]){g[d]=[];order.push(d)}g[d].push(it)});
   let k=startK||0;
-  return {k:()=>k,html:order.map(d=>'<section class="day" id="d-'+d+'"><div class="day-h"><b>'+(d.length===10?'<span>'+(+d.slice(8))+'</span>'+(+d.slice(5,7))+' 月<em>週'+wd(d)+(d===todayStr()?' · 今天':'')+'</em>':d)+'</b>'+
+  return {k:()=>k,html:order.map(d=>'<section class="day" id="d-'+d+'"><div class="day-h"><b>'+(d.length===10?'<span>'+(+d.slice(8))+'</span>日<em>週'+wd(d)+(d===todayStr()?' · 今天':'')+'</em>':d)+'</b>'+
     '<span class="t">NT$ '+fmt(sum(g[d]))+'</span></div><div class="tiles">'+g[d].map(it=>tileHTML(it,k++)).join('')+'</div></section>').join('')};
 }
 function renderFeed(){
