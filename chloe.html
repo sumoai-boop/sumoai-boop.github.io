@@ -219,6 +219,41 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   .cal-d-row .d-note{grid-column:1/2;grid-row:3;font-size:12px;}
   .cal-together .ct-div{display:none;}
 }
+
+/* ---- 行事曆：圖示貼紙風 ---- */
+.cal-grid-wrap{background:#fffaf5;padding:10px;}
+.cal-week{background:transparent;color:#888;margin-bottom:6px;}
+.cal-week div{padding:4px 0 6px;letter-spacing:.1em;}
+.cal-week .sun{color:#e11d48;}.cal-week .sat{color:#4f46e5;}
+.cal-grid{gap:6px;}
+.cal-cell{min-height:104px;border:1.5px solid #f1e7dc !important;border-radius:14px;background:#fff;padding:7px 7px 8px;display:flex;flex-direction:column;}
+.cal-cell.out{background:transparent;border-color:transparent !important;}
+.cal-cell.out .cal-num{color:#d6d3d1;}
+.cal-cell.has{background:#fff;border-color:#eadfd3 !important;box-shadow:0 2px 0 #f1e7dc;}
+.cal-cell:hover{background:#fdf8ff;border-color:#d8b4fe !important;}
+.cal-cell.sel{outline:none;border-color:#7c3aed !important;box-shadow:0 0 0 3px #ede9fe;}
+.cal-cell.future{border-style:dashed !important;border-color:#c4b5fd !important;}
+.cal-stks{flex:1;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:6px;padding-top:2px;}
+.cal-stk{position:relative;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;font-size:21px;line-height:1;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.12);transition:transform .15s;}
+.cal-cell:hover .cal-stk{transform:scale(1.08) rotate(0deg) !important;}
+.cal-cell.future .cal-stk{border:2px dashed #a78bfa;box-shadow:none;}
+.cal-stk.anniv{box-shadow:0 0 0 2px #f9a8d4,0 2px 6px rgba(219,39,119,.25);}
+.cal-stk.more{background:#f5f5f4 !important;font-size:12px;font-weight:800;color:#78716c;}
+.cal-stk-n{position:absolute;right:-6px;top:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#7c3aed;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;font-style:normal;}
+.cal-legend{gap:8px 14px;background:#fff;}
+.cal-lg-t{font-size:10px;font-weight:800;letter-spacing:.1em;color:#999;}
+.cal-lg{font-size:12.5px;color:#444;}
+.cal-lg-fut i{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px dashed #a78bfa;margin-right:2px;vertical-align:-2px;}
+.cal-d-row .d-ic{display:inline-block;margin-right:6px;font-size:16px;}
+@media(max-width:760px){
+  .cal-grid-wrap{padding:6px;}
+  .cal-grid{gap:3px;}
+  .cal-cell{min-height:62px;padding:3px 1px 4px;border-radius:9px;align-items:center;}
+  .cal-stks{gap:1px;width:35px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;}
+  .cal-stk{width:17px;height:17px;font-size:10.5px;border-width:1px;box-shadow:0 1px 2px rgba(0,0,0,.12);transform:none !important;}
+  .cal-stk-n{min-width:13px;height:13px;font-size:8px;right:-5px;top:-4px;padding:0 2px;}
+  .cal-stk.more{font-size:9px;}
+}
 /* EXPENSE STYLES */
 #tab-expense{width:100%;}
 .exp-month-total{display:inline-flex;align-items:center;gap:10px;margin-left:auto;padding:7px 14px;border-radius:999px;background:linear-gradient(135deg,#fdf2f8,#f5f3ff);border:1px solid #e9d5ff;white-space:nowrap;}
@@ -684,19 +719,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <div class="cal-legend">
-    <span><i class="cal-dot" style="background:#c2410c"></i>餐廳</span>
-    <span><i class="cal-dot" style="background:#a16207"></i>餐飲</span>
-    <span><i class="cal-dot" style="background:#be185d"></i>禮物</span>
-    <span><i class="cal-dot" style="background:#4338ca"></i>電影</span>
-    <span><i class="cal-dot" style="background:#7c3aed"></i>娛樂</span>
-    <span><i class="cal-dot" style="background:#0e7490"></i>住宿</span>
-    <span><i class="cal-dot" style="background:#166534"></i>日常</span>
-    <span><i class="cal-dot" style="background:#92660a"></i>交通</span>
-    <span class="cal-legend-sep"></span>
-    <span><i class="cal-swatch future"></i>已訂／即將到來</span>
-    <span>💕 紀念日</span><span>🎂 生日</span>
-  </div>
+  <div class="cal-legend" id="calLegend"></div>
 
   <div class="cal-detail" id="calDetail"></div>
 
@@ -1580,6 +1603,74 @@ var CAL_EMOJI={'餐廳':'🍽','餐飲':'🥤','禮物':'🎁','電影':'🎞','
 var CAL_COLOR={'餐廳':'#c2410c','餐飲':'#a16207','禮物':'#be185d','電影':'#4338ca','娛樂':'#7c3aed','日常':'#166534','交通':'#92660a','住宿':'#0e7490','其他':'#555','旅遊':'#0369a1'};
 var CAL_WD=['日','一','二','三','四','五','六'];
 
+
+// 依描述／備註關鍵字決定圖示（由上往下，先符合先用）
+var CAL_ICON_RULES=[
+  // 娛樂
+  {c:['娛樂'],k:/職棒|棒球|悍將|兄弟|桃猿|味全|統一獅|台鋼/,i:'⚾',l:'棒球'},
+  {c:['娛樂'],k:/音樂劇|舞台劇|劇場|戲劇院|戲曲/,i:'🎭',l:'劇場'},
+  {c:['娛樂'],k:/音樂廳|NSO|愛樂|交響|韋瓦第|誠品表演廳/,i:'🎻',l:'音樂會'},
+  {c:['娛樂'],k:/幻術|魔術/,i:'🎩',l:'魔術'},
+  {c:['娛樂'],k:/大喜利|達康|脫口|漫才|喜劇/,i:'😂',l:'喜劇'},
+  {c:['娛樂'],k:/演唱會|Tour|TOUR|LIVE|Live|炎上|卡拉|讚聲|金曲|巨蛋|小巨蛋/,i:'🎤',l:'演唱會'},
+  {c:['娛樂'],k:/展/,i:'🖼️',l:'展覽'},
+  {c:['娛樂'],k:/./,i:'🎉',l:'娛樂'},
+  // 電影
+  {c:['電影'],k:/./,i:'🎬',l:'電影'},
+  // 住宿
+  {c:['住宿'],k:/湯|溫泉/,i:'♨️',l:'溫泉'},
+  {c:['住宿'],k:/./,i:'🏨',l:'住宿'},
+  // 禮物
+  {c:['禮物'],k:/貼圖|主題|line|LINE/,i:'💌',l:'LINE 貼圖'},
+  {c:['禮物'],k:/巧克力/,i:'🍫',l:'巧克力'},
+  {c:['禮物'],k:/鞋/,i:'👠',l:'鞋子'},
+  {c:['禮物'],k:/Insta360|相機|手機|自拍/,i:'📷',l:'3C'},
+  {c:['禮物'],k:/花/,i:'💐',l:'花'},
+  {c:['禮物'],k:/./,i:'🎁',l:'禮物'},
+  // 其他
+  {c:['其他'],k:/診所|醫|掛號|藥/,i:'🏥',l:'看醫生'},
+  // 吃的（餐廳、餐飲共用）
+  {c:['餐廳','餐飲'],k:/全家|7-11|7-ELEVEN|萊爾富|OK超商|便利商店|全聯|超市|家樂福/,i:'🏪',l:'超商'},
+  {c:['餐廳','餐飲'],k:/冰淇淋|霜淇淋|CREMIA/,i:'🍦',l:'冰淇淋'},
+  {c:['餐廳','餐飲'],k:/鳳梨冰|刨冰|剉冰|雪花冰/,i:'🍧',l:'冰品'},
+  {c:['餐廳','餐飲'],k:/甜甜圈/,i:'🍩',l:'甜甜圈'},
+  {c:['餐廳','餐飲'],k:/蛋糕|甜點|泡芙|法國小皇后/,i:'🍰',l:'甜點'},
+  {c:['餐廳','餐飲'],k:/咖啡(?!坊)/,i:'☕',l:'咖啡'},
+  {c:['餐廳','餐飲'],k:/烏龍|奶茶|鮮奶茶|檸|手搖|飲料|珍奶|龍蕪/,i:'🧋',l:'飲料'},
+  {c:['餐廳','餐飲'],k:/炸雞|雞排|鹹酥雞|肯德基|KFC|Popeyes/,i:'🍗',l:'炸雞'},
+  {c:['餐廳','餐飲'],k:/麥當勞|摩斯|漢堡|BURGER|Burger|堡/,i:'🍔',l:'漢堡'},
+  {c:['餐廳','餐飲'],k:/熱狗/,i:'🌭',l:'熱狗'},
+  {c:['餐廳','餐飲'],k:/鐵板|鉄板|燒肉|牛排|炸牛|和牛|SAPPORO|壽喜燒/,i:'🥩',l:'鐵板燒／燒肉'},
+  {c:['餐廳','餐飲'],k:/麻辣鍋|火鍋|涮|羊肉爐|豆腐鍋|石頭火鍋|品湯|鼎王/,i:'🍲',l:'火鍋'},
+  {c:['餐廳','餐飲'],k:/Pasta|pasta|義大利麵/,i:'🍝',l:'義大利麵'},
+  {c:['餐廳','餐飲'],k:/拉麵|麵屋|牛肉麵|麵/,i:'🍜',l:'麵'},
+  {c:['餐廳','餐飲'],k:/壽司|和食|旭集|博多|いろは|塩人/,i:'🍣',l:'日式'},
+  {c:['餐廳','餐飲'],k:/餐酒館|TAPAS|酒/,i:'🍷',l:'餐酒館'},
+  {c:['餐廳','餐飲'],k:/曼谷|泰/,i:'🍛',l:'泰式'},
+  {c:['餐廳','餐飲'],k:/餡餅|水餃|包子|小龍/,i:'🥟',l:'麵點'},
+  {c:['餐廳','餐飲'],k:/粥/,i:'🥣',l:'粥'},
+  {c:['餐廳','餐飲'],k:/燉|湯/,i:'🍵',l:'湯品'},
+  {c:['餐廳','餐飲'],k:/蛋餅|吐司|厚片|早餐|滿福/,i:'🍳',l:'早餐'},
+  {c:['餐廳','餐飲'],k:/滷味|碳烤|燒烤|七里香|串/,i:'🍢',l:'滷味燒烤'},
+  {c:['餐廳','餐飲'],k:/蝦/,i:'🍤',l:'海鮮'},
+  {c:['餐廳','餐飲'],k:/便當|食堂|炒飯|飯|廚房|小館|給力盒子|排骨/,i:'🍱',l:'便當'},
+  {c:['餐廳','餐飲'],k:/夜市/,i:'🏮',l:'夜市'},
+  {c:['餐廳'],k:/./,i:'🍽️',l:'餐廳'},
+  {c:['餐飲'],k:/./,i:'🥤',l:'餐飲'},
+  {c:['日常'],k:/./,i:'🛒',l:'日常'},
+  {c:['交通'],k:/高鐵|台鐵|火車/,i:'🚄',l:'火車'},
+  {c:['交通'],k:/飛機|機票|航空/,i:'✈️',l:'飛機'},
+  {c:['交通'],k:/./,i:'🚗',l:'交通'}
+];
+var CAL_BG={'餐廳':'#ffedd5','餐飲':'#fef3c7','禮物':'#fce7f3','電影':'#e0e7ff','娛樂':'#ede9fe','日常':'#dcfce7','交通':'#fef9c3','住宿':'#cffafe','其他':'#f1f5f9','旅遊':'#e0f2fe'};
+function calIcon(e){
+  var t=(e.desc||'')+' '+(e.note||'');
+  for(var i=0;i<CAL_ICON_RULES.length;i++){
+    var r=CAL_ICON_RULES[i];
+    if(r.c.indexOf(e.cat)>-1&&r.k.test(t))return {i:r.i,l:r.l};
+  }
+  return {i:CAL_EMOJI[e.cat]||'📌',l:e.cat||'其他'};
+}
 function calPad(n){return (n<10?'0':'')+n;}
 function calLocalToday(){var d=new Date();return d.getFullYear()+'-'+calPad(d.getMonth()+1)+'-'+calPad(d.getDate());}
 function calEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
@@ -1683,7 +1774,7 @@ function renderCalendar(){
   // ---- 即將到來 ----
   var up=[];
   (expenses||[]).forEach(function(e){
-    if(e.date&&e.date>today)up.push({date:e.date,desc:e.desc,meta:(e.note?e.note+' · ':'')+(e.cat||'')+' · '+fmtMoney(e.amount),anniv:false});
+    if(e.date&&e.date>today)up.push({date:e.date,desc:calIcon(e).i+' '+e.desc,meta:(e.note?e.note+' · ':'')+(e.cat||'')+' · '+fmtMoney(e.amount),anniv:false});
   });
   // 下一個紀念日／生日（一年內）
   var bd=calParseYMD(data&&data.birthday);
@@ -1735,6 +1826,7 @@ function renderCalendar(){
   var dim=new Date(calY,calM+1,0).getDate();
   var cells=Math.ceil((startW+dim)/7)*7;
   var html='';
+  var legendUsed={};
   for(var i=0;i<cells;i++){
     var dnum=i-startW+1;
     var dt=new Date(calY,calM,dnum);
@@ -1745,23 +1837,37 @@ function renderCalendar(){
     if(!inMonth){html+='<div class="'+cls+'"><span class="cal-num">'+dt.getDate()+'</span></div>';continue;}
     var evs=byDate[ds]||[];
     if(evs.length)cls+=' has';
-    var an=calAnniv(dt.getFullYear(),dt.getMonth()+1,dt.getDate());
-    var marks=an.map(function(a){return '<span class="cal-mark">'+a.icon+'<span class="cal-mark-txt">'+a.short+'</span></span>';}).join('');
     var future=ds>today;
-    var shown=evs.slice(0,3).map(function(e){
-      return '<div class="cal-ev ecat-'+calEsc(e.cat)+(future?' future':'')+'" title="'+calEsc(e.desc+(e.note?'｜'+e.note:''))+'">'+(CAL_EMOJI[e.cat]||'•')+' '+calEsc(e.desc)+'</div>';
+    if(future&&evs.length)cls+=' future';
+    var an=calAnniv(dt.getFullYear(),dt.getMonth()+1,dt.getDate());
+    // 同一種圖示合併，顯示 ×n
+    var groups=[],gi={};
+    an.forEach(function(a){groups.push({i:a.icon,l:a.text,n:1,bg:'#fce7f3',tips:[a.text],anniv:true});});
+    evs.forEach(function(ev){
+      var ic=calIcon(ev);
+      var key=ic.i;
+      if(gi[key]===undefined){gi[key]=groups.length;groups.push({i:ic.i,l:ic.l,n:0,bg:CAL_BG[ev.cat]||'#f1f5f9',tips:[]});}
+      var g=groups[gi[key]];g.n++;g.tips.push(ev.desc+(ev.note?'｜'+ev.note:''));
+      legendUsed[ic.i]=ic.l;
+    });
+    an.forEach(function(a){legendUsed[a.icon]=a.icon==='💕'?'紀念日':'生日';});
+    var MAXI=window.innerWidth<760?3:6;
+    var stick=groups.slice(0,MAXI).map(function(g,k){
+      var rot=((dt.getDate()*7+k*13)%9)-4; // 小小的隨機傾斜，像貼紙
+      return '<span class="cal-stk'+(g.anniv?' anniv':'')+'" style="background:'+g.bg+';transform:rotate('+rot+'deg)" title="'+calEsc(g.tips.join('\n'))+'">'+g.i+(g.n>1?'<b class="cal-stk-n">'+g.n+'</b>':'')+'</span>';
     }).join('');
-    if(evs.length>3)shown+='<div class="cal-more">+'+(evs.length-3)+' 筆</div>';
-    var dots=evs.map(function(e){return '<i class="cal-dot" style="background:'+(CAL_COLOR[e.cat]||'#888')+(future?';box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px '+(CAL_COLOR[e.cat]||'#888'):'')+'"></i>';}).slice(0,6).join('');
-    var sum=0;evs.forEach(function(e){sum+=parseFloat(e.amount)||0;});
+    if(groups.length>MAXI)stick+='<span class="cal-stk more">+'+(groups.length-MAXI)+'</span>';
     html+='<div class="'+cls+'" onclick="calPick(\''+ds+'\')">'+
-      '<span class="cal-num">'+dt.getDate()+'</span>'+marks+
-      '<div class="cal-evs">'+shown+'</div>'+
-      (evs.length?'<div class="cal-dots">'+dots+'</div>':'')+
-      (evs.length?'<div class="cal-amt">'+fmtMoney(Math.round(sum))+'</div>':'')+
+      '<span class="cal-num">'+dt.getDate()+'</span>'+
+      (groups.length?'<div class="cal-stks">'+stick+'</div>':'')+
       '</div>';
   }
   setHTML('calGrid',html);
+  var lk=Object.keys(legendUsed);
+  setHTML('calLegend',lk.length?
+    '<span class="cal-lg-t">本月圖示</span>'+lk.map(function(k){return '<span class="cal-lg">'+k+' '+calEsc(legendUsed[k])+'</span>';}).join('')+
+    '<span class="cal-lg cal-lg-fut"><i></i>虛線＝即將到來</span>'
+    :'<span class="cal-lg-t">這個月還沒有記錄</span>');
 
   // ---- 選取日期的明細 ----
   var det=document.getElementById('calDetail');
@@ -1781,7 +1887,7 @@ function renderCalendar(){
     h+=list.map(function(e){
       return '<div class="cal-d-row">'+
         '<div class="d-cat"><span class="exp-cat-tag ecat-'+calEsc(e.cat)+'">'+(CAL_EMOJI[e.cat]||'')+' '+calEsc(e.cat)+'</span>'+(isFut?'<span class="cal-d-future">已訂</span>':'')+'</div>'+
-        '<div class="d-desc">'+calEsc(e.desc)+'</div>'+
+        '<div class="d-desc"><span class="d-ic">'+calIcon(e).i+'</span>'+calEsc(e.desc)+'</div>'+
         '<div class="d-note">'+calEsc(e.note||'')+'</div>'+
         '<div class="d-amt">'+fmtMoney(e.amount)+'</div>'+
         '<button class="d-edit" title="編輯" onclick="calEdit('+e.id+')">✏️</button>'+
