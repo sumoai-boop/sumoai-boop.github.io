@@ -129,6 +129,96 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 .tab-btn:hover:not(.active){background:#ebebeb;}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
+/* CALENDAR STYLES */
+#tab-calendar{width:100%;}
+.cal-together{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;padding:16px;border:1px solid #222;margin-bottom:-1px;background:linear-gradient(135deg,#fdf2f8 0%,#f5f3ff 100%);}
+.cal-together .ct-big{font-size:30px;font-weight:900;color:#7c3aed;letter-spacing:-1px;line-height:1;}
+.cal-together .ct-lbl{font-size:12px;font-weight:700;color:#6b21a8;}
+.cal-together .ct-sub{font-size:12px;color:#6b7280;font-weight:600;}
+.cal-together .ct-div{width:1px;height:30px;background:#e9d5ff;}
+.cal-upcoming{border:1px solid #222;margin-bottom:-1px;padding:14px 16px;background:#fff;}
+.cal-upcoming:empty{display:none;}
+.cal-up-title{font-size:11px;font-weight:800;letter-spacing:.1em;color:#888;margin-bottom:10px;}
+.cal-up-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.cal-up-item{display:flex;gap:12px;align-items:center;padding:10px 12px;border:1.5px dashed #c4b5fd;border-radius:10px;background:#faf5ff;cursor:pointer;transition:transform .15s;}
+.cal-up-item:hover{transform:translateY(-2px);}
+.cal-up-item.anniv{border-color:#f9a8d4;background:#fdf2f8;}
+.cal-up-cd{flex:0 0 auto;text-align:center;min-width:52px;}
+.cal-up-cd b{display:block;font-size:22px;font-weight:900;color:#7c3aed;line-height:1;}
+.cal-up-item.anniv .cal-up-cd b{color:#db2777;}
+.cal-up-cd span{font-size:10px;color:#888;font-weight:700;}
+.cal-up-body{min-width:0;flex:1;}
+.cal-up-desc{font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-up-meta{font-size:11px;color:#6b7280;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;border:1px solid #222;margin-bottom:-1px;background:#fafafa;}
+.cal-nav{width:34px;height:34px;border:1px solid #ccc;background:#fff;border-radius:6px;cursor:pointer;font-size:12px;color:#444;}
+.cal-nav:hover{border-color:#7c3aed;color:#7c3aed;}
+.cal-title{font-size:20px;font-weight:900;color:#1a1a1a;min-width:150px;text-align:center;}
+.cal-today-btn{padding:7px 14px;border:1px solid #222;background:#222;color:#fff;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.cal-stats{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap;}
+.cal-stat{text-align:right;}
+.cal-stat .cs-l{font-size:10px;color:#888;font-weight:700;letter-spacing:.05em;}
+.cal-stat .cs-v{font-size:16px;font-weight:800;color:#111827;}
+.cal-grid-wrap{border:1px solid #222;margin-bottom:-1px;background:#fff;}
+.cal-week{display:grid;grid-template-columns:repeat(7,1fr);background:#2a2a2a;color:#fff;font-size:12px;font-weight:700;text-align:center;}
+.cal-week div{padding:8px 0;}
+.cal-week .sun{color:#fda4af;}.cal-week .sat{color:#a5b4fc;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));}
+.cal-cell{min-height:118px;border-right:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5;padding:6px 6px 22px;position:relative;cursor:pointer;transition:background .12s;overflow:hidden;}
+.cal-cell:nth-child(7n){border-right:none;}
+.cal-cell:hover{background:#faf5ff;}
+.cal-cell.out{background:#fafafa;cursor:default;}
+.cal-cell.out .cal-num{color:#ccc;}
+.cal-cell.has{background:#fffdfd;}
+.cal-cell.sel{outline:2px solid #7c3aed;outline-offset:-2px;background:#faf5ff;}
+.cal-num{font-size:13px;font-weight:700;color:#444;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;}
+.cal-cell.sun .cal-num{color:#e11d48;}.cal-cell.sat .cal-num{color:#4f46e5;}
+.cal-cell.today .cal-num{background:#7c3aed;color:#fff;}
+.cal-mark{font-size:10px;font-weight:800;color:#db2777;margin-left:2px;white-space:nowrap;}
+.cal-evs{display:flex;flex-direction:column;gap:3px;margin-top:3px;}
+.cal-ev{font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.45;}
+.cal-ev.future{background:#fff !important;border:1px dashed currentColor;}
+.cal-more{font-size:10.5px;color:#7c3aed;font-weight:700;padding-left:4px;}
+.cal-dots{display:none;gap:3px;flex-wrap:wrap;margin-top:4px;justify-content:center;}
+.cal-dot{display:inline-block;width:7px;height:7px;border-radius:50%;}
+.cal-amt{position:absolute;right:6px;bottom:4px;font-size:11px;font-weight:800;color:#111827;}
+.cal-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:10px 16px;border:1px solid #222;margin-bottom:-1px;background:#fafafa;font-size:11.5px;color:#555;}
+.cal-legend span{display:inline-flex;align-items:center;gap:5px;}
+.cal-legend-sep{width:1px;height:14px;background:#ddd;}
+.cal-swatch{display:inline-block;width:18px;height:11px;border-radius:3px;}
+.cal-swatch.future{border:1.5px dashed #7c3aed;background:#fff;}
+.cal-detail{border:1px solid #222;background:#fff;}
+.cal-detail:empty{display:none;}
+.cal-d-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;background:#2a2a2a;color:#fff;}
+.cal-d-date{font-size:16px;font-weight:800;}
+.cal-d-sum{font-size:12px;color:#d4d4d8;}
+.cal-d-add{margin-left:auto;padding:7px 14px;background:#7c3aed;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.cal-d-anniv{padding:10px 16px;background:#fdf2f8;color:#9d174d;font-size:13px;font-weight:700;border-bottom:1px solid #fbcfe8;}
+.cal-d-row{display:grid;grid-template-columns:70px 1fr 1fr 90px 40px;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid #eee;font-size:13px;}
+.cal-d-row:last-child{border-bottom:none;}
+.cal-d-row .d-desc{font-weight:700;color:#1a1a1a;}
+.cal-d-row .d-note{color:#4b5563;}
+.cal-d-row .d-amt{font-weight:800;text-align:right;}
+.cal-d-row .d-edit{background:none;border:none;cursor:pointer;font-size:15px;}
+.cal-d-empty{padding:22px 16px;text-align:center;color:#888;font-size:13px;}
+.cal-d-future{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;color:#7c3aed;border:1px dashed #7c3aed;border-radius:4px;padding:0 5px;}
+@media(max-width:760px){
+  .cal-cell{min-height:64px;padding:4px 2px 18px;text-align:center;}
+  .cal-evs,.cal-mark-txt{display:none;}
+  .cal-dots{display:flex;}
+  .cal-amt{left:0;right:0;text-align:center;font-size:9.5px;bottom:3px;}
+  .cal-num{width:22px;height:22px;font-size:12px;}
+  .cal-stats{margin-left:0;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;}
+  .cal-stat{text-align:left;}
+  .cal-up-list{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+  .cal-up-item{flex:0 0 78%;scroll-snap-align:start;}
+  .tab-btn{padding:12px 4px;font-size:13px;}
+  .cal-title{min-width:0;flex:1;font-size:17px;}
+  .cal-d-row{grid-template-columns:1fr auto 32px;gap:4px 10px;}
+  .cal-d-row .d-cat{grid-column:1/-1;}
+  .cal-d-row .d-note{grid-column:1/2;grid-row:3;font-size:12px;}
+  .cal-together .ct-div{display:none;}
+}
 /* EXPENSE STYLES */
 #tab-expense{width:100%;}
 .exp-month-total{display:inline-flex;align-items:center;gap:10px;margin-left:auto;padding:7px 14px;border-radius:999px;background:linear-gradient(135deg,#fdf2f8,#f5f3ff);border:1px solid #e9d5ff;white-space:nowrap;}
@@ -264,6 +354,7 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('expense',this)">💰 情侶記帳</button>
+  <button class="tab-btn" onclick="switchTab('calendar',this)">📅 情侶行事曆</button>
   <button class="tab-btn" onclick="switchTab('profile',this)">📋 個人檔案</button>
 </div>
 
@@ -567,6 +658,47 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   </div>
   <div id="exp-list"></div>
   <div class="exp-pager" id="expPager" style="display:none"></div>
+
+</div>
+</div>
+
+<div class="tab-content" id="tab-calendar">
+<div class="resume" style="border-top:none;padding:24px">
+
+  <div class="cal-together" id="calTogether"></div>
+
+  <div class="cal-upcoming" id="calUpcoming"></div>
+
+  <div class="cal-head">
+    <button class="cal-nav" onclick="calStep(-1)" title="上個月">&#9664;</button>
+    <div class="cal-title" id="calTitle"></div>
+    <button class="cal-nav" onclick="calStep(1)" title="下個月">&#9654;</button>
+    <button class="cal-today-btn" onclick="calGoToday()">今天</button>
+    <div class="cal-stats" id="calStats"></div>
+  </div>
+
+  <div class="cal-grid-wrap">
+    <div class="cal-week">
+      <div class="sun">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="sat">六</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <div class="cal-legend">
+    <span><i class="cal-dot" style="background:#c2410c"></i>餐廳</span>
+    <span><i class="cal-dot" style="background:#a16207"></i>餐飲</span>
+    <span><i class="cal-dot" style="background:#be185d"></i>禮物</span>
+    <span><i class="cal-dot" style="background:#4338ca"></i>電影</span>
+    <span><i class="cal-dot" style="background:#7c3aed"></i>娛樂</span>
+    <span><i class="cal-dot" style="background:#0e7490"></i>住宿</span>
+    <span><i class="cal-dot" style="background:#166534"></i>日常</span>
+    <span><i class="cal-dot" style="background:#92660a"></i>交通</span>
+    <span class="cal-legend-sep"></span>
+    <span><i class="cal-swatch future"></i>已訂／即將到來</span>
+    <span>💕 紀念日</span><span>🎂 生日</span>
+  </div>
+
+  <div class="cal-detail" id="calDetail"></div>
 
 </div>
 </div>
@@ -1076,6 +1208,7 @@ function switchTab(tab,btn){
   if(target)target.classList.add('active');
   if(btn)btn.classList.add('active');
   if(tab==='expense')renderExpenses();
+  if(tab==='calendar')renderCalendar();
 }
 
 function fmtMoney(n){return '$'+Number(n).toLocaleString();}
@@ -1110,6 +1243,8 @@ async function loadExpenses(){
   }
   if(!token)setExpSaveState('warn','⚠️ 這台裝置還沒設定 GitHub Token，新增的記錄不會存到雲端');
   renderExpenses();
+  var calTab=document.getElementById('tab-calendar');
+  if(calTab&&calTab.classList.contains('active'))renderCalendar();
 }
 
 function retryExpSave(){saveExpenses('✅ 已儲存！');}
@@ -1437,6 +1572,226 @@ function renderExpenses(){
   var noteInp=document.getElementById('e-note');
   if(noteInp)noteInp.addEventListener('keydown',function(ev){if(ev.key==='Enter')addExpense();});
 })();
+
+
+// ================= 情侶行事曆 =================
+var calY=null,calM=null,calSel=null;
+var CAL_EMOJI={'餐廳':'🍽','餐飲':'🥤','禮物':'🎁','電影':'🎞','娛樂':'🎬','日常':'🛒','交通':'🚗','住宿':'🏨','其他':'📦','旅遊':'✈️'};
+var CAL_COLOR={'餐廳':'#c2410c','餐飲':'#a16207','禮物':'#be185d','電影':'#4338ca','娛樂':'#7c3aed','日常':'#166534','交通':'#92660a','住宿':'#0e7490','其他':'#555','旅遊':'#0369a1'};
+var CAL_WD=['日','一','二','三','四','五','六'];
+
+function calPad(n){return (n<10?'0':'')+n;}
+function calLocalToday(){var d=new Date();return d.getFullYear()+'-'+calPad(d.getMonth()+1)+'-'+calPad(d.getDate());}
+function calEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+function calParseYMD(s){
+  var m=String(s||'').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+  return m?{y:+m[1],m:+m[2],d:+m[3]}:null;
+}
+function calDaysBetween(a,b){ // a,b: 'YYYY-MM-DD'
+  var pa=a.split('-'),pb=b.split('-');
+  return Math.round((Date.UTC(+pb[0],pb[1]-1,+pb[2])-Date.UTC(+pa[0],pa[1]-1,+pa[2]))/86400000);
+}
+
+// 每天的紀念日：交往紀念日、Chloe 生日
+function calAnniv(y,m,d){
+  var out=[];
+  var met=calParseYMD(data&&data.met), bd=calParseYMD(data&&data.birthday);
+  if(met&&met.m===m&&met.d===d&&y>=met.y){
+    var n=y-met.y;
+    out.push({icon:'💕',short:n?n+'週年':'在一起',text:n?'交往 '+n+' 週年紀念日':'在一起的第一天'});
+  }
+  if(bd&&bd.m===m&&bd.d===d){
+    out.push({icon:'🎂',short:'生日',text:'Chloe 生日'+(y>=bd.y?'（'+(y-bd.y)+' 歲）':'')});
+  }
+  return out;
+}
+
+function calByDate(){
+  var map={};
+  (expenses||[]).forEach(function(e){
+    if(!e.date)return;
+    (map[e.date]=map[e.date]||[]).push(e);
+  });
+  Object.keys(map).forEach(function(k){map[k].sort(function(a,b){return (a.id||0)-(b.id||0);});});
+  return map;
+}
+
+function calStep(n){
+  calM+=n;
+  if(calM<0){calM=11;calY--;}
+  if(calM>11){calM=0;calY++;}
+  calSel=null;
+  renderCalendar();
+}
+function calGoToday(){
+  var t=new Date();calY=t.getFullYear();calM=t.getMonth();calSel=calLocalToday();
+  renderCalendar();
+}
+function calPick(ds){
+  calSel=ds;
+  renderCalendar();
+  var el=document.getElementById('calDetail');
+  if(el&&window.innerWidth<760)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function calJump(ds){
+  var p=ds.split('-');calY=+p[0];calM=+p[1]-1;calSel=ds;
+  renderCalendar();
+  var g=document.getElementById('calDetail');
+  if(g)g.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function calGotoExpenseTab(){
+  var b=document.querySelector('.tab-btn[onclick*="\'expense\'"]');
+  switchTab('expense',b);
+}
+function calEdit(id){
+  calGotoExpenseTab();
+  editExpense(id);
+  var f=document.querySelector('.exp-add');
+  if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function calAddOn(ds){
+  calGotoExpenseTab();
+  if(typeof resetExpForm==='function')resetExpForm();
+  var di=document.getElementById('e-date');if(di)di.value=ds;
+  var f=document.querySelector('.exp-add');
+  if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(function(){var d=document.getElementById('e-desc');if(d)d.focus();},350);
+}
+
+function renderCalendar(){
+  if(!document.getElementById('calGrid'))return;
+  var now=new Date(), today=calLocalToday();
+  if(calY===null){calY=now.getFullYear();calM=now.getMonth();}
+  var byDate=calByDate();
+
+  // ---- 在一起天數 ----
+  var met=calParseYMD(data&&data.met);
+  var tg=document.getElementById('calTogether');
+  if(tg){
+    var allDays=Object.keys(byDate).filter(function(d){return d<=today;});
+    var totalAll=0;(expenses||[]).forEach(function(e){if(e.date&&e.date<=today)totalAll+=parseFloat(e.amount)||0;});
+    var html='';
+    if(met){
+      var metStr=met.y+'-'+calPad(met.m)+'-'+calPad(met.d);
+      html+='<div style="text-align:center"><div class="ct-lbl">在一起</div><div class="ct-big">'+(calDaysBetween(metStr,today)+1).toLocaleString()+'</div><div class="ct-sub">天 · 從 '+met.y+'/'+calPad(met.m)+'/'+calPad(met.d)+'</div></div><div class="ct-div"></div>';
+    }
+    html+='<div style="text-align:center"><div class="ct-lbl">約會天數</div><div class="ct-big">'+allDays.length+'</div><div class="ct-sub">天有記錄</div></div><div class="ct-div"></div>'+
+          '<div style="text-align:center"><div class="ct-lbl">一起花了</div><div class="ct-big">'+fmtMoney(Math.round(totalAll))+'</div><div class="ct-sub">截至今天</div></div>';
+    tg.innerHTML=html;
+  }
+
+  // ---- 即將到來 ----
+  var up=[];
+  (expenses||[]).forEach(function(e){
+    if(e.date&&e.date>today)up.push({date:e.date,desc:e.desc,meta:(e.note?e.note+' · ':'')+(e.cat||'')+' · '+fmtMoney(e.amount),anniv:false});
+  });
+  // 下一個紀念日／生日（一年內）
+  var bd=calParseYMD(data&&data.birthday);
+  [[met,'💕 交往紀念日',true],[bd,'🎂 Chloe 生日',false]].forEach(function(x){
+    var o=x[0];if(!o)return;
+    var y=now.getFullYear(), ds=y+'-'+calPad(o.m)+'-'+calPad(o.d);
+    if(ds<today){y++;ds=y+'-'+calPad(o.m)+'-'+calPad(o.d);}
+    var label=x[1];
+    if(x[2])label+='（'+(y-o.y)+' 週年）';
+    else label+='（'+(y-o.y)+' 歲）';
+    up.push({date:ds,desc:label,meta:y+'/'+calPad(o.m)+'/'+calPad(o.d),anniv:true});
+  });
+  up.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
+  var ue=document.getElementById('calUpcoming');
+  if(ue){
+    if(up.length){
+      ue.innerHTML='<div class="cal-up-title">即將到來</div><div class="cal-up-list">'+
+        up.slice(0,6).map(function(u){
+          var n=calDaysBetween(today,u.date), p=u.date.split('-');
+          var wd=CAL_WD[new Date(+p[0],p[1]-1,+p[2]).getDay()];
+          return '<div class="cal-up-item'+(u.anniv?' anniv':'')+'" onclick="calJump(\''+u.date+'\')">'+
+            '<div class="cal-up-cd">'+(n===0?'<b>今天</b>':'<span>還有</span><b>'+n+'</b><span>天</span>')+'</div>'+
+            '<div class="cal-up-body"><div class="cal-up-desc">'+calEsc(u.desc)+'</div>'+
+            '<div class="cal-up-meta">'+(+p[1])+'/'+(+p[2])+'（'+wd+'）'+(u.anniv?'':' · '+calEsc(u.meta))+'</div></div></div>';
+        }).join('')+'</div>';
+    }else ue.innerHTML='';
+  }
+
+  // ---- 標題與本月統計 ----
+  setText('calTitle',calY+' 年 '+(calM+1)+' 月');
+  var ym=calY+'-'+calPad(calM+1);
+  var mDays=0,mTotal=0,mCat={},maxDay=null,maxAmt=-1;
+  Object.keys(byDate).forEach(function(ds){
+    if(ds.slice(0,7)!==ym)return;
+    mDays++;
+    var s=0;byDate[ds].forEach(function(e){var a=parseFloat(e.amount)||0;s+=a;mCat[e.cat]=(mCat[e.cat]||0)+1;});
+    mTotal+=s;
+    if(s>maxAmt){maxAmt=s;maxDay=ds;}
+  });
+  var topCat='—',topN=0;Object.keys(mCat).forEach(function(k){if(mCat[k]>topN){topN=mCat[k];topCat=k;}});
+  setHTML('calStats',
+    '<div class="cal-stat"><div class="cs-l">約會天數</div><div class="cs-v">'+mDays+' 天</div></div>'+
+    '<div class="cal-stat"><div class="cs-l">本月花費</div><div class="cs-v">'+fmtMoney(Math.round(mTotal))+'</div></div>'+
+    '<div class="cal-stat"><div class="cs-l">最常</div><div class="cs-v">'+(topN?(CAL_EMOJI[topCat]||'')+' '+topCat:'—')+'</div></div>'+
+    '<div class="cal-stat"><div class="cs-l">最高單日</div><div class="cs-v">'+(maxDay?(+maxDay.slice(8))+'日 '+fmtMoney(Math.round(maxAmt)):'—')+'</div></div>');
+
+  // ---- 月曆格子 ----
+  var first=new Date(calY,calM,1), startW=first.getDay();
+  var dim=new Date(calY,calM+1,0).getDate();
+  var cells=Math.ceil((startW+dim)/7)*7;
+  var html='';
+  for(var i=0;i<cells;i++){
+    var dnum=i-startW+1;
+    var dt=new Date(calY,calM,dnum);
+    var ds=dt.getFullYear()+'-'+calPad(dt.getMonth()+1)+'-'+calPad(dt.getDate());
+    var inMonth=dnum>=1&&dnum<=dim;
+    var wd=dt.getDay();
+    var cls='cal-cell'+(inMonth?'':' out')+(wd===0?' sun':'')+(wd===6?' sat':'')+(ds===today?' today':'')+(ds===calSel?' sel':'');
+    if(!inMonth){html+='<div class="'+cls+'"><span class="cal-num">'+dt.getDate()+'</span></div>';continue;}
+    var evs=byDate[ds]||[];
+    if(evs.length)cls+=' has';
+    var an=calAnniv(dt.getFullYear(),dt.getMonth()+1,dt.getDate());
+    var marks=an.map(function(a){return '<span class="cal-mark">'+a.icon+'<span class="cal-mark-txt">'+a.short+'</span></span>';}).join('');
+    var future=ds>today;
+    var shown=evs.slice(0,3).map(function(e){
+      return '<div class="cal-ev ecat-'+calEsc(e.cat)+(future?' future':'')+'" title="'+calEsc(e.desc+(e.note?'｜'+e.note:''))+'">'+(CAL_EMOJI[e.cat]||'•')+' '+calEsc(e.desc)+'</div>';
+    }).join('');
+    if(evs.length>3)shown+='<div class="cal-more">+'+(evs.length-3)+' 筆</div>';
+    var dots=evs.map(function(e){return '<i class="cal-dot" style="background:'+(CAL_COLOR[e.cat]||'#888')+(future?';box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px '+(CAL_COLOR[e.cat]||'#888'):'')+'"></i>';}).slice(0,6).join('');
+    var sum=0;evs.forEach(function(e){sum+=parseFloat(e.amount)||0;});
+    html+='<div class="'+cls+'" onclick="calPick(\''+ds+'\')">'+
+      '<span class="cal-num">'+dt.getDate()+'</span>'+marks+
+      '<div class="cal-evs">'+shown+'</div>'+
+      (evs.length?'<div class="cal-dots">'+dots+'</div>':'')+
+      (evs.length?'<div class="cal-amt">'+fmtMoney(Math.round(sum))+'</div>':'')+
+      '</div>';
+  }
+  setHTML('calGrid',html);
+
+  // ---- 選取日期的明細 ----
+  var det=document.getElementById('calDetail');
+  if(!det)return;
+  if(!calSel||calSel.slice(0,7)!==ym){det.innerHTML='';return;}
+  var list=(byDate[calSel]||[]).slice().sort(function(a,b){return (a.id||0)-(b.id||0);});
+  var p=calSel.split('-');
+  var wdS=CAL_WD[new Date(+p[0],p[1]-1,+p[2]).getDay()];
+  var tot=0;list.forEach(function(e){tot+=parseFloat(e.amount)||0;});
+  var isFut=calSel>today;
+  var anS=calAnniv(+p[0],+p[1],+p[2]);
+  var h='<div class="cal-d-head"><span class="cal-d-date">'+(+p[1])+' 月 '+(+p[2])+' 日（'+wdS+'）</span>'+
+    '<span class="cal-d-sum">'+(list.length?list.length+' 筆 · '+fmtMoney(Math.round(tot)):'沒有記錄')+(isFut&&list.length?' · 即將到來':'')+'</span>'+
+    '<button class="cal-d-add" onclick="calAddOn(\''+calSel+'\')">＋ 在這天記一筆</button></div>';
+  if(anS.length)h+='<div class="cal-d-anniv">'+anS.map(function(a){return a.icon+' '+a.text;}).join('　')+'</div>';
+  if(list.length){
+    h+=list.map(function(e){
+      return '<div class="cal-d-row">'+
+        '<div class="d-cat"><span class="exp-cat-tag ecat-'+calEsc(e.cat)+'">'+(CAL_EMOJI[e.cat]||'')+' '+calEsc(e.cat)+'</span>'+(isFut?'<span class="cal-d-future">已訂</span>':'')+'</div>'+
+        '<div class="d-desc">'+calEsc(e.desc)+'</div>'+
+        '<div class="d-note">'+calEsc(e.note||'')+'</div>'+
+        '<div class="d-amt">'+fmtMoney(e.amount)+'</div>'+
+        '<button class="d-edit" title="編輯" onclick="calEdit('+e.id+')">✏️</button>'+
+        '</div>';
+    }).join('');
+  }else{
+    h+='<div class="cal-d-empty">這天還沒有一起的記錄</div>';
+  }
+  det.innerHTML=h;
+}
 
 loadData();
 loadExpenses();
