@@ -254,6 +254,20 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   .cal-stk-n{min-width:13px;height:13px;font-size:8px;right:-5px;top:-4px;padding:0 2px;}
   .cal-stk.more{font-size:9px;}
 }
+
+/* ---- 每日格子：深粉色 ---- */
+.cal-cell{background:#f7b3cd !important;border-color:#ee94b9 !important;}
+.cal-cell.has{background:#f4a3c3 !important;border-color:#e57fa9 !important;box-shadow:0 2px 0 #e27aa5 !important;}
+.cal-cell:hover{background:#f9c2d8 !important;border-color:#db2777 !important;}
+.cal-cell.out{background:transparent !important;border-color:transparent !important;box-shadow:none !important;}
+.cal-cell .cal-num{color:#831843;}
+.cal-cell.sun .cal-num{color:#be123c;}
+.cal-cell.sat .cal-num{color:#3730a3;}
+.cal-cell.today .cal-num{background:#7c3aed;color:#fff;}
+.cal-cell.sel{border-color:#9d174d !important;box-shadow:0 0 0 3px #fff !important;}
+.cal-cell.future{border-color:#9d174d !important;}
+.cal-cell.future .cal-stk{border-color:#9d174d;}
+.cal-cell.out .cal-num{color:#e9a8c3 !important;}
 /* EXPENSE STYLES */
 #tab-expense{width:100%;}
 .exp-month-total{display:inline-flex;align-items:center;gap:10px;margin-left:auto;padding:7px 14px;border-radius:999px;background:linear-gradient(135deg,#fdf2f8,#f5f3ff);border:1px solid #e9d5ff;white-space:nowrap;}
