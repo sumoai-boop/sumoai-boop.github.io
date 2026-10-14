@@ -224,13 +224,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .how.auc{border-color:var(--meLine);color:var(--me);font-family:var(--mono);font-weight:700}
 .pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
-.tm{position:relative;overflow:hidden;border-left:5px solid var(--tc)!important;
-  background:linear-gradient(100deg,var(--card) 52%,color-mix(in srgb,var(--tc) 13%,#fff) 100%)!important}
+.tm{position:relative;overflow:hidden;border-left:8px solid var(--tc)!important;border-color:color-mix(in srgb,var(--tc) 35%,var(--line))!important;border-left-color:var(--tc)!important;
+  box-shadow:inset 3px 0 0 var(--tc2),var(--shadow)!important;
+  background:linear-gradient(105deg,color-mix(in srgb,var(--tc) 7%,#fff) 0%,color-mix(in srgb,var(--tc) 10%,#fff) 40%,color-mix(in srgb,var(--tc) 34%,#fff) 100%)!important}
+/* 右上角隊色斜角 */
+.tm::before{content:"";position:absolute;z-index:0;top:0;right:0;width:96px;height:96px;background:linear-gradient(225deg,var(--tc) 0 22px,var(--tc2) 22px 28px,transparent 28px);opacity:.9;pointer-events:none}
+.tm .pick.big{position:relative;z-index:2;background:#fff}
 .tm>*:not(.tmlogo):not(.act){position:relative;z-index:1}
 .tm>.act{z-index:2}
-.tm .tmlogo{position:absolute;z-index:0;right:-10px;bottom:-18px;width:92px;height:92px;object-fit:contain;opacity:.2;pointer-events:none}
+.tm .tmlogo{position:absolute;z-index:0;right:-8px;bottom:-16px;width:104px;height:104px;object-fit:contain;opacity:.34;pointer-events:none}
 .drow.tm .tmlogo{right:64px;bottom:-22px;width:84px;height:84px;opacity:.16}
-.pcard.out.tm{border-left-color:var(--line2)!important;background:var(--card2)!important}
+.pcard.out.tm{border-left-color:var(--line2)!important;border-color:var(--line)!important;background:var(--card2)!important;box-shadow:none!important}
+.pcard.out.tm::before{display:none}
 .pcard.out .tmlogo{filter:grayscale(1);opacity:.1}
 .pick{display:inline-flex;align-items:baseline;gap:3px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink);background:var(--card);border:1px solid var(--line2);border-radius:5px;padding:0 6px;line-height:17px}
 .pick small{font-size:9.5px;font-weight:400;color:var(--ink3);letter-spacing:.04em}
