@@ -224,6 +224,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .projbox{margin-left:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}
 .projbox select{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:7px 10px}
 .projbox.set select{background:var(--meSoft);border-color:var(--meLine);color:var(--me);font-weight:700}
+.pc-mid{position:relative}
+.pc-mid>.pc-row{position:relative;z-index:1;padding-right:76px}
+/* 球隊 logo：右側、垂直置中在位置／球隊那兩排 */
+.tm .pc-mid .tmlogo{position:absolute;z-index:0;right:-4px;left:auto;bottom:auto;top:50%;transform:translateY(-50%);width:66px;height:66px;object-fit:contain;opacity:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.pcard.out .pc-mid .tmlogo{filter:grayscale(1);opacity:.35}
 .how.auc{border-color:var(--meLine);color:var(--me);font-family:var(--mono);font-weight:700}
 .pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
@@ -977,10 +982,10 @@ function statsHTML(p){
 }
 function pcardHTML(p,withStats){
   const out=p.status!=='在隊',lo=out?lastOut(p):null;
-  return '<div class="pcard'+(out?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+tmLogo(p.nba)+
+  return '<div class="pcard'+(out?' out':'')+(TC[p.nba]?' tm':'')+'"'+tmStyle(p.nba)+' data-id="'+p.id+'">'+
     '<div class="pc-top"><div class="pn">'+esc(p.name)+'</div>'+(()=>{const c=withStats==='season'?curPick(p):{v:pickOf(p),prev:null};return c.v?'<span class="pick big" title="'+(withStats==='season'?'最新一週的 PICK（▲▼ 跟上一次比）':'季前 PICK')+'"><small>PICK</small>'+c.v+dlHTML(c.v,c.prev)+'</span>':''})()+'</div>'+
-    '<div class="pc-row">'+(p.pos.length?posTags(p):'<span class="dim">位置未填</span>')+'</div>'+
-    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div>'+(withStats==='season'?seasonHTML(p):withStats===true?statsHTML(p):'')+'</div>';
+    '<div class="pc-mid">'+tmLogo(p.nba)+'<div class="pc-row">'+(p.pos.length?posTags(p):'<span class="dim">位置未填</span>')+'</div>'+
+    '<div class="pc-row">'+teamTag(p)+howChip(p)+(out?'<span class="how">'+p.status+(lo&&lo.d?' '+md(lo.d):'')+'</span>':'')+'</div></div>'+(withStats==='season'?seasonHTML(p):withStats===true?statsHTML(p):'')+'</div>';
 }
 let stSort={k:'round',asc:true};
 function statTableHTML(){
