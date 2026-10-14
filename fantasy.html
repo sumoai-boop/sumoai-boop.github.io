@@ -221,6 +221,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .budget .kv2{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}
 .budget .kv2 b{font-family:var(--mono);color:var(--ink);font-size:14px;margin-left:4px}
 .budget .warn{color:var(--loss)}
+.projbox{margin-left:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.projbox select{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:7px 10px}
+.projbox.set select{background:var(--meSoft);border-color:var(--meLine);color:var(--me);font-weight:700}
 .how.auc{border-color:var(--meLine);color:var(--me);font-family:var(--mono);font-weight:700}
 .pick.big{font-size:13px;line-height:20px;padding:0 7px}
 /* 球隊配色：左邊色條 + 右側淡淡的隊色漸層 + logo 浮水印 */
@@ -750,7 +753,7 @@ function normPs(o){const out={};if(!o||typeof o!=='object')return out;
 function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&&w.me[c.k],b=w.op&&w.op[c.k];if(a!=null&&a!==''&&isFinite(+a))me[c.k]=+a;if(b!=null&&b!==''&&isFinite(+b))op[c.k]=+b});
   return {id:w.id||uid('w'),lg:w.lg||'lg1',week:+w.week||0,start:w.start||'',end:w.end||'',opp:String(w.opp||'').trim(),playoff:!!w.playoff,me,op,ps:normPs(w.ps),note:w.note||'',u:+w.u||0}}
 function normL(l){l=Object.assign({},DEF_LEAGUE,l||{});l.id=l.id||uid('lg');l.name=String(l.name||'').trim();l.teams=Math.min(20,Math.max(2,+l.teams||14));l.rounds=Math.min(30,Math.max(1,+l.rounds||13));
-  l.slot=+l.slot||0;if(l.slot>l.teams)l.slot=0;l.opps=Array.isArray(l.opps)?l.opps.map(s=>String(s).trim()).filter(Boolean):[];
+  l.slot=+l.slot||0;if(l.slot>l.teams)l.slot=0;l.proj=+l.proj||0;if(l.proj>l.teams)l.proj=0;l.opps=Array.isArray(l.opps)?l.opps.map(s=>String(s).trim()).filter(Boolean):[];
   l.cats=Array.isArray(l.cats)?l.cats.filter(k=>CATS.some(c=>c.k===k)):DEF_LEAGUE.cats.slice();
   l.draft=l.draft==='auction'?'auction':'snake';l.budget=Math.max(1,Math.round(+l.budget||200));
   l.mode=l.mode==='pts'||l.mode==='cat'?l.mode:(/pts|points|積分/i.test(l.name)?'pts':'cat');
@@ -997,12 +1000,16 @@ function statTableHTML(){
   h+='</tbody>'+(withSt.length?'<tfoot><tr><td>平均</td><td></td><td>'+fmtS('gp',avg('gp'))+'</td><td></td>'+['pts','reb','ast','st','blk','to','fp'].map(k=>'<td>'+fmtS(k,avg(k))+'</td>').join('')+'<td></td><td></td></tr></tfoot>':'')+'</table></div></div>';
   return h;
 }
+/* 電腦預估排名：選秀後 Yahoo 給的預估名次（1 ~ 隊伍數） */
+function projSelHTML(){const L=LG();let o='<option value="0">還沒出來</option>';for(let i=1;i<=L.teams;i++)o+='<option value="'+i+'"'+(L.proj===i?' selected':'')+'>第 '+i+' 名 / '+L.teams+' 隊</option>';
+  return '<span class="projbox'+(L.proj?' set':'')+'"><span>電腦預估排名：</span><select id="projSel">'+o+'</select></span>'}
+function bindProj(){const s=$('projSel');if(s)s.onchange=e=>{LG().proj=+e.target.value;markDirty(LG());toast(LG().proj?'預估排名：第 '+LG().proj+' 名':'已清除預估排名')}}
 function renderAuction(){
   const L=LG(),el=$('v-draft'),ps=Pl().filter(p=>p.how==='選秀').sort(draftCmp);
   const spent=ps.reduce((a,p)=>a+(p.price||0),0),left=L.budget-spent,need=Math.max(0,L.rounds-ps.length);
   const maxBid=need>0?left-(need-1):0,avg=need>0?left/need:0;
   let h='<div class="bar"><h2>我的拍賣選秀</h2><button class="btn pri sm" id="btnAddA">＋ 新增得標球員</button></div>';
-  h+='<div class="card budget"><div class="top"><div class="left">$'+left+'<small>剩餘預算 / $'+L.budget+'</small></div><span style="font-size:12.5px;color:var(--ink3)">名單 '+L.rounds+' 人・可在聯盟設定改預算和人數</span></div>'+
+  h+='<div class="card budget"><div class="top"><div class="left">$'+left+'<small>剩餘預算 / $'+L.budget+'</small></div>'+projSelHTML()+'</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">名單 '+L.rounds+' 人・可在聯盟設定改預算和人數</div>'+
     '<div class="bbar" title="每一段是一位球員的得標價">'+ps.filter(p=>p.price>0).map(p=>'<span style="width:'+(p.price/L.budget*100)+'%" title="'+esc(p.name)+' $'+p.price+'"></span>').join('')+'</div>'+
     '<div class="kv2"><span>已買<b>'+ps.length+' / '+L.rounds+'</b></span><span>已花<b>$'+spent+'</b></span><span>還缺<b>'+need+' 人</b></span>'+
     (need?'<span>最高還能出<b class="'+(maxBid<1?'warn':'')+'">$'+Math.max(0,maxBid)+'</b></span><span>剩下平均每人<b>$'+avg.toFixed(1)+'</b></span>':'<span>名單已滿 🏀</span>')+
@@ -1014,6 +1021,7 @@ function renderAuction(){
   el.querySelectorAll('.sttbl th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;stSortA=stSortA.k===k?{k,asc:!stSortA.asc}:{k,asc:k==='cur'||k==='to'};renderDraft()});
   el.querySelectorAll('.sttbl tbody tr[data-id]').forEach(tr=>tr.onclick=()=>openPlayer(tr.dataset.id));
   el.querySelectorAll('.pcard[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
+  bindProj();
   const add=()=>openPlayer(null,{how:'選秀'});$('btnAddA').onclick=add;el.querySelectorAll('.pcard[data-new]').forEach(c=>c.onclick=add);
 }
 let stSortA={k:'round',asc:false};
@@ -1023,7 +1031,7 @@ function renderDraft(){
   let h='<div class="bar"><h2>我的選秀</h2><span class="hint">'+L.teams+' 隊・'+L.rounds+' 輪・蛇形順序（奇數輪正序、偶數輪倒序）</span></div>';
   h+='<div class="card slotpick"><span>我的選秀順位</span><select id="slotSel"><option value="0">還不知道</option>';
   for(let i=1;i<=L.teams;i++)h+='<option value="'+i+'"'+(L.slot===i?' selected':'')+'>第 '+i+' 順位</option>';
-  h+='</select><span style="font-size:12.5px;color:var(--ink3)">選好後每一輪的總順位、和下一次輪到你還要等幾個人都會算出來</span></div>';
+  h+='</select><span style="font-size:12.5px;color:var(--ink3)">選好後每一輪的總順位、和下一次輪到你還要等幾個人都會算出來</span>'+projSelHTML()+'</div>';
   if(L.slot){
     const ps=[];for(let r=1;r<=L.rounds;r++)ps.push(overallPick(r));
     const gaps=ps.slice(1).map((x,i)=>x-ps[i]);
@@ -1046,6 +1054,7 @@ function renderDraft(){
   el.querySelectorAll('.sttbl th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;stSort=stSort.k===k?{k,asc:!stSort.asc}:{k,asc:k==='cur'||k==='to'||k==='round'};renderDraft()});
   el.querySelectorAll('.sttbl tbody tr[data-id]').forEach(tr=>tr.onclick=()=>openPlayer(tr.dataset.id));
   $('slotSel').onchange=e=>{LG().slot=+e.target.value;markDirty(LG())};
+  bindProj();
   el.querySelectorAll('.pcard[data-round]').forEach(d=>d.onclick=()=>{const r=+d.dataset.round,p=draftedIn(r);openPlayer(p?p.id:null,{how:'選秀',round:r})});
 }
 
