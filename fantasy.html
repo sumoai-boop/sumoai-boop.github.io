@@ -225,7 +225,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .projbox select{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:7px 10px}
 .projbox.set select{background:var(--meSoft);border-color:var(--meLine);color:var(--me);font-weight:700}
 .pc-mid{position:relative}
-.pc-mid>.pc-row{position:relative;z-index:1;padding-right:76px}
+.pc-mid>.pc-row{position:relative;z-index:1;padding-right:76px;flex-wrap:nowrap;white-space:nowrap}
+.pc-mid>.pc-row>*{flex:none}
 /* 球隊 logo：右側、垂直置中在位置／球隊那兩排 */
 .tm .pc-mid .tmlogo{position:absolute;z-index:0;right:-4px;left:auto;bottom:auto;top:50%;transform:translateY(-50%);width:66px;height:66px;object-fit:contain;opacity:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
 .pcard.out .pc-mid .tmlogo{filter:grayscale(1);opacity:.35}
@@ -957,7 +958,7 @@ function lastOut(p){for(let i=p.log.length-1;i>=0;i--)if(isOut(p.log[i].a))retur
 function howChip(p){
   const cls={'選秀':'draft','自由球員':'fa','交易':'trade'}[p.how];
   if(p.how==='選秀'&&isAuc())return '<span class="how auc" title="拍賣得標'+(p.ord?'・第 '+p.ord+' 個得標':'')+'">$'+(p.price||'?')+(p.ord?' · 第'+p.ord+'標':'')+'</span>';
-  if(p.how==='選秀'){const o=p.round&&LG().slot?overallPick(p.round):0;return '<span class="how draft">選秀 R'+(p.round||'?')+(o?' · #'+o:'')+'</span>'}
+  if(p.how==='選秀'){const o=p.round&&LG().slot?overallPick(p.round):0;return '<span class="how draft" title="選秀第 '+(p.round||'?')+' 輪'+(o?'・總第 '+o+' 順位':'')+'">R'+(p.round||'?')+(o?' · #'+o:'')+'</span>'}
   return '<span class="how '+cls+'">'+p.how+(p.date?' '+md(p.date):'')+'</span>';
 }
 function fmtS(k,v){if(v==null)return '—';if(k==='fp')return (+v).toFixed(1);if(k==='gp'||k==='cur')return String(Math.round(v));return (+v).toFixed(1)}
