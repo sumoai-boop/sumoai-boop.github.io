@@ -73,6 +73,22 @@
   }
 
   /* ── 月份分段（買物帳式）── */
+  /* ── 色彩：統計列小色點、季節月份、類型色條 ── */
+  .stat-lbl{display:flex;align-items:center;gap:6px;}
+  .stat-lbl::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--dot,var(--tomato));flex-shrink:0;}
+  .stat-item:has(#sTotal){--dot:#D63A24;}
+  .stat-item:has(#sAvg){--dot:#D99A0E;}
+  .stat-item:has(#sGAvg){--dot:#3557A8;}
+  .stat-item:has(#sTotalVisits){--dot:#3F7D4E;}
+  .stat-item:has(#sAvgPrice){--dot:#E07A1F;}
+  .stat-item:has(#sTotalSpend){--dot:#7B3F73;}
+  #sAvg{color:#9A5F00;}
+  #sTotalSpend{color:var(--tomato-d);}
+  .mon-h{border-bottom-color:color-mix(in srgb, var(--season,#D63A24) 50%, transparent);}
+  .mon-h h2 .mn{color:var(--season,var(--ink));}
+  .card-type{position:absolute;left:0;right:0;bottom:0;height:4px;z-index:3;}
+  .tchip{display:inline-flex;align-items:center;gap:5px;}
+  .tchip i{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
   /* ── 每筆記錄的照片 ── */
   .vp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
   .vp-th{position:relative;width:48px;height:48px;border-radius:7px;overflow:hidden;flex-shrink:0;border:1px solid var(--line);}
@@ -854,6 +870,26 @@ function compressImage(dataUrl,maxW,maxH,quality){
   });
 }
 
+/* ───── 食材色票：類型、時段、季節共用 ───── */
+const FOOD_PAL=[
+  {c:'#C8321E',bg:'rgba(214,58,36,.11)'},   // 番茄
+  {c:'#3F7D4E',bg:'rgba(63,125,78,.12)'},   // 羅勒
+  {c:'#9A5F00',bg:'rgba(214,150,20,.16)'},  // 芥末
+  {c:'#3557A8',bg:'rgba(53,87,168,.11)'},   // 藍莓
+  {c:'#7B3F73',bg:'rgba(123,63,115,.11)'},  // 茄子
+  {c:'#C0560F',bg:'rgba(224,122,31,.14)'},  // 紅椒粉
+  {c:'#5F6E14',bg:'rgba(122,139,46,.15)'},  // 橄欖
+  {c:'#B23A5C',bg:'rgba(217,96,122,.13)'},  // 覆盆子
+];
+let TYPE_RANK={};  // 依店數排序的類型 → 色票位置（常用的類型各拿不同顏色）
+function typeColor(t){
+  if(!t) return {c:'#6B4A3F',bg:'rgba(43,26,21,.06)'};
+  if(TYPE_RANK[t]!=null) return FOOD_PAL[TYPE_RANK[t]%FOOD_PAL.length];
+  let h=0; for(const ch of String(t)) h=(h*31+ch.codePointAt(0))>>>0;
+  return FOOD_PAL[h%FOOD_PAL.length];
+}
+const MEAL_COLOR={'早餐':FOOD_PAL[2],'午餐':FOOD_PAL[1],'晚餐':FOOD_PAL[3]};
+function seasonColor(m){ m=+m; return m>=3&&m<=5?'#3F7D4E':m>=6&&m<=8?'#D63A24':m>=9&&m<=11?'#C0560F':'#3557A8'; }
 let foodYear=null; // 照片牆目前顯示的年份（'nodate' = 未記日期）
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set(), typeCountMap={};
 let currentTab='food';
@@ -915,14 +951,15 @@ function renderStatsPage(){
     <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#8A6558;margin-bottom:16px;">區域分布　${dists.length} 個區域</div>
     <div style="display:flex;flex-direction:column;gap:10px;">`;
 
-  dists.forEach(([dist,d])=>{
+  dists.forEach(([dist,d],di)=>{
     const pct = Math.round(d.count/maxCount*100);
+    const _dc = FOOD_PAL[di%FOOD_PAL.length].c;
     const avgSpend = d.spendCount ? '$'+Math.round(d.totalSpend/d.spendCount).toLocaleString() : '—';
     html+=`
       <div style="display:grid;grid-template-columns:80px 1fr 60px 120px;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(120,50,30,0.06);">
         <div style="font-size:18px;color:#2B1A15;font-weight:700;text-align:right;white-space:nowrap;">${dist}</div>
         <div style="position:relative;height:28px;background:rgba(120,50,30,0.07);border-radius:6px;overflow:hidden;">
-          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(214,58,36,0.7),rgba(214,58,36,0.25));border-radius:6px;"></div>
+          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,${_dc}cc,${_dc}40);border-radius:6px;"></div>
           <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:#3A1F17;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);">
             ${d.names.slice(0,3).join('、')}${d.names.length>3?'…':''}
           </div>
@@ -992,17 +1029,18 @@ function renderMonthlyPage(){
     const data=allMonthData[year]||[];
     const maxTotal=Math.max(...data.map(m=>m.total),1);
     let chartHtml='<div style="display:flex;flex-direction:column;gap:8px;">';
-    data.forEach(m=>{
+    data.forEach((m,mi)=>{
       const pct=m.total?Math.round(m.total/maxTotal*100):0;
+      const _sc=seasonColor(mi+1), _top=m.total&&m.total===maxTotal;
       const label=m.total?'$'+m.total.toLocaleString():'—';
       chartHtml+=`
         <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
           <div style="font-size:12px;color:#6B4A3F;text-align:right;">${m.label}</div>
           <div style="position:relative;height:26px;background:rgba(120,50,30,0.07);border-radius:6px;overflow:hidden;">
-            <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,rgba(63,125,78,0.6),rgba(63,125,78,0.25));border-radius:6px;"></div>
+            <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,${_sc}${_top?'':'b3'},${_sc}${_top?'99':'33'});border-radius:6px;"></div>
             ${m.count?`<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#2B1A15;font-weight:700;">${m.count} 筆</div>`:''}
           </div>
-          <div style="font-size:18px;font-weight:900;color:${m.total?'#2B1A15':'rgba(43,26,21,0.25)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
+          <div style="font-size:18px;font-weight:900;color:${_top?'#B8301A':m.total?'#2B1A15':'rgba(43,26,21,0.25)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
         </div>`;
     });
     chartHtml+='</div>';
@@ -1039,7 +1077,8 @@ function refreshTypeList(){
   // 統計每個類型的數量並排序
   typeCountMap={};
   DATA.forEach(r=>{ if(r.type) typeCountMap[r.type]=(typeCountMap[r.type]||0)+1; });
-  const inUse=Object.keys(typeCountMap).sort((a,b)=>typeCountMap[b]-typeCountMap[a]);
+  const inUse=Object.keys(typeCountMap).sort((a,b)=>typeCountMap[b]-typeCountMap[a] || a.localeCompare(b));
+  TYPE_RANK={}; inUse.forEach((t,i)=>TYPE_RANK[t]=i);
   list.innerHTML='';
   // 全選按鈕
   const allBtn=document.createElement('div');
@@ -1051,7 +1090,8 @@ function refreshTypeList(){
     const item=document.createElement('div');
     const active=typeFilterSet.has(t);
     item.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center;color:'+(active?'#fff':'#2B1A15')+';background:'+(active?'#D63A24':'transparent')+';';
-    item.innerHTML=`<span>${t}</span><span style="color:${active?'#fff':'#B8301A'};font-size:12px;font-weight:700;min-width:20px;text-align:right;">${active?'✓ ':''}</span><span style="color:${active?'#fff':'#B8301A'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${typeCountMap[t]||''}</span>`;
+    item.dataset.type=t;
+    item.innerHTML=`<span class="tchip"><i style="background:${active?'#fff':typeColor(t).c}"></i>${t}</span><span style="color:${active?'#fff':'#B8301A'};font-size:12px;font-weight:700;min-width:20px;text-align:right;">${active?'✓ ':''}</span><span style="color:${active?'#fff':'#B8301A'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${typeCountMap[t]||''}</span>`;
     item.onclick=()=>{
       if(typeFilterSet.has(t)) typeFilterSet.delete(t); else typeFilterSet.add(t);
       updateTypeFilterUI(); render();
@@ -1071,12 +1111,12 @@ function updateTypeFilterUI(){
       el.style.color=typeFilterSet.size===0?'#fff':'#6B4A3F';
       el.style.background=typeFilterSet.size===0?'#D63A24':'transparent';
     } else {
-      const t=el.querySelector('span')?.textContent;
+      const t=el.dataset.type;
       if(!t) return;
       const active=typeFilterSet.has(t);
       el.style.color=active?'#fff':'#2B1A15';
       el.style.background=active?'#D63A24':'transparent';
-      el.innerHTML=`<span>${t}</span><span style="color:${active?'#fff':'#B8301A'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${active?'✓ ':''}${typeCountMap[t]||''}</span>`;
+      el.innerHTML=`<span class="tchip"><i style="background:${active?'#fff':typeColor(t).c}"></i>${t}</span><span style="color:${active?'#fff':'#B8301A'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${active?'✓ ':''}${typeCountMap[t]||''}</span>`;
     }
   });
 }
@@ -1667,7 +1707,8 @@ function openDetail(item, ctxDate){
     const badge=document.createElement('span');
     badge.id='dTypeBadge';
     badge.textContent=item.type;
-    badge.style.cssText='display:inline-block;margin-left:8px;padding:3px 10px;background:rgba(214,58,36,0.08);color:#B8301A;border:1px solid rgba(214,58,36,0.3);border-radius:99px;font-size:12px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
+    const _tc=typeColor(item.type);
+    badge.style.cssText='display:inline-block;margin-left:8px;padding:3px 10px;background:'+_tc.bg+';color:'+_tc.c+';font-weight:700;border:1px solid '+_tc.c+'33;border-radius:99px;font-size:12px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
     dNameEl.appendChild(badge);
   }
   if(item.meal){
@@ -1714,7 +1755,8 @@ function openDetail(item, ctxDate){
     let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6558;margin-bottom:6px;">用餐記錄 <span style="text-transform:none;letter-spacing:0;opacity:.8;">· 點一筆看當天照片</span></div>';
     html+=`<div class="dv-scroll" style="max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(214,58,36,0.5) rgba(120,50,30,0.07);border-radius:6px;">`;
     html+=allVisits.map((v,i)=>{
-      const mealSpan = v.meal ? '<span style="font-size:11px;color:#3F7D4E;margin-left:6px;">'+v.meal+'</span>' : '';
+      const _mc = MEAL_COLOR[v.meal]||FOOD_PAL[1];
+      const mealSpan = v.meal ? '<span style="font-size:11px;font-weight:700;color:'+_mc.c+';background:'+_mc.bg+';padding:1px 7px;border-radius:99px;margin-left:6px;">'+v.meal+'</span>' : '';
       const camSpan = (v.imgs&&v.imgs.length) ? '<span class="dv-cam">📷'+v.imgs.length+'</span>' : '';
       const scoreSpan = (v.score!=null && v.score!=='') ? '<span style="font-size:12px;color:#9A5F00;margin-left:8px;font-weight:700;">★'+Number(v.score).toFixed(1)+'</span>' : '';
       const menuDiv = v.menu ? '<div style="font-size:11px;color:#6B4A3F;margin-top:2px;">🍽 '+v.menu+'</div>' : '';
@@ -1959,6 +2001,11 @@ function buildCard(item, ctxDate){
         card.appendChild(visitBadge);
         if(item.score>0) card.appendChild(scoreBadge);
       }
+      if(item.type){
+        const strip=document.createElement('div'); strip.className='card-type';
+        strip.style.background=typeColor(item.type).c; strip.title=item.type;
+        card.appendChild(strip);
+      }
       card.addEventListener('click',()=>openDetail(item, ctxDate));
       return card;
 }
@@ -2085,7 +2132,8 @@ function render(){
         sec.className='mon'+(ym?'':' nodate');
         const h=document.createElement('div'); h.className='mon-h';
         if(ym){
-          h.innerHTML='<h2>'+(+ym.slice(5,7))+' 月<small>'+ym.slice(0,4)+'</small></h2>'+
+          sec.style.setProperty('--season', seasonColor(ym.slice(5,7)));
+        h.innerHTML='<h2><span class="mn">'+(+ym.slice(5,7))+'</span> 月<small>'+ym.slice(0,4)+'</small></h2>'+
             '<div class="r"><span class="meta">'+items.length+' 間 · '+g.visits+' 次</span>'+
             '<span class="t"><span>NT$</span>'+g.total.toLocaleString()+'</span></div>';
         } else {
