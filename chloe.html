@@ -2,7 +2,8 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f6ebf0">
 <title>Chloe 蔡宇涵｜個人檔案</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,700;1,9..144,900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -617,6 +618,58 @@ td.section-head{font-size:15px;}
   .exp-row>:nth-child(2){font-size:15px !important;}
   .exp-row>:nth-child(5){font-size:15.5px !important;}
   .td-label{font-size:12.5px;letter-spacing:0;}
+}
+
+/* ===================== POLISH ===================== */
+::selection{background:var(--rose);color:#fff;}
+/* leftover purple UI accents → rose family (category colours stay) */
+.cal-more{color:var(--rose);}
+.cal-stk-n{background:var(--rose);}
+.cal-up-item{border-color:#eba6c4;background:#fff;}
+.cal-up-item.anniv{background:var(--blush);border-style:solid;border-color:#f5b5cf;}
+.cal-up-item:hover{border-color:var(--rose);}
+.cal-d-future{color:var(--rose);border-color:var(--rose);}
+.cal-lg-fut i{border-color:#9d174d;}
+.cal-nav:hover,.exp-month-btn:hover,.exp-nav-btn:hover:not(:disabled),.exp-page-btn:hover:not(:disabled){border-color:var(--rose) !important;color:var(--rose) !important;}
+.exp-edit:hover{background:var(--blush);color:var(--rose);}
+.exp-input:focus,.exp-select:focus,.exp-search:focus,.exp-month-sel:focus,.form-input:focus,.form-textarea:focus{border-color:var(--rose) !important;box-shadow:0 0 0 3px var(--blush-2);outline:none;background:#fff;}
+.exp-editing-bar{background:var(--blush);border-color:#f5b5cf;color:var(--rose-deep);}
+.exp-row.editing{background:var(--blush) !important;box-shadow:inset 4px 0 0 var(--rose) !important;}
+.exp-result-sum{background:var(--blush) !important;border-color:#f5b5cf !important;color:var(--rose-deep);}
+.exp-rs-tag{background:var(--rose) !important;color:#fff !important;border-color:var(--rose) !important;}
+.exp-rs-item b.amt{color:var(--rose) !important;font-family:var(--f-fig);font-weight:800;}
+.photo-add:hover{border-color:var(--rose);color:var(--rose);}
+.photo-item:hover{border-color:var(--rose);}
+.upload-progress{color:var(--rose);}
+
+/* motion: quick, consistent, never on layout */
+.tab-btn,.exp-add-btn,.exp-filter-btn,.exp-month-btn,.cal-nav,.cal-today-btn,.cal-d-add,.exp-edit,.btn,.exp-page-btn,.exp-nav-btn,.cal-up-item,.cal-cell{transition:background-color .15s ease,color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .12s ease;}
+.exp-add-btn:active,.cal-d-add:active,.cal-today-btn:active,.btn:active,.exp-filter-btn:active,.tab-btn:active{transform:scale(.97);}
+.edit-fab{transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s ease;}
+.edit-fab:active{transform:scale(.94);}
+
+/* keyboard focus: visible, on-brand, mouse clicks stay clean */
+:focus{outline:none;}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px;border-radius:4px;}
+.tab-btn:focus-visible{outline-offset:-5px;}
+.cal-cell:focus-visible{outline:3px solid var(--ink);outline-offset:1px;border-radius:14px;}
+
+/* touch */
+button,a,.cal-cell,.cal-up-item,select{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.exp-edit{min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;}
+.cal-up-list{scrollbar-width:thin;scrollbar-color:#e7b7cb transparent;}
+@media(hover:none){
+  .cal-cell:hover{background:inherit;}
+  .cal-cell:hover .cal-stk{transform:none !important;}
+  .cal-up-item:hover{transform:none;}
+}
+@media(max-width:760px){
+  /* iOS zooms any field under 16px on focus */
+  .exp-input,.exp-select,.exp-search,.exp-month-sel,.form-input,.form-textarea{font-size:16px !important;}
+  .edit-fab{bottom:calc(84px + env(safe-area-inset-bottom));right:16px;}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none !important;animation:none !important;}
 }
 </style>
 </head>
@@ -2135,7 +2188,7 @@ function renderCalendar(){
       return '<span class="cal-stk'+(g.anniv?' anniv':'')+'" style="background:'+g.bg+';transform:rotate('+rot+'deg)" title="'+calEsc(g.tips.join('\n'))+'">'+g.i+(g.n>1?'<b class="cal-stk-n">'+g.n+'</b>':'')+'</span>';
     }).join('');
     if(groups.length>MAXI)stick+='<span class="cal-stk more">+'+(groups.length-MAXI)+'</span>';
-    html+='<div class="'+cls+'" onclick="calPick(\''+ds+'\')">'+
+    html+='<div class="'+cls+'" role="button" tabindex="0" aria-label="'+(dt.getMonth()+1)+' 月 '+dt.getDate()+' 日'+(evs.length?'，'+evs.length+' 筆記錄':'')+'" onclick="calPick(\''+ds+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();calPick(\''+ds+'\');}">'+
       '<span class="cal-num">'+dt.getDate()+'</span>'+
       (groups.length?'<div class="cal-stks">'+stick+'</div>':'')+
       '</div>';
