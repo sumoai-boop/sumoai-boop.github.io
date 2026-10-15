@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chloe 蔡宇涵｜個人檔案</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:#f0f0f0;color:#1a1a1a;font-family:'Noto Sans TC',sans-serif;min-height:100vh;padding-top:36px;}
@@ -383,6 +383,87 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
   .exp-table-head,.exp-row{grid-template-columns:75px 1fr 70px 80px;}
   .exp-table-head>:nth-child(3),.exp-table-head>:nth-child(6),.exp-row>:nth-child(3),.exp-row>:nth-child(6){display:none;}
 }
+
+/* ===================== BOLDER ===================== */
+:root{--ink:#16101a;--ink-2:#3b2f3f;--rose:#e0186c;--rose-deep:#9a1450;--blush:#fff0f6;--blush-2:#ffd6e7;--line:#16101a;}
+body{background:#f6ebf0;color:var(--ink);}
+.page-wrap{padding-top:28px;}
+
+/* masthead */
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:6px 2px 18px;}
+.mast-name{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+.mast-word{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:900;font-size:clamp(56px,9vw,104px);line-height:.82;letter-spacing:-.04em;color:var(--ink);}
+.mast-word::after{content:'';display:inline-block;width:.16em;height:.16em;border-radius:50%;background:var(--rose);margin-left:.06em;}
+.mast-zh{font-weight:900;font-size:clamp(18px,2.4vw,26px);letter-spacing:.35em;color:var(--rose-deep);}
+.mast-count{display:flex;align-items:baseline;gap:8px;padding-bottom:6px;}
+.mast-count-l{font-size:14px;font-weight:900;color:var(--ink-2);letter-spacing:.1em;}
+.mast-count-n{font-weight:900;font-size:clamp(34px,5vw,54px);line-height:1;color:var(--rose);letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+
+/* tabs */
+.tab-bar{border:3px solid var(--ink);border-bottom:none;background:var(--ink);gap:0;}
+.tab-btn{padding:18px 16px;font-size:16px;font-weight:900;letter-spacing:.06em;background:var(--blush);color:#8a6a7a;border-right:3px solid var(--ink);position:relative;}
+.tab-btn:hover:not(.active){background:#fff;color:var(--ink);}
+.tab-btn.active{background:var(--ink);color:#fff;}
+.tab-btn.active::after{content:'';position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--rose);}
+.resume{border:3px solid var(--ink);}
+
+/* profile: section bands + labels */
+td.section-head{background:var(--ink);color:#fff;text-align:left;font-size:15px;font-weight:900;letter-spacing:.18em;padding:11px 16px;border-left:10px solid var(--rose);}
+.td-label{background:var(--blush);color:var(--rose-deep);font-weight:900;font-size:13px;}
+.td-group{background:var(--ink);color:#fff;font-weight:900;letter-spacing:.35em;}
+.td-val{font-size:13.5px;}
+.td-val strong[style*="font-size:15px"]{font-size:24px !important;font-weight:900;letter-spacing:.04em;}
+.trait-bg{height:8px;}
+.trait-fill{background:linear-gradient(to right,var(--rose),var(--rose-deep));}
+
+/* expense: big numbers */
+.exp-summary{border:3px solid var(--ink) !important;}
+.exp-sum-card{padding:24px 16px 22px;border-right:3px solid var(--ink) !important;}
+.exp-sum-label{font-size:12px;font-weight:900;color:var(--ink-2);letter-spacing:.2em;margin-bottom:8px;}
+.exp-sum-val{font-size:clamp(28px,4vw,46px);font-weight:900;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;}
+.exp-sum-val.total{color:var(--rose);}
+.exp-sum-val.aaron,.exp-sum-val.chloe{color:var(--ink);}
+.exp-sum-card:first-child{background:var(--blush);}
+.exp-sum-card:last-child{border-right:none !important;}
+.exp-add-btn{background:var(--rose);font-weight:900;padding:10px 20px;}
+.exp-add-btn:hover{background:var(--rose-deep);}
+.exp-filter-btn{font-weight:700;}
+.exp-filter-btn.active{background:var(--ink);border-color:var(--ink);}
+.exp-month-total{background:var(--rose) !important;border-color:var(--rose) !important;}
+.exp-month-total .mt-label,.exp-month-total .mt-amt,.exp-month-total .mt-sub{color:#fff !important;}
+.exp-month-total .mt-amt{font-size:22px;}
+.exp-table-head{background:var(--ink) !important;}
+
+/* calendar */
+.cal-together{background:var(--ink) !important;border:3px solid var(--ink) !important;padding:22px 16px;}
+.cal-together .ct-big{color:#fff;font-size:40px;}
+.cal-together .ct-lbl{color:var(--blush-2);letter-spacing:.15em;}
+.cal-together .ct-sub{color:#b9a3b1;}
+.cal-together .ct-div{background:#4a3a4e;height:44px;}
+.cal-together > div:first-child .ct-big{color:var(--rose);}
+.cal-up-cd b{color:var(--rose);font-size:26px;}
+.cal-title{font-size:24px;}
+.cal-stat .cs-v{font-size:18px;font-weight:900;}
+.cal-cell.today .cal-num{background:var(--ink);color:#fff;}
+.cal-d-add{background:var(--rose);font-weight:900;}
+
+/* shared actions */
+.edit-fab{background:var(--rose) !important;box-shadow:0 6px 18px rgba(224,24,108,.45);}
+.btn-save{background:var(--rose);font-weight:900;}
+
+@media(max-width:760px){
+  .mast{padding-bottom:12px;}
+  .mast-count{padding-bottom:2px;}
+  .tab-btn{padding:14px 4px;font-size:13px;letter-spacing:0;border-right-width:2px;}
+  .td-val strong[style*="font-size:15px"]{font-size:18px !important;}
+  .exp-summary{grid-template-columns:1fr 1fr !important;}
+  .exp-sum-card{padding:16px 6px;}
+  .exp-sum-card:first-child{grid-column:1/-1;border-right:none !important;border-bottom:3px solid var(--ink);}
+  .exp-sum-card:nth-child(2){border-right:3px solid var(--ink) !important;}
+  .exp-month-total{white-space:normal !important;flex-wrap:wrap;border-radius:14px !important;row-gap:2px;}
+  .exp-sum-label{letter-spacing:.08em;font-size:11px;}
+  .cal-together .ct-big{font-size:32px;}
+}
 </style>
 </head>
 <body>
@@ -400,6 +481,18 @@ td,th{border:1px solid #222;padding:7px 12px;font-size:13px;vertical-align:middl
 </div>
 
 <div class="page-wrap">
+
+<header class="mast">
+  <div class="mast-name">
+    <span class="mast-word">Chloe</span>
+    <span class="mast-zh">蔡宇涵</span>
+  </div>
+  <div class="mast-count">
+    <span class="mast-count-l">在一起第</span>
+    <span class="mast-count-n" id="mastDays">—</span>
+    <span class="mast-count-l">天</span>
+  </div>
+</header>
 
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('expense',this)">💰 情侶記帳</button>
@@ -1913,7 +2006,17 @@ function renderCalendar(){
   det.innerHTML=h;
 }
 
-loadData();
+function renderMast(){
+  var el=document.getElementById('mastDays');if(!el)return;
+  var m=String((typeof data!=='undefined'&&data&&data.met)||'').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+  if(!m){el.textContent='—';return;}
+  var now=new Date();
+  var a=Date.UTC(+m[1],m[2]-1,+m[3]), b=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+  el.textContent=(Math.round((b-a)/86400000)+1).toLocaleString();
+}
+
+renderMast();
+loadData().then(renderMast);
 loadExpenses();
 </script>
 </body>
