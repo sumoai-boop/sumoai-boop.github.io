@@ -530,6 +530,56 @@ body{
   .cal-range{font-size:14px;}
   .cal-seg{margin-left:0;}
 }
+
+/* ── critique 修正 ── */
+h1.th-title{margin:0;line-height:1.2;}
+.main.v-log .th-total{display:none;}                    /* 記帳頁已有「總花費」卡片，不重複 */
+.trip-item.active .trip-dates{color:#9A4220;}            /* 原 #C0653D 對比 3.45:1 → 約 5.6:1 */
+.stat-card .sc-sub{font-size:11px;color:var(--ink-soft);margin-top:3px;}
+.cal-today[hidden]{display:none;}
+#undoToast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:14px;background:#3B2F2A;color:#FFF3EC;padding:10px 10px 10px 18px;border-radius:99px;font-size:13px;font-weight:700;z-index:10000;
+  box-shadow:0 10px 30px rgba(59,47,42,.3);transition:opacity .2s cubic-bezier(0.23,1,0.32,1),transform .2s cubic-bezier(0.23,1,0.32,1);max-width:92vw;}
+#undoToast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto;}
+#undoToast span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#undoToast button{flex-shrink:0;background:#FF6B35;color:#fff;border:none;border-radius:99px;padding:6px 14px;font:inherit;cursor:pointer;}
+#undoToast button:active{transform:scale(0.97);}
+.log-fab,.sheet-close,.sheet-mask{display:none;}
+@media (max-width:768px){
+  /* 統計卡收成一列 */
+  #view-log .stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px;}
+  #view-log .stat-card{min-width:0;padding:7px 9px;}
+  #view-log .stat-card .sc-label{font-size:10.5px;}
+  #view-log .stat-card .sc-value{font-size:13px;overflow:hidden;text-overflow:ellipsis;}
+  /* D1–D8 改成一列橫向滑動 */
+  #logDayTabs{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-left:-14px;margin-right:-14px;padding:0 14px 2px;}
+  #logDayTabs::-webkit-scrollbar{display:none;}
+  #logDayTabs .day-tab{flex-shrink:0;scroll-snap-align:center;}
+  /* 表單收進底部面板 */
+  #logForm{position:fixed;left:0;right:0;bottom:0;z-index:600;margin:0;background:var(--card);border-radius:18px 18px 0 0;
+    padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 40px rgba(59,47,42,.22);
+    transform:translateY(105%);visibility:hidden;transition:transform .32s cubic-bezier(0.32,0.72,0,1),visibility 0s .32s;}
+  #logForm.open{transform:none;visibility:visible;transition:transform .32s cubic-bezier(0.32,0.72,0,1),visibility 0s;}
+  #logForm .sheet-close{display:block;position:absolute;top:6px;right:8px;width:36px;height:36px;border:none;background:none;color:var(--hint);font-size:16px;cursor:pointer;}
+  #logForm{padding-top:46px;}
+  #logForm::before{content:'記一筆';position:absolute;top:15px;left:16px;font-size:15px;font-weight:900;color:var(--ink);}
+  #logForm>span{display:none;}                                       /* 「～」在面板裡改由 開始／結束 文字表達 */
+  #logForm #logTitle{flex:1 1 100%!important;min-width:0!important;order:-1;}
+  #logForm #logTime,#logForm #logEnd,#logForm #logType{flex:1 1 0!important;width:auto!important;min-width:0!important;}
+  #logForm #logAmount{flex:1 1 100%!important;width:auto!important;min-width:0!important;}
+  #logForm #logCur{flex:0 0 96px!important;}
+  #logForm #logNote{flex:1 1 0!important;min-width:0!important;}
+  #logForm .btn-add{flex:1 1 100%;padding:13px;}
+  .sheet-mask{display:block;position:fixed;inset:0;background:rgba(59,47,42,.35);z-index:599;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .sheet-mask.open{opacity:1;pointer-events:auto;}
+  .log-fab{display:block;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:550;border:none;border-radius:99px;
+    background:var(--orange);color:#FFF3EC;font:inherit;font-size:15px;font-weight:900;padding:14px 22px;box-shadow:0 8px 22px rgba(255,107,53,.42);cursor:pointer;
+    transition:transform .12s cubic-bezier(0.23,1,0.32,1);touch-action:manipulation;}
+  .log-fab:active{transform:scale(0.96);}
+  .main{padding-bottom:84px!important;}
+  #undoToast{bottom:calc(84px + env(safe-area-inset-bottom,0px));}
+}
+@media (prefers-reduced-motion:reduce){#logForm,#logForm.open{transition:none;}}
 </style>
 </head>
 <body>
@@ -584,21 +634,21 @@ body{
   </aside>
   <div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar(false)"></div>
 
-  <main class="main" id="mainArea" style="display:none;">
+  <main class="main v-log" id="mainArea" style="display:none;">
     <div class="trip-header">
       <button class="hamburger" onclick="toggleSidebar(true)" aria-label="開啟選單">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5C4A3D" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
-      <span class="th-title" id="thTitle"></span>
+      <h1 class="th-title" id="thTitle"></h1>
       <span class="th-meta" id="thMeta"></span>
       <span class="th-total" id="thTotal"></span>
     </div>
 
     <section id="view-log">
       <div class="stat-row">
-        <div class="stat-card red"><div class="sc-label">總花費 NT$</div><div class="sc-value" id="stLocalTotal">0</div></div>
-        <div class="stat-card orange"><div class="sc-label">機票 NT$</div><div class="sc-value" id="stFlight">0</div></div>
-        <div class="stat-card green"><div class="sc-label">住宿 NT$</div><div class="sc-value" id="stStay">0</div></div>
+        <div class="stat-card red"><div class="sc-label">總花費</div><div class="sc-value" id="stLocalTotal">0</div></div>
+        <div class="stat-card orange"><div class="sc-label">機票</div><div class="sc-value" id="stFlight">0</div></div>
+        <div class="stat-card green"><div class="sc-label">住宿</div><div class="sc-value" id="stStay">0</div></div>
       </div>
       <div class="cal-toolbar">
         <button class="cal-today" id="calTodayBtn" onclick="calToday()">今天</button>
@@ -611,17 +661,20 @@ body{
         </div>
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
-      <div class="form-row">
-        <select id="logTime" style="width:92px;" title="開始" onchange="syncEndOptions('logTime','logEnd')"></select><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><select id="logEnd" style="width:92px;" title="結束"></select>
-        <select id="logType" style="width:92px;"></select>
-        <input type="text" id="logTitle" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
-        <input type="number" id="logAmount" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
-        <select id="logCur" style="width:96px;"></select>
-        <input type="text" id="logNote" placeholder="備註（選填）" style="flex:1;min-width:110px;">
+      <div class="sheet-mask" id="sheetMask" onclick="toggleLogSheet(false)"></div>
+      <div class="form-row" id="logForm">
+        <select id="logTime" style="width:92px;" title="開始時間" aria-label="開始時間" onchange="syncEndOptions('logTime','logEnd')"></select><span style="align-self:center;color:var(--hint);font-weight:700;">～</span><select id="logEnd" style="width:92px;" title="結束時間" aria-label="結束時間"></select>
+        <select id="logType" style="width:92px;" aria-label="類別"></select>
+        <input type="text" id="logTitle" aria-label="地點、活動或項目" enterkeyhint="done" placeholder="地點／活動／項目" style="flex:2;min-width:150px;">
+        <input type="number" id="logAmount" aria-label="金額" placeholder="金額（選填）" inputmode="decimal" style="width:128px;">
+        <select id="logCur" style="width:96px;" aria-label="幣別"></select>
+        <input type="text" id="logNote" aria-label="備註" placeholder="備註（選填）" style="flex:1;min-width:110px;">
         <button class="btn-add" onclick="addEntry()">記錄</button>
+        <button class="sheet-close" type="button" onclick="toggleLogSheet(false)" aria-label="收起">✕</button>
       </div>
       <div class="day-subtotal" id="logDaySub"></div>
       <div class="timeline" id="logTimeline"></div>
+      <button class="log-fab" id="logFab" type="button" onclick="toggleLogSheet(true)">＋ 記一筆</button>
       <div id="logEmpty" style="color:var(--hint);font-size:13px;padding:16px 4px;display:none;">這一天還沒有記錄,上面填地點或金額就能加入第一筆。</div>
     </section>
 
@@ -848,7 +901,7 @@ function fillSelect(id,opts){
   el.innerHTML=opts.map(o=>'<option>'+o+'</option>').join('');
 }
 function fillTimeSelects(){
-  var opts='<option value="">--:--</option>';
+  var opts='<option value="">開始</option>';
   for(var m=0;m<24*60;m+=15){
     var v=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
     opts+='<option value="'+v+'">'+v+'</option>';
@@ -930,6 +983,7 @@ function switchView(v){
   ['log','stats','compare','settings'].forEach(x=>{
     document.getElementById('view-'+x).style.display=(x===v)?'block':'none';
   });
+  document.getElementById('mainArea').classList.toggle('v-log',v==='log');
   toggleSidebar(false);
   renderAll();
 }
@@ -974,7 +1028,10 @@ function renderLog(){
     ?(wk[0].slice(0,4)+' '+fmtMD(wk[0])+' – '+fmtMD(wk[6]))
     :(itSelectedDate.slice(0,4)+' '+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate));
   var todayBtn=document.getElementById('calTodayBtn');
-  if(todayBtn)todayBtn.disabled=!inTrip(today);
+  if(todayBtn){todayBtn.hidden=!inTrip(today);todayBtn.disabled=false;}   /* 不在旅程期間就不顯示，不再留一顆灰掉的按鈕 */
+  document.getElementById('logDayTabs').style.display=calMode==='week'?'none':'';
+  var at=document.querySelector('#logDayTabs .day-tab.active');
+  if(at&&at.scrollIntoView&&window.matchMedia('(max-width:768px)').matches){var dt=document.getElementById('logDayTabs');dt.scrollLeft=at.offsetLeft-dt.offsetWidth/2+at.offsetWidth/2;}
   var host=document.getElementById('logTimeline');
   document.getElementById('logEmpty').style.display='none';
   host.style.display='block';
@@ -1014,7 +1071,7 @@ function chipHTML(t,x){
   var cost=(+x.amount>0)?' <b class="'+(x.cur==='TWD'?'cur-twd':'')+'" style="font-family:\'Space Mono\',monospace;">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+esc(x.cur||''))+'</b>':'';
   return '<span class="cal-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
     +'<span style="color:'+ty.c+';font-weight:700;">'+esc(x.type)+'</span> '+esc(x.title)+cost
-    +'<button class="cev-del" style="position:static;margin-left:4px;color:inherit;" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button></span>';
+    +'</span>';
 }
 function prevDateStr(day){var d=parseDate(day);d.setDate(d.getDate()-1);return fmtDateLocal(d);}
 function renderDayCalendar(t,day){
@@ -1055,7 +1112,6 @@ function renderDayCalendar(t,day){
     var title=(o.cont?'↳ ':'')+esc(x.title);
     var _d=Math.min(_i*26,320);
     return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
-      +'<button class="cev-del" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
       +'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'
       +'</div>';
   }).join('');
@@ -1289,14 +1345,17 @@ function renderCompare(){
   var sumAll=rows.reduce(function(a,r){return a+r.total;},0);
   var sumDays=rows.reduce(function(a,r){return a+r.days;},0);
   var withPer=rows.filter(function(r){return r.per>0;});
+  /* 平均只算有記帳的旅程：沒記帳的天數放進分母會把平均拉低好幾倍 */
+  var trackedDays=withPer.reduce(function(a,r){return a+r.days;},0);
+  var trackedAll=withPer.reduce(function(a,r){return a+r.total;},0);
   var most=withPer.slice().sort(function(a,b){return b.per-a.per;})[0];
   var least=withPer.slice().sort(function(a,b){return a.per-b.per;})[0];
   cards.innerHTML=
      '<div class="stat-card red"><div class="sc-label">累計旅費 NT$</div><div class="sc-value">'+num(Math.round(sumAll))+'</div></div>'
     +'<div class="stat-card orange"><div class="sc-label">累計天數</div><div class="sc-value">'+sumDays+' 天</div></div>'
-    +'<div class="stat-card green"><div class="sc-label">整體每日平均 NT$</div><div class="sc-value">'+(sumDays?num(Math.round(sumAll/sumDays)):'—')+'</div></div>'
-    +(most?'<div class="stat-card orange"><div class="sc-label">最花錢的一趟</div><div class="sc-value" style="font-size:15px;">'+esc(most.label)+'</div></div>':'')
-    +(least&&least!==most?'<div class="stat-card green"><div class="sc-label">最省的一趟</div><div class="sc-value" style="font-size:15px;">'+esc(least.label)+'</div></div>':'');
+    +'<div class="stat-card green"><div class="sc-label">整體每日平均 NT$</div><div class="sc-value">'+(trackedDays?num(Math.round(trackedAll/trackedDays)):'—')+'</div>'+(withPer.length<rows.length?'<div class="sc-sub">依 '+withPer.length+' 趟有記帳的旅程</div>':'')+'</div>'
+    +(most?'<div class="stat-card orange"><div class="sc-label">最花錢的一趟</div><div class="sc-value" style="font-size:15px;">'+esc(most.label)+' <small style="font-size:11px;opacity:.7;">'+String(most.t.start||'').slice(0,4)+'</small></div></div>':'')
+    +(least&&least!==most?'<div class="stat-card green"><div class="sc-label">最省的一趟</div><div class="sc-value" style="font-size:15px;">'+esc(least.label)+' <small style="font-size:11px;opacity:.7;">'+String(least.t.start||'').slice(0,4)+'</small></div></div>':'');
 
   // ── 每日平均長條 ──
   var maxPer=Math.max.apply(null, rows.map(function(r){return r.per;}).concat([1]));
@@ -1369,6 +1428,7 @@ function calSlotClick(e){
   var lt=document.getElementById('logTime');if(lt)lt.value=v;
   syncEndOptions('logTime','logEnd');
   var ti=document.getElementById('logTitle');
+  if(isPhone()){toggleLogSheet(true);return;}
   if(ti){ti.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){ti.focus();},220);}
   showToast('已帶入 '+v+'，輸入內容後按記錄',false);
 }
@@ -1397,20 +1457,43 @@ function addEntry(){
   document.getElementById('logEnd').value='';
   syncEndOptions('logTime','logEnd');
   markDirty();renderLog();renderHeader();
+  if(isPhone()){toggleLogSheet(false);showToast('已記錄',false);}
+}
+function isPhone(){return window.matchMedia&&matchMedia('(max-width:768px)').matches;}
+function toggleLogSheet(open){
+  var f=document.getElementById('logForm'),m=document.getElementById('sheetMask');if(!f)return;
+  f.classList.toggle('open',!!open);m.classList.toggle('open',!!open);
+  if(open)setTimeout(function(){var ti=document.getElementById('logTitle');if(ti)ti.focus();},120);
 }
 function delEntry(id){
-  var t=curTrip();
-  t.entries=t.entries.filter(x=>x.id!==id);
+  var t=curTrip();if(!t)return;
+  var i=t.entries.findIndex(x=>x.id===id);if(i<0)return;
+  var gone=t.entries.splice(i,1)[0];
   markDirty();renderLog();renderHeader();
+  showUndo('已刪除「'+(gone.title||gone.type)+'」',function(){
+    var tt=(DB.trips||[]).find(x=>x.id===t.id);if(!tt)return;
+    tt.entries.splice(Math.min(i,tt.entries.length),0,gone);
+    markDirty();if(curTrip()===tt){renderLog();renderHeader();}
+  });
+}
+/* 刪除後 6 秒內可復原（取代原本一點就永久刪除） */
+function showUndo(msg,undo){
+  var u=document.getElementById('undoToast');
+  if(!u){u=document.createElement('div');u.id='undoToast';u.setAttribute('role','status');document.body.appendChild(u);}
+  u.innerHTML='<span></span><button type="button">復原</button>';
+  u.firstChild.textContent=msg;
+  clearTimeout(u._to);u.classList.add('show');
+  u.lastChild.onclick=function(){clearTimeout(u._to);u.classList.remove('show');undo();};
+  u._to=setTimeout(function(){u.classList.remove('show');},6000);
 }
 var _detailId=null,_detailEdit=false;
 function timeOptionsHTML(sel){
-  var o='<option value="">--:--</option>';
+  var o='<option value="">開始</option>';
   for(var m=0;m<1440;m+=15){var v=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');o+='<option'+(v===sel?' selected':'')+'>'+v+'</option>';}
   return o;
 }
 function endOptionsHTML(startVal,sel){
-  var o='<option value="">--:--</option>';
+  var o='<option value="">結束</option>';
   var sm=toMin(startVal);
   if(sm==null){
     for(var m=0;m<1440;m+=15){var v0=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');o+='<option'+(v0===sel?' selected':'')+'>'+v0+'</option>';}
@@ -1519,6 +1602,14 @@ function saveDetail(){
   markDirty();renderLog();renderHeader();
   _detailEdit=false;renderDetail();
 }
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&e.target&&['logTitle','logAmount','logNote'].indexOf(e.target.id)>=0&&!e.isComposing){e.preventDefault();addEntry();return;}
+  if(e.key!=='Escape')return;
+  if(document.getElementById('detailModal').classList.contains('open')){closeDetail();return;}
+  var tm=document.getElementById('tripModal');if(tm&&tm.classList.contains('open')){closeTripModal();return;}
+  var lf=document.getElementById('logForm');if(lf&&lf.classList.contains('open')){toggleLogSheet(false);return;}
+  var sb=document.getElementById('sidebar');if(sb&&sb.classList.contains('open'))toggleSidebar(false);
+});
 function closeDetail(){
   var mask=document.getElementById('detailModal'),card=document.getElementById('detailCard');
   _detailId=null;_detailEdit=false;
