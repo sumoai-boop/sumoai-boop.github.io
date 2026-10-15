@@ -89,6 +89,59 @@
   .card-type{position:absolute;left:0;right:0;bottom:0;height:4px;z-index:3;}
   .tchip{display:inline-flex;align-items:center;gap:5px;}
   .tchip i{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
+  /* ══════ BOLDER：更大膽的層級 ══════ */
+  /* 頁首：加粗格紋桌布＋大標 */
+  body::before{height:380px !important;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(214,58,36,.13) 0 18px, transparent 18px 36px),
+      repeating-linear-gradient(90deg, rgba(214,58,36,.13) 0 18px, transparent 18px 36px) !important;}
+  .page-header{margin-bottom:34px;}
+  .page-title{font-size:clamp(56px,10vw,124px);font-weight:500;letter-spacing:-.02em;line-height:.88;margin-bottom:10px;}
+  .page-title em{font-weight:600;}
+  .page-label{font-size:13px;letter-spacing:.32em;color:var(--tomato-d);margin-bottom:26px;}
+  .page-label::before{content:'';display:inline-block;width:28px;height:3px;background:var(--tomato);vertical-align:middle;margin-right:10px;border-radius:2px;}
+  /* 統計列：總消費當主角 */
+  .stats-row{align-items:flex-end;gap:26px;}
+  .stat-num{font-size:40px;}
+  #sTotalSpend{font-size:clamp(48px,6vw,68px);letter-spacing:-.035em;}
+  .stat-item:has(#sTotalSpend){padding:10px 18px 12px;margin:-10px 0 -12px;background:#fff;border-radius:16px;
+    box-shadow:0 1px 0 var(--line), 0 10px 26px rgba(184,48,26,.14);border:2px solid var(--tomato);}
+  .stat-sep{background:rgba(214,58,36,.25);width:2px;}
+  /* 分頁：實心膠囊 */
+  .tabbar{border-bottom:none !important;gap:8px !important;margin-bottom:22px !important;}
+  .tabbar button{min-height:0;padding:9px 22px !important;border-radius:99px;border:2px solid var(--line) !important;background:#fff !important;
+    color:var(--ink2) !important;font-family:'Noto Sans TC',sans-serif !important;font-size:15px !important;font-weight:900 !important;letter-spacing:.12em !important;
+    transition:transform .15s, box-shadow .15s;}
+  .tabbar button:hover{transform:translateY(-1px);border-color:var(--tomato) !important;}
+  .tabbar button.on{background:var(--ink) !important;border-color:var(--ink) !important;color:#fff !important;box-shadow:0 6px 16px rgba(43,26,21,.25);}
+  /* 新增鈕 */
+  .add-btn{width:56px;height:56px;font-size:28px;}
+  /* 年份列 */
+  .yr-pill{font-size:17px;padding:8px 20px;}
+  .yr-sum .t{font-size:28px;}
+  /* 月份：超大季節色數字 */
+  .mon{margin-bottom:46px;}
+  .mon-h{align-items:flex-end;padding-bottom:12px;border-bottom-width:3px;margin-bottom:16px;}
+  .mon-h h2{display:flex;align-items:baseline;gap:6px;font-size:22px;line-height:1;}
+  .mon-h h2 .mn{font-size:68px;font-weight:900;letter-spacing:-.05em;line-height:.8;}
+  .mon-h .t{font-size:24px;}
+  /* 卡片：更厚的類型色條、更強的浮起 */
+  .photo-grid{gap:8px;}
+  .photo-card{border-radius:12px;}
+  .card-type{height:6px;}
+  .photo-card:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 16px 30px rgba(120,40,20,.3);}
+  .card-name{font-size:16px;font-weight:900;}
+  @media(max-width:600px){
+    .page-title{font-size:58px;}
+    .stat-num{font-size:30px;}
+    #sTotalSpend{font-size:44px;}
+    .mon-h h2 .mn{font-size:48px;}
+    .mon-h .t{font-size:19px;}
+    .tabbar button{padding:8px 16px !important;font-size:14px !important;}
+    .add-btn{width:48px;height:48px;font-size:24px;}
+    .photo-grid{gap:5px;}
+    .card-name{font-size:13px;}
+  }
   /* ── 每筆記錄的照片 ── */
   .vp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
   .vp-th{position:relative;width:48px;height:48px;border-radius:7px;overflow:hidden;flex-shrink:0;border:1px solid var(--line);}
@@ -557,8 +610,8 @@
   </div>
 
   <!-- 分頁切換 -->
-  <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid rgba(184,48,26,0.17);padding-bottom:0;">
-    <button id="tabFood" onclick="switchTab('food')" style="background:none;border:none;color:#D63A24;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid #D63A24;letter-spacing:0.08em;">食記</button>
+  <div class="tabbar" style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid rgba(184,48,26,0.17);padding-bottom:0;">
+    <button id="tabFood" class="on" onclick="switchTab('food')" style="background:none;border:none;color:#D63A24;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid #D63A24;letter-spacing:0.08em;">食記</button>
     <button id="tabStats" onclick="switchTab('stats')" style="background:none;border:none;color:#8A6558;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">統計</button>
     <button id="tabMonthly" onclick="switchTab('monthly')" style="background:none;border:none;color:#8A6558;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">月報</button>
   </div>
@@ -906,6 +959,7 @@ function switchTab(tab){
     if(!el) return;
     el.style.color=t===tab?'#D63A24':'#8A6558';
     el.style.borderBottomColor=t===tab?'#D63A24':'transparent';
+    el.classList.toggle('on', t===tab);
   });
   if(tab==='stats') renderStatsPage();
   if(tab==='monthly') renderMonthlyPage();
