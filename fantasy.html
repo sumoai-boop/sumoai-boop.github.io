@@ -456,6 +456,51 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 :focus-visible{outline:2px solid var(--me2);outline-offset:2px}
+
+/* ===== BOLDER：拉開層次（白底、隊色、橘色=我 的身分不變） ===== */
+.brand{margin:18px 0 10px;gap:14px 18px;align-items:center}
+.brand h1{font-size:clamp(42px,7.4vw,72px);letter-spacing:.01em;line-height:.95}
+.brand h1::after{content:"";display:block;height:8px;width:62%;background:var(--me);border-radius:4px;margin-top:10px}
+.brand .kick{background:var(--ink);color:#fff;padding:7px 11px;border-radius:7px;font-weight:700;letter-spacing:.16em;font-size:10.5px}
+.lgs{gap:10px;margin:18px 0 6px}
+.lg{border-width:1.5px;border-radius:13px;padding:10px 16px 10px 12px}
+.lg .nm{font-weight:800}
+.lg.on{background:var(--ink);border-color:var(--ink)}
+.lg.on .nm{color:#fff}
+.lg.on .mt{color:rgba(255,255,255,.6)}
+.lg.on .ball{background:var(--me);color:#fff}
+.board{gap:14px;margin-top:24px}
+.sb{border-radius:18px;padding:16px 18px}
+.sb .lb{font-size:12px;font-weight:700;color:var(--ink);letter-spacing:.08em}
+.sb .v{font-size:52px}
+.sb.hero{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 10px 30px rgba(16,24,40,.18)}
+.sb.hero .lb{color:rgba(255,255,255,.62)}
+.sb.hero .v{color:#fff;font-size:80px;line-height:.9;margin-top:8px}
+.sb.hero .f{color:rgba(255,255,255,.55)}
+.sb.hero>*{position:relative;z-index:1}
+.sb.hero .v{white-space:nowrap}
+.sb.hero::after{right:-92px;bottom:-104px;width:210px;height:210px;border:4px solid var(--me);opacity:.95}
+.sb.hero::before{content:"";position:absolute;right:13px;bottom:-60px;width:4px;height:110px;background:var(--me);opacity:.35}
+.tabs{border-bottom:2px solid var(--ink);gap:2px;margin:28px 0 18px}
+.tab{font-size:16px;font-weight:700;padding:12px 20px;border-bottom-width:5px;margin-bottom:-2px;color:var(--ink3)}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);font-weight:900;border-bottom-color:var(--me)}
+.bar h2{font-size:24px;font-weight:900;display:flex;align-items:center;gap:10px;letter-spacing:.02em}
+.bar h2::before{content:"";width:6px;height:24px;background:var(--me);border-radius:3px;flex:none}
+.panel h3{font-size:17px;font-weight:900}
+.wk-s{font-size:36px}
+.wk-n{font-size:34px;color:var(--ink)}
+.res{width:44px;height:44px;font-size:24px;border-radius:12px}
+.res.W{background:var(--win);color:#fff} .res.L{background:var(--loss);color:#fff} .res.T{background:var(--tie);color:#fff}
+@media (max-width:640px){
+  .brand h1{font-size:44px}
+  .sb.hero{grid-column:1/-1}
+  .sb.hero .v{font-size:64px}
+  .sb .v{font-size:36px;white-space:nowrap}
+  .board .sb:last-child{grid-column:1/-1}
+  .tab{padding:11px 14px;font-size:15px}
+  .bar h2{font-size:20px}
+}
 </style>
 </head>
 <body>
