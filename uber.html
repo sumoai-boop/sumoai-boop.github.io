@@ -211,7 +211,9 @@ body{
   .trip-table td{padding:10px 5px;font-size:12px;}
   /* 星期平均卡片：橫向捲動 */
   #weekdayAvgWrap > div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
-  #weekdayAvgWrap > div:last-child > div{min-width:96px;flex-shrink:0;}
+  #weekdayAvgWrap > div:last-child > div{min-width:128px!important;flex:0 0 128px!important;}
+  #weekdayAvgWrap > div:last-child{scroll-snap-type:x proximity;}
+  #weekdayAvgWrap > div:last-child > div{scroll-snap-align:start;}
   /* 熱區地圖：手機上高度收斂（扣掉的 180px 是上方標題列與篩選列） */
   #heatMap{height:clamp(440px, calc(100vh - 180px), 760px)!important;}
   /* 圓餅圖：縮放並改直排 */
@@ -319,6 +321,37 @@ select option:checked,select option:hover{
   color:#000!important;
 }
 input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
+
+/* ── critique 修正 ── */
+[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px!important;}   /* 小字下限 11px */
+.form-group label,.page-label{font-size:11px!important;}
+.bar-val{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;white-space:nowrap;margin-bottom:3px;line-height:1;}
+@media (max-width:768px){
+  .wk-table,.wk-table tbody{display:block;width:100%;}
+  .wk-table thead,.wk-table colgroup{display:none;}
+  .wk-table tr{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-areas:"date dow inc inc del" "bar bar bar bar bar" "trips hrs pts note note";
+    column-gap:12px;row-gap:7px;padding:12px 14px;align-items:center;}
+  .wk-table tr.empty{grid-template-areas:"date dow inc inc del";padding:8px 14px;}
+  .wk-table tr.empty .c-bar,.wk-table tr.empty .c-trips,.wk-table tr.empty .c-hrs,.wk-table tr.empty .c-pts,.wk-table tr.empty .c-note{display:none;}
+  .wk-table td{padding:0!important;font-size:14px!important;}
+  .wk-table .c-date{grid-area:date;font-size:15px!important;}
+  .wk-table .c-dow{grid-area:dow;}
+  .wk-table .c-inc{grid-area:inc;font-size:17px!important;}
+  .wk-table .c-bar{grid-area:bar;}
+  .wk-table .c-trips{grid-area:trips;text-align:left!important;}
+  .wk-table .c-hrs{grid-area:hrs;text-align:left!important;}
+  .wk-table .c-pts{grid-area:pts;text-align:left!important;}
+  .wk-table .c-note{grid-area:note;text-align:right!important;overflow:hidden;text-overflow:ellipsis;}
+  .wk-table .c-del{grid-area:del;}
+  .wk-table .c-del .del-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;}
+  #weeklyMonthSummary [style*="font-size:20px"]{font-size:16px!important;}
+  #weeklyMonthSummary > div > div{min-width:0!important;flex:1 1 calc(50% - 5px)!important;}
+  #tripFormSection .form-title{cursor:pointer;margin-bottom:16px;}
+  #tripFormSection.collapsed{padding:14px!important;}
+  #tripFormSection.collapsed .form-title{margin-bottom:0;font-size:13px;}
+  #tripFormSection.collapsed .form-title::after{content:'　點此展開 ▾';color:rgba(255,255,255,0.45);letter-spacing:0;}
+  #tripFormSection.collapsed > :not(.form-title){display:none!important;}
+}
 </style>
 
 
@@ -419,7 +452,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
       <div class="stat-card"><div class="stat-label">本月載客數</div><div class="stat-val" id="s-month-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">月平均載客數</div><div class="stat-val" id="s-avg-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
       <div class="stat-card"><div class="stat-label">總載客數</div><div class="stat-val" id="s-total-pax"><em class="num">0</em> <em class="unit">人</em></div></div>
-      <div class="stat-card"><div class="stat-label">平均費用明細</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">$</span><em>0</em></div></div>
+      <div class="stat-card"><div class="stat-label">平均每趟車資</div><div class="stat-val" id="s-avg-detail"><span class="stat-unit">$</span><em>0</em></div></div>
       <div class="stat-card"><div class="stat-label">平均行程時間</div><div class="stat-val" id="s-avg-fare"><em class="num" style="font-size:32px;">—</em></div></div>
       <!-- Row 3: 趟數 + 收入 -->
       <div class="stat-card"><div class="stat-label">本月趟數</div><div class="stat-val" id="s-trips"><em class="num">0</em> <em class="unit">趟</em></div></div>
@@ -472,12 +505,12 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
   <!-- 行程記錄 -->
   <div class="tab-panel" id="tab-trips">
     <!-- 新增行程表單 -->
-    <div class="form-section">
-      <div class="form-title" id="tripFormTitle">＋ 新增行程明細</div>
+    <div class="form-section" id="tripFormSection">
+      <div class="form-title" id="tripFormTitle" onclick="if(matchMedia('(max-width:768px)').matches)document.getElementById('tripFormSection').classList.toggle('collapsed')">＋ 新增行程明細</div>
       <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
         <div class="form-group"><label>日期</label><input class="form-input" type="date" id="f-date"></div>
         <div class="form-group"><label>分類</label><select class="form-input" id="f-category"><option value="uber">uber</option><option value="55688">55688</option></select></div>
-        <div class="form-group"><label>時間</label>
+        <div class="form-group"><label>時長</label>
           <div style="display:flex;gap:3px;align-items:center;">
             <input inputmode="decimal" class="form-input" type="number" id="f-time-h" placeholder="時" min="0" style="width:44px;text-align:center;padding:8px 4px;">
             <span style="color:rgba(255,255,255,0.4);font-size:14px;">:</span>
@@ -550,7 +583,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
             <th style="text-align:center">#</th>
             <th onclick="sortTrips('d')" style="cursor:pointer;text-align:center">日期 ↕</th>
             <th onclick="sortTrips('cat')" style="cursor:pointer;text-align:center">分類 ↕</th>
-            <th onclick="sortTrips('tm')" style="cursor:pointer;text-align:center">時間 ↕</th>
+            <th onclick="sortTrips('tm')" style="cursor:pointer;text-align:center">時長 ↕</th>
             <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">上車<br>區域</th>
             <th style="text-align:center">上車<br>地點</th>
             <th style="text-align:center;border-left:1px solid rgba(0,200,83,0.2)">下車<br>區域</th>
@@ -1082,6 +1115,8 @@ function showSyncWarn(msg){
     document.body.appendChild(el);
   }
   el.textContent='⚠ '+msg;
+  var _pt=parseFloat(getComputedStyle(document.body).paddingTop)||0;
+  if(!el._padded){el._padded=true;document.body.style.paddingTop=(_pt+el.offsetHeight)+'px';}
 }
 function hideLoading(){
   var el=document.getElementById('loadingOverlay');
@@ -1292,6 +1327,7 @@ function editTrip(id){
   // 設定編輯模式
   window._editTripId = id;
   document.getElementById('tripFormTitle').textContent = '✎ 編輯行程明細';
+  var _tfs=document.getElementById('tripFormSection');if(_tfs)_tfs.classList.remove('collapsed');
   document.getElementById('tripAddBtn').textContent = '✔ 儲存變更';
   document.getElementById('tripDeleteBtn').style.display = 'inline-block';
   // 滾到表單
@@ -1588,7 +1624,7 @@ function renderWeekly(){
     +'</div>';
   }
   el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
-    +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;">'
+    +'<table class="wk-table" style="width:100%;border-collapse:collapse;table-layout:fixed;">'
     +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:34%"><col style="width:13%"><col style="width:6%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
     +'<thead><tr style="background:rgba(0,200,83,0.08);">'
       +'<th style="padding:10px 6px 10px 14px;font-size:13px;color:#00E860;text-align:left;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">日期</th>'
@@ -1605,16 +1641,16 @@ function renderWeekly(){
       var w=rmap[dt],dobj=new Date(dt+'T00:00:00'),dow=dobj.getDay(),isWE=(dow===0||dow===6);
       var dc=isWE?'#FF9999':'#f5edd8',has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
       var hStr=has?(w.hours||0)+'h'+(w.mins||0)+'m':'';
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);'+(has?'':'opacity:0.4;')+'">'
-        +'<td style="padding:11px 6px 11px 14px;font-size:15px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
-        +'<td style="padding:11px 2px;font-size:14px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
-        +'<td style="padding:11px 8px;"><div style="height:9px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
-        +'<td style="padding:11px 6px;font-size:17px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:700;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
-        +'<td style="padding:11px 3px;font-size:15px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
-        +'<td style="padding:11px 3px;font-size:14px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
-        +'<td style="padding:11px 3px;font-size:15px;color:#FFD700;text-align:right;white-space:nowrap;">'+(has&&w.points?w.points+'分':'')+'</td>'
-        +'<td style="padding:11px 8px;font-size:14px;color:rgba(220,220,220,0.75);white-space:nowrap;text-align:center;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
-        +'<td style="padding:11px 10px 11px 2px;text-align:center;">'+(has?'<span class="del-btn" style="font-size:15px;" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
+      return '<tr class="'+(has?'':'empty')+'" style="border-bottom:1px solid rgba(255,255,255,0.04);'+(has?'':'opacity:0.4;')+'">'
+        +'<td class="c-date" style="padding:11px 6px 11px 14px;font-size:15px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
+        +'<td class="c-dow" style="padding:11px 2px;font-size:14px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
+        +'<td class="c-bar" style="padding:11px 8px;"><div style="height:9px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
+        +'<td class="c-inc" style="padding:11px 6px;font-size:17px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:700;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
+        +'<td class="c-trips" style="padding:11px 3px;font-size:15px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
+        +'<td class="c-hrs" style="padding:11px 3px;font-size:14px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
+        +'<td class="c-pts" style="padding:11px 3px;font-size:15px;color:#FFD700;text-align:right;white-space:nowrap;">'+(has&&w.points?w.points+'分':'')+'</td>'
+        +'<td class="c-note" style="padding:11px 8px;font-size:14px;color:rgba(220,220,220,0.75);white-space:nowrap;text-align:center;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
+        +'<td class="c-del" style="padding:11px 10px 11px 2px;text-align:center;">'+(has?'<span class="del-btn" style="font-size:15px;" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
       +'</tr>';
     }).join('')+'</tbody></table></div>';
 }
@@ -2068,25 +2104,28 @@ function renderMonthly(){
     +'</table></div>';
 }
 var weekChartYear=new Date().getFullYear(),monthChartYear=new Date().getFullYear();
+function kfmt(v){return v>=1000?(v/1000).toFixed(v>=10000?0:1)+'k':String(Math.round(v));}
 function renderWeekIncomeChart(){
   var el=document.getElementById('weekIncomeChart'),lbl=document.getElementById('weekChartYearLabel');
   if(!el)return;if(lbl)lbl.textContent=weekChartYear;
   var EPOCH=new Date('2025-04-28'),allD=getData('uberWeekly'),wmap={};
   allD.forEach(function(w){if(!w.date)return;var diff=Math.floor((new Date(w.date)-EPOCH)/86400000),wi=Math.floor(diff/7),ws=new Date(EPOCH);ws.setDate(ws.getDate()+wi*7);var k=ws.toISOString().slice(0,10);if(!wmap[k])wmap[k]=0;wmap[k]+=w.income||0;});
   var yS=new Date(weekChartYear+'-01-01'),yE=new Date(weekChartYear+'-12-31'),dtY=Math.floor((yS-EPOCH)/86400000),fwi=dtY<0?0:Math.ceil(dtY/7),weeks=[],wi=fwi;
-  while(true){var ws=new Date(EPOCH);ws.setDate(ws.getDate()+wi*7);if(ws>yE)break;weeks.push(ws.toISOString().slice(0,10));wi++;}
+  var _today=new Date();
+  while(true){var ws=new Date(EPOCH);ws.setDate(ws.getDate()+wi*7);if(ws>yE||ws>_today)break;weeks.push(ws.toISOString().slice(0,10));wi++;}  /* 不畫還沒到的週 */
   if(!weeks.length){el.innerHTML='<div class="empty-state"><span class="empty-icon">📊</span>無資料</div>';return;}
   var now=new Date(),dn=Math.floor((now-EPOCH)/86400000),twi=Math.floor(dn/7),tws=new Date(EPOCH);tws.setDate(tws.getDate()+twi*7);var twk=tws.toISOString().slice(0,10);
   var values=weeks.map(function(k){return wmap[k]||0;}),maxVal=Math.max.apply(null,values.concat([1])),chartH=200,BAR_W=44;
   var bars=weeks.map(function(k,i){
-    var iC=(k===twk),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*chartH));
+    var iC=(k===twk),barH=Math.max(values[i]>0?4:0,Math.round(values[i]/maxVal*(chartH-18)));
     var d=new Date(k),label=(d.getMonth()+1)+'/'+(d.getDate());
     var bg=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
     var lc=iC?'#FFD700':'rgba(240,220,160,0.7)',nc=iC?'#7A5800':'#004D20';
     var fs=Math.min(Math.floor((BAR_W-10)*0.6),Math.floor(barH*0.25),24);
-    var inner=values[i]>0&&barH>=32?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
+    var inner=false?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fs+'px;font-weight:800;color:'+nc+';white-space:nowrap;line-height:1;">'+values[i].toLocaleString()+'</div></div>':'';
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:0;min-width:'+BAR_W+'px;flex-shrink:0;"'+(iC?' data-current="1"':'')+'>'
-      +'<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;align-items:flex-end;">'
+      +'<div style="width:'+(BAR_W-4)+'px;height:'+chartH+'px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">'
+        +(values[i]>0?'<div class="bar-val" style="color:'+(iC?'#FFD700':'rgba(240,220,160,0.85)')+';">'+kfmt(values[i])+'</div>':'')
         +'<div style="position:relative;width:100%;height:'+barH+'px;background:'+bg+';border-radius:3px 3px 0 0;" title="'+label+' '+values[i].toLocaleString()+'">'+inner+'</div>'
       +'</div>'
       +'<div style="width:'+BAR_W+'px;padding:6px 1px 0;text-align:center;"><div style="font-size:10px;color:'+lc+';font-weight:'+(iC?'700':'400')+';line-height:1.3;">'+label+'</div></div>'
@@ -2110,31 +2149,34 @@ function renderMonthIncomeChart(){
   var allD=getData('uberWeekly'),mmap={},hmap={};
   allD.forEach(function(w){if(!w.date)return;var ym=w.date.slice(0,7);if(!mmap[ym])mmap[ym]=0;mmap[ym]+=w.income||0;if(!hmap[ym])hmap[ym]=0;hmap[ym]+=(w.hours||0)*60+(w.mins||0);});
   var now=new Date(),tYM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  var months=[];for(var m=1;m<=12;m++)months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
+  var mLast=(+monthChartYear===now.getFullYear())?now.getMonth()+1:12;   /* 今年只畫到本月 */
+  var months=[];for(var m=1;m<=mLast;m++)months.push(monthChartYear+'-'+String(m).padStart(2,'0'));
   var values=months.map(function(ym){return mmap[ym]||0;});
   var hourVals=months.map(function(ym){return (hmap[ym]||0)/60;});
   var maxVal=Math.max.apply(null,values.concat([1]));
   var maxHr=Math.max.apply(null,hourVals.concat([1]));
-  var chartH=200,bw=64,sub=26;
+  var chartH=200,bw=50,sub=22;
   var bars=months.map(function(ym,i){
     var iC=(ym===tYM),label=(i+1)+'月';
     var lc=iC?'#FFD700':'rgba(240,220,160,0.8)';
     // 金額柱
-    var v=values[i], barH=Math.max(v>0?4:0,Math.round(v/maxVal*chartH));
+    var v=values[i], barH=Math.max(v>0?4:0,Math.round(v/maxVal*(chartH-18)));
     var bgV=iC?'linear-gradient(to top,#FFD700,#FFF176)':'linear-gradient(to top,#00C853,#69F0AE)';
     var ncV=iC?'#7A5800':'#004D20';
     var fsV=Math.min(Math.floor(sub*0.5),Math.floor(barH*0.16),15);
-    var innerV=v>0&&barH>=44?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsV+'px;font-weight:800;color:'+ncV+';white-space:nowrap;line-height:1;">'+v.toLocaleString()+'</div></div>':'';
+    var innerV=false?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsV+'px;font-weight:800;color:'+ncV+';white-space:nowrap;line-height:1;">'+v.toLocaleString()+'</div></div>':'';
     // 時數柱
-    var h=hourVals[i], barHh=Math.max(h>0?4:0,Math.round(h/maxHr*chartH));
+    var h=hourVals[i], barHh=Math.max(h>0?4:0,Math.round(h/maxHr*(chartH-18)));
     var bgH=iC?'linear-gradient(to top,#FF9500,#FFC46B)':'linear-gradient(to top,#22D3EE,#7FE9F8)';
     var ncH=iC?'#6B3D00':'#04414C';
     var fsH=Math.min(Math.floor(sub*0.5),Math.floor(barHh*0.16),15);
-    var innerH=h>0&&barHh>=44?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsH+'px;font-weight:800;color:'+ncH+';white-space:nowrap;line-height:1;">'+h.toFixed(1)+'h</div></div>':'';
+    var innerH=false?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;"><div style="writing-mode:vertical-rl;font-size:'+fsH+'px;font-weight:800;color:'+ncH+';white-space:nowrap;line-height:1;">'+h.toFixed(1)+'h</div></div>':'';
     return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:'+bw+'px;">'
       +'<div style="width:100%;height:'+chartH+'px;display:flex;align-items:flex-end;justify-content:center;gap:3px;">'
-        +'<div style="position:relative;width:'+sub+'px;height:'+barH+'px;background:'+bgV+';border-radius:4px 4px 0 0;" title="'+label+' 收入 '+v.toLocaleString()+'">'+innerV+'</div>'
-        +'<div style="position:relative;width:'+sub+'px;height:'+barHh+'px;background:'+bgH+';border-radius:4px 4px 0 0;" title="'+label+' 時數 '+h.toFixed(1)+'h">'+innerH+'</div>'
+        +'<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:'+sub+'px;">'+(v>0?'<div class="bar-val" style="color:'+(iC?'#FFD700':'#69F0AE')+';">'+kfmt(v)+'</div>':'')
+        +'<div style="position:relative;width:'+sub+'px;height:'+barH+'px;background:'+bgV+';border-radius:4px 4px 0 0;" title="'+label+' 收入 '+v.toLocaleString()+'">'+innerV+'</div></div>'
+        +'<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:'+sub+'px;">'+(h>0?'<div class="bar-val" style="color:'+(iC?'#FFC46B':'#7FE9F8')+';">'+Math.round(h)+'h</div>':'')
+        +'<div style="position:relative;width:'+sub+'px;height:'+barHh+'px;background:'+bgH+';border-radius:4px 4px 0 0;" title="'+label+' 時數 '+h.toFixed(1)+'h">'+innerH+'</div></div>'
       +'</div>'
       +'<div style="font-size:13px;color:'+lc+';white-space:nowrap;font-weight:'+(iC?'700':'400')+';padding-top:6px;">'+label+'</div>'
     +'</div>';
@@ -2143,7 +2185,8 @@ function renderMonthIncomeChart(){
     +'<span style="display:flex;align-items:center;gap:5px;"><i style="width:9px;height:9px;border-radius:2px;background:#00C853;display:inline-block;"></i>收入</span>'
     +'<span style="display:flex;align-items:center;gap:5px;"><i style="width:9px;height:9px;border-radius:2px;background:#22D3EE;display:inline-block;"></i>時數</span>'
   +'</div>';
-  el.innerHTML=legend+'<div style="width:100%;overflow-x:auto;"><div style="min-width:760px;display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div></div>';
+  el.innerHTML=legend+'<div id="monthChartScroll" style="width:100%;overflow-x:auto;"><div style="min-width:'+(months.length*54)+'px;display:flex;align-items:flex-end;gap:4px;padding:4px 0 8px;">'+bars+'</div></div>';
+  requestAnimationFrame(function(){var s=document.getElementById('monthChartScroll');if(s)s.scrollLeft=s.scrollWidth;});   /* 放不下時停在最新月份 */
 }
 // 統計
 function updateStats(){
@@ -2374,7 +2417,7 @@ function drawPie(canvasId, legendId, dataMap, colorMap, totalLabel){
   var ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,W,W);
   if(!grand){
-    leg.innerHTML='<div style="color:rgba(255,255,255,0.25);font-size:13px;">本月尚無資料</div>';
+    leg.innerHTML='<div style="color:rgba(255,255,255,0.45);font-size:13px;">這段期間沒有資料</div>';
     return 0;
   }
   var start=-Math.PI/2;
@@ -2692,6 +2735,9 @@ function renderOverviewPies(){
   var incMap={}, bp=splitByPlatform(p.trips);
   Object.keys(bp).forEach(function(k){ if(bp[k].net>0) incMap[k]=bp[k].net; });
   var incTotal=drawPie('ovIncPie','ovIncLegend',incMap,INCOME_COLOR,'跑車實收');
+  var _ik=Object.keys(incMap),_cv=document.getElementById('ovIncPie'),_lg=document.getElementById('ovIncLegend');
+  if(_cv)_cv.style.display=_ik.length===1?'none':'';
+  if(_lg&&_ik.length===1)_lg.insertAdjacentHTML('afterbegin','<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:10px;">這段期間全部來自 '+_ik[0].replace(' 收入','')+'</div>');
 
   var t1=document.getElementById('ovExpTitle');
   if(t1) t1.textContent=label+' 支出';
@@ -2699,8 +2745,10 @@ function renderOverviewPies(){
   if(t2) t2.textContent=label+' 跑車實收（依平台）';
   var net=document.getElementById('ovNet');
   if(net){
-    var n=incTotal-expTotal;
-    net.innerHTML='期間淨利 <b style="color:'+(n>=0?'#00E860':'#FF6B6B')+';font-size:20px;">$'+fmt(n)+'</b>';
+    /* 與上方「淨收入」同一個算法：實際入帳 − 支出（原本用跑車實收，兩個數字對不上） */
+    var paid=p.weekly.reduce(function(s,w){return s+(w.income||0);},0);
+    var n=paid-expTotal;
+    net.innerHTML='淨收入 <b style="color:'+(n>=0?'#00E860':'#FF6B6B')+';font-size:20px;">$'+fmt(n)+'</b>';
   }
 }
 // ── 本業收入 ──
@@ -3843,6 +3891,10 @@ setTimeout(function(){
   }catch(e){}
 }, 3000);
 
+</script>
+<script>
+/* 手機上「新增行程明細」預設收起，行程清單直接可見 */
+(function(){try{if(matchMedia('(max-width:768px)').matches){var s=document.getElementById('tripFormSection');if(s)s.classList.add('collapsed');}}catch(e){}})();
 </script>
 </body>
 </html>
