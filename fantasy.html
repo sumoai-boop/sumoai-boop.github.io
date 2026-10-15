@@ -501,6 +501,29 @@ button,input,select,textarea{font:inherit;color:inherit}
   .tab{padding:11px 14px;font-size:15px}
   .bar h2{font-size:20px}
 }
+
+/* 前三順位：自成一列、字放大、金銀銅外框 */
+.plist.top3{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.plist.top3:empty{display:none}
+.pcard.rk{--rk:#C9A227;outline:3px solid var(--rk);outline-offset:2px;padding:16px 18px}
+.pcard.rk2{--rk:#9AA4B2}
+.pcard.rk3{--rk:#B8733A}
+.pcard.rk .pc-top .pn{font-size:26px}
+.pcard.rk .pick.big{font-size:15px;line-height:24px;padding:0 9px}
+.pcard.rk .pos{font-size:12px;line-height:19px;padding:0 8px}
+.pcard.rk .tchip,.pcard.rk .how{font-size:12.5px}
+.pcard.rk .pc-mid .tmlogo{width:76px;height:76px;top:58%}
+.pcard.rk .pc-top{align-items:center}
+.pcard.rk .pc-mid>.pc-row{padding-right:96px}
+.pcard.rk .sline .k{font-size:11px}
+.pcard.rk .sline .v{font-size:18px}
+.pcard.rk::after{content:attr(data-rk);position:absolute;z-index:3;left:-1px;top:-1px;background:var(--rk);color:#fff;font-family:var(--disp);font-size:15px;letter-spacing:.06em;padding:3px 10px 2px 12px;border-radius:0 0 10px 0}
+.pcard.rk .pc-top{padding-top:12px}
+.pcard.empty-slot.rk{min-height:150px}
+/* 所有球員卡：名字放大 */
+.pcard .pc-top .pn{font-size:19px;font-weight:800;letter-spacing:-.005em}
+@media (max-width:860px){.plist.top3{grid-template-columns:1fr}}
+@media (max-width:640px){.pcard.rk .pc-top .pn{font-size:22px}.pcard .pc-top .pn{font-size:18px}}
 </style>
 </head>
 <body>
@@ -1065,7 +1088,8 @@ function renderAuction(){
     '<div class="kv2"><span>已買<b>'+ps.length+' / '+L.rounds+'</b></span><span>已花<b>$'+spent+'</b></span><span>還缺<b>'+need+' 人</b></span>'+
     (need?'<span>最高還能出<b class="'+(maxBid<1?'warn':'')+'">$'+Math.max(0,maxBid)+'</b></span><span>剩下平均每人<b>$'+avg.toFixed(1)+'</b></span>':'<span>名單已滿 🏀</span>')+
     (left<0?'<span class="warn">超出預算 $'+(-left)+'</span>':'')+'</div></div>';
-  h+='<div class="plist">'+ps.map(p=>pcardHTML(p,true)).join('');
+  const rk=(p,i)=>i<3?pcardHTML(p,true).replace('class="pcard','data-rk="'+['1ST','2ND','3RD'][i]+'" class="pcard rk rk'+(i+1)):pcardHTML(p,true);
+  h+='<div class="plist top3">'+ps.slice(0,3).map(rk).join('')+'</div><div class="plist">'+ps.slice(3).map((p,i)=>rk(p,i+3)).join('');
   for(let i=0;i<need;i++)h+='<div class="pcard empty-slot" data-new="1"><span class="r">$</span><span class="t">＋ 新增得標球員'+(i===0&&maxBid>0?'<small>這位最多可以出 $'+maxBid+'</small>':'')+'</span></div>';
   h+='</div>'+statTableHTML();
   el.innerHTML=h;
@@ -1092,12 +1116,13 @@ function renderDraft(){
       (next?'<span class="chip">下一個：第 <b>'+next+'</b> 輪・總第 <b>'+overallPick(next)+'</b> 順位</span>':'<span class="chip">選秀完成 🏀</span>')+
       '<span class="chip">兩次選人最長間隔 <b>'+Math.max.apply(null,gaps.concat([0]))+'</b> 順位</span></div>';
   }
-  h+='<div class="plist">';
+  h+='<div class="plist top3">';
   for(let r=1;r<=L.rounds;r++){
+    if(r===4)h+='</div><div class="plist">';
     const p=draftedIn(r);
-    if(p){h+=pcardHTML(p,true).replace('data-id=','data-round="'+r+'" data-id=');continue}
+    if(p){h+=pcardHTML(p,true).replace('class="pcard','data-rk="'+(r<=3?['1ST','2ND','3RD'][r-1]:'')+'" class="pcard'+(r<=3?' rk rk'+r:'')).replace('data-id=','data-round="'+r+'" data-id=');continue}
     const o=L.slot?overallPick(r):null, nextO=L.slot&&r<L.rounds?overallPick(r+1):null;
-    h+='<div class="pcard empty-slot" data-round="'+r+'"><span class="r">R'+r+'</span><span class="t">＋ 填入第 '+r+' 輪選中的球員'+
+    h+='<div'+(r<=3?' data-rk="'+['1ST','2ND','3RD'][r-1]+'"':'')+' class="pcard empty-slot'+(r<=3?' rk rk'+r:'')+'" data-round="'+r+'"><span class="r">R'+r+'</span><span class="t">＋ 填入第 '+r+' 輪選中的球員'+
       (L.slot?'<small>總第 '+o+' 順位・本輪第 '+pickInRound(r)+' 位'+(nextO?'・下次等 '+(nextO-o-1)+' 人':'')+'</small>':'')+'</span></div>';
   }
   h+='</div>'+statTableHTML();
