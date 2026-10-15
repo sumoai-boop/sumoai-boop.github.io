@@ -335,6 +335,7 @@ body{
 .modal-mask.open{display:flex;}
 .cal-ev,.cal-chip{cursor:pointer;}
 #detailCard{max-width:400px;}
+#detailCard.from-src{animation:none;}
 .dt-head{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
 .dt-badge{font-size:13px;font-weight:700;padding:3px 12px;border-radius:99px;}
 .dt-title{font-size:19px;font-weight:900;color:var(--ink);line-height:1.25;}
@@ -1011,7 +1012,7 @@ function layoutColumns(evs){
 function chipHTML(t,x){
   var ty=TAG[x.type]||TAG['其他'];
   var cost=(+x.amount>0)?' <b class="'+(x.cur==='TWD'?'cur-twd':'')+'" style="font-family:\'Space Mono\',monospace;">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+esc(x.cur||''))+'</b>':'';
-  return '<span class="cal-chip" onclick="openEntryDetail(\''+x.id+'\')" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
+  return '<span class="cal-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
     +'<span style="color:'+ty.c+';font-weight:700;">'+esc(x.type)+'</span> '+esc(x.title)+cost
     +'<button class="cev-del" style="position:static;margin-left:4px;color:inherit;" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button></span>';
 }
@@ -1053,7 +1054,7 @@ function renderDayCalendar(t,day){
     var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
     var title=(o.cont?'↳ ':'')+esc(x.title);
     var _d=Math.min(_i*26,320);
-    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\')" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
+    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
       +'<button class="cev-del" onclick="event.stopPropagation();delEntry(\''+x.id+'\')" aria-label="刪除">✕</button>'
       +'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'
       +'</div>';
@@ -1101,7 +1102,7 @@ function renderWeekCalendar(t,days){
     return '<div class="wk-adcell">'+c.untimed.map(function(x){
       var ty=TAG[x.type]||TAG['其他'];
       var cost=(+x.amount>0)?' <b>'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount))+'</b>':'';
-      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\')" style="background:'+ty.bg+';border-left-color:'+ty.pie+';color:'+ty.c+';">'+esc(x.title)+cost+'</div>';
+      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="background:'+ty.bg+';border-left-color:'+ty.pie+';color:'+ty.c+';">'+esc(x.title)+cost+'</div>';
     }).join('')+'</div>';
   }).join('')+'</div>':'';
   var grid='<div class="cal-night" style="top:0;height:'+(6*HP)+'px;"></div>'
@@ -1119,7 +1120,7 @@ function renderWeekCalendar(t,days){
       var w=100/o.cols,left=o.col*w;
       var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
       var tm=o.cont?'':'<div class="wk-time">'+minHHMM(o.s)+(o.e-o.s>=45?' – '+minHHMM(o.e%1440):'')+'</div>';
-      return '<div class="cal-ev wk-ev" onclick="openEntryDetail(\''+x.id+'\')" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 2px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
+      return '<div class="cal-ev wk-ev" onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 2px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
         +'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost+'</div>';
     }).join('');
     var now=(d===today)?'<div class="cal-now wk-now" style="top:'+((new Date().getHours()*60+new Date().getMinutes())*pm).toFixed(1)+'px;"></div>':'';
@@ -1428,13 +1429,37 @@ function syncEndOptions(startId,endId){
 }
 function optsHTML(list,sel){return list.map(function(o){return '<option'+(o===sel?' selected':'')+'>'+esc(o)+'</option>';}).join('');}
 function dateOptionsHTML(t,sel){return dateRange(t.start,t.end).map(function(d){return '<option value="'+d+'"'+(d===sel?' selected':'')+'>'+fmtMD(d)+' '+weekdayZh(d)+'</option>';}).join('');}
-function openEntryDetail(id){
+/* 卡片展開：詳細視窗從被點的行程方塊長出來，關閉時縮回去（空間連續性） */
+var EASE_OUT='cubic-bezier(0.23, 1, 0.32, 1)';
+var _detailSrc=null,_detailAnim=null,_closing=false;
+function reduceMotion(){return window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;}
+function srcTransform(card,src){
+  /* 由卡片最終位置反推「縮在方塊上」的 transform；scale 夾在 0.35~0.9，避免太小或幾乎不動 */
+  var c=card.getBoundingClientRect(),s=src.getBoundingClientRect();
+  if(!c.width||!s.width)return null;
+  var dx=(s.left+s.width/2)-(c.left+c.width/2),dy=(s.top+s.height/2)-(c.top+c.height/2);
+  var k=Math.max(0.35,Math.min(0.9,s.width/c.width));
+  return 'translate('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px) scale('+k.toFixed(3)+')';
+}
+function openEntryDetail(id,src){
   var t=curTrip();if(!t)return;
   var x=(t.entries||[]).find(function(e){return e.id===id;});
   if(!x)return;
-  _detailId=id;_detailEdit=false;
-  document.getElementById('detailModal').classList.add('open');
+  var mask=document.getElementById('detailModal'),card=document.getElementById('detailCard');
+  if(_detailAnim){_detailAnim.cancel();_detailAnim=null;}
+  if(mask.getAnimations)mask.getAnimations().forEach(function(a){a.cancel();}); /* 關到一半又打開：取消舊的淡出，免得它把新視窗關掉 */
+  card.classList.remove('from-src');_closing=false;mask.style.opacity='';
+  _detailId=id;_detailEdit=false;_detailSrc=src||null;
+  mask.classList.add('open');
   renderDetail();
+  if(!_detailSrc||!card.animate)return;              /* 沒有來源（或不支援 WAAPI）就用原本的 CSS 淡入 */
+  card.classList.add('from-src');
+  var from=reduceMotion()?null:srcTransform(card,_detailSrc);
+  _detailAnim=card.animate(from
+    ?[{transform:from,opacity:0},{transform:'none',opacity:1}]
+    :[{opacity:0},{opacity:1}],
+    {duration:from?280:160,easing:EASE_OUT});
+  _detailAnim.onfinish=function(){_detailAnim=null;};
 }
 function renderDetail(){
   var t=curTrip();if(!t){closeDetail();return;}
@@ -1494,7 +1519,25 @@ function saveDetail(){
   markDirty();renderLog();renderHeader();
   _detailEdit=false;renderDetail();
 }
-function closeDetail(){document.getElementById('detailModal').classList.remove('open');_detailId=null;_detailEdit=false;}
+function closeDetail(){
+  var mask=document.getElementById('detailModal'),card=document.getElementById('detailCard');
+  _detailId=null;_detailEdit=false;
+  function done(){mask.classList.remove('open');mask.style.opacity='';card.classList.remove('from-src');_closing=false;_detailAnim=null;}
+  if(!mask.classList.contains('open')||_closing||!card.animate){done();return;}
+  if(_detailAnim)_detailAnim.cancel();
+  _closing=true;
+  /* 方塊還在畫面上就縮回去；被刪掉了就原地淡出 */
+  var to=(!reduceMotion()&&_detailSrc&&_detailSrc.isConnected)?srcTransform(card,_detailSrc):null;
+  var fade=reduceMotion()?{opacity:0}:{transform:'scale(0.97)',opacity:0};
+  card.classList.add('from-src');
+  _detailAnim=card.animate([{transform:'none',opacity:1},to?{transform:to,opacity:0}:fade],{duration:to?200:150,easing:EASE_OUT,fill:'forwards'});
+  mask.animate([{opacity:1},{opacity:0}],{duration:to?200:150,easing:'ease',fill:'forwards'}).onfinish=function(){
+    if(_detailAnim){_detailAnim.cancel();}
+    mask.getAnimations().forEach(function(a){a.cancel();});
+    done();
+  };
+  _detailSrc=null;
+}
 function detailDelete(){
   if(!_detailId)return;
   var id=_detailId;closeDetail();

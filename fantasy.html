@@ -1628,8 +1628,75 @@ window.addEventListener('online',()=>scheduleSync(300));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&getDirty()>0)scheduleSync(300)});
 window.addEventListener('beforeunload',e=>{if(!isDemo&&getDirty()>0){syncNow();e.preventDefault();e.returnValue=''}});
 
+/* ===== 壓力測試（開發用，break-ui）=====
+   網址加 ?data=demo|worst|empty|one 才會啟用；不帶參數時完全不影響正常頁面。
+   啟用時走 isDemo 路徑：不寫 localStorage 資料、不同步到 GitHub。 */
+const STRESS=(new URLSearchParams(location.search).get('data')||'').toLowerCase();
+function worstData(){
+  let s=11;const r=()=>{s=(s*16807)%2147483647;return s/2147483647};
+  const L=[
+    {id:'lg1',name:'The Association of Absolutely Unremarkable Gentlemen',team:'全聯盟最會擺爛但還是想拿冠軍的隊伍',teams:14,rounds:13,url:YAHOO+'/64615',cats:['FGP','FTP','3PTM','3PP','PTS','REB','AST','ST','BLK','TO','AT','TECH','DD'],draft:'auction',budget:200,proj:14},
+    {id:'lg2',name:'🇹🇼 台灣人夢幻籃球交流聯盟（第十二屆）',team:'Kristaps Porziņģis Appreciation Society',teams:16,rounds:13,cats:['FGP','FTP','3PTM','3PP','PTS','OREB','REB','AST','ST','BLK','TO']},
+    {id:'lgP',name:'Yahoo H2H-Pts 231351 Public League',team:'雞屁股',teams:20,rounds:30,mode:'pts',slot:20},
+    {id:'lgJ',name:'馬',team:'Jo',teams:2,rounds:1,slot:1}];
+  const P=[
+    ['Shai Gilgeous-Alexander','OKC',['PG','SG']],['Giannis Antetokounmpo','MIL',['PF','C']],['Nickeil Alexander-Walker','ATL',['SG','SF','PF']],
+    ['Kristaps Porziņģis','ATL',['PF','C']],['楊瀚森','POR',['C']],['Bol Bol','PHX',['PF','C']],['Sandro Mamukelashvili','TOR',['PF','C']],
+    ['Kelly Oubre Jr.','PHI',['SG','SF']],['Trayce Jackson-Davis','GSW',['PF','C']],['Bogdan Bogdanović','LAC',['SG','SF']],
+    ['Keon Ellis','SAC',['SG','SF']],['Jusuf Nurkić','UTA',['C']],['Ousmane Dieng','',[]]];
+  const players=[];
+  P.forEach((p,i)=>{
+    const st=i===12?null:{gp:i===0?82:Math.round(20+r()*60),mpg:i===0?'40:12':Math.round(14+r()*20)+':'+String(Math.round(r()*59)).padStart(2,'0'),
+      pts:i===5?0:+(r()*33).toFixed(1),reb:+(r()*14).toFixed(1),ast:+(r()*10).toFixed(1),st:+(r()*2.5).toFixed(1),blk:+(r()*3.5).toFixed(1),to:+(r()*4.5).toFixed(1),
+      fp:+(10+r()*52).toFixed(2),cur:i===4?512:i+1,start:i===0?100:Math.round(r()*99)};
+    const log=i===10?[{a:'選秀',d:'2026-10-18',t:1},{a:'釋出',d:'2026-11-02',n:'上場時間被砍到剩 12 分鐘，先丟掉換一個抄截型的側翼，等傷兵回來再看看要不要撿回來',t:2},
+      {a:'自由球員',d:'2026-11-09',t:3},{a:'釋出',d:'2026-11-16',t:4},{a:'自由球員',d:'2026-11-30',t:5},{a:'交易出',d:'2026-12-14',n:'⇄ 換 Shai Gilgeous-Alexander + 2027 第一輪',t:6}]:undefined;
+    players.push({id:'wp'+i,lg:'lg1',name:p[0],nba:p[1],pos:p[2],how:i===12?'自由球員':'選秀',round:i===12?0:i+1,price:i===0?200:i===12?0:Math.max(1,Math.round(r()*40)),ord:i+1,
+      pick:i===4?512:i+1,st,date:'2026-10-18',log,note:i===1?'背傷反覆，背靠背一定輪休；週一跟週四如果有兩場的週要記得看傷病報告再決定要不要放先發，不然 DD 跟 BLK 會一直掉。':''});
+  });
+  /* 很會換人：再補 30 個串流撿來又丟掉的球員 */
+  for(let i=0;i<30;i++)players.push({id:'wx'+i,lg:'lg1',name:['Day\'Ron Sharpe','Ausar Thompson','Jaden Ivey','Moussa Diabaté','Yves Missi'][i%5]+' '+(i>4?['II','Jr.','III','Sr.','IV'][i%5]:''),nba:['BKN','DET','DET','CHA','NOP'][i%5],pos:[['C'],['SG','SF'],['PG','SG'],['C'],['C']][i%5],how:'自由球員',date:'2026-11-0'+(1+i%9),
+    log:[{a:'自由球員',d:'2026-11-0'+(1+i%9),t:1},{a:'釋出',d:'2026-11-1'+(i%9),t:2}]});
+  players.push({id:'wpJ',lg:'lgJ',name:'Jo',nba:'',pos:[],how:'選秀',round:1});
+  ['Luka Dončić','LeBron James','Victor Wembanyama'].forEach((n,i)=>players.push({id:'wpP'+i,lg:'lgP',name:n,nba:['LAL','LAL','SAS'][i],pos:[['PG','SG'],['SF','PF'],['PF','C']][i],how:'選秀',round:i+1,pick:i+1}));
+  const opps=["Wembanyama's Wonderland",'Kristaps Porziņģis Fan Club','鵝廠','Jo','Tanking for AJ Dybantsa','🔥🔥🔥','Sabonis & the Double-Double Machines of Sacramento',
+    '王者榮耀','Bench Mob','x','Free Throw Merchants (Punt FT%)','Courtside','Trust The Process 2.0','Dunk City','Clutch Gene','Big Men Only','Rim Protectors','Bank Shot','Splash Bros','Taipei Hoopers','Triple Double Club','Courtside'];
+  const gen=b=>{const o={FGP:.42+r()*.09,FTP:.70+r()*.15,'3PTM':Math.round(40+r()*50),'3PP':.31+r()*.09,PTS:Math.round(480+r()*260+b*20),OREB:Math.round(40+r()*40),REB:Math.round(180+r()*110),
+    AST:Math.round(100+r()*80),ST:Math.round(25+r()*25),BLK:Math.round(15+r()*25),TO:Math.round(50+r()*40),TECH:Math.round(r()*5),DD:Math.round(r()*18)};o.AT=+(o.AST/o.TO).toFixed(2);return o};
+  const weeks=[];
+  for(let i=0;i<22;i++){const me=gen(1),op=gen(0);
+    if(i===3){me.FGP=1;op.FGP=0;me.PTS=1284;op.PTS=1284;me.TECH=0;op.TECH=0}       /* 極端值＋平手 */
+    const ps={};if(i<4)players.slice(0,13).forEach((p,j)=>ps[p.id]={pick:j===4?512:j+1,gp:j===12?0:4,pts:+(r()*130).toFixed(0),reb:+(r()*60).toFixed(0),ast:+(r()*40).toFixed(0),st:+(r()*9).toFixed(0),blk:+(r()*9).toFixed(0),to:+(r()*18).toFixed(0)});
+    weeks.push({id:'ww'+i,lg:'lg1',week:i+1,start:addDays('2026-10-20',i*7),end:addDays('2026-10-26',i*7),opp:opps[i],me:i===21?{}:me,op:i===21?{}:op,ps,
+      note:i===0?'Giannis 背傷兩場沒打、楊瀚森被下放 G League，最後一天差 0.002 的 FG% 輸掉，TO 也只差 1 次，下週一定要記得在週日晚上看傷病報告再調先發陣容。':''})}
+  weeks.push({id:'wwPO',lg:'lg1',week:23,playoff:1,start:'2027-03-22',end:'2027-04-04',opp:'Sabonis & the Double-Double Machines of Sacramento',me:gen(1),op:gen(0)});
+  for(let i=0;i<20;i++)weeks.push({id:'wpw'+i,lg:'lgP',week:i+1,start:addDays('2026-10-20',i*7),end:addDays('2026-10-26',i*7),opp:opps[(i+3)%opps.length],
+    me:{FP:i===1?1284.55:+(700+r()*400).toFixed(2),PROJ:+(800+r()*200).toFixed(2)},op:{FP:i===1?0:+(700+r()*400).toFixed(2),PROJ:+(800+r()*200).toFixed(2)}});
+  weeks.push({id:'wwJ',lg:'lgJ',week:1,opp:'Jo',me:{PTS:1},op:{PTS:1}});
+  return normAll({leagues:L,players,weeks});
+}
+function oneData(){return normAll({leagues:[{id:'lg1',name:'馬化騰',team:'A',teams:2,rounds:1}],
+  players:[{id:'op1',lg:'lg1',name:'Jalen Brunson',nba:'NYK',pos:['PG'],how:'選秀',round:1,pick:1}],
+  weeks:[{id:'ow1',lg:'lg1',week:1,start:'2026-10-20',end:'2026-10-26',opp:'B',me:{PTS:1},op:{PTS:0}}]})}
+function emptyData(){const e=normAll({});return {leagues:e.leagues,players:[],weeks:[]}}
+function stressBar(){
+  const items=[['demo','範例資料'],['worst','極端資料'],['empty','空白'],['one','只有一筆']];
+  const bar=document.createElement('div');bar.id='stressBar';
+  bar.innerHTML='<span>開發用</span>'+items.map(x=>'<a href="?data='+x[0]+'"'+(x[0]===STRESS?' class="on"':'')+'>'+x[1]+'</a>').join('')+'<a href="'+location.pathname+'">結束</a>';
+  const st=document.createElement('style');
+  st.textContent='#stressBar{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:2px;padding:3px;background:#e9e9ec;border-radius:99px;box-shadow:0 2px 10px rgba(0,0,0,.18);font:600 12px -apple-system,system-ui,sans-serif;white-space:nowrap}'
+    +'#stressBar span{color:#888;padding:0 8px 0 10px}#stressBar a{color:#444;text-decoration:none;padding:6px 11px;border-radius:99px}@media (max-width:420px){#stressBar span{display:none}#stressBar a{padding:6px 8px}}#stressBar a.on{background:#fff;color:#111;box-shadow:0 1px 3px rgba(0,0,0,.15)}';
+  document.head.appendChild(st);document.body.appendChild(bar);
+}
+function loadStress(k){
+  isDemo=true;loading=false;
+  D=k==='worst'?worstData():k==='empty'?emptyData():k==='one'?oneData():demoData();
+  if(!D.leagues.some(l=>l.id===curLg))curLg=D.leagues[0].id;
+  stressBar();setSync();render();
+}
+
 view=['draft','roster','weeks','stats'].includes(lsGet(LS.view,''))?lsGet(LS.view,''):'draft';
-init();
+if(['demo','worst','empty','one'].includes(STRESS))loadStress(STRESS);else init();
 </script>
 </body>
 </html>
