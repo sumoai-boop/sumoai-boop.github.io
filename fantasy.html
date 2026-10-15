@@ -591,6 +591,17 @@ button,input,select,textarea{font:inherit;color:inherit}
   </div>
 </div>
 
+<!-- 貼上球員資料 -->
+<div class="modal" id="plPasteModal">
+  <div class="mbox">
+    <h3>貼上球員資料<button class="x" data-close="plPasteModal">×</button></h3>
+    <div class="pastebox" style="margin:0">
+      <textarea id="plPasteTxt" placeholder="把 Claude 給你的那段資料（{ 開頭）整段貼在這裡"></textarea>
+      <div class="row"><span class="msg" id="plPasteMsg">會依名字更新這個聯盟球員的上季數據、PICK、球隊和位置；名單裡沒有的球員不會新增。</span><button class="btn pri sm" id="plPasteGo" type="button">更新</button></div>
+    </div>
+  </div>
+</div>
+
 <!-- 丟掉 / 撿回 -->
 <div class="modal" id="moveModal">
   <div class="mbox">
@@ -1087,12 +1098,12 @@ function statTableHTML(){
 /* 電腦預估排名：選秀後 Yahoo 給的預估名次（1 ~ 隊伍數） */
 function projSelHTML(){const L=LG();let o='<option value="0">還沒出來</option>';for(let i=1;i<=L.teams;i++)o+='<option value="'+i+'"'+(L.proj===i?' selected':'')+'>第 '+i+' 名 / '+L.teams+' 隊</option>';
   return '<span class="projbox'+(L.proj?' set':'')+'"><span>電腦預估排名：</span><select id="projSel">'+o+'</select></span>'}
-function bindProj(){const s=$('projSel');if(s)s.onchange=e=>{LG().proj=+e.target.value;markDirty(LG());toast(LG().proj?'預估排名：第 '+LG().proj+' 名':'已清除預估排名')}}
+function bindProj(){const b=$('btnPastePl');if(b)b.onclick=openPlPaste;const s=$('projSel');if(s)s.onchange=e=>{LG().proj=+e.target.value;markDirty(LG());toast(LG().proj?'預估排名：第 '+LG().proj+' 名':'已清除預估排名')}}
 function renderAuction(){
   const L=LG(),el=$('v-draft'),ps=Pl().filter(p=>p.how==='選秀').sort(draftCmp);
   const spent=ps.reduce((a,p)=>a+(p.price||0),0),left=L.budget-spent,need=Math.max(0,L.rounds-ps.length);
   const maxBid=need>0?left-(need-1):0,avg=need>0?left/need:0;
-  let h='<div class="bar"><h2>我的拍賣選秀</h2><button class="btn pri sm" id="btnAddA">＋ 新增得標球員</button></div>';
+  let h='<div class="bar"><h2>我的拍賣選秀</h2><div style="display:flex;gap:8px"><button class="btn sm" id="btnPastePl">📋 貼上球員資料</button><button class="btn pri sm" id="btnAddA">＋ 新增得標球員</button></div></div>';
   h+='<div class="card budget"><div class="top"><div class="left">$'+left+'<small>剩餘預算 / $'+L.budget+'</small></div>'+projSelHTML()+'</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">名單 '+L.rounds+' 人・可在聯盟設定改預算和人數</div>'+
     '<div class="bbar" title="每一段是一位球員的得標價">'+ps.filter(p=>p.price>0).map(p=>'<span style="width:'+(p.price/L.budget*100)+'%" title="'+esc(p.name)+' $'+p.price+'"></span>').join('')+'</div>'+
     '<div class="kv2"><span>已買<b>'+ps.length+' / '+L.rounds+'</b></span><span>已花<b>$'+spent+'</b></span><span>還缺<b>'+need+' 人</b></span>'+
@@ -1113,7 +1124,7 @@ let stSortA={k:'round',asc:false};
 function renderDraft(){
   if(isAuc())return renderAuction();
   const L=LG(),el=$('v-draft');
-  let h='<div class="bar"><h2>我的選秀</h2><span class="hint">'+L.teams+' 隊・'+L.rounds+' 輪・蛇形順序（奇數輪正序、偶數輪倒序）</span></div>';
+  let h='<div class="bar"><h2>我的選秀</h2><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="hint">'+L.teams+' 隊・'+L.rounds+' 輪・蛇形順序（奇數輪正序、偶數輪倒序）</span><button class="btn sm" id="btnPastePl">📋 貼上球員資料</button></div></div>';
   h+='<div class="card slotpick"><span>我的選秀順位</span><select id="slotSel"><option value="0">還不知道</option>';
   for(let i=1;i<=L.teams;i++)h+='<option value="'+i+'"'+(L.slot===i?' selected':'')+'>第 '+i+' 順位</option>';
   h+='</select><span style="font-size:12.5px;color:var(--ink3)">選好後每一輪的總順位、和下一次輪到你還要等幾個人都會算出來</span>'+projSelHTML()+'</div>';
@@ -1563,6 +1574,24 @@ $('wPasteGo').onclick=()=>{
   const tgt=pasteTarget(d);
   if(tgt&&tgt!==curW){const t=$('wPasteTxt').value;openWeek(tgt,true);$('wPasteTxt').value=t}
   const r=applyPaste(d);$('wPasteMsg').className='msg'+(r.warn?' err':'');$('wPasteMsg').textContent=r.msg;
+};
+/* 貼上球員資料：{"league":"…","players":{"名字":{gp,mpg,fgp…,pick,nba,pos}}} */
+function openPlPaste(){$('plPasteTxt').value='';$('plPasteMsg').className='msg';$('plPasteMsg').textContent='會依名字更新這個聯盟球員的上季數據、PICK、球隊和位置；名單裡沒有的球員不會新增。';show('plPasteModal');setTimeout(()=>$('plPasteTxt').focus(),60)}
+$('plPasteGo').onclick=()=>{
+  let d;try{d=parsePaste($('plPasteTxt').value)}catch(e){$('plPasteMsg').className='msg err';$('plPasteMsg').textContent='讀不懂這段資料：'+e.message;return}
+  if(d.league){const L=D.leagues.find(l=>l.name===d.league)||D.leagues.find(l=>normName(l.name).includes(normName(d.league))||normName(d.league).includes(normName(l.name)));if(L&&L.id!==LG().id){setLg(L.id);render()}}
+  const list=d.players||{},miss=[];let n=0;const now=Date.now();
+  Object.keys(list).forEach(name=>{const p=findPlayer(name),s=list[name]||{};if(!p){miss.push(name);return}
+    const st={};Object.keys(s).forEach(k0=>{const k1=String(k0).toLowerCase(),k=PS_ALIAS[k1]||k1;if(k==='pick'||k==='nba'||k==='pos')return;st[k]=s[k0]});
+    p.st=normSt(Object.assign({},p.st||{},st));
+    if(s.pick>0)p.pick=Math.round(+s.pick);
+    if(s.nba&&TC[String(s.nba).toUpperCase()])p.nba=String(s.nba).toUpperCase();
+    if(Array.isArray(s.pos)){const ps=s.pos.map(x=>String(x).toUpperCase()).filter(x=>POS.includes(x));if(ps.length)p.pos=ps}
+    p.u=now;n++});
+  if(n){if(isDemo)render();else{saveLocal();setDirty(getDirty()+1);setSync();render();scheduleSync(1500)}}
+  $('plPasteMsg').className='msg'+(miss.length||!n?' err':'');
+  $('plPasteMsg').textContent=(n?'已更新 '+n+' 位球員（'+LG().name+'）':'沒有更新任何球員')+(miss.length?'。名單裡找不到：'+miss.join('、'):'');
+  if(n&&!miss.length)setTimeout(()=>hide('plPasteModal'),1200);
 };
 function pasteTarget(d){if(!d.week)return curW;const w=Wk().find(x=>x.week===+d.week&&!!x.playoff===!!d.playoff);return w?w.id:curW}
 function readStatForm(){const me={},op={};$('statRows').querySelectorAll('input').forEach(i=>{const c=catOf(i.dataset.k),v=parseVal(c,i.value);if(v!=null)(i.dataset.s==='me'?me:op)[c.k]=v});return {me,op}}
