@@ -2062,7 +2062,12 @@ function render(){
         }
         _frag.appendChild(bar);
       }
-      const keys=Object.keys(months).filter(ym=>foodYear==='all'||ym.slice(0,4)===foodYear).sort();
+      // 選「全部」：不分月份，每間店只出現一次，依最近一次造訪排序
+      if(foodYear==='all'){
+        const g=document.createElement('div'); g.className='photo-grid';
+        addCards(g,d); _frag.appendChild(g);
+      }
+      const keys=foodYear==='all'?[]:Object.keys(months).filter(ym=>ym.slice(0,4)===foodYear).sort();
       if(!asc) keys.reverse();
       const section=(ym,items,g)=>{
         const sec=document.createElement('section');
@@ -2088,7 +2093,7 @@ function render(){
           .map(s=>({item:s.item, date:s.last}));
         _frag.appendChild(section(ym,items,g));
       });
-      if(noDate.length && (foodYear==='nodate'||foodYear==='all')) _frag.appendChild(section(null,noDate,null));
+      if(noDate.length && foodYear==='nodate') _frag.appendChild(section(null,noDate,null));
     }
     grid.appendChild(_frag);
   }
