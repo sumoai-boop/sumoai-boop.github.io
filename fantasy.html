@@ -595,6 +595,21 @@ body{font-variant-numeric:tabular-nums}
   .board .sb{padding:14px 16px}
 }
 @media (max-width:420px){.board .sb .v{font-size:36px}.board .sb{padding:12px 12px}}
+/* roster list */
+.rl-wrap{border:1px solid var(--line);border-radius:12px;background:#fff}
+.tbl.rl th{padding:10px 10px;background:#F6F7FA;position:sticky;top:0}
+.tbl.rl td{padding:10px;font-size:14.5px;font-variant-numeric:tabular-nums}
+.tbl.rl tbody tr{cursor:pointer}
+.tbl.rl tbody tr:hover td{background:#F8F9FC}
+.tbl.rl th:first-child,.tbl.rl td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:150px;box-shadow:inset 4px 0 0 var(--tc,transparent)}
+.tbl.rl th:first-child{background:#F6F7FA;z-index:2;box-shadow:none}
+.tbl.rl tbody tr:hover td:first-child{background:#F8F9FC}
+.tbl.rl tr:first-child td{border-top:0}
+.rl-n{font-weight:700;font-size:15px;color:var(--ink);white-space:nowrap}
+.rl-t{font-family:var(--mono);font-size:12.5px;color:var(--ink3);letter-spacing:.04em;margin-top:1px}
+.tbl.rl tr.off td{color:var(--ink3)}.tbl.rl tr.off .rl-n{color:var(--ink3);font-weight:500}
+.rl-cap{font-size:11.5px;color:var(--ink3);margin:6px 2px 0}
+@media (max-width:600px){.tbl.rl td{padding:9px 8px;font-size:14px}.tbl.rl th:first-child,.tbl.rl td:first-child{min-width:136px;max-width:136px}.rl-n{white-space:normal;font-size:14px;line-height:1.25}}
 </style>
 </head>
 <body>
@@ -1127,9 +1142,11 @@ function fmtS(k,v){if(v==null||!isFinite(+v))return '—';const d=SDEF[k];if(d&&
 function seasonOf(p){
   const hasSt=s=>['gp','pts','reb','ast','st','blk','to','fp'].some(k=>s[k]!=null);
   const ws=Wk().filter(w=>w.ps&&w.ps[p.id]&&hasSt(w.ps[p.id]));if(!ws.length)return null;
-  const t={};['pts','reb','ast','st','blk','to','fp'].forEach(k=>t[k]=0);let g=0,allGp=true;
-  ws.forEach(w=>{const s=w.ps[p.id];if(!(s.gp>0))allGp=false;g+=s.gp||0;Object.keys(t).forEach(k=>{if(s[k]!=null)t[k]+=s[k]})});
-  const div=allGp&&g>0?g:ws.length,o={per:allGp&&g>0?'g':'w',gp:g,wk:ws.length};Object.keys(t).forEach(k=>o[k]=t[k]/div);return o;
+  const ks=['pts','reb','ast','st','blk','to','fp'].concat(statKeys()).filter((k,i,a)=>a.indexOf(k)===i);
+  const t={},n={};ks.forEach(k=>{t[k]=0;n[k]=0});let g=0,allGp=true;
+  ws.forEach(w=>{const s=w.ps[p.id];if(!(s.gp>0))allGp=false;g+=s.gp||0;ks.forEach(k=>{if(s[k]!=null&&s[k]!==''){t[k]+=+s[k];n[k]++}})});
+  const div=allGp&&g>0?g:ws.length,o={per:allGp&&g>0?'g':'w',gp:g,wk:ws.length};
+  ks.forEach(k=>o[k]=SDEF[k]&&SDEF[k].pct?(n[k]?t[k]/n[k]:null):(n[k]?t[k]/div:null));return o;
 }
 function seasonHTML(p){
   const s=seasonOf(p);if(!s)return '<div class="nostat" title="在「每週對戰」填球員本週數據後會自動平均">本季尚無數據</div>';
@@ -1228,6 +1245,15 @@ function renderDraft(){
   el.querySelectorAll('.pcard[data-round]').forEach(d=>d.onclick=()=>{const r=+d.dataset.round,p=draftedIn(r);openPlayer(p?p.id:null,{how:'選秀',round:r})});
 }
 
+/* 陣容：橫式列表（名字・球隊・本季數據），欄位跟著聯盟比項 */
+function rosterListHTML(list){
+  const SK=statKeys();
+  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr><th>球員</th><th>GP</th>'+SK.map(k=>'<th>'+SDEF[k].l+'</th>').join('')+'</tr></thead><tbody>';
+  list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',t=TC[p.nba];
+    h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(t?' style="--tc:'+t[0]+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
+      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+'</tr>'});
+  return h+'</tbody></table></div><div class="rl-cap">本季平均（每週對戰填的球員數據自動平均；全部週都有 GP 就是場均，否則是週均）</div>';
+}
 function renderRoster(){
   const el=$('v-roster');
   const on=Pl().filter(p=>p.status==='在隊'),off=Pl().filter(p=>p.status!=='在隊');
@@ -1239,7 +1265,7 @@ function renderRoster(){
   if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
   const ord=(a,b)=>draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
   const card=p=>pcardHTML(p,'season');
-  h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3><div class="plist">'+on.sort(ord).map(card).join('')+'</div></div>';
+  h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3>'+rosterListHTML(on.sort(ord))+'</div>';
   /* 異動紀錄：選秀併成一行，其他每筆都列 */
   const drafted=moves.filter(x=>x.m.a==='選秀'),other=moves.filter(x=>x.m.a!=='選秀').sort((a,b)=>String(b.m.d).localeCompare(String(a.m.d))||(b.m.t||0)-(a.m.t||0));
   h+='<div class="rgroup"><h3>異動紀錄 '+other.length+'</h3><div class="tl">';
@@ -1248,10 +1274,10 @@ function renderRoster(){
     '<span class="who"><b>'+esc(x.p.name)+'</b> '+teamTag(x.p,true)+(x.m.n?'<span class="nt">'+esc(x.m.n)+'</span>':'')+'</span></div>'});
   if(drafted.length){const ds=drafted.map(x=>x.m.d).filter(Boolean).sort();h+='<div class="tlr" style="cursor:default"><span class="d">'+(ds[0]?md(ds[0]):'—')+'</span><span class="mv draft">＋ 選秀</span><span class="who"><b>選秀 '+drafted.length+' 人</b><span class="nt">在「選秀」頁看每一輪</span></span></div>'}
   h+='</div></div>';
-  if(off.length)h+='<div class="rgroup"><h3>已離隊 '+off.length+'</h3><div class="plist">'+off.sort(ord).map(card).join('')+'</div></div>';
+  if(off.length)h+='<div class="rgroup"><h3>已離隊 '+off.length+'</h3>'+rosterListHTML(off.sort(ord))+'</div>';
   el.innerHTML=h;
   $('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});
-  el.querySelectorAll('.pcard').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
+  el.querySelectorAll('.rl tr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   el.querySelectorAll('.tlr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   $('btnDropP').onclick=()=>openMove(null,'out');
 }
