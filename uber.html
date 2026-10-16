@@ -6,334 +6,464 @@
 <title>Uber 記錄 — Sumoai's Reel</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════════════════════════
+   Uber 記錄 — 記帳 App 視覺系統
+   設計原則：
+   · 數字是主角，裝飾退到背景。拿掉原本的發光字、漸層卡、金色調。
+   · 一條語意色軸：進帳＝綠、支出＝紅、中性數據＝灰白。顏色少，對比強。
+   · 中文走系統字體（原本整頁套 Space Mono，中文會掉到 fallback 而糊掉），
+     只有數字與金額用等寬字，這樣欄位才會對齊。
+   · 手機優先：底部固定分頁列，單手可達；桌機才展開成多欄。
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  /* 底層：由深到淺，越上層的面越亮 */
+  --bg:#0C0F14;
+  --surface:#151A21;
+  --surface-2:#1C222B;
+  --surface-3:#242B36;
+  --line:rgba(255,255,255,0.07);
+  --line-strong:rgba(255,255,255,0.13);
+
+  /* 文字：四階就夠，不要再多 */
+  --ink:#F2F5F8;
+  --ink-2:#A8B2BF;
+  --ink-3:#6D7885;
+  --ink-4:#49525D;
+
+  /* 語意色 */
+  --in:#34D27B;          /* 進帳 */
+  --in-soft:rgba(52,210,123,0.12);
+  --out:#FF6B5A;         /* 支出 */
+  --out-soft:rgba(255,107,90,0.12);
+  --accent:#4DA3FF;      /* 中性強調：時數、里程 */
+  --accent-soft:rgba(77,163,255,0.12);
+  --warn:#FFB340;
+
+  /* 間距階梯 4 的倍數 */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+
+  --r-sm:10px; --r:14px; --r-lg:20px; --r-pill:999px;
+
+  --mono:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC','PingFang TC',
+         'Hiragino Sans TC','Microsoft JhengHei',sans-serif;
+
+  --shadow:0 1px 2px rgba(0,0,0,0.3),0 8px 24px -12px rgba(0,0,0,0.6);
+
+  /* 底部分頁列高度，內容區靠它留白 */
+  --navh:0px;
+}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100vh;}
+html{color-scheme:dark;-webkit-tap-highlight-color:transparent;}
 body{
-  font-family:'Space Mono',monospace;
-  background:#1A1D2A;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,200,83,0.06), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(100,160,255,0.04), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(255,215,0,0.03), transparent 55%);
-  background-attachment:fixed;
-  color:#E8EAF0;
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"tnum" 1;   /* 等寬數字，欄位才對得齊 */
 }
+button,input,select,textarea{font-family:inherit;}
+button,a,[role="button"],[onclick]{touch-action:manipulation;}
+button{transition:filter .15s,transform .1s,background .15s,border-color .15s;}
+button:active{transform:scale(.97);}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
 
-/* Menubar */
+/* 數字一律等寬，金額才不會跳動 */
+.stat-val,.week-amount,.bar-val,.num,
+[class*="amt"],.pd-num{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+/* ── 頂部系統列（沿用原本的桌面外觀，但壓低存在感）── */
 .global-menubar{
-  position:fixed;top:0;left:0;right:0;z-index:9999;
-  height:28px;
-  background:rgba(0,0,0,0.55);
-  backdrop-filter:blur(20px);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;
-  font-size:12px;color:rgba(255,255,255,0.92);
-  font-family:'Space Mono',monospace;
+  position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;
+  background:rgba(8,10,14,0.72);backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:space-between;padding:0 var(--s4);
+  font-size:12px;color:var(--ink-2);border-bottom:1px solid var(--line);
 }
 .gm-left{display:flex;align-items:center;gap:14px;font-weight:600;}
-.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
-.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;color:rgba(255,255,255,0.95);}
-.mb-menu:hover{background:rgba(255,255,255,0.2);}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:.8;}
+.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px;color:var(--ink-2);}
+.mb-menu:hover{background:rgba(255,255,255,.1);color:var(--ink);}
 
-/* Dock */
-.global-dock-wrap{
-  position:fixed;bottom:0;left:50%;
-  transform:translateX(-50%) translateY(calc(100% - 2px));
-  z-index:9998;
-  transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;
-  opacity:0;
-}
+/* ── Dock（保留原功能，縮小存在感）── */
+.global-dock-wrap{position:fixed;bottom:0;left:50%;
+  transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;
+  transition:transform .35s cubic-bezier(.34,1.2,.64,1),opacity .3s;opacity:0;}
 .global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
-.global-dock{
-  display:flex;align-items:flex-end;gap:10px;
-  background:rgba(255,255,255,0.16);
-  backdrop-filter:blur(28px) saturate(180%);
+.global-dock{display:flex;align-items:flex-end;gap:10px;
+  background:rgba(255,255,255,.1);backdrop-filter:blur(28px) saturate(180%);
   -webkit-backdrop-filter:blur(28px) saturate(180%);
-  border:1px solid rgba(255,255,255,0.25);
-  border-radius:22px;
-  padding:10px 16px;
-  box-shadow:0 8px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);
-}
+  border:1px solid rgba(255,255,255,.16);border-radius:22px;padding:10px 16px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);}
 .gd-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;position:relative;}
-.gd-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+.gd-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:30px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 16px rgba(0,0,0,.3);}
 .gd-item:hover .gd-icon{transform:translateY(-14px) scale(1.28);}
-.gd-label{font-size:9px;letter-spacing:0.06em;color:rgba(255,255,255,0.85);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 7px;border-radius:4px;position:absolute;bottom:-22px;font-family:'Space Mono',monospace;}
+.gd-label{font-size:11px;letter-spacing:.06em;color:var(--ink);opacity:0;transition:opacity .15s;
+  white-space:nowrap;background:rgba(0,0,0,.75);padding:2px 7px;border-radius:4px;position:absolute;bottom:-22px;}
 .gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:48px;background:rgba(255,255,255,0.22);margin:0 4px;align-self:center;}
-.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-.ic-ai{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-dramas{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-food{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-weight{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-threads{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-reminder{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-netflix{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-mlb{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-chloe{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-trips{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
+.gd-sep{width:1px;height:48px;background:rgba(255,255,255,.18);margin:0 4px;align-self:center;}
+.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.6);margin-top:2px;}
+.ic-about{background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
+.ic-ai,.ic-photos,.ic-dramas,.ic-food,.ic-uber,.ic-weight,.ic-threads,
+.ic-reminder,.ic-netflix,.ic-mlb,.ic-chloe,.ic-trips{
+  background:linear-gradient(145deg,#15181E,#1F242C);border:1px solid rgba(255,255,255,.12);}
 .dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
 
-/* 主內容 */
+/* ── 版面 ── */
 .page-content{
-  position:relative;
-  z-index:10;
-  max-width:1600px;
-  margin:0 auto;
-  padding:44px 32px 120px;
+  position:relative;z-index:10;max-width:1280px;margin:0 auto;
+  padding:calc(28px + var(--s5)) var(--s5) calc(var(--s7) + var(--navh));
 }
-.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,6vw,64px);font-weight:300;color:#fff;line-height:1;margin-bottom:6px;}
-.page-title em{font-style:italic;color:#00C853;}
-.page-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,220,160,0.75);margin-bottom:28px;display:block;}
 
-/* Tab */
-.tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
-.tab-btn{padding:7px 18px;border-radius:99px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;border:1px solid rgba(0,200,83,0.3);color:rgba(200,180,120,0.6);background:transparent;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.2s;}
-.tab-btn:hover{border-color:rgba(0,200,83,0.6);color:#00C853;background:rgba(0,200,83,0.08);}
-.tab-btn.active{background:#00C853;color:#000;border-color:#00C853;font-weight:700;box-shadow:0 2px 16px rgba(0,200,83,0.4);}
+/* 頁首：App 標題列的感覺，不是雜誌大標 */
+.app-head{display:flex;align-items:baseline;gap:var(--s3);margin-bottom:var(--s5);}
+.page-title{font-family:var(--sans);font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.1;}
+.page-title em{font-style:normal;color:var(--in);}
+.page-label{font-size:12px;color:var(--ink-3);letter-spacing:0;text-transform:none;}
+
+/* ── 分頁：桌機是分段控制器，手機是底部列 ── */
+.tabs{display:inline-flex;gap:var(--s1);margin-bottom:var(--s5);flex-wrap:nowrap;overflow-x:auto;
+  max-width:100%;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-pill);padding:4px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{flex:0 0 auto;white-space:nowrap;padding:9px 20px;border-radius:var(--r-pill);
+  font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;
+  border:0;color:var(--ink-3);background:transparent;cursor:pointer;}
+.tab-btn:hover{color:var(--ink-2);background:rgba(255,255,255,.04);}
+.tab-btn.active{background:var(--surface-3);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.4);}
+.tab-btn .tb-ico{display:none;}
 .tab-panel{display:none;min-width:0;overflow:hidden;}
 .tab-panel.active{display:block;}
-/* 熱區地圖分頁：地圖是這頁的主角，讓它掙脫版面 1600px 的寬度上限，往左右撐到接近視窗寬。
-   扣掉的 64px 是左右各 32px 的留白，跟版面原本的邊距一致，也順便閃開捲軸，不會跑出橫向捲軸。
-   窄螢幕本來就接近滿版，再撐反而更窄，所以只在 1100px 以上套用。 */
-@media(min-width:1100px){
-  #tab-heat.active{
-    width:calc(100vw - 64px);
-    max-width:calc(100vw - 64px);
-    margin-left:calc(50% - (100vw - 64px) / 2);
-  }
+
+/* ── 卡片 ── */
+.card,.stat-card,.chart-card,.form-section{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
 }
+.stat-card{padding:var(--s4);transition:border-color .2s,background .2s;}
+.stat-card:hover{border-color:var(--line-strong);background:var(--surface-2);}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s3);margin-bottom:var(--s5);}
+.stat-label{font-size:12px;letter-spacing:0;color:var(--ink-3);margin-bottom:var(--s2);font-family:var(--sans);font-weight:500;}
+.stat-val{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--ink);line-height:1.05;text-shadow:none;}
+.stat-val em{font-style:normal;color:var(--ink);font-size:26px;font-weight:700;font-family:var(--mono);text-shadow:none!important;}
+.stat-unit{font-size:16px;font-weight:700;color:var(--ink-3);margin-right:1px;font-family:var(--mono);}
+#tab-overview .stat-unit{font-size:16px;}
+.stat-val em.unit{font-size:13px;color:var(--ink-3);font-weight:500;margin-left:3px;font-family:var(--mono);}
+.stat-val em.num{font-size:26px;font-family:var(--mono);}
 
-/* 統計卡 */
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
-.stat-card{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(0,200,83,0.28);border-radius:14px;padding:18px 20px;transition:transform 0.25s cubic-bezier(0.34,1.4,0.64,1),border-color 0.25s,box-shadow 0.25s;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
-.stat-card:hover{transform:translateY(-4px);border-color:rgba(0,200,83,0.55);box-shadow:0 8px 28px rgba(0,0,0,0.28),0 0 0 1px rgba(0,200,83,0.15);}
-.stat-label{font-size:25px;letter-spacing:0.05em;color:rgba(240,220,160,0.8);margin-bottom:8px;font-family:'Space Mono',monospace;}
-.stat-val{font-family:'Space Mono',monospace;font-size:40px;font-weight:700;color:#ffffff;text-shadow:0 0 20px rgba(255,255,255,0.25);line-height:1;}
-.stat-val em{font-style:normal;color:#00C853;font-size:40px;font-weight:700;font-family:'Space Mono',monospace;}
-.stat-unit{font-size:20px;font-weight:700;vertical-align:baseline;font-family:'Space Mono',monospace;}
-/* 總覽的金額單位已從「NT$」縮成一個「$」，字級跟著放大才不會細得看不見；
-   本業收入頁仍是 NT$，維持原字級以免撐破卡片 */
-#tab-overview .stat-unit{font-size:28px;}
-.stat-val em.unit{font-size:22px;color:#ffffff;font-family:'Space Mono',monospace;}
-.stat-val em.num{color:#00C853;font-size:40px;font-family:'Space Mono',monospace;}
+/* 長期統計的欄位語意色：同一欄同一色，但改用柔和的新色票、不發光 */
+#s-month-km em.num,#s-month-pax em.num,#s-trips em.num,#s-hours em.num{color:var(--in)!important;text-shadow:none!important;}
+#s-avg-km2 em.num,#s-avg-pax em.num,#s-avg-day-trips em.num,#s-avg-day-hours em.num{color:var(--accent)!important;text-shadow:none!important;}
+#s-total-km em.num,#s-total-pax em.num,#s-total-trips em.num,#s-total-hours em.num{color:var(--ink)!important;text-shadow:none!important;}
+#s-hourly em,#s-avg-detail em,#s-total-income em{color:var(--in)!important;text-shadow:none!important;}
+#s-avg-month-income em,#s-avg-fare em{color:var(--ink)!important;text-shadow:none!important;}
+#s-total-exp em{color:var(--out)!important;text-shadow:none!important;}
+#s-net-card em{color:var(--in)!important;text-shadow:none!important;}
 
-/* 表單 */
-.form-section{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(0,200,83,0.28);border-radius:16px;padding:24px;margin-bottom:24px;box-shadow:0 2px 14px rgba(0,0,0,0.15);}
-.form-title{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#00E860;margin-bottom:16px;}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
-.form-group{display:flex;flex-direction:column;gap:5px;}
-.form-group label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,220,160,0.85);}
-.form-input{background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.2);border-radius:8px;padding:9px 12px;color:#E8EAF0;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;}
-.form-input:focus{border-color:rgba(0,200,83,0.6);box-shadow:0 0 0 3px rgba(0,200,83,0.12);background:rgba(255,255,255,0.06);}
-.form-input:focus{border-color:#00C853;}
-.form-input::placeholder{color:rgba(200,180,120,0.25);}
-.form-select{background:rgba(255,255,255,0.06);border:1px solid rgba(0,200,83,0.2);border-radius:8px;padding:9px 12px;color:#E8EAF0;font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:100%;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(0,200,83,0.7)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
-.form-select:focus{border-color:#00C853;}
-.form-select option{background:#111;color:#E8EAF0;}
-.btn-add{margin-top:16px;padding:10px 24px;background:#00C853;color:#000;border:none;border-radius:99px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s,background 0.2s;}
-.btn-add:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,200,83,0.4);background:#00E860;}
-.btn-add:active{transform:translateY(0);}
-.btn-add:hover{background:#00E860;}
+/* ── 區塊標題 ── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);
+  margin:var(--s6) 0 var(--s3);flex-wrap:wrap;}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:0;text-transform:none;}
+.sec-note{font-size:12px;color:var(--ink-3);}
 
-/* 表格 */
-.trip-table-wrap{background:rgba(255,255,255,0.08);border:1px solid rgba(0,200,83,0.45);border-radius:14px;overflow:hidden;}
-.trip-table{width:100%;border-collapse:collapse;}
-.trip-table th{font-size:13px;letter-spacing:0.05em;color:#00E860;padding:10px 6px;border-bottom:1px solid rgba(0,200,83,0.4);background:rgba(0,200,83,0.15);text-align:center;line-height:1.3;font-weight:700;transition:background 0.15s;}
-.trip-table th[onclick]:hover{background:rgba(0,200,83,0.28);}
-.trip-table td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,0.12);font-size:12px;color:#f0dca8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.trip-table tr:last-child td{border-bottom:none;}
-.trip-table tr:hover td{background:rgba(0,200,83,0.12);}
-
-/* 週條 */
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;min-width:0;}
-.chart-card{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(0,200,83,0.28);border-radius:14px;padding:22px;min-width:0;overflow-x:hidden;overflow-y:visible;box-shadow:0 2px 12px rgba(0,0,0,0.15);transition:border-color 0.25s,box-shadow 0.25s;}
-.chart-card:hover{border-color:rgba(0,200,83,0.45);box-shadow:0 6px 22px rgba(0,0,0,0.25);}
-.chart-title{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,220,160,0.9);margin-bottom:16px;}
-.week-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.week-label{font-size:10px;color:rgba(240,220,160,0.9);min-width:55px;}
-.week-track{flex:1;height:10px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden;}
-.week-fill{height:100%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:5px;transition:width 0.8s ease;}
-.week-amount{font-size:10px;color:#00C853;min-width:65px;text-align:right;}
-.empty-state{text-align:center;padding:48px 20px;color:rgba(240,220,160,0.55);font-size:12px;letter-spacing:0.1em;}
-.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.3;display:block;}
-
-/* 期間分析的數字格：固定欄數才會有規律的間隔，不會因為數字長短不一而看起來忽寬忽窄 */
-.pd-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px 16px;}
-@media(max-width:1000px){ .pd-grid{grid-template-columns:repeat(4,1fr);} }
-@media(max-width:760px){  .pd-grid{grid-template-columns:repeat(3,1fr);} }
-@media(max-width:520px){  .pd-grid{grid-template-columns:repeat(2,1fr);} }
-
-@media(max-width:768px){
-  .page-content{padding:44px 12px 110px;}
-  /* 統計卡片：2欄，縮小字級 */
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
-  /* 本業收入統計卡（含月平均）：手機改 2x2，蓋掉行內的 4 欄設定 */
-  #salaryStats{grid-template-columns:repeat(2,1fr)!important;}
-  .stat-card{padding:12px 12px;border-radius:12px;}
-  .stat-label{font-size:12px!important;margin-bottom:6px;}
-  .stat-val{font-size:26px!important;}
-  .stat-val em{font-size:26px!important;}
-  .stat-val em.unit{font-size:14px!important;}
-  .stat-unit{font-size:13px!important;}
-  #tab-overview .stat-unit{font-size:18px!important;}
-  /* 圖表改單欄 */
-  .chart-grid{grid-template-columns:1fr;}
-  .chart-card{padding:16px 14px;}
-  /* TOP10 改單欄 */
-  #top5Section{grid-template-columns:1fr!important;}
-  /* 客人排行：手機省略「最後一趟」日期，留空間給名字與金額 */
-  #guestTop10 .gt-last{display:none;}
-  /* 分頁按鈕：可橫向捲動不換行擠壓 */
-  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
-  .tabs::-webkit-scrollbar{display:none;}
-  .tab-btn{flex-shrink:0;padding:8px 14px;font-size:12px;}
-  /* 總淨利：手機上縮小並靠左 */
-  #total-net-display{text-align:left!important;width:100%;}
-  #total-net-display > div:first-child{font-size:14px!important;}
-  #total-net-display > div:last-child{font-size:22px!important;}
-  /* 表單改單欄堆疊 */
-  .form-grid{grid-template-columns:1fr 1fr!important;gap:10px!important;}
-  .form-section{padding:16px 14px;border-radius:12px;}
-  .form-title{font-size:13px!important;}
-  .form-input,.form-select{font-size:14px!important;padding:10px 12px!important;}
-  .btn-add{width:auto;padding:12px 20px;font-size:12px;}
-  /* 篩選列輸入框：手機上自動填滿不溢出 */
-  #tripSearch{min-width:100%!important;flex:1 1 100%!important;}
-  #tripFilterCat,#tripFilterDate{width:calc(50% - 5px)!important;flex:1 1 calc(50% - 5px);}
-  #monthly-search{min-width:100%!important;flex:1 1 100%!important;}
-  /* 行程表格：橫向捲動 + 加大觸控目標 */
-  .trip-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
-  .trip-table{min-width:1100px;}
-  .trip-table th{font-size:11px;padding:8px 4px;}
-  .trip-table td{padding:10px 5px;font-size:12px;}
-  /* 星期平均卡片：橫向捲動 */
-  #weekdayAvgWrap > div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
-  #weekdayAvgWrap > div:last-child > div{min-width:128px!important;flex:0 0 128px!important;}
-  #weekdayAvgWrap > div:last-child{scroll-snap-type:x proximity;}
-  #weekdayAvgWrap > div:last-child > div{scroll-snap-align:start;}
-  /* 熱區地圖：手機上高度收斂（扣掉的 180px 是上方標題列與篩選列） */
-  #heatMap{height:clamp(440px, calc(100vh - 180px), 760px)!important;}
-  /* 圓餅圖：縮放並改直排 */
-  #monthlyPieChart,#ovExpPie,#ovIncPie{width:100%!important;max-width:260px;height:auto!important;}
-  #expenseChartWrap{padding:14px!important;min-width:0!important;}
-  #expenseChartWrap > div:last-child{flex-direction:column!important;gap:16px!important;}
-  #pieLegend{width:100%;}
-  /* 每日/支出列表字級微調 */
-  #weeklyList table,#monthlyList table,#fuelStatsWrap table{font-size:12px;}
-  /* Dock 縮小 */
-  .gd-icon{width:44px;height:44px;border-radius:11px;font-size:22px;}
-  .global-dock{gap:5px;padding:7px 9px;border-radius:16px;}
-  .gd-item:hover .gd-icon{transform:translateY(-8px) scale(1.15);}
-  .gd-icon svg{width:38px;height:38px;}
-  .gd-icon span{font-size:26px!important;}
-  /* Menubar 精簡 */
-  .menubar{font-size:10px;padding:0 8px;}
-  .mb-menu{display:none;}
+/* ── 表單 ── */
+.form-section{padding:var(--s5);margin-bottom:var(--s5);}
+.form-title{font-size:15px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink);margin-bottom:var(--s4);}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--s3);}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:12px;letter-spacing:0;text-transform:none;color:var(--ink-3);font-weight:500;}
+.form-input,.form-select{
+  background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  padding:10px 12px;color:var(--ink);font-family:var(--sans);font-size:14px;outline:none;
+  transition:border-color .15s,box-shadow .15s,background .15s;width:100%;
 }
-@media(max-width:420px){
-  /* 極小螢幕：統計卡片單欄不擠 */
-  .stats-grid{gap:8px;}
-  .stat-val{font-size:23px!important;}
-  .stat-val em{font-size:23px!important;}
-  .form-grid{grid-template-columns:1fr!important;}
-  .gd-icon{width:38px;height:38px;border-radius:10px;}
-  .gd-icon svg{width:32px;height:32px;}
-  .gd-icon span{font-size:22px!important;}
-  .global-dock{gap:4px;padding:6px 7px;}
-}
-/* 統計格子欄顏色：每欄統一一色（含同色微光）*/
-/* Col 1: 本月 → 綠 */
-#s-month-km em.num,#s-month-pax em.num,#s-trips em.num,#s-hours em.num{color:#00C853!important;text-shadow:0 0 22px rgba(0,200,83,0.45)!important;}
-/* Col 2: 月平均 → 青藍 */
-#s-avg-km2 em.num,#s-avg-pax em.num,#s-avg-day-trips em.num,#s-avg-day-hours em.num{color:#22D3EE!important;text-shadow:0 0 22px rgba(34,211,238,0.45)!important;}
-/* Col 3: 總計 → 橘 */
-#s-total-km em.num,#s-total-pax em.num,#s-total-trips em.num,#s-total-hours em.num{color:#FF8C00!important;text-shadow:0 0 22px rgba(255,140,0,0.45)!important;}
-/* Col 4: 薪資/費用/收支(本月) → 紫 */
-#s-hourly em,#s-avg-detail em,#s-total-income em{color:#C084FC!important;text-shadow:0 0 22px rgba(192,132,252,0.45)!important;}
-/* Col 5: 薪資/費用/收支(總) → 黃 */
-#s-avg-month-income em,#s-avg-fare em,#s-total-exp em{color:#FFD700!important;text-shadow:0 0 22px rgba(255,215,0,0.45)!important;}
-#s-net-card em{color:#00E860!important;text-shadow:0 0 26px rgba(0,232,96,0.5)!important;}
-
-  .del-btn{cursor:pointer;color:rgba(255,100,100,0.45);font-size:12px;padding:2px 3px;border-radius:3px;transition:color 0.15s,background 0.15s;}
-  .del-btn:hover{color:#ff6b6b;background:rgba(255,100,100,0.12);}
-  .top10-row:hover{background:rgba(0,200,83,0.08);}
-  /* 翻頁/小按鈕統一 hover 手感 */
-  button{transition:filter 0.15s,transform 0.1s;}
-  button:active{transform:scale(0.96);}
-  /* 圖磚來源標示：這是圖磚服務要求的著作權標示，做小做淡但不隱藏 */
-  #heatMap .leaflet-control-attribution{background:rgba(10,15,20,0.55);color:rgba(255,255,255,0.4);
-    font-size:10px;padding:1px 6px;border-radius:5px 0 0 0;}
-  #heatMap .leaflet-control-attribution a{color:rgba(255,255,255,0.55);}
-  /* 全螢幕時讓卡片變成直向排列，地圖吃掉圖例以外的全部高度 */
-  #heatCard:fullscreen{display:flex;flex-direction:column;border-radius:0;border:0;background:#1a2030;}
-  #heatCard:fullscreen #heatMap{flex:1 1 auto;height:auto!important;min-height:0;}
-  #heatCard:fullscreen #heatFsExit{display:block!important;}
-  #heatCard:-webkit-full-screen{display:flex;flex-direction:column;border-radius:0;border:0;background:#1a2030;}
-  #heatCard:-webkit-full-screen #heatMap{flex:1 1 auto;height:auto!important;min-height:0;}
-  #heatCard:-webkit-full-screen #heatFsExit{display:block!important;}
-
-/* ── 手機原生感（mobile-native）──
-   iOS Safari 在輸入框字體 < 16px 時，聚焦就會放大整頁且不縮回。
-   只在觸控裝置（pointer: coarse）拉到 16px，桌機維持原本的小字。
-   :not(#_) 把權重拉到 1,0,1，才壓得過上面 .form-input 等 !important 規則。 */
-@media (pointer: coarse){
-  :is(input,select,textarea):not(#_){font-size:16px!important;}
-}
-/* 點擊時的灰色閃塊會蓋掉按鈕自己的按壓效果 */
-html{-webkit-tap-highlight-color:transparent;}
-button,a,[role="button"],[onclick]{touch-action:manipulation;}
-</style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-</head>
-<body>
-<div id="loadingOverlay" style="position:fixed;inset:0;z-index:99999;background:rgba(10,15,20,0.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 0.35s;">
-  <div style="width:48px;height:48px;border:4px solid rgba(0,200,83,0.2);border-top-color:#00C853;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-  <div style="color:#00E860;font-family:'Space Mono',monospace;font-size:14px;letter-spacing:0.1em;">載入資料中...</div>
-</div>
-<style>@keyframes spin{to{transform:rotate(360deg);}}
-/* 地點自動完成下拉 */
-.ac-list{position:absolute;top:100%;left:0;right:0;z-index:500;max-height:240px;overflow-y:auto;
-  background:#1a2030;border:1px solid rgba(0,200,83,0.45);border-radius:8px;margin-top:4px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.45);display:none;}
-.ac-list.show{display:block;}
-.ac-item{padding:9px 12px;font-size:13px;color:#f0dca8;cursor:pointer;
-  border-bottom:1px solid rgba(255,255,255,0.05);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  display:flex;justify-content:space-between;gap:10px;align-items:center;}
-.ac-item:last-child{border-bottom:none;}
-.ac-item:hover,.ac-item.sel{background:rgba(0,200,83,0.18);color:#fff;}
-.ac-item b{color:#00E860;font-weight:700;}
-.ac-cnt{font-size:11px;color:rgba(255,255,255,0.35);flex-shrink:0;}
-
-/* 下拉選單：深色底、淺色字（原生 option 不會繼承背景）*/
-html{color-scheme:dark;}
+.form-input:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);background:var(--surface-3);}
+.form-input::placeholder{color:var(--ink-4);}
+.form-select{cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:30px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236D7885'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;}
 select{color-scheme:dark;}
-select option,select optgroup{
-  background:#1a2030!important;
-  color:#E8EAF0!important;
-}
-select option:checked,select option:hover{
-  background:#00C853!important;
-  color:#000!important;
-}
+select option,select optgroup{background:#1C222B!important;color:#F2F5F8!important;}
+select option:checked{background:#34D27B!important;color:#06130C!important;}
 input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
 
-/* ── critique 修正 ── */
-[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px!important;}   /* 小字下限 11px */
-.form-group label,.page-label{font-size:11px!important;}
-.bar-val{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;white-space:nowrap;margin-bottom:3px;line-height:1;}
-@media (max-width:768px){
+.btn-add{margin-top:var(--s4);padding:11px 20px;background:var(--in);color:#06130C;border:none;
+  border-radius:var(--r-sm);font-family:var(--sans);font-size:14px;letter-spacing:0;text-transform:none;
+  font-weight:700;cursor:pointer;}
+.btn-add:hover{filter:brightness(1.08);}
+/* 次要動作：匯入／匯出這種不是主線的操作，不跟主按鈕搶 */
+.btn-ghost{margin-top:var(--s4);padding:11px 18px;background:transparent;color:var(--ink-2);
+  border:1px solid var(--line-strong);border-radius:var(--r-sm);font-size:14px;
+  font-weight:600;cursor:pointer;}
+.btn-ghost:hover{background:var(--surface-3);color:var(--ink);}
+/* 數字一律等寬，欄位才對得齊 */
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);}
+/* 零值退到背景：加成／過路／小費大多是 0，不該整片搶眼 */
+.is-zero{color:var(--ink-4)!important;font-weight:400!important;}
+.wk-chip-sub{color:var(--ink-3);font-weight:400;}
+/* ── 共用資料表 ── */
+.data-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;box-shadow:var(--shadow);}
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{padding:11px 8px;font-size:12px;font-weight:600;color:var(--ink-3);
+  text-align:left;background:var(--surface-2);border-bottom:1px solid var(--line-strong);
+  white-space:nowrap;letter-spacing:.02em;}
+.data-table td{padding:11px 8px;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink-2);}
+.data-table tbody tr:last-child td{border-bottom:0;}
+.data-table tbody tr:hover td{background:var(--surface-2);}
+.data-table .r{text-align:right;} .data-table .c{text-align:center;}
+.data-table tr.empty td{color:var(--ink-4);}
+/* 表頭統一：JS 產生的表格把顏色寫在行內，只能用 !important 蓋過去 */
+.tab-panel thead th{background:var(--surface-2)!important;color:var(--ink-3)!important;
+  border-bottom:1px solid var(--line-strong)!important;font-weight:600!important;
+  font-size:12px!important;letter-spacing:.02em!important;text-transform:none!important;}
+.tab-panel tbody td{border-bottom-color:var(--line)!important;}
+.tab-panel tbody tr:hover td{background:var(--surface-2);}
+/* 刪除鈕：平常很淡，游標移上去才變紅，不要一整欄紅叉在閃 */
+/* 圖例名稱穿文字色，識別交給左邊的色塊 */
+.stat-label .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px;}
+#salaryTotal{color:var(--ink-3)!important;}
+.lg-name{font-size:14px;color:var(--ink);font-weight:500;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.del-btn{color:var(--ink-4);font-size:14px;}
+.del-btn:hover{color:var(--out);background:var(--out-soft);}
+/* ── 月合計小卡 ── */
+.wk-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:var(--s3);}
+.wk-chip{flex:1;min-width:120px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:11px 14px;}
+.wk-chip-label{font-size:12px;color:var(--ink-3);margin-bottom:5px;white-space:nowrap;}
+.wk-chip-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:21px;
+  font-weight:700;color:var(--ink);white-space:nowrap;}
+.wk-chip-val.in{color:var(--in);}
+.wk-chip-val .u{font-size:12px;color:var(--ink-4);font-weight:500;margin-left:3px;font-family:var(--sans);}
+/* 收入比例長條：單一色，長度就是大小 */
+.wk-bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;}
+.wk-bar>i{display:block;height:100%;background:var(--in);border-radius:3px;opacity:.85;}
+/* ── 星期平均收入卡 ── */
+.wd-card{flex:1;min-width:60px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:12px 10px 11px;}
+.wd-card.is-we{border-color:rgba(52,210,123,0.28);}
+.wd-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:7px;}
+.wd-day{font-size:13px;font-weight:600;color:var(--ink-2);}
+.wd-we{font-size:10px;color:var(--in);letter-spacing:.06em;}
+.wd-amt{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:20px;
+  font-weight:700;color:var(--in);line-height:1.1;}
+.wd-amt.is-none{color:var(--ink-4);}
+/* 強弱用長度表示，不用顏色——七天是同一個指標，不該有七種顏色 */
+.wd-bar{height:3px;border-radius:2px;background:var(--line);margin:8px 0 10px;overflow:hidden;}
+.wd-bar>i{display:block;height:100%;border-radius:2px;background:var(--in);}
+.wd-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;}
+.wd-stats div{display:flex;align-items:baseline;justify-content:space-between;gap:4px;
+  font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-2);}
+.wd-stats div span{font-size:10px;color:var(--ink-4);font-family:var(--sans);}
+.wd-stats .wd-wide{grid-column:1/-1;}
+.wd-title{font-size:12px;color:var(--ink-3);margin-bottom:10px;}
+/* 次要按鈕：原本靠行內樣式各寫各的，統一成一種 */
+.btn-ghost{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  color:var(--ink-2);font-size:13px;padding:9px 14px;cursor:pointer;font-family:var(--sans);font-weight:500;}
+.btn-ghost:hover{background:var(--surface-3);color:var(--ink);}
+.btn-danger{background:var(--out-soft);border:1px solid rgba(255,107,90,.4);border-radius:var(--r-sm);
+  color:var(--out);font-size:13px;padding:9px 14px;cursor:pointer;font-weight:600;}
+
+/* ── 表格 ── */
+.trip-table-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.trip-table{width:100%;border-collapse:collapse;}
+.trip-table th{font-size:12px;letter-spacing:0;color:var(--ink-3);padding:11px 8px;
+  border-bottom:1px solid var(--line);background:var(--surface-2);text-align:center;font-weight:600;font-family:var(--sans);}
+.trip-table th[onclick]{cursor:pointer;}
+.trip-table th[onclick]:hover{background:var(--surface-3);color:var(--ink-2);}
+.trip-table td{padding:11px 8px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.trip-table tr:last-child td{border-bottom:none;}
+.trip-table tbody tr:hover td{background:var(--surface-2);}
+
+/* ── 圖表卡 ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);margin-bottom:var(--s5);min-width:0;}
+.chart-card{padding:var(--s5);min-width:0;overflow-x:hidden;overflow-y:visible;}
+.chart-card:hover{border-color:var(--line-strong);}
+.chart-title{font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink);margin-bottom:var(--s4);font-weight:700;}
+
+.week-bar{display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s2);}
+.week-label{font-size:12px;color:var(--ink-3);min-width:55px;}
+.week-track{flex:1;height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden;}
+.week-fill{height:100%;background:var(--in);border-radius:4px;transition:width .6s cubic-bezier(.2,.8,.3,1);}
+.week-amount{font-size:13px;color:var(--in);min-width:70px;text-align:right;font-family:var(--mono);}
+.empty-state{text-align:center;padding:var(--s7) var(--s5);color:var(--ink-3);font-size:14px;letter-spacing:0;}
+.empty-icon{font-size:36px;margin-bottom:var(--s3);opacity:.35;display:block;}
+
+/* ── 期間數字格 ── */
+.pd-grid{display:grid;gap:var(--s5) var(--s6);
+  grid-template-columns:repeat(auto-fill,minmax(126px,1fr));}
+@media(max-width:520px){ .pd-grid{grid-template-columns:repeat(2,1fr);gap:var(--s4);}}
+
+/* 期間摘要：記帳 App 的主畫面 —— 淨收入做大，收入／支出左右對照 */
+.pd-hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:var(--s5);box-shadow:var(--shadow);margin-bottom:var(--s4);}
+.pd-hero-range{font-size:12px;color:var(--ink-3);margin-bottom:var(--s4);}
+.pd-hero-main{display:grid;gap:var(--s5) var(--s6);
+  grid-template-columns:repeat(auto-fit,minmax(0,200px));justify-content:start;}
+.pd-big{min-width:0;}
+.pd-big-val.in{color:var(--in);}
+.pd-big-val.out{color:var(--out);}
+.pd-big-label{font-size:13px;color:var(--ink-3);margin-bottom:6px;}
+.pd-big-val{font-family:var(--mono);font-size:32px;font-weight:700;line-height:1.05;white-space:nowrap;letter-spacing:-.02em;}
+.pd-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:var(--s4) var(--s5);margin-top:var(--s3);box-shadow:var(--shadow);}
+.pd-block-title{font-size:14px;font-weight:700;margin-bottom:var(--s4);display:flex;align-items:center;gap:var(--s2);}
+.pd-block-title .dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.pd-cell-label{font-size:13px;color:var(--ink-3);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pd-num{font-family:var(--mono);font-size:21px;font-weight:700;color:var(--ink);white-space:nowrap;line-height:1.1;}
+.pd-num .u{font-size:13px;color:var(--ink-3);font-weight:500;margin-left:3px;}
+.pd-num.in{color:var(--in);} .pd-num.out{color:var(--out);} .pd-num.ac{color:var(--accent);}
+.pd-sub{margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--line);}
+.pd-sub-head{font-size:12px;color:var(--ink-3);margin-bottom:var(--s3);}
+.pd-cat-name{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.pd-cat-name i{width:8px;height:8px;border-radius:2px;display:inline-block;flex-shrink:0;}
+.pd-pct{font-size:13px;color:var(--ink-3);font-weight:500;margin-left:6px;font-family:var(--mono);}
+
+/* 期間切換列 */
+.pd-bar{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:var(--s3) var(--s4);margin-bottom:var(--s4);box-shadow:var(--shadow);}
+.pd-nav{display:flex;align-items:center;justify-content:center;gap:var(--s2);margin-bottom:var(--s3);}
+.pd-nav button{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  color:var(--ink-2);font-size:14px;padding:7px 13px;cursor:pointer;white-space:nowrap;}
+.pd-nav button:hover{background:var(--surface-3);color:var(--ink);}
+#periodLabel{flex:1;max-width:300px;text-align:center;font-size:15px;font-weight:700;color:var(--ink);
+  font-family:var(--mono);background:var(--surface-2);border-radius:var(--r-sm);padding:7px 10px;}
+#periodChips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+#periodChips button{border-radius:var(--r-pill);font-size:13px;padding:6px 14px;cursor:pointer;
+  font-family:var(--sans);font-weight:500;background:var(--surface-2);
+  border:1px solid var(--line-strong);color:var(--ink-3);}
+#periodChips button:hover{color:var(--ink);background:var(--surface-3);}
+#periodChips button.on{background:var(--in);border-color:var(--in);color:#06130C;font-weight:700;}
+
+/* ── 工時長條 ── */
+.hr-row{display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s2);}
+.hr-day{width:34px;font-size:13px;font-weight:600;color:var(--ink-3);flex-shrink:0;}
+.hr-track{flex:1;min-width:0;height:18px;background:var(--surface-3);border-radius:5px;overflow:hidden;}
+.hr-fill{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.2,.8,.3,1);}
+.hr-val{width:148px;flex-shrink:0;text-align:right;font-family:var(--mono);}
+.hr-rate{font-size:19px;font-weight:700;}
+.hr-min{font-size:14px;color:var(--ink-2);margin-top:2px;}
+
+/* ── 排行列 ── */
+.top10-row{display:flex;justify-content:space-between;align-items:center;padding:10px 8px;
+  border-radius:var(--r-sm);border-bottom:1px solid var(--line);transition:background .15s;}
+.top10-row:last-child{border-bottom:none;}
+.top10-row:hover{background:var(--surface-2);}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:22px;flex-shrink:0;
+  font-size:13px;font-weight:700;color:var(--ink-4);font-family:var(--mono);}
+.rk.medal{height:22px;border-radius:50%;}
+.rk.m1{background:rgba(255,195,60,.16);border:1px solid #FFC33C;color:#FFC33C;}
+.rk.m2{background:rgba(190,200,210,.16);border:1px solid #BEC8D2;color:#BEC8D2;}
+.rk.m3{background:rgba(205,127,50,.16);border:1px solid #CD7F32;color:#CD7F32;}
+
+/* ── 小工具 ── */
+.del-btn{cursor:pointer;color:var(--ink-4);font-size:14px;padding:4px 6px;border-radius:6px;
+  transition:color .15s,background .15s;}
+.del-btn:hover{color:var(--out);background:var(--out-soft);}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);
+  border:1px solid var(--line-strong);border-radius:var(--r-pill);padding:5px 12px;font-size:13px;color:var(--ink-2);}
+
+/* 地點自動完成 */
+.ac-list{position:absolute;top:100%;left:0;right:0;z-index:500;max-height:240px;overflow-y:auto;
+  background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);margin-top:4px;
+  box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;}
+.ac-list.show{display:block;}
+.ac-item{padding:10px 12px;font-size:14px;color:var(--ink-2);cursor:pointer;
+  border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:flex;justify-content:space-between;gap:10px;align-items:center;}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover,.ac-item.sel{background:var(--surface-3);color:var(--ink);}
+.ac-item b{color:var(--in);font-weight:700;}
+.ac-cnt{font-size:12px;color:var(--ink-4);flex-shrink:0;}
+
+/* 熱區地圖 */
+@media(min-width:1100px){
+  #tab-heat.active{width:calc(100vw - 48px);max-width:calc(100vw - 48px);
+    margin-left:calc(50% - (100vw - 48px) / 2);}
+}
+#heatMap .leaflet-control-attribution{background:rgba(8,10,14,.6);color:var(--ink-4);
+  font-size:11px;padding:1px 6px;border-radius:5px 0 0 0;}
+#heatMap .leaflet-control-attribution a{color:var(--ink-3);}
+#heatCard:fullscreen{display:flex;flex-direction:column;border-radius:0;border:0;background:var(--surface);}
+#heatCard:fullscreen #heatMap{flex:1 1 auto;height:auto!important;min-height:0;}
+#heatCard:fullscreen #heatFsExit{display:block!important;}
+#heatCard:-webkit-full-screen{display:flex;flex-direction:column;border-radius:0;border:0;background:var(--surface);}
+#heatCard:-webkit-full-screen #heatMap{flex:1 1 auto;height:auto!important;min-height:0;}
+#heatCard:-webkit-full-screen #heatFsExit{display:block!important;}
+
+/* 最小字級：11px 以下在手機上讀不動 */
+[style*="font-size:9px"],[style*="font-size:10px"]{font-size:12px!important;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ═══════════════ 手機 ═══════════════ */
+@media(max-width:768px){
+  :root{--navh:64px;}
+  .page-content{padding:calc(28px + var(--s4)) var(--s4) calc(var(--s6) + var(--navh));max-width:none;}
+  .app-head{margin-bottom:var(--s4);}
+  .page-title{font-size:20px;}
+  .page-label{display:none;}
+
+  /* 分頁改成底部固定列，拇指構得到 */
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:9000;margin:0;border-radius:0;padding:6px 4px;
+    gap:0;background:rgba(12,15,20,.92);backdrop-filter:blur(20px);
+    border:0;border-top:1px solid var(--line-strong);
+    padding-bottom:calc(6px + env(safe-area-inset-bottom));overflow:visible;}
+  .tab-btn{flex:1 1 0;min-width:0;padding:6px 2px;border-radius:var(--r-sm);font-size:11px;font-weight:600;
+    display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.1;}
+  .tab-btn .tb-ico{display:block;font-size:17px;line-height:1;}
+  .tab-btn.active{background:transparent;color:var(--in);box-shadow:none;}
+
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:var(--s2);}
+  #salaryStats{grid-template-columns:repeat(2,1fr)!important;}
+  .stat-card{padding:var(--s3);border-radius:var(--r-sm);}
+  .stat-label{font-size:12px!important;margin-bottom:5px;}
+  .stat-val{font-size:22px!important;}
+  .stat-val em{font-size:22px!important;}
+  .stat-val em.unit{font-size:12px!important;}
+  .stat-unit{font-size:14px!important;}
+  #tab-overview .stat-unit{font-size:14px!important;}
+
+  .pd-hero{padding:var(--s4);border-radius:var(--r);}
+  .pd-big-val{font-size:28px;}
+  .pd-block{padding:var(--s4);}
+  .pd-num{font-size:19px;}
+  .hr-val{width:120px;}
+  .hr-rate{font-size:17px;}
+
+  .chart-grid{grid-template-columns:1fr;}
+  .chart-card{padding:var(--s4);}
+  .sec-head{margin:var(--s5) 0 var(--s3);}
+  #top5Section{grid-template-columns:1fr!important;}
+  #guestTop10 .gt-last{display:none;}
+
+  #total-net-display{text-align:left!important;width:100%;}
+  .form-grid{grid-template-columns:1fr 1fr!important;gap:var(--s2)!important;}
+  .form-section{padding:var(--s4);border-radius:var(--r);}
+  .btn-add{width:100%;padding:13px 20px;}
+  #tripSearch,#monthly-search{min-width:100%!important;flex:1 1 100%!important;}
+  #tripFilterCat,#tripFilterDate{width:calc(50% - 5px)!important;flex:1 1 calc(50% - 5px);}
+
+  .trip-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
+  .trip-table{min-width:1100px;}
+  .trip-table th{font-size:12px;padding:9px 5px;}
+  .trip-table td{padding:11px 6px;font-size:13px;}
+
+  /* 每日收入表：改成一列一張卡 */
   .wk-table,.wk-table tbody{display:block;width:100%;}
   .wk-table thead,.wk-table colgroup{display:none;}
-  .wk-table tr{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-areas:"date dow inc inc del" "bar bar bar bar bar" "trips hrs pts note note";
-    column-gap:12px;row-gap:7px;padding:12px 14px;align-items:center;}
-  .wk-table tr.empty{grid-template-areas:"date dow inc inc del";padding:8px 14px;}
-  .wk-table tr.empty .c-bar,.wk-table tr.empty .c-trips,.wk-table tr.empty .c-hrs,.wk-table tr.empty .c-pts,.wk-table tr.empty .c-note{display:none;}
-  .wk-table td{padding:0!important;font-size:14px!important;}
+  .wk-table tr{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;
+    grid-template-areas:"date dow inc inc del" "bar bar bar bar bar" "trips hrs pts note note";
+    column-gap:var(--s3);row-gap:7px;padding:var(--s3) var(--s4);align-items:center;
+    border-bottom:1px solid var(--line);}
+  .wk-table tr.empty{grid-template-areas:"date dow inc inc del";padding:var(--s2) var(--s4);}
+  .wk-table tr.empty .c-bar,.wk-table tr.empty .c-trips,.wk-table tr.empty .c-hrs,
+  .wk-table tr.empty .c-pts,.wk-table tr.empty .c-note{display:none;}
+  .wk-table td{padding:0!important;font-size:14px!important;border:0!important;}
   .wk-table .c-date{grid-area:date;font-size:15px!important;}
   .wk-table .c-dow{grid-area:dow;}
   .wk-table .c-inc{grid-area:inc;font-size:17px!important;}
@@ -343,16 +473,67 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
   .wk-table .c-pts{grid-area:pts;text-align:left!important;}
   .wk-table .c-note{grid-area:note;text-align:right!important;overflow:hidden;text-overflow:ellipsis;}
   .wk-table .c-del{grid-area:del;}
-  .wk-table .c-del .del-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;}
-  #weeklyMonthSummary [style*="font-size:20px"]{font-size:16px!important;}
+  .wk-table .c-del .del-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;}
+
+  #weekdayAvgWrap > div:last-child{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;
+    scroll-snap-type:x proximity;}
+  #weekdayAvgWrap > div:last-child > div{min-width:128px!important;flex:0 0 128px!important;scroll-snap-align:start;}
+  #heatMap{height:clamp(440px,calc(100vh - 200px),760px)!important;}
+  #monthlyPieChart,#ovExpPie,#ovIncPie{width:100%!important;max-width:240px;height:auto!important;}
+  /* 手機：圓餅卡與新增表單改上下排。原本拿掉了 min-width，flex-wrap 永遠不換行，
+     兩張卡硬擠在一列，圖例被壓成一字一行 */
+  #tab-monthly > div:first-child{flex-direction:column!important;}
+  #tab-monthly > div:first-child > div{flex:1 1 auto!important;width:100%!important;}
+  #expenseChartWrap{padding:var(--s4)!important;min-width:0!important;}
+  #expenseChartWrap > div:last-child{flex-direction:column!important;gap:var(--s4)!important;}
+  #pieLegend{width:100%;}
+  #weeklyList table,#monthlyList table,#fuelStatsWrap table{font-size:13px;}
+
+  .gd-icon{width:44px;height:44px;border-radius:11px;font-size:22px;}
+  .global-dock{gap:5px;padding:7px 9px;border-radius:16px;}
+  .global-dock-wrap{display:none;}   /* 手機上被底部分頁列取代 */
+  .gm-left .mb-menu{display:none;}
+}
+@media(max-width:420px){
+  .stats-grid{gap:6px;}
+  .stat-val{font-size:20px!important;}
+  .stat-val em{font-size:20px!important;}
+  .form-grid{grid-template-columns:1fr!important;}
+  .pd-big-val{font-size:25px;}
+}
+
+/* iOS Safari：輸入框字體 < 16px 時聚焦會放大整頁且不縮回 */
+@media (pointer:coarse){
+  :is(input,select,textarea):not(#_){font-size:16px!important;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+}
+
+/* ── 沿用原本的小元件規則 ── */
+.bar-val{font-family:var(--mono);font-size:12px;font-weight:700;white-space:nowrap;margin-bottom:3px;line-height:1;}
+@media(max-width:768px){
+  #weeklyMonthSummary [style*="font-size:20px"]{font-size:17px!important;}
   #weeklyMonthSummary > div > div{min-width:0!important;flex:1 1 calc(50% - 5px)!important;}
-  #tripFormSection .form-title{cursor:pointer;margin-bottom:16px;}
-  #tripFormSection.collapsed{padding:14px!important;}
-  #tripFormSection.collapsed .form-title{margin-bottom:0;font-size:13px;}
-  #tripFormSection.collapsed .form-title::after{content:'　點此展開 ▾';color:rgba(255,255,255,0.45);letter-spacing:0;}
+  /* 行程表單在手機上預設收合，點標題展開 */
+  #tripFormSection .form-title{cursor:pointer;margin-bottom:var(--s4);}
+  #tripFormSection.collapsed{padding:var(--s4)!important;}
+  #tripFormSection.collapsed .form-title{margin-bottom:0;}
+  #tripFormSection.collapsed .form-title::after{content:'　點此展開 ▾';color:var(--ink-3);font-weight:500;}
   #tripFormSection.collapsed > :not(.form-title){display:none!important;}
 }
+
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+</head>
+<body>
+<div id="loadingOverlay" style="position:fixed;inset:0;z-index:99999;background:#0C0F14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 0.35s;">
+  <div style="width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:#34D27B;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <div style="color:#A8B2BF;font-size:14px;">載入資料中…</div>
+</div>
+<style>/* 樣式集中在上方的設計系統 */</style>
 
 
 
@@ -378,36 +559,36 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
 
 <!-- 主內容 -->
 <div class="page-content">
-  <h1 class="page-title">Uber <em>記錄</em></h1>
-  <span class="page-label">— 06 / UBER · 行程收支記錄</span>
-
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:28px;">
-    <div class="tabs" style="margin-bottom:0;">
-      <button class="tab-btn active" onclick="switchTab('overview',this)">總覽</button>
-      <button class="tab-btn" onclick="switchTab('trips',this)">行程記錄</button>
-      <button class="tab-btn" onclick="switchTab('salary',this)">本業收入</button>
-      <button class="tab-btn" onclick="switchTab('weekly',this)">每日收入</button>
-      <button class="tab-btn" onclick="switchTab('monthly',this)">每日支出</button>
-      <button class="tab-btn" onclick="switchTab('heat',this)">熱區地圖</button>
-    </div>
+  <div class="app-head">
+    <h1 class="page-title">Uber <em>記錄</em></h1>
+    <span class="page-label">行程收支記錄</span>
   </div>
+
+  <nav class="tabs" aria-label="主要分頁">
+    <button class="tab-btn active" onclick="switchTab('overview',this)"><span class="tb-ico" aria-hidden="true">◎</span>總覽</button>
+    <button class="tab-btn" onclick="switchTab('trips',this)"><span class="tb-ico" aria-hidden="true">≡</span>行程</button>
+    <button class="tab-btn" onclick="switchTab('salary',this)"><span class="tb-ico" aria-hidden="true">▤</span>本業</button>
+    <button class="tab-btn" onclick="switchTab('weekly',this)"><span class="tb-ico" aria-hidden="true">↑</span>收入</button>
+    <button class="tab-btn" onclick="switchTab('monthly',this)"><span class="tb-ico" aria-hidden="true">↓</span>支出</button>
+    <button class="tab-btn" onclick="switchTab('heat',this)"><span class="tb-ico" aria-hidden="true">◈</span>熱區</button>
+  </nav>
 
   <!-- 總覽 -->
   <div class="tab-panel active" id="tab-overview">
 
     <!-- ── 期間選擇器：底下的收支摘要／工時效率／圓餅圖都跟著這個期間走 ── -->
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.22);border-radius:14px;padding:12px 14px;margin-bottom:18px;">
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;">
-        <button onclick="shiftPeriod(-1)" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:8px;color:#00C853;font-size:13px;padding:5px 12px;cursor:pointer;white-space:nowrap;">‹ 上期</button>
-        <span id="periodLabel" style="flex:1;max-width:280px;text-align:center;font-size:15px;font-weight:700;color:#f0dca8;font-family:'Space Mono',monospace;background:rgba(255,255,255,0.05);border-radius:8px;padding:5px 10px;"></span>
-        <button onclick="shiftPeriod(1)" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.4);border-radius:8px;color:#00C853;font-size:13px;padding:5px 12px;cursor:pointer;white-space:nowrap;">下期 ›</button>
+    <div class="pd-bar">
+      <div class="pd-nav">
+        <button onclick="shiftPeriod(-1)" aria-label="上一期">‹</button>
+        <span id="periodLabel"></span>
+        <button onclick="shiftPeriod(1)" aria-label="下一期">›</button>
       </div>
-      <div id="periodChips" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>
-      <div id="periodCustomBox" style="display:none;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:10px;">
-        <input type="date" id="pcStart" class="form-input" style="width:auto;font-size:13px;padding:5px 8px;">
-        <span style="color:rgba(255,255,255,0.4);font-size:13px;">～</span>
-        <input type="date" id="pcEnd" class="form-input" style="width:auto;font-size:13px;padding:5px 8px;">
-        <button onclick="applyCustomPeriod()" style="background:rgba(0,200,83,0.25);border:1px solid rgba(0,200,83,0.5);border-radius:8px;color:#00E860;font-size:13px;padding:5px 14px;cursor:pointer;">套用</button>
+      <div id="periodChips"></div>
+      <div id="periodCustomBox" style="display:none;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+        <input type="date" id="pcStart" class="form-input" style="width:auto;">
+        <span style="color:var(--ink-3);font-size:14px;">～</span>
+        <input type="date" id="pcEnd" class="form-input" style="width:auto;">
+        <button class="btn-ghost" onclick="applyCustomPeriod()">套用</button>
       </div>
     </div>
 
@@ -417,20 +598,20 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
     <div id="periodHours" style="margin-bottom:26px;"></div>
 
     <!-- 期間收支圓餅圖 -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-      <div id="ovPieHead" style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;">期間收支</div>
-      <div id="ovNet" style="font-size:13px;color:rgba(240,220,160,0.75);"></div>
+    <div class="sec-head">
+      <div id="ovPieHead" class="sec-title">期間收支</div>
+      <div id="ovNet" class="sec-note"></div>
     </div>
     <div class="chart-grid" style="margin-bottom:26px;">
       <div class="chart-card" style="display:flex;flex-direction:column;">
-        <div id="ovExpTitle" style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:14px;">本月支出</div>
+        <div id="ovExpTitle" class="chart-title">本月支出</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:34px;flex:1;flex-wrap:wrap;">
           <canvas id="ovExpPie" width="300" height="300" style="flex-shrink:0;"></canvas>
           <div id="ovExpLegend" style="min-width:190px;"></div>
         </div>
       </div>
       <div class="chart-card" style="display:flex;flex-direction:column;">
-        <div id="ovIncTitle" style="font-size:14px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:14px;">本月收入</div>
+        <div id="ovIncTitle" class="chart-title">本月收入</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:34px;flex:1;flex-wrap:wrap;">
           <canvas id="ovIncPie" width="300" height="300" style="flex-shrink:0;"></canvas>
           <div id="ovIncLegend" style="min-width:190px;"></div>
@@ -438,8 +619,9 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
       </div>
     </div>
 
-    <div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin:26px 0 10px;">
-      長期統計<span style="text-transform:none;letter-spacing:0;color:rgba(255,255,255,0.35);margin-left:8px;font-size:11px;">本月／月平均／累計，不受上方期間影響</span>
+    <div class="sec-head">
+      <div class="sec-title">長期統計</div>
+      <div class="sec-note">本月／月平均／累計，不受上方期間影響</div>
     </div>
     <div class="stats-grid">
       <!-- Row 1: 公里 + 薪資 -->
@@ -538,8 +720,8 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
       <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;">
         <button class="btn-add" id="tripAddBtn" onclick="addTrip()">新增行程</button>
         <button id="tripDeleteBtn" onclick="deleteEditingTrip()" style="display:none;background:rgba(200,50,30,0.2);color:#FF6B6B;border:1px solid rgba(200,50,30,0.4);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:monospace;font-size:13px;font-weight:700;">🗑 刪除此行程</button>
-        <button class="btn-add" onclick="importCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📂 匯入 CSV</button>
-        <button class="btn-add" onclick="exportCSV()" style="background:rgba(0,200,83,0.2);color:#00C853;border:1px solid rgba(0,200,83,0.5);">📤 匯出 CSV</button>
+        <button class="btn-ghost" onclick="importCSV()">匯入 CSV</button>
+        <button class="btn-ghost" onclick="exportCSV()">匯出 CSV</button>
         <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">
         <span id="tripCount" style="font-size:11px;color:rgba(0,200,83,0.7);margin-left:8px;"></span>
       </div>
@@ -800,6 +982,12 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
 
 
 <script>
+// 名次徽章：前三名給獎牌圈，其餘只有號碼。顏色與尺寸都交給 CSS 的 .rk
+function rankBadge(i){
+  var cls = i===0?'rk medal m1' : i===1?'rk medal m2' : i===2?'rk medal m3' : 'rk';
+  return '<span class="'+cls+'">'+(i+1)+'</span>';
+}
+
 function renderTop5(){
   var el = document.getElementById('top5Section');
   if(!el) return;
@@ -822,22 +1010,17 @@ function renderTop5(){
     var rows = data.map(function(entry, i){
       var name=entry[0], count=entry[1];
       var isMedal = i<3;
-      var rankColor = i===0?'#FFD700': i===1?'#C0C0C0': i===2?'#CD7F32':'rgba(255,255,255,0.4)';
-      var rankBg = i===0?'rgba(255,215,0,0.14)': i===1?'rgba(192,192,192,0.14)': i===2?'rgba(205,127,50,0.14)':'transparent';
-      var rankBadge = isMedal
-        ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:'+rankBg+';border:1px solid '+rankColor+';font-size:12px;font-weight:700;color:'+rankColor+';flex-shrink:0;">'+(i+1)+'</span>'
-        : '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;font-size:13px;font-weight:700;color:'+rankColor+';flex-shrink:0;">'+(i+1)+'</span>';
-      return '<div class="top10-row" style="display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-radius:7px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;">'
+      return '<div class="top10-row">'
         + '<div style="display:flex;align-items:center;gap:10px;overflow:hidden;">'
-          + rankBadge
-          + '<span style="font-size:13px;color:'+(isMedal?'#fff':'#f0dca8')+';font-weight:'+(isMedal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+name+'">'+name+'</span>'
+          + rankBadge(i)
+          + '<span style="font-size:14px;color:'+(isMedal?'var(--ink)':'var(--ink-2)')+';font-weight:'+(isMedal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+name+'">'+name+'</span>'
         + '</div>'
-        + '<span style="font-size:14px;font-weight:700;color:#00E860;flex-shrink:0;margin-left:10px;">'+count+'</span>'
+        + '<span style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--in);flex-shrink:0;margin-left:10px;">'+count+'</span>'
       + '</div>';
     }).join('');
     return '<div class="chart-card" style="padding:18px 20px;">'
-      + '<div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;margin-bottom:12px;">'+title+'</div>'
-      + (rows||'<div style="color:rgba(255,255,255,0.2);font-size:13px;">尚無資料</div>')
+      + '<div class="chart-title" style="margin-bottom:10px;">'+title+'</div>'
+      + (rows||'<div class="sec-note">尚無資料</div>')
     + '</div>';
   }
 
@@ -882,24 +1065,20 @@ function renderGuestTop10(){
 
   var chip=function(k,label){
     var on=(guestTopSort===k);
-    return '<button onclick="setGuestTopSort(\''+k+'\')" style="background:'+(on?'rgba(0,200,83,0.28)':'rgba(255,255,255,0.04)')+';'
-      +'border:1px solid rgba(0,200,83,'+(on?'0.65':'0.2')+');border-radius:99px;color:'+(on?'#00E860':'rgba(255,255,255,0.5)')+';'
-      +'font-size:12px;font-weight:'+(on?'700':'400')+';padding:4px 13px;cursor:pointer;font-family:monospace;margin-left:6px;">'+label+'</button>';
+    return '<span id="guestSortChips"><button class="'+(on?'on':'')+'" onclick="setGuestTopSort(\''+k+'\')">'+label+'</button></span>';
   };
 
   var rows=top.map(function(g,i){
     var medal=i<3;
-    var rc=i===0?'#FFD700':i===1?'#C0C0C0':i===2?'#CD7F32':'rgba(255,255,255,0.4)';
-    var rb=i===0?'rgba(255,215,0,0.14)':i===1?'rgba(192,192,192,0.14)':i===2?'rgba(205,127,50,0.14)':'transparent';
-    var badge=medal
-      ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:'+rb+';border:1px solid '+rc+';font-size:12px;font-weight:700;color:'+rc+';flex-shrink:0;">'+(i+1)+'</span>'
-      : '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;font-size:13px;font-weight:700;color:'+rc+';flex-shrink:0;">'+(i+1)+'</span>';
-    return '<div class="top10-row" style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:7px;border-bottom:1px solid rgba(255,255,255,0.04);">'
-      +badge
-      +'<span style="flex:1;min-width:0;font-size:15px;color:'+(medal?'#fff':'#f0dca8')+';font-weight:'+(medal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(g.name)+'">'+esc(g.name)+'</span>'
-      +'<span style="width:66px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:17px;font-weight:700;color:'+(guestTopSort==='cnt'?'#00E860':'#f0dca8')+';">'+g.cnt
-        +'<span style="font-size:12px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:3px;">趟</span></span>'
-      +'<span style="width:96px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:17px;font-weight:700;color:'+(guestTopSort==='amt'?'#00E860':'#f0dca8')+';">$'+fmt(Math.round(g.amt))+'</span>'
+    // 目前排序依據的那一欄用進帳綠標出來，另一欄退成次要灰
+    var cntCol=guestTopSort==='cnt'?'var(--in)':'var(--ink-2)';
+    var amtCol=guestTopSort==='amt'?'var(--in)':'var(--ink-2)';
+    return '<div class="top10-row" style="gap:10px;">'
+      +rankBadge(i)
+      +'<span style="flex:1;min-width:0;font-size:15px;color:'+(medal?'var(--ink)':'var(--ink-2)')+';font-weight:'+(medal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(g.name)+'">'+esc(g.name)+'</span>'
+      +'<span style="width:66px;flex-shrink:0;text-align:right;font-family:var(--mono);font-size:16px;font-weight:700;color:'+cntCol+';">'+g.cnt
+        +'<span style="font-size:12px;color:var(--ink-3);font-weight:400;margin-left:3px;">趟</span></span>'
+      +'<span style="width:96px;flex-shrink:0;text-align:right;font-family:var(--mono);font-size:16px;font-weight:700;color:'+amtCol+';">$'+fmt(Math.round(g.amt))+'</span>'
       +'<span class="gt-last" style="width:74px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.35);">'+(g.last?g.last.slice(5):'—')+'</span>'
     +'</div>';
   }).join('');
@@ -1425,9 +1604,9 @@ function renderTrips(){
       <td style="color:#fff;font-size:15px;font-weight:600">${t.tr||''}</td>
       <td style="color:#60AAFF;border-left:1px solid rgba(0,200,83,0.1);font-size:15px;font-weight:600">${(t.km||0).toFixed(2)}</td>
       <td style="color:rgba(240,220,160,0.9);font-size:15px;font-weight:600;text-align:center">${fmt(t.fare||0)}</td>
-      <td style="color:rgba(255,180,100,0.9);font-size:15px;font-weight:600;text-align:center">${fmt(t.bonus||0)}</td>
-      <td style="color:rgba(150,200,255,0.9);font-size:15px;font-weight:600;text-align:center">${fmt(t.toll||0)}</td>
-      <td style="color:rgba(255,150,200,0.9);font-size:15px;font-weight:600;text-align:center">${fmt(t.tip||0)}</td>
+      <td class="num${(t.bonus||0)?'':' is-zero'}" style="font-size:15px;font-weight:600;text-align:right">${fmt(t.bonus||0)}</td>
+      <td class="num${(t.toll||0)?'':' is-zero'}" style="font-size:15px;font-weight:600;text-align:right">${fmt(t.toll||0)}</td>
+      <td class="num${(t.tip||0)?'':' is-zero'}" style="font-size:15px;font-weight:600;text-align:right">${fmt(t.tip||0)}</td>
       <td style="color:rgba(240,220,160,0.9);font-size:15px;font-weight:600;text-align:center">${fmt(t.service||0)}</td>
       <td style="color:#00E860;font-size:15px;font-weight:700;text-align:center">${fmt(t.detail||0)}</td>
       <td style="text-align:center;font-size:15px;font-weight:600">${t.pax||1}</td>
@@ -1567,22 +1746,36 @@ function renderWeekdayAvg(){
       tripSecCounts[dow]++;
     }
   });
+  // 七天是同一個指標，不該有七種顏色。金額統一語意色，高低用長條的長度表示。
+  var maxAvg=0;
+  ORDER.forEach(function(dow){
+    if(counts[dow]>0) maxAvg=Math.max(maxAvg, Math.round(sums[dow]/counts[dow]));
+  });
   var cells=ORDER.map(function(dow,i){
     var avg=counts[dow]>0?Math.round(sums[dow]/counts[dow]):null;
-    var avgPax=tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):null;
     var isWE=(dow===0||dow===6);
-    return '<div style="flex:1;min-width:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.15);border-radius:10px;padding:14px 6px;text-align:center;">'
-      +'<div style="font-size:14px;font-weight:600;color:'+(isWE?'#FF9999':'rgba(240,220,160,0.8)')+';margin-bottom:10px;">週'+DAY_NAMES[i]+'</div>'
-      +'<div style="font-size:20px;font-weight:700;color:'+(avg?'#00C853':'rgba(255,255,255,0.15)')+';margin-bottom:10px;">'+(avg?avg.toLocaleString():'—')+'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:13px;color:#ffffff;">'
-        +'<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.12);border-radius:6px;padding:6px 2px;">'+(paxCounts[dow]>0?(paxSums[dow]/paxCounts[dow]).toFixed(1):'—')+'趟</div>'
-        +'<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.12);border-radius:6px;padding:6px 2px;">'+(tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'人</div>'
-        +'<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.12);border-radius:6px;padding:6px 2px;">'+(tripPaxCounts[dow]>0?(tripKmSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'km</div>'
-        +'<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(0,200,83,0.12);border-radius:6px;padding:6px 2px;font-size:11px;">'+(function(){if(tripSecCounts[dow]===0)return '—';var avgS=Math.round(tripSecSums[dow]/tripSecCounts[dow]);var h=Math.floor(avgS/3600),m=Math.floor((avgS%3600)/60),s=avgS%60;return (h>0?h+'時':'')+m+'分'+s+'秒';})()+'</div>'
+    var pct=(avg&&maxAvg>0)?Math.max(3,avg/maxAvg*100):0;
+    var dur=(function(){
+      if(tripSecCounts[dow]===0) return '—';
+      var avgS=Math.round(tripSecSums[dow]/tripSecCounts[dow]);
+      var h=Math.floor(avgS/3600), m=Math.floor((avgS%3600)/60), sec=avgS%60;
+      return (h>0?h+'時':'')+m+'分'+sec+'秒';
+    })();
+    return '<div class="wd-card'+(isWE?' is-we':'')+'">'
+      +'<div class="wd-head"><span class="wd-day">週'+DAY_NAMES[i]+'</span>'
+        +(isWE?'<span class="wd-we">假日</span>':'')+'</div>'
+      +'<div class="wd-amt'+(avg?'':' is-none')+'">'+(avg?avg.toLocaleString():'—')+'</div>'
+      +'<div class="wd-bar"><i style="width:'+pct.toFixed(1)+'%"></i></div>'
+      +'<div class="wd-stats">'
+        +'<div>'+(paxCounts[dow]>0?(paxSums[dow]/paxCounts[dow]).toFixed(1):'—')+'<span>趟</span></div>'
+        +'<div>'+(tripPaxCounts[dow]>0?(tripPaxSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'<span>人</span></div>'
+        +'<div>'+(tripPaxCounts[dow]>0?(tripKmSums[dow]/tripPaxCounts[dow]).toFixed(1):'—')+'<span>km</span></div>'
+        +'<div class="wd-wide">'+dur+'<span>均時</span></div>'
       +'</div>'
     +'</div>';
   }).join('');
-  el.innerHTML='<div style="font-size:10px;letter-spacing:0.1em;color:rgba(0,200,83,0.6);text-transform:uppercase;margin-bottom:8px;">星期平均收入</div><div style="display:flex;gap:6px;">'+cells+'</div>';
+  el.innerHTML='<div class="wd-title">星期平均收入<span style="color:var(--ink-4);"> · 長條為相對高低</span></div>'
+    +'<div style="display:flex;gap:8px;">'+cells+'</div>';
 }
 
 function renderWeekly(){
@@ -1610,47 +1803,49 @@ function renderWeekly(){
   });
   var sEl=document.getElementById('weeklyMonthSummary');
   if(sEl){
-    var chip=function(label,val,color){
-      return '<div style="flex:1;min-width:104px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.18);border-radius:10px;padding:10px 14px;">'
-        +'<div style="font-size:11px;letter-spacing:0.08em;color:rgba(240,220,160,0.55);margin-bottom:5px;white-space:nowrap;">'+label+'</div>'
-        +'<div style="font-family:\'Space Mono\',monospace;font-size:20px;font-weight:700;color:'+color+';white-space:nowrap;">'+val+'</div>'
+    // 只有「錢」上語意色，趟數／時數／積分是中性數據，不該各給一種顏色
+    var chip=function(label,val,unit,cls){
+      return '<div class="wk-chip">'
+        +'<div class="wk-chip-label">'+label+'</div>'
+        +'<div class="wk-chip-val '+(cls||'')+'">'+val
+        +(unit?'<span class="u">'+unit+'</span>':'')+'</div>'
       +'</div>';
     };
-    sEl.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">'
-      +chip('總收入'+(sumDays?' <span style="color:rgba(240,220,160,0.35);">'+sumDays+' 天</span>':''),'NT$'+fmt(sumInc),'#00C853')
-      +chip('總行程數',fmt(sumTrips)+' 趟','#f0dca8')
-      +chip('總時數',Math.floor(sumMins/60)+'h'+(sumMins%60)+'m','#60AAFF')
-      +chip('總積分',fmt(sumPoints)+' 分','#FFD700')
+    sEl.innerHTML='<div class="wk-chips">'
+      +chip('總收入'+(sumDays?' <span class="wk-chip-sub">'+sumDays+' 天</span>':''),'$'+fmt(sumInc),'','in')
+      +chip('總行程數',fmt(sumTrips),'趟')
+      +chip('總時數',Math.floor(sumMins/60)+'h'+(sumMins%60)+'m','')
+      +chip('總積分',fmt(sumPoints),'分')
     +'</div>';
   }
-  el.innerHTML='<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,200,83,0.2);border-radius:14px;overflow:hidden;">'
-    +'<table class="wk-table" style="width:100%;border-collapse:collapse;table-layout:fixed;">'
+  el.innerHTML='<div class="data-wrap">'
+    +'<table class="wk-table data-table" style="table-layout:fixed;">'
     +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:34%"><col style="width:13%"><col style="width:6%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
-    +'<thead><tr style="background:rgba(0,200,83,0.08);">'
-      +'<th style="padding:10px 6px 10px 14px;font-size:13px;color:#00E860;text-align:left;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">日期</th>'
-      +'<th style="padding:10px 2px;font-size:13px;color:#00E860;text-align:center;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">週</th>'
-      +'<th style="padding:10px 8px;font-size:13px;color:#00E860;text-align:left;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">收入比例</th>'
-      +'<th style="padding:10px 6px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">收入</th>'
-      +'<th style="padding:10px 3px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">行程數</th>'
-      +'<th style="padding:10px 3px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">時數</th>'
-      +'<th style="padding:10px 3px;font-size:13px;color:#00E860;text-align:right;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">積分</th>'
-      +'<th style="padding:10px 8px;font-size:13px;color:#00E860;text-align:center;font-weight:700;border-bottom:1px solid rgba(0,200,83,0.3);">備註</th>'
-      +'<th style="padding:10px 2px;border-bottom:1px solid rgba(0,200,83,0.3);"></th>'
+    +'<thead><tr>'
+      +'<th style="padding-left:14px;">日期</th>'
+      +'<th class="c">週</th>'
+      +'<th>收入比例</th>'
+      +'<th class="r">收入</th>'
+      +'<th class="r">行程數</th>'
+      +'<th class="r">時數</th>'
+      +'<th class="r">積分</th>'
+      +'<th class="c">備註</th>'
+      +'<th></th>'
     +'</tr></thead>'
     +'<tbody>'+allDates.map(function(dt){
       var w=rmap[dt],dobj=new Date(dt+'T00:00:00'),dow=dobj.getDay(),isWE=(dow===0||dow===6);
-      var dc=isWE?'#FF9999':'#f5edd8',has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
+      var has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
       var hStr=has?(w.hours||0)+'h'+(w.mins||0)+'m':'';
-      return '<tr class="'+(has?'':'empty')+'" style="border-bottom:1px solid rgba(255,255,255,0.04);'+(has?'':'opacity:0.4;')+'">'
-        +'<td class="c-date" style="padding:11px 6px 11px 14px;font-size:15px;color:'+dc+';white-space:nowrap;">'+dt.slice(5)+'</td>'
-        +'<td class="c-dow" style="padding:11px 2px;font-size:14px;color:'+dc+';text-align:center;">週'+DN[dow]+'</td>'
-        +'<td class="c-bar" style="padding:11px 8px;"><div style="height:9px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#00C853,#00E860);border-radius:4px;"></div></div></td>'
-        +'<td class="c-inc" style="padding:11px 6px;font-size:17px;color:'+(inc>0?'#00C853':'rgba(255,255,255,0.2)')+';font-weight:700;text-align:right;white-space:nowrap;">'+(inc>0?'NT$'+fmt(inc):'—')+'</td>'
-        +'<td class="c-trips" style="padding:11px 3px;font-size:15px;color:#f0dca8;text-align:right;white-space:nowrap;">'+(has&&w.tripCount?w.tripCount+'趟':'')+'</td>'
-        +'<td class="c-hrs" style="padding:11px 3px;font-size:14px;color:#60AAFF;text-align:right;white-space:nowrap;">'+hStr+'</td>'
-        +'<td class="c-pts" style="padding:11px 3px;font-size:15px;color:#FFD700;text-align:right;white-space:nowrap;">'+(has&&w.points?w.points+'分':'')+'</td>'
-        +'<td class="c-note" style="padding:11px 8px;font-size:14px;color:rgba(220,220,220,0.75);white-space:nowrap;text-align:center;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
-        +'<td class="c-del" style="padding:11px 10px 11px 2px;text-align:center;">'+(has?'<span class="del-btn" style="font-size:15px;" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
+      return '<tr class="'+(has?'':'empty')+'">'
+        +'<td class="c-date num" style="padding-left:14px;white-space:nowrap;color:'+(isWE?'var(--ink)':'var(--ink-2)')+';">'+dt.slice(5)+'</td>'
+        +'<td class="c-dow c" style="font-size:13px;color:'+(isWE?'var(--ink-2)':'var(--ink-3)')+';">週'+DN[dow]+'</td>'
+        +'<td class="c-bar"><div class="wk-bar"><i style="width:'+pct+'%"></i></div></td>'
+        +'<td class="c-inc num r" style="font-size:17px;color:'+(inc>0?'var(--in)':'var(--ink-4)')+';font-weight:700;white-space:nowrap;">'+(inc>0?'$'+fmt(inc):'—')+'</td>'
+        +'<td class="c-trips num r" style="white-space:nowrap;">'+(has&&w.tripCount?w.tripCount:'')+'</td>'
+        +'<td class="c-hrs num r" style="font-size:14px;white-space:nowrap;">'+hStr+'</td>'
+        +'<td class="c-pts num r" style="white-space:nowrap;">'+(has&&w.points?w.points:'')+'</td>'
+        +'<td class="c-note c" style="font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
+        +'<td class="c-del c" style="padding-right:10px;">'+(has?'<span class="del-btn" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
       +'</tr>';
     }).join('')+'</tbody></table></div>';
 }
@@ -1736,8 +1931,8 @@ function deleteMonthly(id){
   saveAndPush('uberMonthly',getData('uberMonthly').filter(m=>m.id!==id));
   renderMonthly();updateStats();
 }
-const TYPE_COLOR={'車貸':'#FF3B30','汽車百貨':'#FF9500','停車費':'#FFCC00','油錢':'#34C759','保險/費用':'#00C7BE','罰鍰/過路費':'#007AFF','保養/維修':'#AF52DE'};
-const PIE_COLORS=['#FF3B30','#FF9500','#FFCC00','#34C759','#00C7BE','#007AFF','#AF52DE'];
+const TYPE_COLOR={'車貸':'#3987e5','汽車百貨':'#d95926','停車費':'#c98500','油錢':'#199e70','保險/費用':'#2aa6b8','罰鍰/過路費':'#d55181','保養/維修':'#9085e9'};
+const PIE_COLORS=['#3987e5','#d95926','#199e70','#c98500','#d55181','#2aa6b8','#9085e9'];
 // 固定色：每個類型永遠同一色
 function getTypeColorMap(){ return TYPE_COLOR; }
 var monthlyPageMonth = 0;
@@ -2046,7 +2241,7 @@ function renderMonthly(){
       ctx.closePath();
       ctx.fillStyle = TYPE_COLOR[t] || COLORS[i % COLORS.length];
       ctx.fill();
-      ctx.strokeStyle = 'rgba(30,33,48,0.8)';
+      ctx.strokeStyle = cssVar('--surface-2','#1C222B');
       ctx.lineWidth = 2;
       ctx.stroke();
 
@@ -2056,8 +2251,8 @@ function renderMonthly(){
         var midAngle = startAngle + slice/2;
         var lx = cx + r*0.65 * Math.cos(midAngle);
         var ly = cy + r*0.65 * Math.sin(midAngle);
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 12px monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.96)';
+        ctx.font = '700 12px ui-monospace,monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(pct.toFixed(1)+'%', lx, ly);
@@ -2073,16 +2268,16 @@ function renderMonthly(){
       return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;">'
         +'<div style="display:flex;align-items:center;gap:10px;">'
         +'<div style="width:14px;height:14px;border-radius:3px;background:'+(TYPE_COLOR[t]||COLORS[i%COLORS.length])+';flex-shrink:0;"></div>'
-        +'<span style="font-size:16px;color:'+(TYPE_COLOR[t]||COLORS[i%COLORS.length])+';font-weight:600;">'+t+'</span>'
+        +'<span class="lg-name" style="font-size:15px;">'+t+'</span>'
         +'</div>'
         +'<div style="text-align:right;white-space:nowrap;">'
-        +'<div style="font-size:16px;color:#E8EAF0;font-weight:700;">'+typeMap[t].toLocaleString()+'</div>'
-        +'<div style="font-size:13px;color:rgba(255,255,255,0.45);">'+pct+'%</div>'
+        +'<div class="num" style="font-size:16px;font-weight:700;">'+typeMap[t].toLocaleString()+'</div>'
+        +'<div class="num" style="font-size:12px;color:var(--ink-3);">'+pct+'%</div>'
         +'</div></div>';
     }).join('')
-    + '<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
-    + '<span style="font-size:15px;color:rgba(255,255,255,0.5);">總額</span>'
-    + '<span style="font-size:18px;color:#E8EAF0;font-weight:700;">'+grandTotal.toLocaleString()+' $</span>'
+    + '<div style="border-top:1px solid var(--line-strong);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
+    + '<span style="font-size:13px;color:var(--ink-3);">總額</span>'
+    + '<span class="num" style="font-size:18px;font-weight:700;color:var(--out);">$'+grandTotal.toLocaleString()+'</span>'
     + '</div>';
   })();
 
@@ -2095,12 +2290,12 @@ function renderMonthly(){
       return `<tr>
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#E8EAF0;font-size:17px;">${m.date}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:${col}22;color:${col};padding:4px 14px;border-radius:99px;font-size:15px;letter-spacing:0.05em;">${m.type}</span></td>
-        <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:${col};font-size:18px;font-weight:600;">NT$${fmt(m.amount)}</td>
+        <td class="num" style="padding:14px 16px;border-bottom:1px solid var(--line);color:var(--out);font-size:18px;font-weight:700;text-align:right;">$${fmt(m.amount)}</td>
         <td style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(240,220,160,0.6);font-size:16px;">${m.note||'—'}</td>
         <td style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;white-space:nowrap;"><span onclick="editMonthly(${m.id})" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:15px;padding:2px 5px;margin-right:4px;" title="編輯">✎</span><span onclick="deleteMonthly(${m.id})" style="cursor:pointer;color:rgba(255,100,100,0.5);font-size:15px;padding:2px 5px;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.5)'">✕</span></td>
       </tr>`;
     }).join(''); })()
-    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:15px;color:rgba(240,220,160,0.6);letter-spacing:0.1em;">合計 ${monthly.length} 筆</td><td style="padding:14px 16px;color:#ff6b6b;font-size:18px;font-weight:700;">NT$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
+    +`</tbody><tfoot><tr><td colspan="2" style="padding:14px 16px;font-size:14px;color:var(--ink-3);">合計 ${monthly.length} 筆</td><td class="num" style="padding:14px 16px;color:var(--out);font-size:18px;font-weight:700;text-align:right;">$${fmt(total)}</td><td colspan="2"></td></tr></tfoot>`
     +'</table></div>';
 }
 var weekChartYear=new Date().getFullYear(),monthChartYear=new Date().getFullYear();
@@ -2405,6 +2600,12 @@ document.addEventListener('keydown', function(e){
 
 
 
+// canvas 畫布讀不到 CSS 變數，這裡把 token 讀成實際色值再交給 2D context
+function cssVar(name, fallback){
+  try{ var v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+       return v||fallback; }catch(e){ return fallback; }
+}
+
 // ── 通用圓餅圖（canvas + 圖例）──
 function drawPie(canvasId, legendId, dataMap, colorMap, totalLabel){
   var canvas=document.getElementById(canvasId);
@@ -2417,7 +2618,7 @@ function drawPie(canvasId, legendId, dataMap, colorMap, totalLabel){
   var ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,W,W);
   if(!grand){
-    leg.innerHTML='<div style="color:rgba(255,255,255,0.45);font-size:13px;">這段期間沒有資料</div>';
+    leg.innerHTML='<div style="color:var(--ink-3);font-size:13px;">這段期間沒有資料</div>';
     return 0;
   }
   var start=-Math.PI/2;
@@ -2427,11 +2628,11 @@ function drawPie(canvasId, legendId, dataMap, colorMap, totalLabel){
     ctx.beginPath(); ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,r,start,start+slice); ctx.closePath();
     ctx.fillStyle=col; ctx.fill();
-    ctx.strokeStyle='rgba(30,33,48,0.8)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.strokeStyle=cssVar('--surface-2','#1C222B'); ctx.lineWidth=2; ctx.stroke();
     var pct=dataMap[k]/grand*100;
     if(pct>=8){
       var mid=start+slice/2;
-      ctx.fillStyle='#000'; ctx.font='bold 12px monospace';
+      ctx.fillStyle='rgba(255,255,255,0.96)'; ctx.font='700 12px ui-monospace,monospace';
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(pct.toFixed(1)+'%', cx+r*0.65*Math.cos(mid), cy+r*0.65*Math.sin(mid));
     }
@@ -2443,20 +2644,20 @@ function drawPie(canvasId, legendId, dataMap, colorMap, totalLabel){
     return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;">'
       +'<div style="display:flex;align-items:center;gap:9px;">'
       +'<div style="width:13px;height:13px;border-radius:3px;background:'+col+';flex-shrink:0;"></div>'
-      +'<span style="font-size:15px;color:'+col+';font-weight:600;">'+k+'</span></div>'
+      +'<span class="lg-name">'+k+'</span></div>'
       +'<div style="text-align:right;white-space:nowrap;">'
-      +'<div style="font-size:15px;color:#E8EAF0;font-weight:700;">'+dataMap[k].toLocaleString()+'</div>'
-      +'<div style="font-size:12px;color:rgba(255,255,255,0.45);">'+pct+'%</div>'
+      +'<div class="num" style="font-size:15px;font-weight:700;">'+dataMap[k].toLocaleString()+'</div>'
+      +'<div class="num" style="font-size:12px;color:var(--ink-3);">'+pct+'%</div>'
       +'</div></div>';
   }).join('')
-  +'<div style="border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
-  +'<span style="font-size:14px;color:rgba(255,255,255,0.5);">'+(totalLabel||'總額')+'</span>'
-  +'<span style="font-size:18px;color:#E8EAF0;font-weight:700;">'+grand.toLocaleString()+' $</span></div>';
+  +'<div style="border-top:1px solid var(--line-strong);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;">'
+  +'<span style="font-size:13px;color:var(--ink-3);">'+(totalLabel||'總額')+'</span>'
+  +'<span class="num" style="font-size:18px;font-weight:700;">$'+grand.toLocaleString()+'</span></div>';
   return grand;
 }
 
 // ── 總覽：本月支出 / 本月收入 圓餅圖 ──
-const INCOME_COLOR={'Uber 收入':'#00C853','55688 收入':'#FFD400','本薪':'#22D3EE','獎金':'#C084FC','業外收入':'#FF9500'};
+const INCOME_COLOR={'Uber 收入':'#3987e5','55688 收入':'#d95926','本薪':'#199e70','獎金':'#c98500','業外收入':'#d55181'};
 /* ══════════ 期間分析（總覽上半部） ══════════
    期間是全域的：選好一段時間，收支摘要／工時效率／圓餅圖都只看那段時間。
    週一律以「週一」為起始，與一般計程車排班習慣一致。 */
@@ -2561,9 +2762,7 @@ function renderPeriodBar(){
     box.innerHTML=PERIOD_DEFS.map(function(p){
       // 自訂只看模式；其餘要模式與位移都相同才算選中（這樣「本週／上週」才分得開）
       var on=(p[0]==='custom') ? (periodMode==='custom') : (periodMode===p[0] && periodOffset===p[1]);
-      return '<button onclick="setPeriodMode(\''+p[0]+'\','+p[1]+')" style="background:'+(on?'rgba(0,200,83,0.28)':'rgba(255,255,255,0.04)')+';'
-        +'border:1px solid rgba(0,200,83,'+(on?'0.65':'0.2')+');border-radius:99px;color:'+(on?'#00E860':'rgba(255,255,255,0.5)')+';'
-        +'font-size:12px;font-weight:'+(on?'700':'400')+';padding:4px 13px;cursor:pointer;font-family:monospace;">'+p[2]+'</button>';
+      return '<button class="'+(on?'on':'')+'" onclick="setPeriodMode(\''+p[0]+'\','+p[1]+')">'+p[2]+'</button>';
     }).join('');
   }
   var cb=document.getElementById('periodCustomBox');
@@ -2585,23 +2784,24 @@ function renderPeriodSummary(){
   var takeRate= gross>0?(take/gross*100):0;
   var byPlat  = splitByPlatform(p.trips);
 
-  var big=function(label,val,color){
-    return '<div style="flex:1;min-width:140px;"><div style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:5px;">'+label+'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:30px;font-weight:700;color:'+color+';white-space:nowrap;">$'+fmt(val)+'</div></div>';
+  // 大數字：淨收入與總支出並排對照，這是記帳 App 的主畫面
+  var big=function(label,val,cls){
+    return '<div class="pd-big"><div class="pd-big-label">'+label+'</div>'
+      +'<div class="pd-big-val '+cls+'">$'+fmt(val)+'</div></div>';
   };
-  var cell=function(label,val,color,unit){
-    return '<div><div style="font-size:16px;color:rgba(255,255,255,0.4);margin-bottom:5px;">'+label+'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:'+color+';white-space:nowrap;">'+val
-      +(unit?'<span style="font-size:16px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:4px;">'+unit+'</span>':'')+'</div></div>';
+  // 一般數字格：標籤在上、數值在下，單位用弱色
+  var cell=function(label,val,cls,unit){
+    return '<div><div class="pd-cell-label">'+label+'</div>'
+      +'<div class="pd-num '+(cls||'')+'">'+val
+      +(unit?'<span class="u">'+unit+'</span>':'')+'</div></div>';
   };
-  var grid=function(title,titleColor,bg,border,cells,extra){
-    return '<div style="background:'+bg+';border:1px solid '+border+';border-radius:12px;padding:14px 16px;margin-top:12px;">'
-      +'<div style="font-size:13px;font-weight:700;color:'+titleColor+';margin-bottom:12px;">'+title+'</div>'
+  var grid=function(title,dotColor,cells,extra){
+    return '<div class="pd-block">'
+      +'<div class="pd-block-title"><span class="dot" style="background:'+dotColor+'"></span>'+title+'</div>'
       +'<div class="pd-grid">'+cells+'</div>'
       +(extra||'')+'</div>';
   };
-  // 語意色：進帳＝綠、被抽走／支出＝橘、純數量＝米白、支出分類＝紅（與上排橘色區隔）
-  var C_IN='#22D3EE', C_OUT='#FF9500', C_NUM='#f0dca8', C_CAT='#FF6B6B';
+  var C_IN='in', C_OUT='out', C_NUM='', C_CAT='out';
 
   // 期間內各支出類別的金額，由大到小。
   // 只讓小色塊沿用圓餅圖色票（維持對照關係），金額文字統一色，避免整張卡片五顏六色。
@@ -2614,30 +2814,30 @@ function renderPeriodSummary(){
                     .sort(function(a,b){ return b.amt-a.amt; });
   var catBlock='';
   if(catList.length){
-    catBlock='<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,107,107,0.18);">'
-      +'<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:10px;">支出分類</div>'
+    catBlock='<div class="pd-sub">'
+      +'<div class="pd-sub-head">支出分類</div>'
       +'<div class="pd-grid">'
       +catList.map(function(c){
-        var col=(typeof TYPE_COLOR!=='undefined'&&TYPE_COLOR[c.name])||'#FF6B6B';
+        var col=(typeof TYPE_COLOR!=='undefined'&&TYPE_COLOR[c.name])||'#FF6B5A';
         var pct=exp>0?(c.amt/exp*100):0;
         return '<div>'
-          +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'
-            +'<i style="width:8px;height:8px;border-radius:2px;background:'+col+';display:inline-block;flex-shrink:0;"></i>'
-            +'<span style="font-size:16px;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.name+'</span></div>'
-          +'<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:'+C_CAT+';white-space:nowrap;">$'+fmt(c.amt)
-            +'<span style="font-size:16px;color:#ffffff;font-weight:400;margin-left:6px;">'+pct.toFixed(1)+'%</span></div>'
+          +'<div class="pd-cat-name"><i style="background:'+col+'"></i>'
+            +'<span class="pd-cell-label" style="margin:0;">'+c.name+'</span></div>'
+          +'<div class="pd-num out">$'+fmt(c.amt)
+            +'<span class="pd-pct">'+pct.toFixed(1)+'%</span></div>'
         +'</div>';
       }).join('')
       +'</div></div>';
   }
 
-  el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:16px;">'
-    +'<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">收支摘要 · '+p.range.start+' ~ '+p.range.end+'</div>'
-    +'<div style="display:flex;gap:14px;flex-wrap:wrap;">'
-      +big('淨收入', net, net>=0?'#00E860':'#FF6B6B')
-      +big('總支出', exp, '#FF6B6B')
+  el.innerHTML='<div class="pd-hero">'
+    +'<div class="pd-hero-range">收支摘要 · '+p.range.start+' ~ '+p.range.end+'</div>'
+    +'<div class="pd-hero-main">'
+      +big('淨收入', net, net>=0?'in':'out')
+      +big('總支出', exp, 'out')
     +'</div>'
-    +grid('收入詳細','#00E860','rgba(0,200,83,0.06)','rgba(0,200,83,0.18)',
+    +'</div>'
+    +grid('收入詳細','var(--in)',
         cell('總車資','$'+fmt(gross),C_IN)
        +cell('平台抽成','$'+fmt(take),C_OUT)
        +cell('抽成比例',takeRate?takeRate.toFixed(1):'—',C_OUT,'%')
@@ -2648,12 +2848,11 @@ function renderPeriodSummary(){
        +cell('平均每趟',p.trips.length?'$'+fmt(Math.round(netFare/p.trips.length)):'—',C_IN)
        +cell('單數',fmt(p.trips.length),C_NUM,'趟')
        +cell('工作天數',workDays,C_NUM,'天'))
-    +grid('支出詳細','#FF6B6B','rgba(255,107,107,0.06)','rgba(255,107,107,0.18)',
+    +grid('支出詳細','var(--out)',
         cell('日均支出',p.range.days>0?'$'+fmt(Math.round(exp/p.range.days)):'—',C_OUT)
        +cell('每趟成本',p.trips.length?'$'+fmt(Math.round(exp/p.trips.length)):'—',C_OUT)
        +cell('支出筆數',p.monthly.length,C_NUM,'筆'),
-        catBlock)
-    +'</div>';
+        catBlock);
 }
 
 function renderPeriodHours(){
@@ -2686,36 +2885,37 @@ function renderPeriodHours(){
 
   var bars=list.map(function(x,i){
     var top=(i===0&&list.length>1), bot=(i===list.length-1&&list.length>1);
-    var col=top?'#00E860':(bot?'#FF9500':'#60AAFF');
+    // 最高用進帳綠、最低用支出紅，其餘走中性藍，一眼看出哪天該多跑
+    var col=top?'var(--in)':(bot?'var(--out)':'var(--accent)');
     var w=maxRate>0?Math.max(4,x.rate/maxRate*100):0;
-    return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px;">'
-      +'<div style="width:34px;font-size:13px;font-weight:700;color:'+(top||bot?col:'rgba(255,255,255,0.6)')+';flex-shrink:0;">'+x.name+'</div>'
-      +'<div style="flex:1;min-width:0;height:20px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;">'
-        +'<div style="height:100%;width:'+w+'%;background:'+col+';border-radius:5px;"></div></div>'
-      +'<div style="width:152px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;">'
-        +'<span style="font-size:21px;font-weight:700;color:'+col+';">$'+fmt(Math.round(x.rate))+'</span>'
+    return '<div class="hr-row">'
+      +'<div class="hr-day"'+((top||bot)?' style="color:'+col+'"':'')+'>'+x.name+'</div>'
+      +'<div class="hr-track"><div class="hr-fill" style="width:'+w+'%;background:'+col+';"></div></div>'
+      +'<div class="hr-val">'
+        +'<span class="hr-rate" style="color:'+col+';">$'+fmt(Math.round(x.rate))+'</span>'
         +(top?' <span style="font-size:14px;">🏆</span>':(bot?' <span style="font-size:14px;">📉</span>':''))
-        +'<div style="font-size:16px;color:#ffffff;margin-top:2px;">'+hhmm(x.min)+'</div></div>'
+        +'<div class="hr-min">'+hhmm(x.min)+'</div></div>'
     +'</div>';
   }).join('');
 
-  var card=function(label,val,unit,color){
-    return '<div style="flex:1;min-width:104px;"><div style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:5px;">'+label+'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:'+color+';white-space:nowrap;">'+val
-      +'<span style="font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;margin-left:3px;">'+unit+'</span></div></div>';
+  var card=function(label,val,unit,cls){
+    return '<div style="flex:1;min-width:104px;"><div class="pd-cell-label">'+label+'</div>'
+      +'<div class="pd-num '+cls+'">'+val
+      +(unit?'<span class="u">'+unit+'</span>':'')+'</div></div>';
   };
 
-  el.innerHTML='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,83,0.25);border-radius:14px;padding:16px;">'
-    +'<div style="font-size:13px;font-weight:700;color:#00E860;margin-bottom:14px;">⏱ 工時效率分析'
-      +'<span style="float:right;font-weight:400;font-size:11px;color:rgba(255,255,255,0.35);">時薪以跑車實收計算，不含額外獎勵</span></div>'
-    +'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;">'
-      +card('總工時', mins?hhmm(mins):'—','','#60AAFF')
-      +card('平均時薪', mins?'$'+fmt(Math.round(inc/(mins/60))):'—','','#00E860')
-      +card('日均工時', days?hhmm(mins/days):'—','','#FF9500')
+  el.innerHTML='<div class="pd-block" style="margin-top:0;">'
+    +'<div class="pd-block-title" style="justify-content:space-between;">'
+      +'<span><span class="dot" style="background:var(--accent)"></span>工時效率分析</span>'
+      +'<span class="sec-note" style="font-weight:400;">時薪以跑車實收計算，不含額外獎勵</span></div>'
+    +'<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;">'
+      +card('總工時', mins?hhmm(mins):'—','','ac')
+      +card('平均時薪', mins?'$'+fmt(Math.round(inc/(mins/60))):'—','','in')
+      +card('日均工時', days?hhmm(mins/days):'—','','ac')
     +'</div>'
     +(list.length
-      ? '<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;">每週各天平均時薪</div>'+bars
-      : '<div style="font-size:12px;color:rgba(255,255,255,0.35);">這段期間沒有工時記錄，無法計算時薪。</div>')
+      ? '<div class="pd-sub-head">每週各天平均時薪</div>'+bars
+      : '<div class="pd-sub-head">這段期間沒有工時記錄，無法計算時薪。</div>')
     +'</div>';
 }
 
@@ -2737,7 +2937,7 @@ function renderOverviewPies(){
   var incTotal=drawPie('ovIncPie','ovIncLegend',incMap,INCOME_COLOR,'跑車實收');
   var _ik=Object.keys(incMap),_cv=document.getElementById('ovIncPie'),_lg=document.getElementById('ovIncLegend');
   if(_cv)_cv.style.display=_ik.length===1?'none':'';
-  if(_lg&&_ik.length===1)_lg.insertAdjacentHTML('afterbegin','<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:10px;">這段期間全部來自 '+_ik[0].replace(' 收入','')+'</div>');
+  if(_lg&&_ik.length===1)_lg.insertAdjacentHTML('afterbegin','<div class="sec-note" style="margin-bottom:10px;">這段期間全部來自 '+_ik[0].replace(' 收入','')+'</div>');
 
   var t1=document.getElementById('ovExpTitle');
   if(t1) t1.textContent=label+' 支出';
@@ -2748,11 +2948,11 @@ function renderOverviewPies(){
     /* 與上方「淨收入」同一個算法：實際入帳 − 支出（原本用跑車實收，兩個數字對不上） */
     var paid=p.weekly.reduce(function(s,w){return s+(w.income||0);},0);
     var n=paid-expTotal;
-    net.innerHTML='淨收入 <b style="color:'+(n>=0?'#00E860':'#FF6B6B')+';font-size:20px;">$'+fmt(n)+'</b>';
+    net.innerHTML='淨收入 <b style="color:'+(n>=0?'var(--in)':'var(--out)')+';font-size:18px;font-family:var(--mono);">$'+fmt(n)+'</b>';
   }
 }
 // ── 本業收入 ──
-const SALARY_COLOR={'本薪':'#00C853','獎金':'#FFD400','業外收入':'#22D3EE'};
+const SALARY_COLOR={'本薪':'#3987e5','獎金':'#d95926','業外收入':'#199e70'};
 
 function addSalary(){
   var date=document.getElementById('fs-date').value;
@@ -2850,21 +3050,20 @@ function renderSalary(){
     scope.forEach(function(s){ if(s.date) salMonthSet[s.date.slice(0,7)]=1; });
     var salMonthCount=Object.keys(salMonthSet).length||1;
     var avgMonthIncome=Math.round(scopeTotal/salMonthCount);
-    var AVG_COLOR='#C084FC';
     stats.innerHTML=Object.keys(byType).map(function(t){
-      return '<div class="stat-card"><div class="stat-label">'+t+'</div>'
-        +'<div class="stat-val"><span class="stat-unit">NT$</span>'
-        +'<em style="color:'+SALARY_COLOR[t]+';text-shadow:0 0 22px '+SALARY_COLOR[t]+'55;">'+fmt(byType[t])+'</em></div></div>';
+      return '<div class="stat-card"><div class="stat-label"><i class="sw" style="background:'+SALARY_COLOR[t]+'"></i>'+t+'</div>'
+        +'<div class="stat-val"><span class="stat-unit">$</span>'
+        +'<em style="color:var(--in);text-shadow:none;">'+fmt(byType[t])+'</em></div></div>';
     }).join('')
     +'<div class="stat-card"><div class="stat-label">月平均收入'
-      +'<span style="font-size:0.5em;color:rgba(240,220,160,0.45);margin-left:8px;letter-spacing:0;">'+salMonthCount+' 個月</span></div>'
-      +'<div class="stat-val"><span class="stat-unit">NT$</span>'
-      +'<em style="color:'+AVG_COLOR+';text-shadow:0 0 22px '+AVG_COLOR+'55;">'+fmt(avgMonthIncome)+'</em></div></div>';
+      +'<span style="font-size:12px;color:var(--ink-4);margin-left:6px;">'+salMonthCount+' 個月</span></div>'
+      +'<div class="stat-val"><span class="stat-unit">$</span>'
+      +'<em style="color:var(--ink);text-shadow:none;">'+fmt(avgMonthIncome)+'</em></div></div>';
   }
 
   var total=list.reduce(function(s,x){ return s+(x.amount||0); },0);
   var tEl=document.getElementById('salaryTotal');
-  if(tEl) tEl.innerHTML='合計 '+list.length+' 筆 · <b style="color:#00E860;font-size:17px;">NT$'+fmt(total)+'</b>';
+  if(tEl) tEl.innerHTML='合計 '+list.length+' 筆 · <b class="num" style="color:var(--in);font-size:17px;">$'+fmt(total)+'</b>';
 
   if(!list.length){
     el.innerHTML='<div class="empty-state"><span class="empty-icon">💼</span>尚無本業收入記錄</div>';
@@ -2886,7 +3085,7 @@ function renderSalary(){
       return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">'
         +'<td style="padding:12px 16px;font-size:14px;color:#f5edd8;">'+(s.date||'')+'</td>'
         +'<td style="padding:12px 8px;text-align:center;"><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:'+col+'22;color:'+col+';">'+(s.type||'')+'</span></td>'
-        +'<td style="padding:12px 16px;text-align:right;font-size:17px;font-weight:700;color:'+col+';">NT$'+fmt(s.amount||0)+'</td>'
+        +'<td class="num" style="padding:12px 16px;text-align:right;font-size:17px;font-weight:700;color:var(--in);">$'+fmt(s.amount||0)+'</td>'
         +'<td style="padding:12px 16px;font-size:13px;color:rgba(220,220,220,0.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+(s.note||'')+'">'+(s.note||'')+'</td>'
         +'<td style="padding:12px 10px;text-align:center;white-space:nowrap;">'
           +'<span onclick="editSalary('+s.id+')" style="cursor:pointer;color:rgba(100,160,255,0.7);font-size:15px;padding:2px 5px;margin-right:4px;" title="編輯">✎</span>'
