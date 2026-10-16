@@ -779,7 +779,7 @@ const LS={data:'fb_data',dirty:'fb_dirty',tomb:'fb_tomb',sha:'gh_json_sha_fantas
 /* 類別：low=越少越好，dec=比較與顯示的小數位，pct=百分比 */
 const CATS=[
   {k:'FGP',l:'FG%',pct:1,dec:3},{k:'FTP',l:'FT%',pct:1,dec:3},{k:'3PTM',l:'3PTM'},{k:'3PP',l:'3PT%',pct:1,dec:3},
-  {k:'PTS',l:'PTS'},{k:'OREB',l:'OREB'},{k:'REB',l:'REB'},{k:'AST',l:'AST'},{k:'ST',l:'ST'},{k:'BLK',l:'BLK'},
+  {k:'PTS',l:'PTS'},{k:'OREB',l:'OREB'},{k:'DREB',l:'DREB'},{k:'REB',l:'REB'},{k:'AST',l:'AST'},{k:'ST',l:'ST'},{k:'BLK',l:'BLK'},
   {k:'TO',l:'TO',low:1},{k:'AT',l:'A/T',dec:2},{k:'TECH',l:'TECH',low:1},{k:'DD',l:'DD'}];
 const POS=['PG','SG','SF','PF','C'];
 /* 積分制：總分、預估分，以及可選填的六項數據（和 Yahoo 對戰頁的欄位一樣） */
@@ -879,9 +879,9 @@ function scoreWeekFor(w,lg){
 const SZN='2025-26';
 const STK=[['gp','GP'],['mpg','MPG'],['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK'],['to','TO'],['fp','Fan Pts'],['cur','目前排名'],['start','% Start']];
 /* 球員數據欄位：依聯盟的計分項目決定（積分盟固定 PTS～TO＋FP） */
-const SDEF={fgp:{l:'FG%',pct:1},ftp:{l:'FT%',pct:1},tpm:{l:'3PTM'},tpp:{l:'3PT%',pct:1},pts:{l:'PTS'},oreb:{l:'OREB'},reb:{l:'REB'},ast:{l:'AST'},
+const SDEF={fgp:{l:'FG%',pct:1},ftp:{l:'FT%',pct:1},tpm:{l:'3PTM'},tpp:{l:'3PT%',pct:1},pts:{l:'PTS'},oreb:{l:'OREB'},dreb:{l:'DREB'},reb:{l:'REB'},ast:{l:'AST'},
   st:{l:'ST'},blk:{l:'BLK'},to:{l:'TO',low:1},at:{l:'A/T',dec:2},tech:{l:'TECH',low:1},dd:{l:'DD'},fp:{l:'FP'}};
-const CAT2K={FGP:'fgp',FTP:'ftp','3PTM':'tpm','3PP':'tpp',PTS:'pts',OREB:'oreb',REB:'reb',AST:'ast',ST:'st',BLK:'blk',TO:'to',AT:'at',TECH:'tech',DD:'dd'};
+const CAT2K={FGP:'fgp',FTP:'ftp','3PTM':'tpm','3PP':'tpp',PTS:'pts',OREB:'oreb',DREB:'dreb',REB:'reb',AST:'ast',ST:'st',BLK:'blk',TO:'to',AT:'at',TECH:'tech',DD:'dd'};
 function statKeys(lg){lg=lg||LG();return isPts(lg)?['pts','reb','ast','st','blk','to','fp']:(lg.cats||[]).map(c=>CAT2K[c]).filter(Boolean)}
 const STK_ALL=['gp','mpg'].concat(Object.keys(SDEF),['cur','start']);
 function normNum(k,v){let n=parseFloat(v);if(!isFinite(n))return null;if(SDEF[k]&&SDEF[k].pct&&n>1)n=n/100;return n}
@@ -937,6 +937,7 @@ function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&
 function normL(l){l=Object.assign({},DEF_LEAGUE,l||{});l.id=l.id||uid('lg');l.name=String(l.name||'').trim();l.teams=Math.min(20,Math.max(2,+l.teams||14));l.rounds=Math.min(30,Math.max(1,+l.rounds||13));
   l.slot=+l.slot||0;if(l.slot>l.teams)l.slot=0;l.proj=+l.proj||0;if(l.proj>l.teams)l.proj=0;l.opps=Array.isArray(l.opps)?l.opps.map(s=>String(s).trim()).filter(Boolean):[];
   l.cats=Array.isArray(l.cats)?l.cats.filter(k=>CATS.some(c=>c.k===k)):DEF_LEAGUE.cats.slice();
+  if(l.id==='lgmvaa8zi6aioj'&&!l.mig1){l.mig1=1;if(!l.cats.includes('DREB'))l.cats=CATS.map(c=>c.k).filter(k=>k==='DREB'||l.cats.includes(k))}   // Nate's Cool League 有 DREB
   l.draft=l.draft==='auction'?'auction':'snake';l.budget=Math.max(1,Math.round(+l.budget||200));
   l.mode=l.mode==='pts'||l.mode==='cat'?l.mode:(/pts|points|積分/i.test(l.name)?'pts':'cat');
   const w0=l.w&&typeof l.w==='object'?l.w:{};l.w={};PSTATS.forEach(k=>{l.w[k]=isFinite(+w0[k])&&w0[k]!==''&&w0[k]!=null?+w0[k]:DEF_W[k]});l.url=String(l.url||'').trim();l.u=+l.u||0;return l}
@@ -1638,7 +1639,7 @@ function findPlayer(name){
   const last=normName(String(name).trim().split(/\s+/).slice(-1)[0]);
   const c=ps.filter(x=>normName(x.name.split(/\s+/).slice(-1)[0])===last);return c.length===1?c[0]:null;
 }
-const CAT_ALIAS={'FG%':'FGP','FGP':'FGP','FT%':'FTP','FTP':'FTP','3PTM':'3PTM','3PM':'3PTM','3PT%':'3PP','3PP':'3PP','PTS':'PTS','OREB':'OREB','REB':'REB','AST':'AST','ST':'ST','STL':'ST','BLK':'BLK','TO':'TO','A/T':'AT','AT':'AT','TECH':'TECH','DD':'DD','FP':'FP','FANPTS':'FP','FAN PTS':'FP','PROJ':'PROJ'};
+const CAT_ALIAS={'FG%':'FGP','FGP':'FGP','FT%':'FTP','FTP':'FTP','3PTM':'3PTM','3PM':'3PTM','3PT%':'3PP','3PP':'3PP','PTS':'PTS','OREB':'OREB','DREB':'DREB','REB':'REB','AST':'AST','ST':'ST','STL':'ST','BLK':'BLK','TO':'TO','A/T':'AT','AT':'AT','TECH':'TECH','DD':'DD','FP':'FP','FANPTS':'FP','FAN PTS':'FP','PROJ':'PROJ'};
 function parsePaste(txt){
   txt=String(txt||'').replace(/```[a-z]*|```/gi,'');const i=txt.indexOf('{'),j=txt.lastIndexOf('}');
   if(i<0||j<i)throw new Error('找不到 { } 包住的資料');
