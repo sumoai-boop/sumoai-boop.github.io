@@ -497,7 +497,7 @@ body{font-variant-numeric:tabular-nums}
 /* ---- 側欄 ---- */
 .side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 2px 28px 0;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
 .side::-webkit-scrollbar{display:none}
-.side .top{padding:0}
+.side .top{padding:0;justify-content:flex-end}
 .brand{display:block;margin:6px 0 2px}
 .brand h1{font-family:'Noto Sans TC',sans-serif;font-weight:900;font-size:34px;letter-spacing:.04em;line-height:1.05;color:var(--navy)}
 .brand .kick{display:block;margin-top:6px;padding:0;background:none;font-family:'Noto Sans TC',sans-serif;font-size:13px;letter-spacing:.02em;color:var(--ink2);font-weight:500}
@@ -601,7 +601,6 @@ body{font-variant-numeric:tabular-nums}
 <div class="app">
 <aside class="side">
   <div class="top">
-    <a class="back" href="index.html">‹ 主畫面</a>
     <div class="top-r">
       <button type="button" class="sync" id="syncBox" title="自動同步狀態"><span class="dot"></span><span id="syncTxt">已同步</span></button>
       <button class="btn icon" id="btnMore" aria-label="更多">⋯</button>
