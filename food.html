@@ -4,421 +4,357 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>食記 — Sumoai's Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@400;600;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  /* ── 番茄紅 × 芥末黃 淺色主題 ── */
+  /* ════════════════════════════════════════════════
+     食記 · 點菜單
+     印刷紅 = 單子本身印好的格線與欄名
+     原子筆藍 = 我自己寫上去的東西（店名、金額、日期、評分）
+     ════════════════════════════════════════════════ */
   :root{
-    --bg:#F7E4DC; --card:#FFFAF7; --ink:#2B1A15; --ink2:#6B4A3F; --ink3:#8A6558;
-    --line:#E9C9BD; --tomato:#D63A24; --tomato-d:#B8301A; --mustard:#9A5F00; --basil:#3F7D4E;
+    --paper:#E8EFDD;        /* 複寫聯的淡綠紙 */
+    --sheet:#FBFCF6;        /* 上聯白紙 */
+    --print:#C22B27;        /* 印刷紅 */
+    --print-soft:rgba(194,43,39,.30);
+    --print-faint:rgba(194,43,39,.12);
+    --pen:#21378A;          /* 原子筆藍 */
+    --pen-faint:rgba(33,55,138,.14);
+    --ink:#23251E;
+    --muted:#5C6355;
+    --photo-bg:#1F211C;
+    --f-print:'Noto Serif TC','Songti TC','PMingLiU',serif;
+    --f-pen:'LXGW WenKai TC','Kaiti TC','DFKai-SB','Noto Serif TC',serif;
+    /* 舊變數名（JS 內嵌樣式仍會引用） */
+    --tomato:var(--print); --tomato-d:var(--print); --mustard:var(--pen);
+    --ink2:var(--muted); --ink3:var(--muted); --card:var(--sheet); --bg:var(--paper);
+    --line:var(--print-soft); --basil:#2E7D5B;
   }
-  body{background:var(--bg);color:var(--ink);min-height:100vh;font-family:'Space Mono',monospace;overflow-x:hidden;}
-  /* 頁首紅白格子桌布紋（往下淡出） */
-  body::before{content:'';position:absolute;top:0;left:0;right:0;height:300px;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(214,58,36,.08) 0 16px, transparent 16px 32px),
-      repeating-linear-gradient(90deg, rgba(214,58,36,.08) 0 16px, transparent 16px 32px);
-    -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);
-            mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);
-    pointer-events:none;z-index:0;}
-  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
-  .bg-circle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
-  .c1{width:500px;height:500px;background:radial-gradient(circle, rgba(232,170,40,0.14), transparent 70%);top:-100px;right:-80px;}
-  .c2{width:350px;height:350px;background:radial-gradient(circle, rgba(214,58,36,0.08), transparent 70%);bottom:-80px;left:-60px;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--paper);color:var(--ink);min-height:100vh;font-family:var(--f-print);overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;}
+  .bg-circle{display:none;}
+  :focus-visible{outline:2px solid var(--pen);outline-offset:2px;}
+  .pen{font-family:var(--f-pen);color:var(--pen);}
 
-  /* ── 主內容 ── */
-  .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:48px 12px 80px;}
+  .page-content{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:52px 16px 110px;}
 
-  .page-header{margin-bottom:28px;}
-  .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,64px);font-weight:300;color:var(--ink);line-height:1;margin-bottom:4px;}
-  .page-title em{font-style:italic;color:var(--tomato);}
-  .page-label{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:20px;font-weight:700;}
-
-  /* ── 統計列 ── */
-  .stats-row{display:flex;gap:24px;margin-bottom:28px;flex-wrap:wrap;}
-  .stat-item{display:flex;flex-direction:column;gap:2px;}
-  .stat-num{font-family:'Noto Sans TC',sans-serif;font-size:36px;font-weight:900;color:var(--ink);line-height:1;letter-spacing:-0.02em;}
-  .stat-lbl{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink2);font-family:'Noto Sans TC',sans-serif;margin-top:4px;font-weight:700;}
-  .stat-sep{width:1px;background:var(--line);align-self:stretch;margin:4px 0;}
+  /* ── 單頭 ── */
+  .slip{background:var(--sheet);border:1.5px solid var(--print);border-radius:3px;margin-bottom:26px;
+    box-shadow:0 1px 0 rgba(0,0,0,.04), 0 14px 30px -18px rgba(40,50,30,.35);position:relative;}
+  .slip::after{content:'';position:absolute;left:0;right:0;top:-7px;height:7px;
+    background:radial-gradient(circle at 7px 7px, var(--paper) 3.2px, transparent 3.6px) 0 0/14px 7px repeat-x;}
+  .slip-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;
+    padding:22px 26px 16px;border-bottom:4px double var(--print);}
+  .slip-title{font-family:var(--f-print);font-weight:900;color:var(--print);font-size:clamp(52px,8vw,88px);
+    line-height:.9;letter-spacing:.12em;}
+  .slip-sub{font-family:var(--f-print);color:var(--print);font-size:15px;font-weight:600;letter-spacing:.2em;padding-bottom:6px;}
+  .slip-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,1.6fr);}
+  .slip-cell{padding:12px 18px 16px;border-left:1px solid var(--print-soft);min-width:0;}
+  .slip-cell:first-child{border-left:none;}
+  .slip-cell .lbl{display:block;font-family:var(--f-print);color:var(--print);font-size:14px;font-weight:600;letter-spacing:.08em;margin-bottom:6px;}
+  .slip-cell .val{display:block;font-family:var(--f-pen);color:var(--pen);font-size:34px;font-weight:700;line-height:1.05;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .slip-cell.total{border-left:4px double var(--print);background:var(--print-faint);}
+  .slip-cell.total .val{font-size:46px;}
+  @media(max-width:760px){
+    .slip-top{padding:18px 16px 12px;}
+    .slip-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .slip-cell{padding:10px 12px 12px;border-top:1px solid var(--print-soft);}
+    .slip-cell:nth-child(-n+3){border-top:none;}
+    .slip-cell:nth-child(4){border-left:none;}
+    .slip-cell.total{grid-column:1/-1;border-left:none;border-top:4px double var(--print);}
+    .slip-cell .val{font-size:26px;}
+    .slip-cell.total .val{font-size:38px;}
+  }
 
   /* ── 工具列 ── */
-  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
-  .search-wrap{flex:1;min-width:180px;position:relative;}
-  .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.8;pointer-events:none;}
-  .search-input{width:100%;background:#fff;border:1px solid var(--line);border-radius:99px;padding:9px 16px 9px 36px;color:var(--ink);font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;}
-  .search-input::placeholder{color:#B39286;}
-  .search-input:focus{border-color:var(--tomato);box-shadow:0 0 0 3px rgba(214,58,36,.12);}
-  .sort-select{background:#fff;border:1px solid var(--line);border-radius:99px;padding:9px 14px;color:var(--ink);font-family:'Space Mono',monospace;font-size:11px;outline:none;cursor:pointer;}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
+  .search-wrap{flex:1;min-width:200px;position:relative;}
+  .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--print);}
+  .search-input{width:100%;background:var(--sheet);border:1.5px solid var(--print-soft);border-radius:3px;padding:10px 14px 10px 36px;
+    color:var(--pen);font-family:var(--f-pen);font-size:17px;outline:none;transition:border-color .15s;}
+  .search-input::placeholder{color:#8C9384;font-family:var(--f-print);font-size:15px;}
+  .search-input:focus{border-color:var(--pen);}
+  .sort-select{background:var(--sheet);border:1.5px solid var(--print-soft);border-radius:3px;padding:10px 12px;color:var(--ink);
+    font-family:var(--f-print);font-size:15px;font-weight:600;outline:none;cursor:pointer;}
+  .sort-select:hover{border-color:var(--print);}
   .sort-select option{background:#fff;color:var(--ink);}
-  .count-badge{font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:0.08em;white-space:nowrap;align-self:center;}
+  .count-badge{font-family:var(--f-print);font-size:15px;color:var(--muted);white-space:nowrap;}
+  .add-btn{height:46px;padding:0 20px;border-radius:3px;border:none;background:var(--print);color:#fff;cursor:pointer;
+    font-family:var(--f-print);font-size:17px;font-weight:900;letter-spacing:.08em;white-space:nowrap;flex-shrink:0;
+    box-shadow:0 2px 0 #8E1C19;transition:transform .1s, box-shadow .1s;}
+  .add-btn:hover{background:#AD2421;}
+  .add-btn:active{transform:translateY(2px);box-shadow:0 0 0 #8E1C19;}
 
-  /* ── 新增按鈕 ── */
-  .add-btn{
-    width:46px;height:46px;border-radius:50%;
-    background:linear-gradient(135deg,#D63A24,#E8A21F);
-    border:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px;color:#fff;font-weight:700;
-    box-shadow:0 4px 16px rgba(214,58,36,0.35);
-    transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s;
-    flex-shrink:0;
-  }
-  .add-btn:hover{transform:scale(1.12);box-shadow:0 6px 22px rgba(214,58,36,0.5);}
+  /* ── 分頁：原子筆圈起來 ── */
+  .tabbar{display:flex;gap:6px;margin-bottom:20px;border-bottom:1.5px solid var(--print-soft);padding-bottom:6px;}
+  .tabbar button{position:relative;min-height:0;background:none;border:none;cursor:pointer;padding:8px 18px;
+    font-family:var(--f-print);font-size:18px;font-weight:600;color:var(--muted);letter-spacing:.1em;}
+  .tabbar button:hover{color:var(--ink);}
+  .tabbar button.on{color:var(--pen);font-weight:900;}
+  .tabbar button.on::after{content:'';position:absolute;inset:2px 4px;border:2px solid var(--pen);border-radius:50% 46% 52% 48% / 55% 50% 50% 45%;
+    transform:rotate(-3deg);pointer-events:none;}
 
-  /* ── IG 照片牆 ── */
-  .photo-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:4px;
-  }
+  /* ── 年份列 ── */
+  .yr-bar{position:sticky;top:28px;z-index:20;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 16px;
+    margin:0 -16px 22px;padding:10px 16px;background:rgba(232,239,221,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    border-bottom:1.5px solid var(--print-soft);}
+  .yr-pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:3px 2px;}
+  .yr-pills::-webkit-scrollbar{display:none;}
+  .yr-pill{flex:0 0 auto;min-height:0;padding:5px 14px;border-radius:3px;border:1.5px solid transparent;background:none;cursor:pointer;
+    font-family:var(--f-print);font-size:17px;font-weight:600;color:var(--muted);letter-spacing:.04em;}
+  .yr-pill:hover{color:var(--ink);border-color:var(--print-soft);}
+  .yr-pill.on{color:var(--print);border:2px solid var(--print);font-weight:900;transform:rotate(-2deg);background:rgba(194,43,39,.05);}
+  .yr-sum{display:flex;align-items:baseline;gap:14px;}
+  .yr-sum .meta{font-family:var(--f-print);font-size:15px;color:var(--muted);}
+  .yr-sum .t{font-family:var(--f-pen);font-size:28px;font-weight:700;color:var(--pen);white-space:nowrap;}
+  .yr-sum .t small{font-family:var(--f-print);font-size:14px;font-weight:600;color:var(--print);margin-right:8px;letter-spacing:.08em;}
 
-  /* ── 月份分段（買物帳式）── */
-  /* ── 色彩：統計列小色點、季節月份、類型色條 ── */
-  .stat-lbl{display:flex;align-items:center;gap:6px;}
-  .stat-lbl::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--dot,var(--tomato));flex-shrink:0;}
-  .stat-item:has(#sTotal){--dot:#D63A24;}
-  .stat-item:has(#sAvg){--dot:#D99A0E;}
-  .stat-item:has(#sGAvg){--dot:#3557A8;}
-  .stat-item:has(#sTotalVisits){--dot:#3F7D4E;}
-  .stat-item:has(#sAvgPrice){--dot:#E07A1F;}
-  .stat-item:has(#sTotalSpend){--dot:#7B3F73;}
-  #sAvg{color:#9A5F00;}
-  #sTotalSpend{color:var(--tomato-d);}
-  .mon-h{border-bottom-color:color-mix(in srgb, var(--season,#D63A24) 50%, transparent);}
-  .mon-h h2 .mn{color:var(--season,var(--ink));}
+  /* ── 月份：手寫的月份＋印好的雙線 ── */
+  .mon{margin-bottom:40px;}
+  .mon-h{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:6px 16px;
+    margin:0 0 14px;padding-bottom:8px;border-bottom:4px double var(--print);}
+  .mon-h h2{display:flex;align-items:baseline;gap:4px;font-family:var(--f-print);font-size:20px;font-weight:600;color:var(--print);line-height:1;}
+  .mon-h h2 .mn{font-family:var(--f-pen);font-size:60px;font-weight:700;color:var(--pen);line-height:.8;margin-right:2px;}
+  .mon-h h2 small{font-size:15px;color:var(--muted);font-weight:400;margin-left:10px;}
+  .mon-h .r{display:flex;align-items:baseline;gap:16px;}
+  .mon-h .meta{font-family:var(--f-print);font-size:15px;color:var(--muted);}
+  .mon-h .t{font-family:var(--f-pen);font-size:26px;font-weight:700;color:var(--pen);white-space:nowrap;}
+  .mon-h .t small{font-family:var(--f-print);font-size:14px;font-weight:600;color:var(--print);margin-right:8px;letter-spacing:.08em;}
+  .mon.nodate .mon-h h2{font-size:26px;color:var(--muted);}
+
+  /* ── 照片牆 ── */
+  .photo-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
+  .photo-card{position:relative;aspect-ratio:3/4;overflow:hidden;cursor:pointer;background:#D3DDC6;border-radius:3px;
+    box-shadow:0 1px 2px rgba(30,40,20,.18);}
+  .photo-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease;}
+  .photo-card:hover img{transform:scale(1.04);}
+  .photo-card:focus-visible{outline:3px solid var(--pen);outline-offset:2px;}
+  .photo-card .card-bottom{position:absolute;bottom:0;left:0;right:0;pointer-events:none;
+    background:linear-gradient(to top, rgba(0,0,0,.88) 0%, rgba(0,0,0,.45) 55%, transparent 100%);padding:44px 10px 12px;}
+  .card-name{font-family:var(--f-pen);font-size:17px;font-weight:700;color:#fff;line-height:1.25;
+    overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;text-shadow:0 1px 6px rgba(0,0,0,.7);}
+  .photo-card .overlay{display:none;}
+  .photo-card.no-photo{display:flex;align-items:center;justify-content:center;
+    background:var(--sheet) repeating-linear-gradient(to bottom, transparent 0 27px, var(--print-faint) 27px 28px);
+    border:1.5px solid var(--print-soft);}
+  .no-photo-icon{font-size:34px;opacity:.45;}
+  .photo-card.no-photo .card-bottom{background:linear-gradient(to top, rgba(35,37,30,.9), rgba(35,37,30,.0));}
   .card-type{position:absolute;left:0;right:0;bottom:0;height:4px;z-index:3;}
-  .tchip{display:inline-flex;align-items:center;gap:5px;}
-  .tchip i{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
-  /* ══════ BOLDER：更大膽的層級 ══════ */
-  /* 頁首：加粗格紋桌布＋大標 */
-  body::before{height:380px !important;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(214,58,36,.13) 0 18px, transparent 18px 36px),
-      repeating-linear-gradient(90deg, rgba(214,58,36,.13) 0 18px, transparent 18px 36px) !important;}
-  .page-header{margin-bottom:34px;}
-  .page-title{font-size:clamp(56px,10vw,124px);font-weight:500;letter-spacing:-.02em;line-height:.88;margin-bottom:10px;}
-  .page-title em{font-weight:600;}
-  .page-label{font-size:13px;letter-spacing:.32em;color:var(--tomato-d);margin-bottom:26px;}
-  .page-label::before{content:'';display:inline-block;width:28px;height:3px;background:var(--tomato);vertical-align:middle;margin-right:10px;border-radius:2px;}
-  /* 統計列：總消費當主角 */
-  .stats-row{align-items:flex-end;gap:26px;}
-  .stat-num{font-size:40px;}
-  #sTotalSpend{font-size:clamp(48px,6vw,68px);letter-spacing:-.035em;}
-  .stat-item:has(#sTotalSpend){padding:10px 18px 12px;margin:-10px 0 -12px;background:#fff;border-radius:16px;
-    box-shadow:0 1px 0 var(--line), 0 10px 26px rgba(184,48,26,.14);border:2px solid var(--tomato);}
-  .stat-sep{background:rgba(214,58,36,.25);width:2px;}
-  /* 分頁：實心膠囊 */
-  .tabbar{border-bottom:none !important;gap:8px !important;margin-bottom:22px !important;}
-  .tabbar button{min-height:0;padding:9px 22px !important;border-radius:99px;border:2px solid var(--line) !important;background:#fff !important;
-    color:var(--ink2) !important;font-family:'Noto Sans TC',sans-serif !important;font-size:15px !important;font-weight:900 !important;letter-spacing:.12em !important;
-    transition:transform .15s, box-shadow .15s;}
-  .tabbar button:hover{transform:translateY(-1px);border-color:var(--tomato) !important;}
-  .tabbar button.on{background:var(--ink) !important;border-color:var(--ink) !important;color:#fff !important;box-shadow:0 6px 16px rgba(43,26,21,.25);}
-  /* 新增鈕 */
-  .add-btn{width:56px;height:56px;font-size:28px;}
-  /* 年份列 */
-  .yr-pill{font-size:17px;padding:8px 20px;}
-  .yr-sum .t{font-size:28px;}
-  /* 月份：超大季節色數字 */
-  .mon{margin-bottom:46px;}
-  .mon-h{align-items:flex-end;padding-bottom:12px;border-bottom-width:3px;margin-bottom:16px;}
-  .mon-h h2{display:flex;align-items:baseline;gap:6px;font-size:22px;line-height:1;}
-  .mon-h h2 .mn{font-size:68px;font-weight:900;letter-spacing:-.05em;line-height:.8;}
-  .mon-h .t{font-size:24px;}
-  /* 卡片：更厚的類型色條、更強的浮起 */
-  .photo-grid{gap:8px;}
-  .photo-card{border-radius:12px;}
-  .card-type{height:6px;}
-  .photo-card:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 16px 30px rgba(120,40,20,.3);}
-  .card-name{font-size:16px;font-weight:900;}
+  .empty-state{grid-column:1/-1;padding:80px 0;display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .empty-icon{font-size:44px;opacity:.5;}
+  .empty-text{font-family:var(--f-print);font-size:17px;color:var(--muted);}
+  @media(max-width:1000px){ .photo-grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
   @media(max-width:600px){
-    .page-title{font-size:58px;}
-    .stat-num{font-size:30px;}
-    #sTotalSpend{font-size:44px;}
-    .mon-h h2 .mn{font-size:48px;}
-    .mon-h .t{font-size:19px;}
-    .tabbar button{padding:8px 16px !important;font-size:14px !important;}
-    .add-btn{width:48px;height:48px;font-size:24px;}
-    .photo-grid{gap:5px;}
-    .card-name{font-size:13px;}
+    .page-content{padding:44px 12px 100px;}
+    .photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}
+    .card-name{font-size:14px;}
+    .photo-card .card-bottom{padding:34px 7px 9px;}
+    .mon-h h2 .mn{font-size:46px;}
+    .mon-h .t{font-size:21px;}
+    .yr-bar{margin:0 -12px 18px;padding:8px 12px;}
+    .yr-sum .t{font-size:22px;}
+    .tabbar button{font-size:16px;padding:8px 14px;}
+    .add-btn{height:42px;padding:0 14px;font-size:15px;}
   }
-  /* ── 每筆記錄的照片 ── */
-  .vp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-  .vp-th{position:relative;width:48px;height:48px;border-radius:7px;overflow:hidden;flex-shrink:0;border:1px solid var(--line);}
-  .vp-th img{width:100%;height:100%;object-fit:cover;display:block;}
-  .vp-th button{position:absolute;top:1px;right:1px;width:16px;height:16px;min-height:0;border-radius:50%;background:rgba(0,0,0,.65);border:none;color:#fff;font-size:9px;cursor:pointer;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;}
-  .vp-add{min-height:0;height:48px;padding:0 12px;border-radius:7px;border:1.5px dashed rgba(214,58,36,.4);background:#fff;color:var(--tomato-d);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
-  .vp-add:hover{border-color:var(--tomato);background:rgba(214,58,36,.05);}
-  .vp-hint{font-size:11px;color:var(--ink3);}
-  .visit-grid > *{min-width:0;}
+
+  .tchip{display:inline-flex;align-items:center;gap:6px;}
+  .tchip i{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
+
+  /* ── 詳情 ── */
+  .modal-mask{position:fixed;inset:0;z-index:9000;background:rgba(20,26,16,.62);display:none;align-items:center;justify-content:center;padding:24px;
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  .modal-mask.open{display:flex;}
+  @keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .modal{background:var(--sheet);border-radius:4px;max-width:520px;width:100%;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;
+    box-shadow:0 30px 70px -20px rgba(10,20,5,.6);animation:modalIn .26s cubic-bezier(.2,.8,.2,1);}
+  .modal-body{padding:20px 24px 24px;overflow-y:auto;flex:1;}
+  .modal-title{font-family:var(--f-pen);font-size:34px;font-weight:700;color:var(--pen);line-height:1.2;margin-bottom:6px;}
+  .modal-addr{font-family:var(--f-print);font-size:15px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .modal-addr svg{flex-shrink:0;color:var(--print);}
+  .modal-addr a{color:var(--print);font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--print-soft);}
+  .modal-row{display:flex;gap:16px;align-items:baseline;}
+  .modal-price{font-family:var(--f-pen);color:var(--pen);font-weight:700;}
+  .modal-price .price-prefix{font-size:22px;}
+  .modal-price .price-num{font-size:48px;line-height:1;}
+  .modal-price-lbl{font-family:var(--f-print);font-size:14px;font-weight:600;color:var(--print);}
+  .modal-stars{display:flex;gap:2px;}
+  .modal-score-num{font-family:var(--f-pen);font-size:26px;color:var(--pen);font-weight:700;margin-left:6px;}
+  .modal-actions{display:flex;gap:10px;margin-top:16px;}
+  .modal-btn{min-height:0;padding:11px 26px;border-radius:3px;cursor:pointer;font-family:var(--f-print);font-size:16px;font-weight:900;letter-spacing:.1em;}
+  .modal-btn-edit{background:var(--print);color:#fff;border:none;box-shadow:0 2px 0 #8E1C19;}
+  .modal-btn-edit:hover{background:#AD2421;}
+  .modal-btn-del{background:transparent;color:var(--print);border:1.5px solid var(--print-soft);}
+  .modal-btn-del:hover{border-color:var(--print);}
+  .modal-close{position:absolute;top:14px;right:14px;width:36px;height:36px;min-height:0;border-radius:50%;background:rgba(35,37,30,.08);border:none;cursor:pointer;
+    color:var(--ink);font-size:17px;display:flex;align-items:center;justify-content:center;z-index:5;}
+  .modal-close:hover{background:rgba(35,37,30,.16);}
+
+  .d-sec{margin-top:16px;padding-top:12px;border-top:1px solid var(--print-soft);}
+  .d-lbl{font-family:var(--f-print);font-size:14px;font-weight:600;color:var(--print);letter-spacing:.08em;margin-bottom:6px;display:flex;justify-content:space-between;gap:10px;}
+  .d-lbl span{color:var(--muted);font-weight:400;letter-spacing:0;}
+  .d-note{font-family:var(--f-pen);font-size:18px;color:var(--pen);line-height:1.7;white-space:pre-wrap;}
+  .d-facts{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-family:var(--f-print);font-size:15px;color:var(--muted);}
+  .d-facts b{font-family:var(--f-pen);color:var(--pen);font-size:20px;font-weight:700;margin-left:4px;}
+
+  /* 用餐記錄：點菜單的品項表 */
+  .dv-table{max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--print-soft) transparent;}
+  .dv-head,.dv-row{display:grid;grid-template-columns:118px 46px minmax(0,1fr) 78px 44px;gap:8px;align-items:baseline;padding:7px 6px;}
+  .dv-head{font-family:var(--f-print);font-size:13px;font-weight:600;color:var(--print);border-bottom:1.5px solid var(--print);position:sticky;top:0;background:var(--sheet);z-index:1;}
+  .dv-head span:nth-child(n+4),.dv-row > span:nth-child(n+4){text-align:right;}
+  .dv-row{border-bottom:1px solid var(--print-soft);cursor:pointer;font-family:var(--f-pen);font-size:17px;color:var(--pen);transition:background .12s;}
+  .dv-row:hover{background:var(--pen-faint);}
+  .dv-row.on{background:var(--pen-faint);box-shadow:inset 3px 0 0 var(--pen);}
+  .dv-row .dv-menu{font-size:16px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dv-row .dv-meal{font-family:var(--f-print);font-size:13px;font-weight:600;padding:1px 6px;border-radius:3px;justify-self:start;}
+  .dv-cam{font-family:var(--f-print);font-size:12px;color:var(--print);margin-left:4px;white-space:nowrap;}
+  .dv-row > span:first-child{white-space:nowrap;}
   @media(max-width:600px){
+    .dv-head,.dv-row{grid-template-columns:100px 36px minmax(0,1fr) 70px 38px;gap:5px;font-size:15px;}
+  }
+
+  #detailModal{max-width:980px;width:100%;height:min(680px, calc(100vh - 48px));max-height:none;
+    display:grid;grid-template-columns:1.05fr 1fr;grid-template-rows:minmax(0,1fr);position:relative;}
+  #detailMask{z-index:10000;}
+  #detailModal .d-media{position:relative;display:flex;flex-direction:column;min-height:0;background:var(--photo-bg);overflow:hidden;}
+  #detailModal .d-main{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:pan-y;}
+  #detailModal .d-bg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.4) saturate(1.1);transform:scale(1.1);}
+  #detailModal .d-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:dFade .22s ease;}
+  @keyframes dFade{from{opacity:0}to{opacity:1}}
+  #detailModal .d-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:90px;opacity:.2;}
+  #detailModal .d-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;min-height:0;border-radius:50%;
+    border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);color:#fff;font-size:22px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;z-index:2;}
+  #detailModal .d-main:hover .d-nav{opacity:1;}
+  #detailModal .d-nav:hover{background:rgba(0,0,0,.7);}
+  #detailModal .d-nav.prev{left:14px;}
+  #detailModal .d-nav.next{right:14px;}
+  #detailModal .d-count{position:absolute;right:14px;bottom:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-size:13px;padding:3px 10px;border-radius:99px;}
+  #detailModal .d-cap{position:absolute;left:14px;top:14px;z-index:2;background:var(--sheet);color:var(--pen);font-family:var(--f-pen);font-size:16px;font-weight:700;
+    padding:4px 12px;border-radius:2px;max-width:calc(100% - 28px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:rotate(-1.5deg);
+    box-shadow:0 2px 6px rgba(0,0,0,.35);}
+  #detailModal .d-cap small{font-family:var(--f-print);font-size:13px;color:var(--print);font-weight:600;margin-left:8px;}
+  #detailModal .d-thumbs{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;flex-shrink:0;background:#2A2D26;}
+  #detailModal .d-thumbs:empty{display:none;}
+  #detailModal .d-thumbs button{flex:0 0 auto;width:56px;height:56px;min-height:0;border-radius:3px;overflow:hidden;border:2px solid transparent;
+    padding:0;cursor:pointer;opacity:.55;background:#111;transition:opacity .15s,border-color .15s;}
+  #detailModal .d-thumbs button:hover{opacity:.9;}
+  #detailModal .d-thumbs button.on{border-color:#fff;opacity:1;}
+  #detailModal .d-thumbs img{width:100%;height:100%;object-fit:cover;display:block;}
+  #detailModal .modal-body{display:flex;flex-direction:column;min-height:0;overflow-y:auto;padding:30px 28px 22px;}
+  #detailModal .modal-title{padding-right:44px;}
+  #detailModal .modal-row{flex-wrap:wrap;row-gap:6px;}
+  #detailModal .modal-actions{margin-top:auto;justify-content:flex-end;position:sticky;bottom:-22px;margin-bottom:-22px;padding:16px 0 22px;
+    background:linear-gradient(to bottom, rgba(251,252,246,0), var(--sheet) 40%);}
+  @media (max-width:860px){
+    .modal-mask{padding:12px;}
+    #detailModal{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;max-height:calc(100vh - 24px);overflow-y:auto;}
+    #detailModal .d-main{flex:none;height:min(52vh,380px);}
+    #detailModal .d-nav{opacity:1;}
+    #detailModal .modal-body{overflow:visible;padding:22px 18px 20px;}
+    #detailModal .modal-actions{bottom:-20px;margin-bottom:-20px;padding-bottom:20px;}
+    #detailModal .modal-close{background:rgba(0,0,0,.5);color:#fff;}
+  }
+
+  /* ── 新增／編輯：填單 ── */
+  .form-modal{background:var(--sheet);border-radius:4px;max-width:660px;width:100%;overflow:hidden;
+    box-shadow:0 30px 70px -20px rgba(10,20,5,.6);animation:modalIn .26s cubic-bezier(.2,.8,.2,1);}
+  .form-header{padding:18px 24px 12px;border-bottom:4px double var(--print);display:flex;align-items:center;justify-content:space-between;}
+  .form-title{font-family:var(--f-print);font-size:28px;color:var(--print);font-weight:900;letter-spacing:.12em;}
+  .form-header .modal-close{position:static;}
+  .form-body{padding:18px 24px 24px;display:flex;flex-direction:column;gap:18px;max-height:70vh;overflow-y:auto;}
+  .form-2col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .field-group{display:flex;flex-direction:column;gap:4px;}
+  .field-label{font-family:var(--f-print);font-size:14px;font-weight:600;color:var(--print);letter-spacing:.06em;}
+  .field-label .hint{font-weight:400;color:var(--muted);letter-spacing:0;margin-left:6px;font-size:13px;}
+  .field-input{background:transparent;border:none;border-bottom:1.5px solid var(--print-soft);border-radius:0;padding:8px 2px;
+    color:var(--pen);font-family:var(--f-pen);font-size:18px;outline:none;width:100%;transition:border-color .15s, background .15s;}
+  .field-input:focus{border-bottom-color:var(--pen);background:var(--pen-faint);}
+  .field-input::placeholder{color:#9AA092;font-family:var(--f-print);font-size:15px;}
+  textarea.field-input{border:1.5px solid var(--print-soft);border-radius:3px;padding:8px 10px;
+    background:repeating-linear-gradient(to bottom, transparent 0 30px, var(--print-faint) 30px 31px);line-height:31px;}
+  select.field-input{font-family:var(--f-print);font-size:15px;color:var(--ink);cursor:pointer;}
+  .img-upload-input{display:none;}
+  .upload-area{margin-top:6px;width:100%;padding:12px;border:1.5px dashed var(--print-soft);border-radius:3px;display:flex;align-items:center;justify-content:center;gap:8px;
+    cursor:pointer;background:transparent;font-family:var(--f-print);font-size:15px;font-weight:600;color:var(--print);}
+  .upload-area:hover{border-color:var(--print);background:var(--print-faint);}
+  .score-box{width:64px;background:transparent;border:none;border-bottom:1.5px solid var(--print-soft);padding:6px 4px;color:var(--pen);
+    font-family:var(--f-pen);font-size:20px;font-weight:700;text-align:center;outline:none;cursor:default;}
+  .visit-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;}
+  .add-visit{min-height:0;background:none;border:1.5px solid var(--print);color:var(--print);border-radius:3px;padding:5px 14px;
+    font-family:var(--f-print);font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.06em;white-space:nowrap;flex-shrink:0;}
+  .add-visit:hover{background:var(--print-faint);}
+  #visitsList{display:flex;flex-direction:column;gap:10px;}
+  .visit-row{padding:8px 10px 10px;border:1.5px solid var(--print-soft);border-radius:3px;display:flex;flex-direction:column;gap:6px;}
+  .visit-grid{display:grid;grid-template-columns:1fr auto 1fr 72px 34px;gap:8px;align-items:end;}
+  .visit-grid > *{min-width:0;}
+  .visit-grid .field-input{font-size:16px;padding:6px 2px;}
+  .visit-grid .visit-score{text-align:center;}
+  .visit-del{min-height:0;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--print-soft);background:none;color:var(--print);cursor:pointer;font-size:14px;
+    display:flex;align-items:center;justify-content:center;}
+  .visit-del:hover{border-color:var(--print);background:var(--print-faint);}
+  @media(max-width:600px){
+    .form-2col{grid-template-columns:1fr;}
     .visit-grid{grid-template-columns:1fr 1fr 64px 34px !important;}
     .visit-grid .visit-date{grid-column:1/3;}
     .visit-grid .visit-meal{grid-column:3/5;width:auto !important;}
     .visit-grid .visit-price{grid-column:1/3;}
+    .form-body{padding:16px;}
+    .form-header{padding:16px 16px 10px;}
   }
-  #detailModal .d-cap{position:absolute;left:14px;top:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-size:12px;font-weight:700;
-    padding:4px 11px;border-radius:99px;font-family:'Space Mono',monospace;max-width:calc(100% - 80px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  #detailModal .d-cap small{font-weight:400;opacity:.8;margin-left:6px;}
-  .dv-row{padding:7px 8px;border-bottom:1px solid rgba(120,50,30,0.08);cursor:pointer;border-left:3px solid transparent;border-radius:4px;transition:background .15s;}
-  .dv-row:hover{background:rgba(214,58,36,.05);}
-  .dv-row.on{background:rgba(214,58,36,.1);border-left-color:var(--tomato);}
-  .dv-cam{font-size:11px;color:var(--tomato-d);margin-left:6px;font-weight:700;}
-  /* ── 年份切換 ── */
-  .yr-bar{position:sticky;top:28px;z-index:20;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 14px;
-    margin:0 -12px 18px;padding:10px 12px;background:rgba(247,228,220,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);}
-  .yr-pills{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
-  .yr-pills::-webkit-scrollbar{display:none;}
-  .yr-pill{flex:0 0 auto;min-height:0;padding:7px 16px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--ink2);
-    font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:900;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
-  .yr-pill:hover{border-color:var(--tomato);color:var(--tomato-d);}
-  .yr-pill.on{background:var(--tomato);border-color:var(--tomato);color:#fff;box-shadow:0 3px 10px rgba(214,58,36,.3);}
-  .yr-sum{display:flex;align-items:baseline;gap:12px;}
-  .yr-sum .meta{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink2);font-weight:700;}
-  .yr-sum .t{font-family:'Noto Sans TC',sans-serif;font-size:22px;font-weight:900;color:var(--tomato-d);white-space:nowrap;}
-  .yr-sum .t span{font-size:13px;font-weight:700;margin-right:2px;}
-  @media(max-width:600px){ .yr-pill{font-size:13px;padding:6px 13px;} .yr-sum .t{font-size:18px;} }
-  .mon{margin-bottom:34px;}
-  .mon-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 14px;
-    margin:0 0 14px;padding-bottom:10px;border-bottom:2px dashed rgba(214,58,36,.45);}
-  .mon-h h2{font-family:'Noto Sans TC',sans-serif;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:.04em;line-height:1.1;}
-  .mon-h h2 small{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink3);font-weight:700;margin-left:8px;letter-spacing:0;}
-  .mon-h .r{display:flex;align-items:baseline;gap:14px;}
-  .mon-h .meta{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink2);font-weight:700;}
-  .mon-h .t{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:900;color:var(--tomato-d);white-space:nowrap;}
-  .mon-h .t span{font-size:13px;font-weight:700;margin-right:2px;opacity:.85;}
-  .mon.nodate .mon-h h2{color:var(--ink3);}
+  .vp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .vp-th{position:relative;width:52px;height:52px;border-radius:3px;overflow:hidden;flex-shrink:0;}
+  .vp-th img{width:100%;height:100%;object-fit:cover;display:block;}
+  .vp-th button{position:absolute;top:2px;right:2px;width:18px;height:18px;min-height:0;border-radius:50%;background:rgba(0,0,0,.65);border:none;color:#fff;
+    font-size:10px;cursor:pointer;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .vp-add{min-height:0;height:52px;padding:0 12px;border-radius:3px;border:1.5px dashed var(--print-soft);background:none;color:var(--print);
+    font-family:var(--f-print);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .vp-add:hover{border-color:var(--print);background:var(--print-faint);}
+  .vp-hint{font-family:var(--f-print);font-size:13px;color:var(--muted);}
+  .form-footer{padding:12px 24px 20px;display:flex;gap:10px;border-top:1px solid var(--print-soft);}
+  .btn-cancel{flex:1;min-height:0;padding:12px;border-radius:3px;background:none;border:1.5px solid var(--print-soft);color:var(--muted);
+    font-family:var(--f-print);font-size:16px;font-weight:600;cursor:pointer;}
+  .btn-cancel:hover{border-color:var(--muted);color:var(--ink);}
+  .btn-save{flex:2;min-height:0;padding:12px;border-radius:3px;background:var(--print);border:none;color:#fff;font-family:var(--f-print);font-size:17px;
+    font-weight:900;letter-spacing:.12em;cursor:pointer;box-shadow:0 2px 0 #8E1C19;}
+  .btn-save:hover{background:#AD2421;}
+
+  /* ── 類型篩選下拉 ── */
+  #typeFilterDropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:190px;background:var(--sheet);border:1.5px solid var(--print);
+    border-radius:3px;padding:6px;z-index:999;box-shadow:0 16px 30px -12px rgba(20,30,10,.4);}
+  #typeFilterList{display:flex;flex-direction:column;gap:2px;}
+  #typeFilterList > div{font-family:var(--f-print);font-size:15px !important;}
+
+  /* ── 統計／月報 ── */
+  .rep-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:8px;border-bottom:4px double var(--print);}
+  .rep-h h3{font-family:var(--f-print);font-size:24px;font-weight:900;color:var(--print);letter-spacing:.1em;}
+  .rep-h span{font-family:var(--f-print);font-size:15px;color:var(--muted);}
+  .rep-row{display:grid;grid-template-columns:84px minmax(0,1fr) 70px 110px;gap:16px;align-items:center;padding:9px 0;border-bottom:1px solid var(--print-soft);}
+  .rep-row .k{font-family:var(--f-print);font-size:18px;font-weight:600;color:var(--ink);text-align:right;white-space:nowrap;}
+  .rep-bar{position:relative;height:30px;}
+  .rep-bar i{position:absolute;left:0;top:0;bottom:0;background:rgba(33,55,138,.2);border-left:3px solid var(--pen);border-radius:0 3px 3px 0;}
+  .rep-bar span{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:var(--f-pen);font-size:15px;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);}
+  .rep-row .n,.rep-row .v{font-family:var(--f-pen);font-size:24px;font-weight:700;color:var(--pen);text-align:right;white-space:nowrap;}
+  .rep-row .n small,.rep-row .v small{font-family:var(--f-print);font-size:13px;color:var(--muted);font-weight:400;margin-left:3px;}
+  .rep-row.top .v{color:var(--print);}
+  .rep-row.top .rep-bar i{background:var(--print-faint);border-left-color:var(--print);}
+  .rep-row.empty .v{color:rgba(35,37,30,.25);}
+  .rep-empty{padding:60px 0;text-align:center;font-family:var(--f-print);font-size:17px;color:var(--muted);}
+  .rep-years{display:flex;gap:8px;}
   @media(max-width:600px){
-    .mon{margin-bottom:26px;}
-    .mon-h h2{font-size:19px;}
-    .mon-h .t{font-size:16px;}
-    .mon-h .meta{font-size:11px;}
+    .rep-row{grid-template-columns:64px minmax(0,1fr) 46px 84px;gap:8px;}
+    .rep-row .k{font-size:16px;}
+    .rep-row .n,.rep-row .v{font-size:19px;}
   }
-  .photo-card{
-    position:relative;
-    aspect-ratio:3/4;
-    overflow:hidden;
-    cursor:pointer;
-    background:#EBCFC4;
-    border:1px solid rgba(43,26,21,0.06);
-    border-radius:8px;
-    box-shadow:0 2px 8px rgba(120,40,20,.10);
-    transition:transform 0.2s, box-shadow 0.2s;
-  }
-  .photo-card:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(120,40,20,0.25); }
-  .photo-card img{
-    position:absolute;inset:0;
-    width:100%;height:100%;
-    object-fit:cover;
-    transition:transform 0.4s ease;
-    display:block;
-  }
-  .photo-card:hover img{transform:scale(1.05);}
-  /* 常駐底部漸層 + 名稱 */
-  .photo-card .card-bottom{
-    position:absolute;bottom:0;left:0;right:0;
-    background:linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
-    padding:40px 10px 10px;
-    pointer-events:none;
-  }
-  .card-name{
-    font-size:15px;font-weight:700;color:#fff;
-    white-space:normal;overflow:hidden;
-    display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
-    text-shadow:0 1px 6px rgba(0,0,0,0.8);
-    line-height:1.3;
-  }
-  /* hover 時顯示的額外資訊 */
-  .photo-card .overlay{
-    position:absolute;inset:0;
-    opacity:0;
-    transition:opacity 0.25s ease;
-    display:flex;flex-direction:column;justify-content:flex-start;
-    padding:10px;
-    pointer-events:none;
-  }
-  .photo-card:hover .overlay{opacity:1;}
-  .overlay-meta{display:flex;gap:6px;align-items:center;}
-  .overlay-price{font-size:10px;color:#FFD200;}
-  .overlay-stars{display:flex;gap:2px;}
-  .overlay-stars span{font-size:11px;}
+  .monthly .rep-row{grid-template-columns:52px minmax(0,1fr) 120px;}
+  @media(max-width:600px){ .monthly .rep-row{grid-template-columns:42px minmax(0,1fr) 92px;} }
 
-  /* 無照片佔位 */
-  .photo-card.no-photo{
-    background:repeating-linear-gradient(45deg,#F2D6CB 0 10px,#EFCFC3 10px 20px);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .no-photo-icon{font-size:32px;opacity:0.35;}
-
-  /* 空狀態 */
-  .empty-state{
-    grid-column:1/-1;
-    padding:80px 0;
-    display:flex;flex-direction:column;align-items:center;gap:12px;
-  }
-  .empty-icon{font-size:48px;opacity:0.4;}
-  .empty-text{font-size:12px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;}
-
-  /* ── 詳情 Modal ── */
-  .modal-mask{
-    position:fixed;inset:0;z-index:9000;
-    background:rgba(60,20,10,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-    display:none;align-items:center;justify-content:center;
-    padding:24px;
-    
-  }
-  .modal-mask.open{display:flex;}
-  .modal{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    max-width:520px;width:100%;
-    overflow:hidden;
-    max-height:90vh;
-    display:flex;flex-direction:column;
-    box-shadow:0 24px 70px rgba(80,20,10,0.35);
-    animation:modalIn 0.28s cubic-bezier(0.34,1.2,0.64,1);
-  }
-  @keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
-  .modal-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#111;flex-shrink:0;}
-  .modal-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#111;font-size:56px;opacity:0.15;flex-shrink:0;}
-  .modal-body{padding:20px 24px 24px;overflow-y:auto;flex:1;}
-  .modal-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);margin-bottom:4px;}
-  .modal-addr{font-size:13px;color:var(--ink2);letter-spacing:0.04em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-  .modal-addr svg{opacity:0.6;flex-shrink:0;}
-  .modal-row{display:flex;gap:16px;margin-bottom:6px;align-items:center;}
-  .modal-price{font-family:'Noto Sans TC',sans-serif;color:var(--tomato-d);font-weight:900;letter-spacing:-0.01em;}
-  .modal-price .price-prefix{font-size:22px;font-weight:700;}
-  .modal-price .price-num{font-size:40px;}
-  .modal-price-lbl{font-size:12px;color:var(--ink3);letter-spacing:0.1em;text-transform:uppercase;margin-left:4px;align-self:flex-end;margin-bottom:3px;}
-  .modal-stars{display:flex;gap:3px;margin-left:0;}
-  .modal-stars span{font-size:22px;}
-  .modal-score-num{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--mustard);margin-left:8px;align-self:center;font-weight:600;}
-  .modal-actions{display:flex;gap:8px;margin-top:16px;}
-  .modal-btn{flex:1;padding:12px;border-radius:8px;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;letter-spacing:0.06em;transition:background 0.2s;}
-  .modal-btn-edit{background:rgba(214,58,36,0.08);color:var(--tomato-d);border:1px solid rgba(214,58,36,0.3);}
-  .modal-btn-edit:hover{background:rgba(214,58,36,0.16);}
-  .modal-btn-del{background:rgba(200,50,30,0.06);color:#B3261E;border:1px solid rgba(179,38,30,0.35);}
-  .modal-btn-del:hover{background:rgba(200,50,30,0.14);}
-  .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(43,26,21,0.08);border:none;cursor:pointer;color:var(--ink);font-size:18px;display:flex;align-items:center;justify-content:center;z-index:1;}
-
-  /* ── 詳情：買物帳式雙欄（照片在左、資訊在右）── */
-  #detailModal{
-    max-width:960px;width:100%;
-    height:min(660px, calc(100vh - 48px));max-height:none;
-    display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:minmax(0,1fr);
-    position:relative;border-radius:20px;
-  }
-  #detailModal .d-media{position:relative;display:flex;flex-direction:column;min-height:0;background:#2B1A15;overflow:hidden;}
-  #detailModal .d-main{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:pan-y;}
-  #detailModal .d-bg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.4) saturate(1.2);transform:scale(1.1);}
-  #detailModal .d-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:dFade .25s ease;}
-  @keyframes dFade{from{opacity:0}to{opacity:1}}
-  #detailModal .d-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;opacity:.15;}
-  #detailModal .d-nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);color:#fff;font-size:22px;line-height:1;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s,background .2s;z-index:2;}
-  #detailModal .d-main:hover .d-nav{opacity:1;}
-  #detailModal .d-nav:hover{background:rgba(214,58,36,.85);}
-  #detailModal .d-nav.prev{left:14px;}
-  #detailModal .d-nav.next{right:14px;}
-  #detailModal .d-count{position:absolute;left:14px;bottom:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;
-    font-size:11px;letter-spacing:.06em;padding:3px 10px;border-radius:99px;font-family:'Space Mono',monospace;}
-  #detailModal .d-thumbs{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;flex-shrink:0;
-    background:#F3DDD3;border-top:1px solid var(--line);}
-  #detailModal .d-thumbs:empty{display:none;}
-  #detailModal .d-thumbs button{flex:0 0 auto;width:54px;height:54px;border-radius:8px;overflow:hidden;border:2px solid transparent;
-    padding:0;cursor:pointer;opacity:.6;background:#E6C7BB;transition:opacity .15s,border-color .15s;}
-  #detailModal .d-thumbs button:hover{opacity:.85;}
-  #detailModal .d-thumbs button.on{border-color:var(--tomato);opacity:1;}
-  #detailModal .d-thumbs img{width:100%;height:100%;object-fit:cover;display:block;}
-  #detailModal .modal-body{display:flex;flex-direction:column;min-height:0;overflow-y:auto;padding:30px 28px 22px;
-    border-left:1px solid var(--line);}
-  #detailModal .modal-title{padding-right:44px;line-height:1.25;}
-  #detailModal .modal-row{flex-wrap:wrap;row-gap:6px;}
-  #detailMask{z-index:10000;}
-  #detailModal .modal-actions{margin-top:auto;justify-content:flex-end;gap:10px;
-    position:sticky;bottom:-22px;margin-bottom:-22px;padding:18px 0 22px;
-    background:linear-gradient(to bottom, rgba(255,250,247,0), var(--card) 40%);}
-  #detailModal .modal-btn{flex:0 0 auto;padding:10px 24px;border-radius:999px;font-size:13px;}
-  #detailModal .modal-btn-edit{background:linear-gradient(135deg,#D63A24,#B8301A);color:#fff;border:none;box-shadow:0 4px 14px rgba(214,58,36,.3);}
-  #detailModal .modal-btn-edit:hover{filter:brightness(1.1);}
-  #detailModal .modal-btn-del{background:#fff;}
-  #detailModal .modal-close{top:14px;right:14px;z-index:5;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);}
-  #detailModal .modal-close:hover{background:rgba(214,58,36,.85);}
-  #detailModal .modal-close{color:#fff;}
-
-  @media (max-width:860px){
-    #detailModal{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;max-height:calc(100vh - 32px);overflow-y:auto;}
-    #detailModal .d-main{flex:none;height:min(52vh,360px);}
-    #detailModal .d-nav{opacity:1;}
-    #detailModal .modal-body{overflow:visible;border-left:none;padding:22px 18px 20px;}
-    #detailModal .modal-actions{bottom:-20px;margin-bottom:-20px;padding-bottom:20px;}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}
   }
 
-  /* ── 新增/編輯 Modal ── */
-  .form-modal{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    max-width:640px;width:100%;
-    overflow:hidden;
-    box-shadow:0 24px 70px rgba(80,20,10,0.35);
-    animation:modalIn 0.28s cubic-bezier(0.34,1.2,0.64,1);
-  }
-  .form-header{
-    padding:18px 24px;
-    border-bottom:1px solid var(--line);
-    background:repeating-linear-gradient(0deg,rgba(214,58,36,.05) 0 10px,transparent 10px 20px),repeating-linear-gradient(90deg,rgba(214,58,36,.05) 0 10px,transparent 10px 20px);
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .form-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ink);font-weight:700;}
-  .form-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto;}
-
-  /* 圖片上傳 */
-  .img-upload-area{
-    width:100%;aspect-ratio:4/3;border:2px dashed rgba(214,58,36,0.3);border-radius:10px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    cursor:pointer;position:relative;overflow:hidden;background:#fff;
-    transition:border-color 0.2s;
-  }
-  .img-upload-area:hover{border-color:var(--tomato);}
-  .img-upload-area img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-  .img-upload-label{font-size:11px;color:var(--ink3);letter-spacing:0.08em;text-transform:uppercase;position:relative;z-index:1;}
-  .img-upload-icon{font-size:28px;opacity:0.3;position:relative;z-index:1;}
-  .img-upload-input{display:none;}
-  .img-clear{position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:26px;height:26px;color:#fff;cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;}
-
-  .field-group{display:flex;flex-direction:column;gap:6px;}
-  .field-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink2);font-weight:700;}
-  .field-input{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink);font-family:'Space Mono',monospace;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
-  .field-input:focus{border-color:var(--tomato);background:#fff;box-shadow:0 0 0 3px rgba(214,58,36,.12);}
-  .field-input::placeholder{color:#B39286;}
-
-  /* 星等選擇 */
-  .stars-pick{display:flex;gap:6px;}
-  .star-btn{font-size:22px;background:none;border:none;cursor:pointer;opacity:0.25;transition:opacity 0.15s,transform 0.15s;}
-  .star-btn.active{opacity:1;}
-  .star-btn:hover{transform:scale(1.2);}
-
-  .form-footer{padding:0 24px 20px;display:flex;gap:10px;}
-  .btn-cancel{flex:1;padding:11px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--ink2);font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;}
-  .btn-save{flex:2;padding:11px;border-radius:8px;background:linear-gradient(135deg,#D63A24,#B8301A);border:none;color:#fff;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;font-weight:700;letter-spacing:0.06em;transition:opacity 0.2s;}
-  .btn-save:hover{opacity:0.88;}
-
-
-  
-  
-  /* 觸發區：底部感應條 */
-  
-  
-  
-  
-  
-  
-  
-  
 
     .ic-about  {background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
   .ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
@@ -544,61 +480,40 @@
 
 <!-- Main -->
 <main class="page-content">
-  <div class="page-header">
-    <h1 class="page-title"><em>Food</em> Diary</h1>
-    <span class="page-label">每一口都值得記憶</span>
-    <div class="stats-row" id="statsRow">
-      <div class="stat-item">
-        <div class="stat-num" id="sTotal">0</div>
-        <div class="stat-lbl">家餐廳</div>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <div class="stat-num" id="sAvg">—</div>
-        <div class="stat-lbl">平均評分</div>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <div class="stat-num" id="sGAvg">—</div>
-        <div class="stat-lbl">Google 均分</div>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <div class="stat-num" id="sTotalVisits">—</div>
-        <div class="stat-lbl">造訪次數</div>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <div class="stat-num" id="sAvgPrice">—</div>
-        <div class="stat-lbl">平均消費</div>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <div class="stat-num" id="sTotalSpend">—</div>
-        <div class="stat-lbl">總消費金額</div>
-      </div>
+  <header class="slip">
+    <div class="slip-top">
+      <h1 class="slip-title">食記</h1>
+      <span class="slip-sub">每一口都值得記憶</span>
     </div>
-  </div>
+    <div class="slip-grid" id="statsRow">
+      <div class="slip-cell"><span class="lbl">店家</span><span class="val" id="sTotal">0</span></div>
+      <div class="slip-cell"><span class="lbl">造訪次數</span><span class="val" id="sTotalVisits">—</span></div>
+      <div class="slip-cell"><span class="lbl">平均消費</span><span class="val" id="sAvgPrice">—</span></div>
+      <div class="slip-cell"><span class="lbl">我的評分</span><span class="val" id="sAvg">—</span></div>
+      <div class="slip-cell"><span class="lbl">Google 均分</span><span class="val" id="sGAvg">—</span></div>
+      <div class="slip-cell total"><span class="lbl">合計</span><span class="val" id="sTotalSpend">—</span></div>
+    </div>
+  </header>
 
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="search-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A5F00" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-input" id="searchInput" placeholder="搜尋餐廳名稱或地址…" type="text">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" placeholder="找店名、地址或備註" type="text" aria-label="搜尋">
     </div>
     <!-- 自訂多選類型篩選 -->
     <div id="typeFilterWrap" style="position:relative;">
-      <button id="typeFilterBtn" class="sort-select" style="cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;" type="button">
+      <button id="typeFilterBtn" class="sort-select" style="display:flex;align-items:center;gap:8px;white-space:nowrap;" type="button">
         <span id="typeFilterLabel">所有類型</span>
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1 3l4 4 4-4"/></svg>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M1 3l4 4 4-4"/></svg>
       </button>
-      <div id="typeFilterDropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:160px;background:#FFFAF7;border:1px solid #E9C9BD;border-radius:10px;padding:6px;z-index:999;box-shadow:0 10px 28px rgba(80,20,10,0.18);">
-        <div id="typeFilterList" style="display:flex;flex-direction:column;gap:2px;"></div>
+      <div id="typeFilterDropdown" style="display:none;">
+        <div id="typeFilterList"></div>
       </div>
     </div>
-    <select class="sort-select" id="sortSelect">
-      <option value="date-desc" selected>用餐日期（新→舊）</option>
-      <option value="date-asc">用餐日期（舊→新）</option>
+    <select class="sort-select" id="sortSelect" aria-label="排序">
+      <option value="date-desc" selected>日期：新到舊</option>
+      <option value="date-asc">日期：舊到新</option>
       <option value="score-desc">評分最高</option>
       <option value="score-asc">評分最低</option>
       <option value="price-desc">消費最高</option>
@@ -606,14 +521,14 @@
       <option value="new">新增順序</option>
     </select>
     <span class="count-badge" id="countBadge">0 家</span>
-    <button class="add-btn" id="addBtn" title="新增食記">＋</button>
+    <button class="add-btn" id="addBtn">＋ 新增食記</button>
   </div>
 
   <!-- 分頁切換 -->
-  <div class="tabbar" style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid rgba(184,48,26,0.17);padding-bottom:0;">
-    <button id="tabFood" class="on" onclick="switchTab('food')" style="background:none;border:none;color:#D63A24;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid #D63A24;letter-spacing:0.08em;">食記</button>
-    <button id="tabStats" onclick="switchTab('stats')" style="background:none;border:none;color:#8A6558;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">統計</button>
-    <button id="tabMonthly" onclick="switchTab('monthly')" style="background:none;border:none;color:#8A6558;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;letter-spacing:0.08em;">月報</button>
+  <div class="tabbar" role="tablist">
+    <button id="tabFood" class="on" onclick="switchTab('food')">食記</button>
+    <button id="tabStats" onclick="switchTab('stats')">統計</button>
+    <button id="tabMonthly" onclick="switchTab('monthly')">月報</button>
   </div>
 
   <!-- Photo Grid -->
@@ -634,8 +549,8 @@
 
 <!-- 詳情 Modal -->
 <div class="modal-mask" id="detailMask">
-  <div class="modal" style="position:relative;" id="detailModal">
-    <button class="modal-close" id="detailClose">✕</button>
+  <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="dName">
+    <button class="modal-close" id="detailClose" aria-label="關閉">✕</button>
     <!-- 左欄：照片 -->
     <div class="d-media">
       <div class="d-main" id="detailImgWrap"></div>
@@ -645,33 +560,33 @@
     <div class="modal-body">
       <div class="modal-title" id="dName"></div>
       <div class="modal-addr" id="dAddr">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span id="dAddrText"></span>
       </div>
-      <div class="modal-addr" id="dMapsRow" style="margin-bottom:10px;display:none;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D63A24" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <a id="dMapsLink" href="#" target="_blank" style="color:#D63A24;font-size:10px;letter-spacing:0.05em;text-decoration:none;border-bottom:1px solid rgba(214,58,36,0.3);">在 Google Maps 開啟 ↗</a>
+      <div class="modal-addr" id="dMapsRow" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+        <a id="dMapsLink" href="#" target="_blank" rel="noopener">在 Google 地圖開啟</a>
       </div>
-      <div class="modal-row">
-        <span class="modal-price" id="dPrice"></span>
-        <span class="modal-price-lbl">元／次均</span>
-        <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
-          <span id="dVisits" style="font-size:13px;color:#4A2E25;"></span>
-          <span id="dGscore" style="font-size:13px;color:#4A2E25;"></span>
+      <div class="d-sec">
+        <div class="modal-row">
+          <span class="modal-price-lbl">平均每次</span>
+          <span class="modal-price" id="dPrice"></span>
+          <span id="dTotalSpend" style="margin-left:auto;display:flex;align-items:baseline;gap:8px;"></span>
         </div>
-      </div>
-      <div class="modal-row" style="margin-top:4px;">
-        <div class="modal-stars" id="dStars" style="margin-left:0;"></div>
-        <span class="modal-score-num" id="dScoreNum"></span>
-        <span id="dTotalSpend" style="margin-left:auto;display:flex;align-items:baseline;gap:6px;"></span>
+        <div class="modal-row" style="margin-top:8px;align-items:center;">
+          <span class="modal-price-lbl">我的評分</span>
+          <div class="modal-stars" id="dStars"></div>
+          <span class="modal-score-num" id="dScoreNum"></span>
+        </div>
+        <div class="d-facts"><span id="dVisits"></span><span id="dGscore"></span></div>
       </div>
       <!-- 備註 -->
-      <div id="dNoteRow" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(120,50,30,0.07);border-radius:8px;border-left:3px solid rgba(214,58,36,0.5);">
-        <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8A6558;margin-bottom:5px;">備註</div>
-        <div id="dNoteText" style="font-size:14px;color:#2B1A15;line-height:1.7;white-space:pre-wrap;"></div>
+      <div id="dNoteRow" class="d-sec" style="display:none;">
+        <div class="d-lbl">備註</div>
+        <div id="dNoteText" class="d-note"></div>
       </div>
-      <!-- 用餐記錄（含分頁） -->
-      <div id="dVisitLog" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(120,50,30,0.06);border-radius:8px;"></div>
+      <!-- 用餐記錄 -->
+      <div id="dVisitLog" class="d-sec" style="display:none;"></div>
       <div class="modal-actions">
         <button class="modal-btn modal-btn-del" id="dDel">刪除</button>
         <button class="modal-btn modal-btn-edit" id="dEdit">編輯</button>
@@ -682,87 +597,76 @@
 
 <!-- 新增/編輯 Modal -->
 <div class="modal-mask" id="formMask">
-  <div class="form-modal">
+  <div class="form-modal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
     <div class="form-header">
       <span class="form-title" id="formTitle">新增食記</span>
-      <button class="modal-close" style="position:static;background:rgba(43,26,21,0.06);color:#6B4A3F;" id="formClose">✕</button>
+      <button class="modal-close" id="formClose" aria-label="關閉">✕</button>
     </div>
     <div class="form-body">
 
-      <!-- ── 多張照片上傳區 ── -->
+      <!-- 名稱 -->
       <div class="field-group">
-        <label class="field-label">店家照片 <span style="opacity:0.6;font-size:10px;text-transform:none;letter-spacing:0;">每筆記錄可在下方「用餐記錄」各自上傳；都沒上傳時顯示這裡</span></label>
-        <!-- 縮圖列 -->
-        <div id="photoThumbRow" style="display:flex;gap:6px;flex-wrap:wrap;min-height:0;"></div>
-        <!-- 上傳按鈕 -->
-        <div id="uploadArea" style="margin-top:6px;width:100%;padding:12px;border:2px dashed rgba(184,48,26,0.35);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:rgba(184,48,26,0.06);transition:border-color 0.2s;" onclick="document.getElementById('imgInput').value='';document.getElementById('imgInput').click()">
-          <span style="font-size:18px;opacity:0.4;">📷</span>
-          <span style="font-size:10px;color:#8A6558;letter-spacing:0.08em;text-transform:uppercase;">新增照片</span>
+        <label class="field-label" for="fName1">餐廳名稱<span class="hint">第一行必填，第二行可留空</span></label>
+        <input class="field-input" id="fName1" placeholder="例：Lazy Pasta" autocomplete="off">
+        <input class="field-input" id="fName2" placeholder="例：慵懶義式廚房" autocomplete="off" aria-label="餐廳名稱第二行">
+      </div>
+
+      <div class="form-2col">
+        <div class="field-group">
+          <label class="field-label" for="fType">餐廳類型</label>
+          <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入" autocomplete="off">
+          <datalist id="typeList"></datalist>
         </div>
+        <div class="field-group">
+          <label class="field-label" for="fGscore">Google 評分</label>
+          <input class="field-input" id="fGscore" type="number" min="0" max="5" step="0.1" placeholder="例：4.2" autocomplete="off">
+        </div>
+      </div>
+
+      <!-- 用餐記錄 -->
+      <div class="field-group">
+        <div class="visit-head">
+          <label class="field-label">用餐記錄<span class="hint">每次去都記一筆，可各自放照片</span></label>
+          <button type="button" id="addVisitBtn" class="add-visit">＋ 加一筆</button>
+        </div>
+        <div id="visitsList"></div>
+      </div>
+
+      <!-- 我的評分（自動計算） -->
+      <div class="field-group">
+        <label class="field-label">我的評分<span class="hint">各筆評分的平均，自動計算</span></label>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div id="starsPick" style="display:flex;gap:2px;"></div>
+          <input type="number" id="fScoreInput" class="score-box" min="0" max="5" step="0.1" placeholder="—" autocomplete="off" readonly aria-label="平均評分">
+        </div>
+      </div>
+
+      <!-- 店家照片 -->
+      <div class="field-group">
+        <label class="field-label">店家照片<span class="hint">記錄都沒照片時才顯示</span></label>
+        <div id="photoThumbRow" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        <div id="uploadArea" class="upload-area" role="button" tabindex="0" onclick="document.getElementById('imgInput').value='';document.getElementById('imgInput').click()">📷 加入店家照片</div>
         <input class="img-upload-input" type="file" accept="image/*,.heic,.heif,.HEIC,.HEIF" multiple id="imgInput">
       </div>
 
       <!-- ── 裁切器（已停用） ── -->
       <div id="cropContainer" style="display:none;">
-        <div id="cropViewport" style="display:none;"><img id="cropImg"></div>
+        <div id="cropViewport" style="display:none;"><img id="cropImg" alt=""></div>
         <input type="range" id="cropZoom" style="display:none;">
         <button id="cropClearBtn" style="display:none;"></button>
       </div>
 
-      <!-- 名稱（全寬） -->
       <div class="field-group">
-        <label class="field-label">餐廳名稱 * <span style="opacity:0.4;font-size:9px;">第一行 / 第二行</span></label>
-        <input class="field-input" id="fName1" placeholder="第一行（例：Lazy Pasta）" autocomplete="off">
-        <input class="field-input" id="fName2" placeholder="第二行（例：慵懶義式廚房）" style="margin-top:6px;" autocomplete="off">
-      </div>
-
-      <!-- 二欄區塊 -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <!-- 餐廳類型 -->
-        <div class="field-group">
-          <label class="field-label">餐廳類型</label>
-          <input class="field-input" id="fType" list="typeList" placeholder="選擇或輸入類型" autocomplete="off">
-          <datalist id="typeList"></datalist>
-        </div>
-        <!-- 我的評分（自動計算） -->
-        <div class="field-group">
-          <label class="field-label">我的評分 <span style="opacity:0.4;font-size:9px;">由各筆評分平均</span></label>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div id="starsPick" style="display:flex;gap:2px;"></div>
-            <input type="number" id="fScoreInput" min="0" max="5" step="0.1" placeholder="—" autocomplete="off" readonly
-              style="width:60px;background:#fff;border:1px solid #E9C9BD;border-radius:8px;padding:8px 8px;color:#9A5F00;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;font-weight:700;cursor:default;">
-          </div>
-        </div>
-        <!-- Google 評分 -->
-        <div class="field-group">
-          <label class="field-label">Google 評分</label>
-          <input class="field-input" id="fGscore" type="number" min="0" max="5" step="0.1" placeholder="例：4.2" autocomplete="off">
-        </div>
-      </div>
-
-      <!-- 用餐記錄（多筆，全寬） -->
-      <div class="field-group">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <label class="field-label">用餐記錄 <span style="opacity:0.4;font-size:9px;">可新增多次</span></label>
-          <button type="button" id="addVisitBtn" style="background:rgba(214,58,36,0.15);border:1px solid rgba(214,58,36,0.35);color:#D63A24;border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;">＋ 新增</button>
-        </div>
-        <div id="visitsList" style="display:flex;flex-direction:column;gap:6px;"></div>
-      </div>
-
-      <!-- 地址（全寬） -->
-      <div class="field-group">
-        <label class="field-label">地址</label>
+        <label class="field-label" for="fAddr">地址</label>
         <input class="field-input" id="fAddr" placeholder="例：台北市大安區忠孝東路四段" autocomplete="off">
       </div>
-      <!-- Google Maps（全寬） -->
       <div class="field-group">
-        <label class="field-label">Google Maps 連結</label>
-        <input class="field-input" id="fMaps" placeholder="貼上 Google Maps 網址" autocomplete="off">
+        <label class="field-label" for="fMaps">Google 地圖連結</label>
+        <input class="field-input" id="fMaps" placeholder="貼上 Google 地圖網址" autocomplete="off">
       </div>
-      <!-- 備註（全寬） -->
       <div class="field-group">
-        <label class="field-label">備註</label>
-        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的…" style="resize:vertical;min-height:72px;line-height:1.6;" autocomplete="off"></textarea>
+        <label class="field-label" for="fNote">備註</label>
+        <textarea class="field-input" id="fNote" rows="3" placeholder="推薦菜色、心得、下次想點的" style="resize:vertical;min-height:96px;" autocomplete="off"></textarea>
       </div>
 
     </div>
@@ -925,24 +829,24 @@ function compressImage(dataUrl,maxW,maxH,quality){
 
 /* ───── 食材色票：類型、時段、季節共用 ───── */
 const FOOD_PAL=[
-  {c:'#C8321E',bg:'rgba(214,58,36,.11)'},   // 番茄
-  {c:'#3F7D4E',bg:'rgba(63,125,78,.12)'},   // 羅勒
-  {c:'#9A5F00',bg:'rgba(214,150,20,.16)'},  // 芥末
-  {c:'#3557A8',bg:'rgba(53,87,168,.11)'},   // 藍莓
-  {c:'#7B3F73',bg:'rgba(123,63,115,.11)'},  // 茄子
-  {c:'#C0560F',bg:'rgba(224,122,31,.14)'},  // 紅椒粉
-  {c:'#5F6E14',bg:'rgba(122,139,46,.15)'},  // 橄欖
-  {c:'#B23A5C',bg:'rgba(217,96,122,.13)'},  // 覆盆子
+  {c:'#C22B27',bg:'rgba(194,43,39,.10)'},   // 印刷紅
+  {c:'#2E7D5B',bg:'rgba(46,125,91,.12)'},   // 複寫綠
+  {c:'#9A6A00',bg:'rgba(200,150,20,.16)'},  // 印泥黃
+  {c:'#21378A',bg:'rgba(33,55,138,.11)'},   // 原子筆藍
+  {c:'#6A3D9A',bg:'rgba(106,61,154,.11)'},  // 紫印
+  {c:'#B85A12',bg:'rgba(184,90,18,.13)'},   // 醬色
+  {c:'#1E7A85',bg:'rgba(30,122,133,.12)'},  // 青
+  {c:'#7A5230',bg:'rgba(122,82,48,.13)'},   // 茶褐
 ];
 let TYPE_RANK={};  // 依店數排序的類型 → 色票位置（常用的類型各拿不同顏色）
 function typeColor(t){
-  if(!t) return {c:'#6B4A3F',bg:'rgba(43,26,21,.06)'};
+  if(!t) return {c:'var(--muted)',bg:'rgba(43,26,21,.06)'};
   if(TYPE_RANK[t]!=null) return FOOD_PAL[TYPE_RANK[t]%FOOD_PAL.length];
   let h=0; for(const ch of String(t)) h=(h*31+ch.codePointAt(0))>>>0;
   return FOOD_PAL[h%FOOD_PAL.length];
 }
 const MEAL_COLOR={'早餐':FOOD_PAL[2],'午餐':FOOD_PAL[1],'晚餐':FOOD_PAL[3]};
-function seasonColor(m){ m=+m; return m>=3&&m<=5?'#3F7D4E':m>=6&&m<=8?'#D63A24':m>=9&&m<=11?'#C0560F':'#3557A8'; }
+function seasonColor(m){ return '#21378A'; }
 let foodYear=null; // 照片牆目前顯示的年份（'nodate' = 未記日期）
 let DATA=[], currentId=null, editMode=false, starVal=0, q='', sortKey='date-desc', typeFilterSet=new Set(), typeCountMap={};
 let currentTab='food';
@@ -957,9 +861,8 @@ function switchTab(tab){
     const id='tab'+t.charAt(0).toUpperCase()+t.slice(1);
     const el=document.getElementById(id);
     if(!el) return;
-    el.style.color=t===tab?'#D63A24':'#8A6558';
-    el.style.borderBottomColor=t===tab?'#D63A24':'transparent';
     el.classList.toggle('on', t===tab);
+    el.setAttribute('aria-selected', t===tab?'true':'false');
   });
   if(tab==='stats') renderStatsPage();
   if(tab==='monthly') renderMonthlyPage();
@@ -1001,35 +904,21 @@ function renderStatsPage(){
   const dists = Object.entries(distMap).sort((a,b)=>b[1].count-a[1].count);
   const maxCount = dists[0]?.[1].count||1;
 
-  let html=`<div style="margin-bottom:24px;">
-    <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#8A6558;margin-bottom:16px;">區域分布　${dists.length} 個區域</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">`;
-
-  dists.forEach(([dist,d],di)=>{
-    const pct = Math.round(d.count/maxCount*100);
-    const _dc = FOOD_PAL[di%FOOD_PAL.length].c;
+  const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  let html=`<div class="rep-h"><h3>各區域去過的店</h3><span>${dists.length} 個區域</span></div>`;
+  dists.forEach(([dist,d])=>{
+    const pct = Math.max(4, Math.round(d.count/maxCount*100));
     const avgSpend = d.spendCount ? '$'+Math.round(d.totalSpend/d.spendCount).toLocaleString() : '—';
-    html+=`
-      <div style="display:grid;grid-template-columns:80px 1fr 60px 120px;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(120,50,30,0.06);">
-        <div style="font-size:18px;color:#2B1A15;font-weight:700;text-align:right;white-space:nowrap;">${dist}</div>
-        <div style="position:relative;height:28px;background:rgba(120,50,30,0.07);border-radius:6px;overflow:hidden;">
-          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,${_dc}cc,${_dc}40);border-radius:6px;"></div>
-          <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:#3A1F17;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);">
-            ${d.names.slice(0,3).join('、')}${d.names.length>3?'…':''}
-          </div>
-        </div>
-        <div style="font-size:20px;font-weight:900;color:#2B1A15;font-family:'Noto Sans TC',sans-serif;text-align:right;white-space:nowrap;">${d.count}<span style="font-size:11px;color:#8A6558;font-weight:400;margin-left:2px;">間</span></div>
-        <div style="font-size:18px;font-weight:900;color:#4A2E25;text-align:right;white-space:nowrap;font-family:'Noto Sans TC',sans-serif;">${avgSpend}</div>
+    html+=`<div class="rep-row">
+        <div class="k">${esc(dist)}</div>
+        <div class="rep-bar"><i style="width:${pct}%"></i><span>${esc(d.names.slice(0,3).join('、'))}${d.names.length>3?'…':''}</span></div>
+        <div class="n">${d.count}<small>間</small></div>
+        <div class="v">${avgSpend}<small>／次</small></div>
       </div>`;
   });
-
-  html+=`</div></div>`;
-
   if(dists.length===0){
-    html=`<div style="padding:60px 0;text-align:center;color:#8A6558;font-size:12px;letter-spacing:0.12em;">尚無地址資料可供統計</div>`;
+    html=`<div class="rep-empty">還沒有可統計的地址。編輯食記填上地址，這裡就會依區域整理。</div>`;
   }
-
-  html+=`</div></div>`;
   container.innerHTML=html;
 }
 
@@ -1063,12 +952,9 @@ function renderMonthlyPage(){
     }
   });
 
-  let html=`<div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#8A6558;">每月總消費</div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        ${years.map(y=>`<button onclick="switchMonthYear(${y})" id="yearBtn${y}" style="background:${y===currentYear?'#D63A24':'none'};border:none;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;padding:4px 12px;border-radius:6px;color:${y===currentYear?'#fff':'#8A6558'};">${y}</button>`).join('')}
-      </div>
+  let html=`<div class="monthly">
+    <div class="rep-h"><h3>每月花費</h3>
+      <div class="rep-years">${years.map(y=>`<button type="button" class="yr-pill${y===currentYear?' on':''}" onclick="switchMonthYear(${y})" id="yearBtn${y}">${y}</button>`).join('')}</div>
     </div>
     <div id="monthlyChart"></div>
   </div>`;
@@ -1078,26 +964,21 @@ function renderMonthlyPage(){
   window.switchMonthYear=function(year){
     years.forEach(y=>{
       const b=document.getElementById('yearBtn'+y);
-      if(b){b.style.color=y===year?'#fff':'#8A6558';b.style.background=y===year?'#D63A24':'none';}
+      if(b) b.classList.toggle('on', y===year);
     });
     const data=allMonthData[year]||[];
     const maxTotal=Math.max(...data.map(m=>m.total),1);
-    let chartHtml='<div style="display:flex;flex-direction:column;gap:8px;">';
-    data.forEach((m,mi)=>{
-      const pct=m.total?Math.round(m.total/maxTotal*100):0;
-      const _sc=seasonColor(mi+1), _top=m.total&&m.total===maxTotal;
+    let chartHtml='';
+    data.forEach(m=>{
+      const pct=m.total?Math.max(3,Math.round(m.total/maxTotal*100)):0;
+      const top=m.total&&m.total===maxTotal;
       const label=m.total?'$'+m.total.toLocaleString():'—';
-      chartHtml+=`
-        <div style="display:grid;grid-template-columns:42px 1fr 110px;gap:12px;align-items:center;">
-          <div style="font-size:12px;color:#6B4A3F;text-align:right;">${m.label}</div>
-          <div style="position:relative;height:26px;background:rgba(120,50,30,0.07);border-radius:6px;overflow:hidden;">
-            <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:linear-gradient(90deg,${_sc}${_top?'':'b3'},${_sc}${_top?'99':'33'});border-radius:6px;"></div>
-            ${m.count?`<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#2B1A15;font-weight:700;">${m.count} 筆</div>`:''}
-          </div>
-          <div style="font-size:18px;font-weight:900;color:${_top?'#B8301A':m.total?'#2B1A15':'rgba(43,26,21,0.25)'};font-family:'Noto Sans TC',sans-serif;text-align:right;">${label}</div>
+      chartHtml+=`<div class="rep-row${top?' top':''}${m.total?'':' empty'}">
+          <div class="k">${m.label}</div>
+          <div class="rep-bar">${m.total?`<i style="width:${pct}%"></i><span>${m.count} 筆${top?'　最高':''}</span>`:''}</div>
+          <div class="v">${label}</div>
         </div>`;
     });
-    chartHtml+='</div>';
     document.getElementById('monthlyChart').innerHTML=chartHtml;
   };
   window.switchMonthYear(currentYear);
@@ -1136,16 +1017,16 @@ function refreshTypeList(){
   list.innerHTML='';
   // 全選按鈕
   const allBtn=document.createElement('div');
-  allBtn.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:'+(typeFilterSet.size===0?'#fff':'#4A2E25')+';background:'+(typeFilterSet.size===0?'#D63A24':'transparent')+';';
+  allBtn.style.cssText='padding:8px 10px;border-radius:3px;cursor:pointer;font-size:15px;color:'+(typeFilterSet.size===0?'#fff':'var(--ink)')+';background:'+(typeFilterSet.size===0?'var(--pen)':'transparent')+';';
   allBtn.textContent='全部';
   allBtn.onclick=()=>{ typeFilterSet.clear(); updateTypeFilterUI(); render(); };
   list.appendChild(allBtn);
   inUse.forEach(t=>{
     const item=document.createElement('div');
     const active=typeFilterSet.has(t);
-    item.style.cssText='padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center;color:'+(active?'#fff':'#2B1A15')+';background:'+(active?'#D63A24':'transparent')+';';
+    item.style.cssText='padding:8px 10px;border-radius:3px;cursor:pointer;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:10px;color:'+(active?'#fff':'var(--ink)')+';background:'+(active?'var(--pen)':'transparent')+';';
     item.dataset.type=t;
-    item.innerHTML=`<span class="tchip"><i style="background:${active?'#fff':typeColor(t).c}"></i>${t}</span><span style="color:${active?'#fff':'#B8301A'};font-size:12px;font-weight:700;min-width:20px;text-align:right;">${active?'✓ ':''}</span><span style="color:${active?'#fff':'#B8301A'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${typeCountMap[t]||''}</span>`;
+    item.innerHTML=`<span class="tchip"><i style="background:${active?'#fff':typeColor(t).c}"></i>${t}</span><span style="color:${active?'#fff':'var(--pen)'};font-size:12px;font-weight:700;min-width:20px;text-align:right;">${active?'✓ ':''}</span><span style="color:${active?'#fff':'var(--pen)'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${typeCountMap[t]||''}</span>`;
     item.onclick=()=>{
       if(typeFilterSet.has(t)) typeFilterSet.delete(t); else typeFilterSet.add(t);
       updateTypeFilterUI(); render();
@@ -1162,15 +1043,15 @@ function updateTypeFilterUI(){
   else { btn.textContent=`${typeFilterSet.size} 種類型`; }
   if(list) list.querySelectorAll('div').forEach((el,i)=>{
     if(i===0){
-      el.style.color=typeFilterSet.size===0?'#fff':'#6B4A3F';
-      el.style.background=typeFilterSet.size===0?'#D63A24':'transparent';
+      el.style.color=typeFilterSet.size===0?'#fff':'var(--ink)';
+      el.style.background=typeFilterSet.size===0?'var(--pen)':'transparent';
     } else {
       const t=el.dataset.type;
       if(!t) return;
       const active=typeFilterSet.has(t);
-      el.style.color=active?'#fff':'#2B1A15';
-      el.style.background=active?'#D63A24':'transparent';
-      el.innerHTML=`<span class="tchip"><i style="background:${active?'#fff':typeColor(t).c}"></i>${t}</span><span style="color:${active?'#fff':'#B8301A'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${active?'✓ ':''}${typeCountMap[t]||''}</span>`;
+      el.style.color=active?'#fff':'var(--ink)';
+      el.style.background=active?'var(--pen)':'transparent';
+      el.innerHTML=`<span class="tchip"><i style="background:${active?'#fff':typeColor(t).c}"></i>${t}</span><span style="color:${active?'#fff':'var(--pen)'};font-size:13px;font-weight:900;min-width:24px;text-align:right;">${active?'✓ ':''}${typeCountMap[t]||''}</span>`;
     }
   });
 }
@@ -1452,7 +1333,7 @@ function renderThumbs(){
   row.innerHTML='';
   photosArr.forEach((p,i)=>{
     const wrap=document.createElement('div');
-    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===0?'#D63A24':'rgba(184,48,26,0.28)')+';';
+    wrap.style.cssText='position:relative;width:72px;height:72px;border-radius:3px;overflow:hidden;flex-shrink:0;border:2px solid '+(i===0?'var(--print)':'transparent')+';';
     const img=document.createElement('img');
     img.src = p.url || p.dataUrl;
     img.style.cssText='width:100%;height:100%;object-fit:cover;';
@@ -1463,7 +1344,7 @@ function renderThumbs(){
     if(i===0){
       const badge=document.createElement('div');
       badge.textContent='封面';
-      badge.style.cssText='position:absolute;bottom:0;left:0;right:0;background:rgba(214,58,36,0.85);color:#fff;font-size:8px;text-align:center;padding:2px 0;letter-spacing:0.05em;';
+      badge.style.cssText='position:absolute;bottom:0;left:0;right:0;background:var(--print);color:#fff;font-size:11px;text-align:center;padding:2px 0;';
       wrap.appendChild(badge);
     }
     wrap.appendChild(img); wrap.appendChild(del);
@@ -1516,22 +1397,21 @@ function makeVisitRow(v){
   v=v||{};
   const row=document.createElement('div');
   row.className='visit-row';
-  row.style.cssText='display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(120,50,30,0.05);border-radius:8px;border:1px solid rgba(184,48,26,0.14);';
   const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   row.innerHTML=`
-    <div class="visit-grid" style="display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:6px;align-items:center;">
-      <input class="field-input visit-date" type="date" value="${esc(v.date)}" style="font-size:12px;padding:7px 10px;">
-      <select class="field-input visit-meal" style="font-size:12px;padding:7px 8px;background:#fff;color:#2B1A15;width:76px;">
+    <div class="visit-grid">
+      <input class="field-input visit-date" type="date" value="${esc(v.date)}" aria-label="日期">
+      <select class="field-input visit-meal" aria-label="時段">
         <option value="" ${!v.meal?'selected':''}>—</option>
         <option value="早餐" ${v.meal==='早餐'?'selected':''}>🌅 早</option>
         <option value="午餐" ${v.meal==='午餐'?'selected':''}>☀️ 午</option>
         <option value="晚餐" ${v.meal==='晚餐'?'selected':''}>🌙 晚</option>
       </select>
-      <input class="field-input visit-price" type="number" min="0" placeholder="金額" value="${v.price===0||v.price?esc(v.price):''}" autocomplete="off" style="font-size:12px;padding:7px 10px;">
-      <input class="field-input visit-score" type="number" min="0" max="5" step="0.1" placeholder="評分" value="${v.score===0||v.score?esc(v.score):''}" autocomplete="off" style="font-size:12px;padding:7px 8px;width:64px;text-align:center;">
-      <button type="button" class="visit-del" style="background:rgba(200,50,30,0.15);border:1px solid rgba(200,50,30,0.3);color:#B3261E;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+      <input class="field-input visit-price" type="number" min="0" placeholder="金額" value="${v.price===0||v.price?esc(v.price):''}" autocomplete="off" aria-label="金額">
+      <input class="field-input visit-score" type="number" min="0" max="5" step="0.1" placeholder="評分" value="${v.score===0||v.score?esc(v.score):''}" autocomplete="off" aria-label="評分">
+      <button type="button" class="visit-del" aria-label="刪除這筆">✕</button>
     </div>
-    <input class="field-input visit-menu" placeholder="🍽 點了什麼（選填）" value="${esc(v.menu)}" autocomplete="off" style="font-size:12px;padding:7px 10px;">
+    <input class="field-input visit-menu" placeholder="點了什麼（可不填）" value="${esc(v.menu)}" autocomplete="off" aria-label="點了什麼">
     <div class="vp-row"></div>`;
   row.querySelector('.visit-del').onclick=()=>{ row.remove(); updateAvgScore(); };
   row._photos=(v.imgs||[]).map(u=>({dataUrl:u, url:String(u).startsWith('data:')?null:u}));
@@ -1564,11 +1444,11 @@ function renderVisitPhotos(row){
     th.appendChild(im); th.appendChild(del); box.appendChild(th);
   });
   const add=document.createElement('button'); add.type='button'; add.className='vp-add';
-  add.textContent=row._photos.length?'📷 ＋':'📷 這次的照片';
+  add.textContent=row._photos.length?'＋ 照片':'📷 這次的照片';
   add.onclick=()=>row._fileInput.click();
   box.appendChild(add);
   if(!row._photos.length){
-    const h=document.createElement('span'); h.className='vp-hint'; h.textContent='未上傳則沿用上一筆的照片';
+    const h=document.createElement('span'); h.className='vp-hint'; h.textContent='沒放照片就沿用上一筆的';
     box.appendChild(h);
   }
 }
@@ -1741,9 +1621,9 @@ function starsHTMLDecimal(score){
   for(let i=1;i<=5;i++){
     const fill=Math.min(1,Math.max(0,score-(i-1)));
     const pct=Math.round(fill*100);
-    h+=`<span style="position:relative;display:inline-block;font-size:18px;width:20px;">
-      <span style="opacity:0.2;">⭐</span>
-      <span style="position:absolute;left:0;top:0;clip-path:inset(0 ${100-pct}% 0 0);">⭐</span>
+    h+=`<span style="position:relative;display:inline-block;font-size:24px;line-height:1;width:24px;color:var(--pen);" aria-hidden="true">
+      <span style="opacity:0.18;">★</span>
+      <span style="position:absolute;left:0;top:0;clip-path:inset(0 ${100-pct}% 0 0);">★</span>
     </span>`;
   }
   return h;
@@ -1753,7 +1633,7 @@ function openDetail(item, ctxDate){
   currentId=item.id;
   const line1=item.name1||item.name||'';
   const line2=item.name2||'';
-  document.getElementById('dName').innerHTML=line1+(line2?'<br><span style="font-size:18px;opacity:0.75;">'+line2+'</span>':'');
+  document.getElementById('dName').innerHTML=line1+(line2?'<br><span style="font-size:21px;color:var(--ink);">'+line2+'</span>':'');
   const dNameEl=document.getElementById('dName');
   const existBadge=document.getElementById('dTypeBadge');
   if(existBadge) existBadge.remove();
@@ -1762,7 +1642,7 @@ function openDetail(item, ctxDate){
     badge.id='dTypeBadge';
     badge.textContent=item.type;
     const _tc=typeColor(item.type);
-    badge.style.cssText='display:inline-block;margin-left:8px;padding:3px 10px;background:'+_tc.bg+';color:'+_tc.c+';font-weight:700;border:1px solid '+_tc.c+'33;border-radius:99px;font-size:12px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
+    badge.style.cssText='display:inline-block;margin-left:10px;padding:2px 10px;background:'+_tc.bg+';color:'+_tc.c+';font-weight:600;border:1.5px solid '+_tc.c+';border-radius:99px;font-size:12px;letter-spacing:0.06em;vertical-align:middle;font-family:"Space Mono",monospace;';
     dNameEl.appendChild(badge);
   }
   if(item.meal){
@@ -1784,14 +1664,14 @@ function openDetail(item, ctxDate){
   } else if(item.price!=null && item.price!==''){
     totalSpend = Number(item.price);
   }
-  document.getElementById('dPrice').innerHTML=(displayPrice!=null&&displayPrice!=='')?`<span class="price-prefix">NT$</span><span class="price-num">${Number(displayPrice).toLocaleString()}</span>`:'—';
+  document.getElementById('dPrice').innerHTML=(displayPrice!=null&&displayPrice!=='')?`<span class="price-prefix">$</span><span class="price-num">${Number(displayPrice).toLocaleString()}</span>`:'—';
   // 總消費金額
   const dTotalEl=document.getElementById('dTotalSpend');
   if(dTotalEl){
-    dTotalEl.innerHTML = totalSpend>0 ? `<span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6558;">累計消費</span> <span style="font-size:18px;font-weight:900;color:#B8301A;font-family:'Noto Sans TC',sans-serif;">NT$${totalSpend.toLocaleString()}</span>` : '';
+    dTotalEl.innerHTML = totalSpend>0 ? `<span class="modal-price-lbl">累計</span><span class="pen" style="font-size:26px;font-weight:700;">$${totalSpend.toLocaleString()}</span>` : '';
   }
-  document.getElementById('dVisits').textContent=item.visits>1?`🔁 共 ${item.visits} 次`:(item.visits===1?'':item.visits?`🔁 共 ${item.visits} 次`:'');
-  document.getElementById('dGscore').textContent=item.gscore?'Google ⭐'+item.gscore:'';
+  { const _vc=(item.visitLog&&item.visitLog.length)||item.visits||0; document.getElementById('dVisits').innerHTML=_vc?'去過<b>'+_vc+'</b> 次':''; }
+  document.getElementById('dGscore').innerHTML=item.gscore?'Google 評分<b>'+item.gscore+'</b>':'';
   // 備註
   const noteRow=document.getElementById('dNoteRow');
   if(item.note){document.getElementById('dNoteText').textContent=item.note;noteRow.style.display='block';}
@@ -1806,38 +1686,34 @@ function openDetail(item, ctxDate){
   if(selIdx<0) selIdx=0;
   const paintVisits=()=>{
     if(!dVisitLog) return;
-    let html='<div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6558;margin-bottom:6px;">用餐記錄 <span style="text-transform:none;letter-spacing:0;opacity:.8;">· 點一筆看當天照片</span></div>';
-    html+=`<div class="dv-scroll" style="max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(214,58,36,0.5) rgba(120,50,30,0.07);border-radius:6px;">`;
+    const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    let html='<div class="d-lbl">用餐記錄<span>點一筆看那天的照片</span></div>';
+    html+='<div class="dv-table"><div class="dv-head"><span>日期</span><span>時段</span><span>點了什麼</span><span>金額</span><span>評分</span></div>';
     html+=allVisits.map((v,i)=>{
-      const _mc = MEAL_COLOR[v.meal]||FOOD_PAL[1];
-      const mealSpan = v.meal ? '<span style="font-size:11px;font-weight:700;color:'+_mc.c+';background:'+_mc.bg+';padding:1px 7px;border-radius:99px;margin-left:6px;">'+v.meal+'</span>' : '';
-      const camSpan = (v.imgs&&v.imgs.length) ? '<span class="dv-cam">📷'+v.imgs.length+'</span>' : '';
-      const scoreSpan = (v.score!=null && v.score!=='') ? '<span style="font-size:12px;color:#9A5F00;margin-left:8px;font-weight:700;">★'+Number(v.score).toFixed(1)+'</span>' : '';
-      const menuDiv = v.menu ? '<div style="font-size:11px;color:#6B4A3F;margin-top:2px;">🍽 '+v.menu+'</div>' : '';
-      const priceSpan = (v.price!=null && v.price!=='') ? 'NT$'+Number(v.price).toLocaleString() : '—';
-      return '<div class="dv-row'+(i===selIdx?' on':'')+'" data-i="'+i+'">'
-        + '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#2B1A15;">'
-        + '<span>'+(v.date||'—')+mealSpan+camSpan+'</span>'
-        + '<span style="display:flex;align-items:center;gap:2px;"><span style="color:#B8301A;font-weight:700;">'+priceSpan+'</span>'+scoreSpan+'</span>'
-        + '</div>'
-        + menuDiv
-        + '</div>';
+      const mc = MEAL_COLOR[v.meal]||FOOD_PAL[1];
+      const meal = v.meal ? '<span class="dv-meal" style="color:'+mc.c+';background:'+mc.bg+';">'+esc(v.meal.replace('餐',''))+'</span>' : '<span></span>';
+      const cam = (v.imgs&&v.imgs.length) ? '<span class="dv-cam">📷'+v.imgs.length+'</span>' : '';
+      const price = (v.price!=null && v.price!=='') ? '$'+Number(v.price).toLocaleString() : '—';
+      const score = (v.score!=null && v.score!=='') ? Number(v.score).toFixed(1) : '';
+      const d = v.date ? v.date.slice(2).replace(/-/g,'/') : '—';
+      return '<div class="dv-row'+(i===selIdx?' on':'')+'" data-i="'+i+'" role="button" tabindex="0">'
+        + '<span>'+d+cam+'</span>'+meal
+        + '<span class="dv-menu">'+esc(v.menu||'')+'</span>'
+        + '<span>'+price+'</span><span>'+score+'</span></div>';
     }).join('');
     html+='</div>';
-    const sc=dVisitLog.querySelector('.dv-scroll'); const keep=sc?sc.scrollTop:0;
+    const sc=dVisitLog.querySelector('.dv-table'); const keep=sc?sc.scrollTop:0;
     dVisitLog.innerHTML=html;
-    dVisitLog.querySelector('.dv-scroll').scrollTop=keep;
+    const sc2=dVisitLog.querySelector('.dv-table'); if(sc2) sc2.scrollTop=keep;
     dVisitLog.style.display=allVisits.length?'block':'none';
-    dVisitLog.onclick=e=>{
-      const r=e.target.closest('.dv-row'); if(!r) return;
-      const i=+r.dataset.i; if(i===selIdx) return;
-      selIdx=i; slideIdx=0; resolvePhotos(); paint(); paintVisits();
-    };
+    const pick=r=>{ const i=+r.dataset.i; if(i===selIdx) return; selIdx=i; slideIdx=0; resolvePhotos(); paint(); paintVisits(); };
+    dVisitLog.onclick=e=>{ const r=e.target.closest('.dv-row'); if(r) pick(r); };
+    dVisitLog.onkeydown=e=>{ if(e.key!=='Enter'&&e.key!==' ') return; const r=e.target.closest('.dv-row'); if(r){ e.preventDefault(); pick(r); } };
   };
   // Google Maps
   const mapsRow=document.getElementById('dMapsRow'),mapsLink=document.getElementById('dMapsLink');
   if(item.maps){mapsLink.href=item.maps;mapsRow.style.display='flex';}else{mapsRow.style.display='none';}
-  // 星星
+  // 評分
   document.getElementById('dStars').innerHTML=starsHTMLDecimal(item.score||0);
   document.getElementById('dScoreNum').textContent=item.score?(+item.score).toFixed(1):'未評分';
   // 照片（左欄：主圖 + 縮圖列）
@@ -1868,7 +1744,7 @@ function openDetail(item, ctxDate){
     const v=allVisits[selIdx];
     if(v && v.date){
       const cap=document.createElement('div'); cap.className='d-cap';
-      cap.innerHTML='📅 '+v.date+(phInfo.own?'':'<small>'+(phInfo.from==='store'?'店家照片':'沿用 '+phInfo.from)+'</small>');
+      cap.innerHTML=v.date.replace(/-/g,'/')+(phInfo.own?'':'<small>'+(phInfo.from==='store'?'店家照片':'沿用 '+phInfo.from.replace(/-/g,'/')+' 的照片')+'</small>');
       wrap.appendChild(cap);
     }
     if(imgs.length>1){
@@ -2060,7 +1936,9 @@ function buildCard(item, ctxDate){
         strip.style.background=typeColor(item.type).c; strip.title=item.type;
         card.appendChild(strip);
       }
+      card.tabIndex=0; card.setAttribute('role','button'); card.setAttribute('aria-label',(item.name1||item.name||'')+' 詳情');
       card.addEventListener('click',()=>openDetail(item, ctxDate));
+      card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openDetail(item, ctxDate); } });
       return card;
 }
 
@@ -2114,7 +1992,7 @@ function render(){
   if(d.length===0){
     const empty=document.createElement('div');
     empty.className='empty-state';
-    empty.innerHTML=`<div class="empty-icon">🍴</div><div class="empty-text">還沒有食記，點「＋」開始記錄第一家吧！</div>`;
+    empty.innerHTML=`<div class="empty-icon">🧾</div><div class="empty-text">${(q||typeFilterSet.size)?'沒有符合的店，換個關鍵字或類型試試。':'還沒有食記。按「新增食記」記下第一家店。'}</div>`;
     grid.appendChild(empty);
   } else {
     const _frag = document.createDocumentFragment();
@@ -2174,7 +2052,7 @@ function render(){
         if(foodYear!=='nodate' && yearStat[foodYear]){
           const ys=yearStat[foodYear];
           const sum=document.createElement('div'); sum.className='yr-sum';
-          sum.innerHTML='<span class="meta">'+ys.stores.size+' 間 · '+ys.visits+' 次</span><span class="t"><span>NT$</span>'+ys.total.toLocaleString()+'</span>';
+          sum.innerHTML='<span class="meta">'+ys.stores.size+' 間，'+ys.visits+' 次</span><span class="t"><small>年度合計</small>$'+ys.total.toLocaleString()+'</span>';
           bar.appendChild(sum);
         }
         _frag.appendChild(bar);
@@ -2188,8 +2066,8 @@ function render(){
         if(ym){
           sec.style.setProperty('--season', seasonColor(ym.slice(5,7)));
         h.innerHTML='<h2><span class="mn">'+(+ym.slice(5,7))+'</span> 月<small>'+ym.slice(0,4)+'</small></h2>'+
-            '<div class="r"><span class="meta">'+items.length+' 間 · '+g.visits+' 次</span>'+
-            '<span class="t"><span>NT$</span>'+g.total.toLocaleString()+'</span></div>';
+            '<div class="r"><span class="meta">'+items.length+' 間，'+g.visits+' 次</span>'+
+            '<span class="t"><small>小計</small>$'+g.total.toLocaleString()+'</span></div>';
         } else {
           h.innerHTML='<h2>未記日期</h2><div class="r"><span class="meta">'+items.length+' 間</span></div>';
         }
@@ -2228,8 +2106,8 @@ function render(){
         totalSpend+=Number(r.price); totalVisitCount++;
       }
     });
-    document.getElementById('sTotalSpend').textContent=totalSpend?'NT$'+totalSpend.toLocaleString():'—';
-    document.getElementById('sAvgPrice').textContent=totalVisitCount?'NT$'+Math.round(totalSpend/totalVisitCount).toLocaleString():'—';
+    document.getElementById('sTotalSpend').textContent=totalSpend?'$'+totalSpend.toLocaleString():'—';
+    document.getElementById('sAvgPrice').textContent=totalVisitCount?'$'+Math.round(totalSpend/totalVisitCount).toLocaleString():'—';
   } else {
     document.getElementById('sAvg').textContent='—';
     document.getElementById('sGAvg').textContent='—';
@@ -2246,7 +2124,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const btn=document.getElementById('typeFilterBtn');
   const dd=document.getElementById('typeFilterDropdown');
   if(btn&&dd){
-    btn.addEventListener('click',e=>{ e.stopPropagation(); dd.style.display=dd.style.display==='none'?'block':'none'; });
+    btn.addEventListener('click',e=>{ e.stopPropagation(); dd.style.display=dd.style.display==='none'?'block':'none'; btn.setAttribute('aria-expanded', dd.style.display==='block'); });
     document.addEventListener('click',()=>{ dd.style.display='none'; });
     dd.addEventListener('click',e=>e.stopPropagation());
   }
