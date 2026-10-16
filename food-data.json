@@ -321,7 +321,7 @@
     "name": "大賞平價鐵板燒 土城店",
     "name1": "大賞平價鐵板燒",
     "name2": "土城店",
-    "type": "鐵板燒",
+    "type": "平價鐵板燒",
     "meal": "",
     "price": 280,
     "visits": 1,
@@ -344,7 +344,8 @@
       "https://i.ibb.co/WvbYR6td/3d73e015522e.jpg"
     ],
     "img": "https://i.ibb.co/WvbYR6td/3d73e015522e.jpg",
-    "createdAt": 1789385204671
+    "createdAt": 1789385204671,
+    "updatedAt": 1792120923697
   },
   {
     "id": "1789319899430",
