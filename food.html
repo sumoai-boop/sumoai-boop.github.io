@@ -2034,30 +2034,35 @@ function render(){
         ys.visits+=g.visits; ys.total+=g.total; g.stores.forEach((_,it)=>ys.stores.add(it));
       });
       const years=Object.keys(yearStat).sort().reverse();
-      const tabs=years.slice(); if(noDate.length) tabs.push('nodate');
-      if(!tabs.includes(foodYear)) foodYear=tabs[0]||null;
+      const tabs=years.length>1||(years.length&&noDate.length)?['all',...years]:years.slice(); if(noDate.length) tabs.push('nodate');
+      if(!tabs.includes(foodYear)) foodYear=years[0]||tabs[0]||null;
       if(tabs.length){
         const bar=document.createElement('div'); bar.className='yr-bar';
         const pills=document.createElement('div'); pills.className='yr-pills';
         tabs.forEach(y=>{
           const b=document.createElement('button'); b.type='button';
           b.className='yr-pill'+(y===foodYear?' on':'');
-          b.textContent=y==='nodate'?'未記日期':y;
+          b.textContent=y==='nodate'?'未記日期':y==='all'?'全部':y;
           b.onclick=()=>{ if(foodYear===y) return; foodYear=y; render();
             const gb=document.getElementById('photoGrid'); const top=gb.getBoundingClientRect().top+window.scrollY-40;
             if(window.scrollY>top) window.scrollTo({top,behavior:'smooth'}); };
           pills.appendChild(b);
         });
         bar.appendChild(pills);
-        if(foodYear!=='nodate' && yearStat[foodYear]){
-          const ys=yearStat[foodYear];
+        let ys=yearStat[foodYear], sumLbl='年度合計';
+        if(foodYear==='all'){
+          sumLbl='全部合計';
+          ys={stores:new Set(),visits:0,total:0};
+          Object.values(yearStat).forEach(y=>{ ys.visits+=y.visits; ys.total+=y.total; y.stores.forEach(it=>ys.stores.add(it)); });
+        }
+        if(foodYear!=='nodate' && ys){
           const sum=document.createElement('div'); sum.className='yr-sum';
-          sum.innerHTML='<span class="meta">'+ys.stores.size+' 間，'+ys.visits+' 次</span><span class="t"><small>年度合計</small>$'+ys.total.toLocaleString()+'</span>';
+          sum.innerHTML='<span class="meta">'+ys.stores.size+' 間，'+ys.visits+' 次</span><span class="t"><small>'+sumLbl+'</small>$'+ys.total.toLocaleString()+'</span>';
           bar.appendChild(sum);
         }
         _frag.appendChild(bar);
       }
-      const keys=Object.keys(months).filter(ym=>ym.slice(0,4)===foodYear).sort();
+      const keys=Object.keys(months).filter(ym=>foodYear==='all'||ym.slice(0,4)===foodYear).sort();
       if(!asc) keys.reverse();
       const section=(ym,items,g)=>{
         const sec=document.createElement('section');
@@ -2083,7 +2088,7 @@ function render(){
           .map(s=>({item:s.item, date:s.last}));
         _frag.appendChild(section(ym,items,g));
       });
-      if(noDate.length && foodYear==='nodate') _frag.appendChild(section(null,noDate,null));
+      if(noDate.length && (foodYear==='nodate'||foodYear==='all')) _frag.appendChild(section(null,noDate,null));
     }
     grid.appendChild(_frag);
   }
