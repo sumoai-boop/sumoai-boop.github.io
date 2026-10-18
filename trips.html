@@ -208,12 +208,25 @@ h1.th-title{font-size:36px;font-weight:900;line-height:1.1;letter-spacing:.01em;
 .cal-body{position:absolute;left:52px;right:8px;top:0;bottom:0;}
 .cal-now{position:absolute;left:44px;right:0;height:0;border-top:2px solid var(--signal);z-index:6;pointer-events:none;}
 .cal-now::before{content:'';position:absolute;left:0;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--signal);}
-.cal-ev{position:absolute;border-radius:6px;border-left:4px solid;padding:4px 8px 4px 8px;overflow:hidden;cursor:pointer;
-  transition:box-shadow .15s,filter .15s;}
-.cal-ev:hover{box-shadow:0 4px 14px -4px rgba(26,34,56,.28);filter:saturate(1.08);z-index:5;}
-.cal-ev:active{filter:brightness(.97);}
+.cal-ev{position:absolute;border-radius:7px;padding:4px 8px 4px 13px;overflow:hidden;cursor:pointer;color:var(--k);
+  background:color-mix(in oklab,var(--c) 19%,#fff);border:1px solid color-mix(in oklab,var(--c) 32%,#fff);
+  transition:box-shadow .18s,background-color .18s;}
+/* 色條：內縮、圓角，像書籤一樣夾在方塊左側 */
+.cal-ev::before{content:'';position:absolute;left:3px;top:3px;bottom:3px;width:4px;border-radius:2px;background:var(--c);}
+.cal-ev:hover{background:color-mix(in oklab,var(--c) 25%,#fff);box-shadow:0 8px 18px -10px color-mix(in oklab,var(--c) 85%,#000);z-index:5;}
+.cal-ev:active{background:color-mix(in oklab,var(--c) 29%,#fff);}
 .cal-ev.ev-bg{z-index:1;}
-.cal-ev:not(.ev-bg){z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.9);}
+.cal-ev:not(.ev-bg){z-index:2;}
+/* 「地點」底層：淡色細斜紋＋虛線框，看得出是一段區間；疊在上面的行程加白邊與陰影浮起來 */
+.cal-ev.ev-bg{background:repeating-linear-gradient(-45deg,color-mix(in oklab,var(--c) 12%,#fff) 0 7px,color-mix(in oklab,var(--c) 7%,#fff) 7px 14px);
+  border:1px dashed color-mix(in oklab,var(--c) 45%,#fff);}
+.cal-ev.ev-bg:hover{background:repeating-linear-gradient(-45deg,color-mix(in oklab,var(--c) 16%,#fff) 0 7px,color-mix(in oklab,var(--c) 10%,#fff) 7px 14px);}
+.cal-ev.ev-v{padding:0;}
+/* 地點被其他行程蓋住時，名稱直書在左側那條沒被蓋到的位置 */
+.cev-vt{position:absolute;left:12px;top:6px;bottom:6px;width:1.05em;font-size:14px;font-weight:700;line-height:1.2;
+  color:var(--k);word-break:break-all;overflow-wrap:anywhere;white-space:normal;overflow:hidden;text-align:center;}
+.wk-ev .cev-vt{left:8px;font-size:12px;}
+.ev-bg~.cal-ev:not(.ev-bg){box-shadow:0 0 0 2px #fff,0 6px 14px -8px rgba(26,34,56,.4);}
 .cal-ev:not(.ev-bg):hover{z-index:5;}
 .cal-ev.dg{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
 .ev-rs{position:absolute;left:0;right:0;bottom:0;height:8px;cursor:ns-resize;}
@@ -228,10 +241,10 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;}
 body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .cev-row{display:flex;align-items:baseline;gap:8px;}
 .cev-title{flex:1;min-width:0;font-size:14px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.cev-cost{flex-shrink:0;font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--local);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.cev-cost{flex-shrink:0;align-self:flex-start;padding:0 6px;border-radius:5px;background:rgba(255,255,255,.78);font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--local);white-space:nowrap;font-variant-numeric:tabular-nums;}
 .cev-cost.cur-twd{color:var(--twd);}
 .cal-untimed{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.cal-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid;border-radius:8px;
+.cal-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid color-mix(in oklab,var(--c) 30%,#fff);background:color-mix(in oklab,var(--c) 12%,#fff);border-radius:8px;
   font-size:13px;color:var(--ink);cursor:pointer;transition:box-shadow .15s;}
 .cal-chip:hover{box-shadow:0 4px 12px -4px rgba(26,34,56,.25);}
 .cal-chip b{font-family:var(--f-num)!important;font-size:14px;font-weight:600;color:var(--local);}
@@ -257,17 +270,18 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .wk-allday{display:flex;border-top:1px solid var(--rule-soft);}
 .wk-gut-lbl{font-size:12px;color:var(--ink-3);text-align:right;padding:6px 8px 0 0;}
 .wk-adcell{flex:1;min-width:0;padding:4px 3px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--rule-soft);}
-.wk-chip{font-size:12px;font-weight:700;padding:3px 6px;border-radius:5px;border-left:3px solid;
+.wk-chip{font-size:12px;font-weight:700;padding:3px 6px;border-radius:5px;border-left:3px solid var(--c);color:var(--k);background:color-mix(in oklab,var(--c) 19%,#fff);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
 .wk-chip b{font-family:var(--f-num);font-weight:600;}
 .wk-body{position:relative;}
 .wk-col{position:absolute;top:0;bottom:0;border-left:1px solid var(--rule-soft);}
 .wk-col.sel{background:rgba(26,34,56,.022);}
 .wk-col.off{background:repeating-linear-gradient(135deg,rgba(26,34,56,.04) 0 6px,transparent 6px 12px);}
-.wk-ev{padding:3px 5px 3px 6px;border-left-width:3px;}
+.wk-ev{padding:3px 5px 3px 10px;}
+.wk-ev::before{left:2px;width:3px;}
 .wk-ev .cev-title{font-size:12px;white-space:normal;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-.wk-time{font-family:var(--f-num);font-size:12px;font-weight:500;color:var(--ink-2);line-height:1.25;font-variant-numeric:tabular-nums;}
-.wk-ev .cev-cost{font-size:12px;line-height:1.25;}
+.wk-time{font-family:var(--f-num);font-size:12px;font-weight:500;color:color-mix(in oklab,var(--k) 78%,#fff);line-height:1.25;font-variant-numeric:tabular-nums;}
+.wk-ev .cev-cost{display:inline-block;margin-top:2px;padding:0 4px;font-size:12px;line-height:1.35;}
 .wk-now{left:0;right:0;}
 .wk-now::before{left:-5px;}
 
@@ -945,7 +959,7 @@ function minHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m
 function layoutLayers(timed){
   var bgs=timed.filter(function(o){return o.x.type==='地點';}),fgs=timed.filter(function(o){return o.x.type!=='地點';});
   layoutColumns(bgs);layoutColumns(fgs);
-  bgs.forEach(function(o){o.bg=true;});
+  bgs.forEach(function(o){o.bg=true;o.hasFg=fgs.some(function(f){return f.s<o.e&&o.s<f.e;});});
   fgs.forEach(function(o){o.onBg=bgs.some(function(b){return b.s<o.e&&o.s<b.e;});});
   return bgs.concat(fgs);
 }
@@ -974,7 +988,7 @@ function layoutColumns(evs){
 function chipHTML(t,x){
   var ty=TAG[x.type]||TAG['其他'];
   var cost=(+x.amount>0)?' <b class="'+(x.cur==='TWD'?'cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+esc(x.cur||''))+'</b>':'';
-  return '<span class="cal-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="background:'+ty.bg+';border-color:'+ty.pie+';">'
+  return '<span class="cal-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="--c:'+ty.pie+';--k:'+ty.c+';">'
     +'<span style="color:'+ty.c+';font-weight:700;">'+esc(x.type)+'</span> '+esc(x.title)+cost
     +'</span>';
 }
@@ -1017,8 +1031,9 @@ function renderDayCalendar(t,day){
     var title=(o.cont?'↳ ':'')+esc(x.title);
     var _d=Math.min(_i*26,320);
     var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+day+'"';
-    return '<div class="cal-ev'+(o.bg?' ev-bg':'')+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,3,26)+'background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
-      +'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'
+    var vt=(o.bg&&o.hasFg)?' ev-v':'';
+    return '<div class="cal-ev'+(o.bg?' ev-bg':'')+vt+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,3,38)+'--c:'+ty.pie+';--k:'+ty.c+';'+(o.cont?'opacity:0.88;':'')+'">'
+      +(vt?'<div class="cev-vt">'+title+'</div>':'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>')
       +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
   }).join('');
   return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body" onclick="calSlotClick(event)">'+evs+'</div></div></div>';
@@ -1064,7 +1079,7 @@ function renderWeekCalendar(t,days){
     return '<div class="wk-adcell">'+c.untimed.map(function(x){
       var ty=TAG[x.type]||TAG['其他'];
       var cost=(+x.amount>0)?' <b>'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount))+'</b>':'';
-      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="background:'+ty.bg+';border-left-color:'+ty.pie+';color:'+ty.c+';">'+esc(x.title)+cost+'</div>';
+      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="--c:'+ty.pie+';--k:'+ty.c+';">'+esc(x.title)+cost+'</div>';
     }).join('')+'</div>';
   }).join('')+'</div>':'';
   var grid='<div class="cal-night" style="top:0;height:'+(6*HP)+'px;"></div>'
@@ -1083,8 +1098,9 @@ function renderWeekCalendar(t,days){
       var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
       var tm=o.cont?'':'<div class="wk-time">'+minHHMM(o.s)+(o.e-o.s>=45?' – '+minHHMM(o.e%1440):'')+'</div>';
       var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+d+'"';
-      return '<div class="cal-ev wk-ev'+(o.bg?' ev-bg':'')+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,2,12)+'background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
-        +'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost
+      var vt=(o.bg&&o.hasFg)?' ev-v':'';
+      return '<div class="cal-ev wk-ev'+(o.bg?' ev-bg':'')+vt+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,2,24)+'--c:'+ty.pie+';--k:'+ty.c+';'+(o.cont?'opacity:0.88;':'')+'">'
+        +(vt?'<div class="cev-vt">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>':'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost)
         +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
     }).join('');
     var now=(d===today)?'<div class="cal-now wk-now" style="top:'+((new Date().getHours()*60+new Date().getMinutes())*pm).toFixed(1)+'px;"></div>':'';
