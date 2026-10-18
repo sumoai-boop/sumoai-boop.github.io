@@ -1,5 +1,36 @@
 [
   {
+    "id": "1792322664831",
+    "name": "牛小子職人牛排館",
+    "name1": "牛小子職人牛排館",
+    "name2": "",
+    "type": "平價牛排",
+    "meal": "",
+    "price": 430,
+    "visits": 1,
+    "gscore": 4.2,
+    "addr": "236新北市土城區學府里裕民路194號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E7%89%9B%E5%B0%8F%E5%AD%90%E8%81%B7%E4%BA%BA%E7%89%9B%E6%8E%92%E9%A4%A8+%EF%BC%88%E5%9C%9F%E5%9F%8E%E7%B8%BD%E5%BA%97%EF%BC%89/@24.9846985,121.4532142,20z/data=!4m6!3m5!1s0x346802c9159b0f01:0xadfb2e59c96b7590!8m2!3d24.9848465!4d121.4530097!16s%2Fg%2F11c1wwvrht?entry=ttu&g_ep=EgoyMDI2MTAxMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-18",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-10-18",
+        "meal": "晚餐",
+        "price": 430,
+        "menu": "牛雞雙拼",
+        "score": 4,
+        "imgs": [
+          "https://i.ibb.co/Q71kQLgm/6cfe42f0db6b.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1792322664831
+  },
+  {
     "id": "1792255854574",
     "name": "涓豆腐 微風南山店",
     "name1": "涓豆腐",
