@@ -682,7 +682,7 @@
     "name": "牪嗑牛排 中和民德店",
     "name1": "牪嗑牛排",
     "name2": "中和民德店",
-    "type": "牛排",
+    "type": "平價牛排",
     "meal": "",
     "price": 340,
     "visits": 1,
@@ -706,7 +706,7 @@
     ],
     "img": "https://i.ibb.co/sJyZ5Rws/b678a3ecd89d.jpg",
     "createdAt": 1787460743766,
-    "updatedAt": 1787460776043
+    "updatedAt": 1792322706005
   },
   {
     "id": "1787364984817",
