@@ -2967,7 +2967,7 @@
     "name": "1491越南牛排",
     "name1": "1491越南牛排",
     "name2": "",
-    "type": "牛排",
+    "type": "平價牛排",
     "meal": "",
     "price": 400,
     "visits": 1,
@@ -2976,13 +2976,14 @@
     "note": "李孟錦",
     "maps": "https://www.google.com/maps/place/1491%E8%B6%8A%E5%8D%97%E7%89%9B%E6%8E%92/@24.7536852,121.7487239,17z/data=!3m1!4b1!4m6!3m5!1s0x3467e4c39a1aac63:0x7eff0411e402438b!8m2!3d24.7536852!4d121.7487239!16s%2Fg%2F1tk6n1pq?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D",
     "date": "2025-03-01",
-    "score": 2.9,
+    "score": 0,
     "visitLog": [
       {
         "date": "2025-03-01",
         "meal": "晚餐",
         "price": 400,
-        "menu": ""
+        "menu": "",
+        "score": null
       }
     ],
     "imgs": [
@@ -2990,7 +2991,7 @@
     ],
     "img": "https://i.ibb.co/yB7hp7xF/b3441a81e1a0.jpg",
     "createdAt": 1779855784345,
-    "updatedAt": 1779855825440
+    "updatedAt": 1792322758869
   },
   {
     "id": "1779855416651",
