@@ -212,6 +212,20 @@ h1.th-title{font-size:36px;font-weight:900;line-height:1.1;letter-spacing:.01em;
   transition:box-shadow .15s,filter .15s;}
 .cal-ev:hover{box-shadow:0 4px 14px -4px rgba(26,34,56,.28);filter:saturate(1.08);z-index:5;}
 .cal-ev:active{filter:brightness(.97);}
+.cal-ev.ev-bg{z-index:1;}
+.cal-ev:not(.ev-bg){z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.9);}
+.cal-ev:not(.ev-bg):hover{z-index:5;}
+.cal-ev.dg{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
+.ev-rs{position:absolute;left:0;right:0;bottom:0;height:8px;cursor:ns-resize;}
+.ev-rs::after{content:'';position:absolute;left:50%;bottom:2px;width:18px;height:3px;margin-left:-9px;border-radius:2px;background:currentColor;opacity:0;transition:opacity .15s;}
+.cal-ev.dg:hover .ev-rs::after{opacity:.35;}
+.cal-ev.dragging{z-index:20;cursor:grabbing;box-shadow:0 14px 30px -8px rgba(26,34,56,.45);opacity:.94;transition:none;filter:none;}
+.cal-ev.dragging .ev-rs::after{opacity:.35;}
+.drag-tip{position:absolute;left:6px;top:-24px;padding:2px 8px;border-radius:6px;background:var(--ink);color:#fff;
+  font-family:var(--f-num);font-size:13px;font-weight:600;white-space:nowrap;pointer-events:none;z-index:21;font-variant-numeric:tabular-nums;}
+.cal-ev.dragging{overflow:visible;}
+body.is-dragging,body.is-dragging *{cursor:grabbing!important;}
+body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .cev-row{display:flex;align-items:baseline;gap:8px;}
 .cev-title{flex:1;min-width:0;font-size:14px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cev-cost{flex-shrink:0;font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--local);white-space:nowrap;font-variant-numeric:tabular-nums;}
@@ -668,7 +682,7 @@ const TAG={
   '機票':{c:'#3C6E12',bg:'#D3EAB2',pie:'#5CA82E'},
   '購物':{c:'#1F5A8A',bg:'#CBE0F6',pie:'#3B86D6'},
   '住宿':{c:'#324A9A',bg:'#D2D8F4',pie:'#4A5AC8'},
-  '門票':{c:'#6B2E9A',bg:'#E6D2F4',pie:'#9A4AD0'},
+  '地點':{c:'#6B2E9A',bg:'#E6D2F4',pie:'#9A4AD0'},
   '其他':{c:'#4A4A4A',bg:'#DEDEDE',pie:'#8A8A8A'}
 };
 
@@ -718,8 +732,8 @@ function countRecords(db){
 }
 // 舊資料（分開的 itinerary + expenses）遷移成單一 entries[]
 function migrateTrip(t){
-  if(t.entries){t.entries.forEach(e=>{if(e.amount==null)e.amount=0;if(!e.cur)e.cur=t.currency||'TWD';delete e.pay;});return;}
-  var TYPEMAP={'餐廳':'餐飲'},out=[];
+  if(t.entries){t.entries.forEach(e=>{if(e.type==='門票')e.type='地點';if(e.amount==null)e.amount=0;if(!e.cur)e.cur=t.currency||'TWD';delete e.pay;});return;}
+  var TYPEMAP={'餐廳':'餐飲','門票':'地點'},out=[];
   (t.itinerary||[]).forEach(it=>{
     var linked=(t.expenses||[]).filter(e=>e.linkId===it.id);
     out.push({id:it.id||uid(),date:it.date,time:it.time||'',type:TYPEMAP[it.type]||it.type||'其他',
@@ -927,6 +941,18 @@ function renderLog(){
 }
 function toMin(hhmm){var p=(hhmm||'').split(':');return (p.length===2&&p[0]!=='')?(+p[0])*60+(+p[1]):null;}
 function minHHMM(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+/* 「地點」當底：自己一層佔滿寬度，其他行程另外分欄、蓋在上面（往右縮一點讓底下的地點露出來） */
+function layoutLayers(timed){
+  var bgs=timed.filter(function(o){return o.x.type==='地點';}),fgs=timed.filter(function(o){return o.x.type!=='地點';});
+  layoutColumns(bgs);layoutColumns(fgs);
+  bgs.forEach(function(o){o.bg=true;});
+  fgs.forEach(function(o){o.onBg=bgs.some(function(b){return b.s<o.e&&o.s<b.e;});});
+  return bgs.concat(fgs);
+}
+function evPos(o,gap,ind){
+  var w=100/o.cols,left=o.col*w,I=o.onBg?ind:0;
+  return 'left:calc('+I+'px + (100% - '+I+'px) * '+(left/100)+' + 1px);width:calc((100% - '+I+'px) * '+(w/100)+' - '+gap+'px);';
+}
 function layoutColumns(evs){
   // 依開始時間排序，同開始時間則「時段較長」的優先 → 長區塊佔左欄，
   // 其餘較短且互不重疊的行程盡量共用同一欄（上下對齊）
@@ -965,7 +991,7 @@ function renderDayCalendar(t,day){
   var pd=prevDateStr(day);
   (t.entries||[]).filter(function(e){return e.date===pd;}).forEach(function(x){
     var sm=toMin(x.time),em=toMin(x.end);
-    if(sm==null||em==null||em>sm)return; // 未跨夜
+    if(sm==null||em==null||em>sm||em===0)return; // 未跨夜，或剛好 00:00 結束
     timed.push({x:x,s:0,e:em,cont:true});
   });
   var chips=untimed.length?'<div class="cal-untimed">'+untimed.map(function(x){return chipHTML(t,x);}).join('')+'</div>':'';
@@ -982,7 +1008,7 @@ function renderDayCalendar(t,day){
     var _n=new Date(),_nm=_n.getHours()*60+_n.getMinutes();
     grid+='<div class="cal-now" style="top:'+(_nm*pm).toFixed(1)+'px;"></div>';
   }
-  layoutColumns(timed);
+  timed=layoutLayers(timed);
   var evs=timed.map(function(o,_i){
     var x=o.x,ty=TAG[x.type]||TAG['其他'];
     var drawE=Math.min(o.e,endH*60),top=(o.s-top0)*pm,hgt=Math.max((drawE-o.s)*pm,26);
@@ -990,9 +1016,10 @@ function renderDayCalendar(t,day){
     var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
     var title=(o.cont?'↳ ':'')+esc(x.title);
     var _d=Math.min(_i*26,320);
-    return '<div class="cal-ev" onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 3px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
+    var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+day+'"';
+    return '<div class="cal-ev'+(o.bg?' ev-bg':'')+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,3,26)+'background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
       +'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'
-      +'</div>';
+      +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
   }).join('');
   return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body" onclick="calSlotClick(event)">'+evs+'</div></div></div>';
 }
@@ -1014,7 +1041,7 @@ function collectDay(t,day){
   var pd=prevDateStr(day);
   (t.entries||[]).filter(function(e){return e.date===pd;}).forEach(function(x){
     var sm=toMin(x.time),em=toMin(x.end);
-    if(sm==null||em==null||em>sm)return;
+    if(sm==null||em==null||em>sm||em===0)return;
     timed.push({x:x,s:0,e:em,cont:true});
   });
   return {timed:timed,untimed:untimed};
@@ -1048,15 +1075,17 @@ function renderWeekCalendar(t,days){
   }
   var body=days.map(function(d,i){
     var off=!inTrip(d),c=cols[i];
-    layoutColumns(c.timed);
+    c.timed=layoutLayers(c.timed);
     var evs=c.timed.map(function(o,_i){
       var x=o.x,ty=TAG[x.type]||TAG['其他'];
       var drawE=Math.min(o.e,1440),top=o.s*pm,hgt=Math.max((drawE-o.s)*pm,22);
       var w=100/o.cols,left=o.col*w;
       var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
       var tm=o.cont?'':'<div class="wk-time">'+minHHMM(o.s)+(o.e-o.s>=45?' – '+minHHMM(o.e%1440):'')+'</div>';
-      return '<div class="cal-ev wk-ev" onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;left:calc('+left+'% + 1px);width:calc('+w+'% - 2px);background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
-        +'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost+'</div>';
+      var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+d+'"';
+      return '<div class="cal-ev wk-ev'+(o.bg?' ev-bg':'')+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,2,12)+'background:'+ty.bg+';border-left-color:'+ty.pie+';'+(o.cont?'opacity:0.88;':'')+'">'
+        +'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost
+        +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
     }).join('');
     var now=(d===today)?'<div class="cal-now wk-now" style="top:'+((new Date().getHours()*60+new Date().getMinutes())*pm).toFixed(1)+'px;"></div>':'';
     return '<div class="wk-col'+(off?' off':'')+(d===itSelectedDate?' sel':'')+'" style="left:calc(46px + '+i+' * '+W+');width:calc('+W+');"'
@@ -1109,6 +1138,124 @@ function calToday(){
   if(td<t.start||td>t.end){showToast('今天不在這趟旅程期間',false);return;}
   itSelectedDate=td;renderLog();
 }
+/* ══════════ 拖動行程方塊改時間（仿 Google 日曆） ══════════
+   滑鼠：按住移動超過 4px 就開始拖；觸控：長按 0.3 秒後才開始，免得擋到捲動。
+   拖上下＝改時間（15 分鐘一格），週檢視左右拖＝換日期；拖底部邊緣＝改結束時間。 */
+var _drag=null,_suppressClick=false;
+function _dgFind(el){while(el&&el!==document.body){if(el.classList&&el.classList.contains('dg'))return el;el=el.parentNode;}return null;}
+document.addEventListener('pointerdown',function(e){
+  if(e.button!==undefined&&e.button!==0)return;
+  var el=_dgFind(e.target);if(!el)return;
+  var sc=el.closest('.cal-scroll');if(!sc)return;
+  _drag={el:el,id:el.dataset.id,s0:+el.dataset.s,e0:+el.dataset.e,day0:el.dataset.day,
+    x0:e.clientX,y0:e.clientY,st0:sc.scrollTop,sl0:sc.scrollLeft,sc:sc,pid:e.pointerId,
+    resize:!!(e.target.classList&&e.target.classList.contains('ev-rs')),
+    touch:e.pointerType==='touch',active:false,timer:null,lastX:e.clientX,lastY:e.clientY,dm:0,dd:0};
+  if(_drag.touch){
+    var d=_drag;
+    d.timer=setTimeout(function(){if(_drag===d)_dragStart();},300);
+  }
+},true);
+function _dragStart(){
+  var d=_drag;if(!d)return;
+  d.active=true;
+  d.st0=d.sc.scrollTop;d.sl0=d.sc.scrollLeft;d.y0=d.lastY;d.x0=d.lastX;
+  d.top0=parseFloat(d.el.style.top)||0;d.h0=d.el.offsetHeight;
+  d.el.classList.add('dragging');
+  document.body.classList.add(d.resize?'is-resizing':'is-dragging');
+  try{d.el.setPointerCapture(d.pid);}catch(_){}
+  var tip=document.createElement('div');tip.className='drag-tip';d.el.appendChild(tip);d.tip=tip;
+  // 週檢視：可拖到的日期欄
+  var col=d.el.parentNode;
+  if(col&&col.classList.contains('wk-col')){
+    var cols=[].slice.call(col.parentNode.querySelectorAll('.wk-col'));
+    d.colIdx=cols.indexOf(col);d.colW=col.getBoundingClientRect().width;
+    d.cols=cols.map(function(c){return !c.classList.contains('off');});
+    d.days=weekDaysFor(d.day0);
+  }
+  if(navigator.vibrate&&d.touch){try{navigator.vibrate(12);}catch(_){}}
+  d.auto=setInterval(_dragAutoScroll,30);
+  _dragUpdate();
+}
+function _dragAutoScroll(){
+  var d=_drag;if(!d||!d.active)return;
+  var r=d.sc.getBoundingClientRect(),edge=44,v=0;
+  if(d.lastY<r.top+edge+(d.sc.querySelector('.wk-sticky')?d.sc.querySelector('.wk-sticky').offsetHeight:0))v=-10;
+  else if(d.lastY>r.bottom-edge)v=10;
+  if(v){var before=d.sc.scrollTop;d.sc.scrollTop+=v;if(d.sc.scrollTop!==before)_dragUpdate();}
+}
+function _dragUpdate(){
+  var d=_drag;if(!d||!d.active)return;
+  var dy=(d.lastY-d.y0)+(d.sc.scrollTop-d.st0);
+  var dm=Math.round(dy/HPX*60/15)*15;
+  var dur=d.e0-d.s0,txt;
+  if(d.resize){
+    var ne=Math.max(d.s0+15,Math.min(d.s0+1440,d.e0+dm));
+    d.dm=ne-d.e0;
+    d.el.style.height=Math.max((Math.min(ne,1440)-d.s0)*HPX/60,22)+'px';
+    txt=minHHMM(d.s0)+' – '+minHHMM(ne%1440)+(ne>=1440?' 隔天':'');
+  }else{
+    var ns=Math.max(0,Math.min(1425,d.s0+dm));
+    d.dm=ns-d.s0;
+    var dd=0;
+    if(d.cols){
+      var dx=(d.lastX-d.x0)+(d.sc.scrollLeft-d.sl0);
+      var ti=Math.max(0,Math.min(6,d.colIdx+Math.round(dx/d.colW)));
+      // 不能拖到旅程以外的日期：往回找最近可用的那一欄
+      while(ti!==d.colIdx&&!d.cols[ti])ti+=(ti>d.colIdx?-1:1);
+      dd=ti-d.colIdx;
+      d.el.style.transform='translateX('+(dd*d.colW)+'px)';
+    }
+    d.dd=dd;
+    d.el.style.top=(d.top0+d.dm*HPX/60)+'px';
+    var ne2=ns+dur;
+    txt=(dd&&d.days?fmtMD(d.days[d.colIdx+dd])+' ':'')+minHHMM(ns)+' – '+minHHMM(ne2%1440)+(ne2>1440||(ne2===1440)?' 隔天':'');
+  }
+  d.tip.textContent=txt;
+}
+document.addEventListener('pointermove',function(e){
+  var d=_drag;if(!d||e.pointerId!==d.pid)return;
+  d.lastX=e.clientX;d.lastY=e.clientY;
+  if(!d.active){
+    var mv=Math.abs(e.clientX-d.x0)+Math.abs(e.clientY-d.y0);
+    if(d.touch){if(mv>8){clearTimeout(d.timer);_drag=null;}return;} // 手指在捲動，不是要拖
+    if(mv>4)_dragStart();else return;
+  }
+  e.preventDefault();
+  _dragUpdate();
+},{passive:false});
+// iOS：長按啟動拖動後要擋住頁面捲動
+document.addEventListener('touchmove',function(e){if(_drag&&_drag.active)e.preventDefault();},{passive:false});
+function _dragEnd(cancel){
+  var d=_drag;_drag=null;if(!d)return;
+  clearTimeout(d.timer);clearInterval(d.auto);
+  if(!d.active)return;
+  document.body.classList.remove('is-dragging','is-resizing');
+  _suppressClick=true;setTimeout(function(){_suppressClick=false;},60);
+  var t=curTrip(),x=t&&(t.entries||[]).find(function(z){return z.id===d.id;});
+  if(cancel||!x||(!d.dm&&!d.dd)){renderLog();return;}
+  var old={date:x.date,time:x.time,end:x.end};
+  if(d.resize){
+    x.end=minHHMM((d.e0+d.dm)%1440);
+  }else{
+    var ns=d.s0+d.dm;
+    x.time=minHHMM(ns);
+    if(x.end)x.end=minHHMM((ns+(d.e0-d.s0))%1440);
+    if(d.dd&&d.days){x.date=d.days[d.colIdx+d.dd];}
+  }
+  markDirty();renderLog();
+  var msg=d.resize?('結束改為 '+x.end):('已移到 '+(d.dd?fmtMD(x.date)+' ':'')+x.time);
+  showUndo(msg,function(){
+    var t2=curTrip(),y=t2&&(t2.entries||[]).find(function(z){return z.id===d.id;});
+    if(!y)return;y.date=old.date;y.time=old.time;y.end=old.end;markDirty();renderLog();
+  });
+}
+document.addEventListener('pointerup',function(e){if(_drag&&e.pointerId===_drag.pid)_dragEnd(false);},true);
+document.addEventListener('pointercancel',function(e){if(_drag&&e.pointerId===_drag.pid)_dragEnd(!_drag.active?false:true);},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&_drag&&_drag.active)_dragEnd(true);});
+// 拖完放開時瀏覽器還會送一個 click，不要讓它打開詳情或帶入時間
+window.addEventListener('click',function(e){if(_suppressClick){e.stopPropagation();e.preventDefault();_suppressClick=false;}},true);
+document.addEventListener('contextmenu',function(e){if(_drag&&_drag.touch)e.preventDefault();});
 function weekSlotClick(e,day){
   if(!e.target.classList||!e.target.classList.contains('wk-col'))return;
   itSelectedDate=day;
