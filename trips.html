@@ -240,6 +240,8 @@ h1.th-title{font-size:36px;font-weight:900;line-height:1.1;letter-spacing:.01em;
 body.is-dragging,body.is-dragging *{cursor:grabbing!important;}
 body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .cev-row{display:flex;align-items:baseline;gap:8px;}
+.cev-time{font-family:var(--f-num);font-size:13px;font-weight:500;line-height:1.3;color:color-mix(in oklab,var(--k) 78%,#fff);font-variant-numeric:tabular-nums;}
+.cev-time-in{margin-left:8px;font-family:var(--f-num);font-size:13px;font-weight:500;color:color-mix(in oklab,var(--k) 78%,#fff);}
 .cev-title{flex:1;min-width:0;font-size:14px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cev-cost{flex-shrink:0;align-self:flex-start;padding:0 6px;border-radius:5px;background:rgba(255,255,255,.78);font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--local);white-space:nowrap;font-variant-numeric:tabular-nums;}
 .cev-cost.cur-twd{color:var(--twd);}
@@ -279,7 +281,7 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .wk-col.off{background:repeating-linear-gradient(135deg,rgba(26,34,56,.04) 0 6px,transparent 6px 12px);}
 .wk-ev{padding:3px 5px 3px 10px;}
 .wk-ev::before{left:2px;width:3px;}
-.wk-ev .cev-title{font-size:12px;white-space:normal;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.wk-ev .cev-title{font-size:12px;white-space:normal;line-height:1.3;overflow:hidden;word-break:break-word;}
 .wk-time{font-family:var(--f-num);font-size:12px;font-weight:500;color:color-mix(in oklab,var(--k) 78%,#fff);line-height:1.25;font-variant-numeric:tabular-nums;}
 .wk-ev .cev-cost{display:inline-block;margin-top:2px;padding:0 4px;font-size:12px;line-height:1.35;}
 .wk-now{left:0;right:0;}
@@ -1029,11 +1031,14 @@ function renderDayCalendar(t,day){
     var w=100/o.cols,left=o.col*w;
     var cost=(!o.cont&&+x.amount>0)?'<div class="cev-cost'+(x.cur==='TWD'?' cur-twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+' '+esc(x.cur||''))+'</div>':'';
     var title=(o.cont?'↳ ':'')+esc(x.title);
+    var tTxt=o.cont?('～ '+minHHMM(o.e%1440)):(minHHMM(o.s)+' – '+minHHMM(o.e%1440)+(o.e>1440||o.e===1440?' 隔天':''));
+    var tm=(o.e-o.s>=45)?'<div class="cev-time">'+tTxt+'</div>':'';
+    if(!tm)title+='<span class="cev-time-in">'+tTxt+'</span>';
     var _d=Math.min(_i*26,320);
     var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+day+'"';
     var vt=(o.bg&&o.hasFg)?' ev-v':'';
     return '<div class="cal-ev'+(o.bg?' ev-bg':'')+vt+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,3,38)+'--c:'+ty.pie+';--k:'+ty.c+';'+(o.cont?'opacity:0.88;':'')+'">'
-      +(vt?'<div class="cev-vt">'+title+'</div>':'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>')
+      +(vt?'<div class="cev-vt">'+title+'</div>':'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'+tm)
       +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
   }).join('');
   return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body" onclick="calSlotClick(event)">'+evs+'</div></div></div>';
@@ -1100,7 +1105,7 @@ function renderWeekCalendar(t,days){
       var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+d+'"';
       var vt=(o.bg&&o.hasFg)?' ev-v':'';
       return '<div class="cal-ev wk-ev'+(o.bg?' ev-bg':'')+vt+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,2,24)+'--c:'+ty.pie+';--k:'+ty.c+';'+(o.cont?'opacity:0.88;':'')+'">'
-        +(vt?'<div class="cev-vt">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>':'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm)
+        +(vt?'<div class="cev-vt">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>':'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>')
         +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
     }).join('');
     var now=(d===today)?'<div class="cal-now wk-now" style="top:'+((new Date().getHours()*60+new Date().getMinutes())*pm).toFixed(1)+'px;"></div>':'';
