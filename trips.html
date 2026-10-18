@@ -209,18 +209,18 @@ h1.th-title{font-size:36px;font-weight:900;line-height:1.1;letter-spacing:.01em;
 .cal-now{position:absolute;left:44px;right:0;height:0;border-top:2px solid var(--signal);z-index:6;pointer-events:none;}
 .cal-now::before{content:'';position:absolute;left:0;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--signal);}
 .cal-ev{position:absolute;border-radius:7px;padding:4px 8px 4px 13px;overflow:hidden;cursor:pointer;color:var(--k);
-  background:color-mix(in oklab,var(--c) 19%,#fff);border:1px solid color-mix(in oklab,var(--c) 32%,#fff);
+  background:color-mix(in oklab,var(--c) 42%,#fff);border:1px solid color-mix(in oklab,var(--c) 62%,#fff);
   transition:box-shadow .18s,background-color .18s;}
 /* 色條：內縮、圓角，像書籤一樣夾在方塊左側 */
 .cal-ev::before{content:'';position:absolute;left:3px;top:3px;bottom:3px;width:4px;border-radius:2px;background:var(--c);}
-.cal-ev:hover{background:color-mix(in oklab,var(--c) 25%,#fff);box-shadow:0 8px 18px -10px color-mix(in oklab,var(--c) 85%,#000);z-index:5;}
-.cal-ev:active{background:color-mix(in oklab,var(--c) 29%,#fff);}
+.cal-ev:hover{background:color-mix(in oklab,var(--c) 50%,#fff);box-shadow:0 8px 18px -10px color-mix(in oklab,var(--c) 85%,#000);z-index:5;}
+.cal-ev:active{background:color-mix(in oklab,var(--c) 56%,#fff);}
 .cal-ev.ev-bg{z-index:1;}
 .cal-ev:not(.ev-bg){z-index:2;}
 /* 「地點」底層：淡色細斜紋＋虛線框，看得出是一段區間；疊在上面的行程加白邊與陰影浮起來 */
-.cal-ev.ev-bg{background:repeating-linear-gradient(-45deg,color-mix(in oklab,var(--c) 12%,#fff) 0 7px,color-mix(in oklab,var(--c) 7%,#fff) 7px 14px);
-  border:1px dashed color-mix(in oklab,var(--c) 45%,#fff);}
-.cal-ev.ev-bg:hover{background:repeating-linear-gradient(-45deg,color-mix(in oklab,var(--c) 16%,#fff) 0 7px,color-mix(in oklab,var(--c) 10%,#fff) 7px 14px);}
+.cal-ev.ev-bg{background:repeating-linear-gradient(-45deg,color-mix(in oklab,var(--c) 22%,#fff) 0 7px,color-mix(in oklab,var(--c) 12%,#fff) 7px 14px);
+  border:1px dashed color-mix(in oklab,var(--c) 60%,#fff);}
+.cal-ev.ev-bg:hover{background:repeating-linear-gradient(-45deg,color-mix(in oklab,var(--c) 28%,#fff) 0 7px,color-mix(in oklab,var(--c) 17%,#fff) 7px 14px);}
 .cal-ev.ev-v{padding:0;}
 /* 地點被其他行程蓋住時，名稱直書在左側那條沒被蓋到的位置 */
 .cev-vt{position:absolute;left:12px;top:6px;bottom:6px;width:1.05em;font-size:14px;font-weight:700;line-height:1.2;
@@ -246,7 +246,7 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .cev-cost{flex-shrink:0;align-self:flex-start;padding:0 6px;border-radius:5px;background:rgba(255,255,255,.78);font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--local);white-space:nowrap;font-variant-numeric:tabular-nums;}
 .cev-cost.cur-twd{color:var(--twd);}
 .cal-untimed{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.cal-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid color-mix(in oklab,var(--c) 30%,#fff);background:color-mix(in oklab,var(--c) 12%,#fff);border-radius:8px;
+.cal-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid color-mix(in oklab,var(--c) 55%,#fff);background:color-mix(in oklab,var(--c) 30%,#fff);border-radius:8px;
   font-size:13px;color:var(--ink);cursor:pointer;transition:box-shadow .15s;}
 .cal-chip:hover{box-shadow:0 4px 12px -4px rgba(26,34,56,.25);}
 .cal-chip b{font-family:var(--f-num)!important;font-size:14px;font-weight:600;color:var(--local);}
@@ -272,7 +272,7 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .wk-allday{display:flex;border-top:1px solid var(--rule-soft);}
 .wk-gut-lbl{font-size:12px;color:var(--ink-3);text-align:right;padding:6px 8px 0 0;}
 .wk-adcell{flex:1;min-width:0;padding:4px 3px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--rule-soft);}
-.wk-chip{font-size:12px;font-weight:700;padding:3px 6px;border-radius:5px;border-left:3px solid var(--c);color:var(--k);background:color-mix(in oklab,var(--c) 19%,#fff);
+.wk-chip{font-size:12px;font-weight:700;padding:3px 6px;border-radius:5px;border-left:3px solid var(--c);color:var(--k);background:color-mix(in oklab,var(--c) 42%,#fff);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
 .wk-chip b{font-family:var(--f-num);font-weight:600;}
 .wk-body{position:relative;}
@@ -693,13 +693,13 @@ const DIRTY_KEY='trips_dirty_count';
 // ── 統一標籤（行程類型＋支出類別合一，紅橘綠暖色譜） ──
 const TAG={
   /* 每個分類一個有名字的顏色：c＝深色字、bg＝淺底、pie＝主色 */
-  '景點':{c:'#9E3550',bg:'#FBE3E8',pie:'#E9879B'}, /* 櫻花粉 */
-  '餐飲':{c:'#A84612',bg:'#FDE3D2',pie:'#F2782F'}, /* 宇宙橙（iPhone 17 Pro 那種橘） */
-  '交通':{c:'#7E5E08',bg:'#F8EBC6',pie:'#D9A21B'}, /* 芥末黃 */
-  '機票':{c:'#4A6623',bg:'#E5EFD6',pie:'#84A94F'}, /* 抹茶綠 */
-  '購物':{c:'#1C6E69',bg:'#D3F0EE',pie:'#3CB4AC'}, /* 蒂芙尼藍 */
+  '景點':{c:'#A0245A',bg:'#FCDDEA',pie:'#F28DB5'}, /* 櫻花粉 */
+  '餐飲':{c:'#A33A00',bg:'#FFE0CC',pie:'#FF6A1A'}, /* 宇宙橙（iPhone 17 Pro 那種橘） */
+  '交通':{c:'#765500',bg:'#F9EBC2',pie:'#E3A814'}, /* 芥末黃 */
+  '機票':{c:'#41621A',bg:'#E3EFD2',pie:'#86B048'}, /* 抹茶綠 */
+  '購物':{c:'#0F6A64',bg:'#CFF1EE',pie:'#30BDB3'}, /* 蒂芙尼藍 */
   '住宿':{c:'#2B4176',bg:'#D9E0F0',pie:'#3D5A98'}, /* 午夜藍 */
-  '地點':{c:'#5E4691',bg:'#ECE6F7',pie:'#9D86CC'}, /* 薰衣草紫 */
+  '地點':{c:'#5A3E96',bg:'#EAE2F8',pie:'#A288DC'}, /* 薰衣草紫 */
   '其他':{c:'#5E3B2B',bg:'#EBDFD8',pie:'#8A5A44'}  /* 可可棕 */
 };
 
