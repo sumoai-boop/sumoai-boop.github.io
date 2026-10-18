@@ -1079,7 +1079,7 @@ function renderWeekCalendar(t,days){
     return '<div class="wk-adcell">'+c.untimed.map(function(x){
       var ty=TAG[x.type]||TAG['其他'];
       var cost=(+x.amount>0)?' <b>'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount))+'</b>':'';
-      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="--c:'+ty.pie+';--k:'+ty.c+';">'+esc(x.title)+cost+'</div>';
+      return '<div class="wk-chip" onclick="openEntryDetail(\''+x.id+'\',this)" style="--c:'+ty.pie+';--k:'+ty.c+';">'+esc(x.title)+'</div>';
     }).join('')+'</div>';
   }).join('')+'</div>':'';
   var grid='<div class="cal-night" style="top:0;height:'+(6*HP)+'px;"></div>'
@@ -1100,7 +1100,7 @@ function renderWeekCalendar(t,days){
       var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+d+'"';
       var vt=(o.bg&&o.hasFg)?' ev-v':'';
       return '<div class="cal-ev wk-ev'+(o.bg?' ev-bg':'')+vt+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+Math.min(_i*26,320)+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,2,24)+'--c:'+ty.pie+';--k:'+ty.c+';'+(o.cont?'opacity:0.88;':'')+'">'
-        +(vt?'<div class="cev-vt">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>':'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm+cost)
+        +(vt?'<div class="cev-vt">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>':'<div class="cev-title" style="color:'+ty.c+';">'+(o.cont?'↳ ':'')+esc(x.title)+'</div>'+tm)
         +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
     }).join('');
     var now=(d===today)?'<div class="cal-now wk-now" style="top:'+((new Date().getHours()*60+new Date().getMinutes())*pm).toFixed(1)+'px;"></div>':'';
