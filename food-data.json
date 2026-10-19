@@ -10,7 +10,7 @@
     "visits": 1,
     "gscore": 4.1,
     "addr": "100臺北市中正區羅斯福路四段136巷4號10號",
-    "note": "",
+    "note": "沒有蛋扣分，湯頭清淡但沒記憶點\n環境太髒",
     "maps": "https://www.google.com.tw/maps/place/%E5%A2%A8%E6%B4%8B%E6%8B%89%E9%BA%B5/@25.0126444,121.5354345,15z/data=!4m6!3m5!1s0x3442a9ec195b66d7:0xdb52b7a7d5318149!8m2!3d25.0126444!4d121.5354345!16s%2Fg%2F11j2mp5t_c?entry=ttu&g_ep=EgoyMDI2MTAxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-10-19",
     "score": 3.2,
@@ -28,7 +28,8 @@
     ],
     "imgs": [],
     "img": "",
-    "createdAt": 1792412378588
+    "createdAt": 1792412378588,
+    "updatedAt": 1792412417889
   },
   {
     "id": "1792322664831",
