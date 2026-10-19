@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aaron 的寶可夢圖鑑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: a field register — trainer summary strip, then a dense specimen grid; each specimen shows its IV appraisal as three 15-tick bars. */
+:root{
+  --paper:#EDF0EE; --sheet:#FFFFFF; --ink:#1C2638; --ink-2:#56607A; --rule:#CDD3D6;
+  --tick:#DCE1E4; --signal:#C9252C; --signal-soft:#F7DDDE; --gold:#B7861C; --shadow:#6B4FA6; --purified:#2F8FB3;
+  --f-display:"Chakra Petch","Noto Sans TC",ui-monospace,monospace;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121826; --sheet:#1A2233; --ink:#E6EAF2; --ink-2:#97A2B8; --rule:#2C3650;
+  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121826; --sheet:#1A2233; --ink:#E6EAF2; --ink-2:#97A2B8; --rule:#2C3650;
+  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+img{max-width:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+/* header */
+.top{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:18px}
+.brand h1{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(30px,5vw,48px);line-height:1;letter-spacing:-.01em;text-wrap:balance}
+.brand h1 b{color:var(--signal);font-weight:700}
+.brand p{margin:8px 0 0;color:var(--ink-2);font-size:14px}
+.imp{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:1.5px solid var(--ink);background:transparent;padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px;white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:hover{border-color:var(--signal)}
+.btn.primary:hover{background:var(--signal);border-color:var(--signal);color:#fff}
+
+.notice{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--signal-soft);border-left:4px solid var(--signal);padding:10px 14px;font-size:14px}
+.notice b{color:var(--signal)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1.5px solid var(--ink);background:var(--sheet)}
+.stat{padding:14px 16px;border-right:1px solid var(--rule)}
+.stat:last-child{border-right:0}
+.stat .v{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .k{font-size:13px;color:var(--ink-2)}
+.stat.hundo .v{color:var(--signal)}
+
+/* toolbar */
+.bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:7px 14px;cursor:pointer;font-weight:700;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.search{flex:1 1 200px;min-width:0;border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;padding:8px 12px}
+.search:focus{border-color:var(--ink);outline:none}
+select{border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;padding:8px 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;width:100%}
+.chip{border:1px solid var(--rule);background:var(--sheet);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--signal);color:var(--signal);font-weight:700}
+.count{font-size:13px;color:var(--ink-2);margin-left:auto}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+.card{position:relative;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:14px 14px 12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:10px;min-width:0;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--ink);transform:translateY(-2px)}
+.card.is-hundo{border-color:var(--signal);box-shadow:inset 0 0 0 1px var(--signal)}
+.c-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.dex{font-family:var(--f-display);font-weight:600;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.name{font-weight:900;font-size:18px;line-height:1.25;margin-top:2px;overflow-wrap:anywhere}
+.name small{font-weight:500;font-size:12px;color:var(--ink-2);margin-left:4px}
+.pct{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1;font-variant-numeric:tabular-nums;text-align:right}
+.pct small{font-size:13px;margin-left:1px}
+.pct.p100{color:var(--signal)}
+.mult{font-size:12px;color:var(--ink-2);text-align:right;margin-top:3px}
+.c-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
+.cp{font-family:var(--f-display);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:700;padding:1px 7px;border-radius:3px;border:1px solid currentColor;line-height:1.5}
+.tag.lucky{color:var(--gold)} .tag.shadow{color:var(--shadow)} .tag.purified{color:var(--purified)} .tag.fav{color:var(--signal)}
+.seal{position:absolute;top:-9px;right:12px;background:var(--signal);color:#fff;font-family:var(--f-display);font-weight:700;font-size:11px;padding:1px 8px;border-radius:2px;letter-spacing:.06em}
+
+/* IV appraisal bars: 15 ticks each, the game's own scale */
+.iv{display:grid;grid-template-columns:auto 1fr auto;gap:3px 8px;align-items:center;font-size:11px}
+.iv .l{color:var(--ink-2);font-weight:700}
+.iv .n{font-family:var(--f-display);font-weight:600;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right}
+.ticks{display:grid;grid-template-columns:repeat(15,1fr);gap:2px;height:8px}
+.ticks i{background:var(--tick);border-radius:1px}
+.ticks i.on{background:var(--ink)}
+.ticks.max i.on{background:var(--signal)}
+
+.empty{border:1.5px dashed var(--rule);padding:40px 20px;text-align:center;color:var(--ink-2);border-radius:6px}
+
+/* detail sheet */
+.scrim{position:fixed;inset:0;background:rgba(10,14,24,.45);z-index:20;opacity:0;transition:opacity .2s}
+.scrim.show{opacity:1}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--paper);z-index:21;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s ease;border-left:2px solid var(--ink);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.sheet.show{transform:none}
+.s-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 20px 14px;border-bottom:1px solid var(--rule)}
+.s-head h2{margin:2px 0 0;font-size:26px;font-weight:900;line-height:1.2}
+.s-body{overflow-y:auto;padding:16px 20px 28px;display:flex;flex-direction:column;gap:12px}
+.x{border:1.5px solid var(--ink);background:transparent;border-radius:999px;width:36px;height:36px;cursor:pointer;font-size:18px;line-height:1;flex:none}
+.ind{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:14px;display:grid;grid-template-columns:1fr 150px;gap:10px 16px}
+.ind.is-hundo{border-color:var(--signal)}
+.ind .row{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;font-size:13px;color:var(--ink-2)}
+.ind .row b{color:var(--ink);font-family:var(--f-display);font-size:16px;font-variant-numeric:tabular-nums}
+.ind .moves{grid-column:1/-1;font-size:13px;border-top:1px dashed var(--rule);padding-top:8px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.ind .moves span{color:var(--ink-2)}
+.pvp{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pvp div{background:var(--paper);border-radius:4px;padding:6px 8px;font-size:12px;color:var(--ink-2)}
+.pvp b{display:block;font-family:var(--f-display);font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* import dialog */
+.drop{border:2px dashed var(--rule);border-radius:8px;padding:28px 16px;text-align:center;background:var(--sheet)}
+.drop.over{border-color:var(--signal);background:var(--signal-soft)}
+.steps{margin:0;padding-left:20px;color:var(--ink-2);font-size:14px}
+.steps li{margin:2px 0}
+.msg{font-size:14px;padding:10px 12px;border-radius:6px;background:var(--sheet);border:1px solid var(--rule)}
+.msg.err{border-color:var(--signal);color:var(--signal)}
+textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;padding:10px;font:12px/1.4 ui-monospace,monospace;color:var(--ink);resize:vertical}
+
+@media (max-width:860px){.stats{grid-template-columns:repeat(3,1fr)}.stat:nth-child(3){border-right:0}.stat:nth-child(-n+3){border-bottom:1px solid var(--rule)}}
+@media (max-width:560px){
+  .top{grid-template-columns:1fr}.imp{justify-content:flex-start}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  .card{padding:12px 10px 10px}.name{font-size:16px}.pct{font-size:22px}
+  .ind{grid-template-columns:1fr}.count{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>寶可夢圖鑑 <b>·</b> Aaron</h1>
+      <p id="sub">Pokémon GO 收藏，依 Poke Genie 掃描的 IV 整理</p>
+    </div>
+    <div class="imp">
+      <button class="btn primary" id="openImport" type="button">匯入 Poke Genie CSV</button>
+      <button class="btn" id="resetBtn" type="button" hidden>清除資料</button>
+    </div>
+  </header>
+
+  <div class="notice" id="sampleNote">
+    <span><b>目前顯示的是範例資料。</b>匯入你自己的 Poke Genie CSV 後就會換成你的寶可夢。</span>
+  </div>
+
+  <section class="stats" aria-label="收藏統計">
+    <div class="stat"><div class="v" id="sTotal">0</div><div class="k">寶可夢總數</div></div>
+    <div class="stat"><div class="v" id="sSpecies">0</div><div class="k">登錄物種</div></div>
+    <div class="stat hundo"><div class="v" id="sHundo">0</div><div class="k">100% 完美個體</div></div>
+    <div class="stat"><div class="v" id="sHigh">0</div><div class="k">IV ≥ 90%</div></div>
+    <div class="stat"><div class="v" id="sLucky">0</div><div class="k">亮晶晶</div></div>
+    <div class="stat"><div class="v" id="sShadow">0</div><div class="k">暗影 / 淨化</div></div>
+  </section>
+
+  <section class="bar" aria-label="篩選">
+    <div class="seg" role="group" aria-label="檢視方式">
+      <button type="button" id="vDex" aria-pressed="true">圖鑑</button>
+      <button type="button" id="vAll" aria-pressed="false">全部個體</button>
+    </div>
+    <input class="search" id="q" type="search" placeholder="搜尋名稱、編號或招式">
+    <select id="sort" aria-label="排序">
+      <option value="dex">圖鑑編號</option>
+      <option value="iv">IV 由高到低</option>
+      <option value="cp">CP 由高到低</option>
+      <option value="count">持有數量</option>
+      <option value="date">最近捕獲</option>
+    </select>
+    <div class="chips" role="group" aria-label="快速篩選">
+      <button class="chip" type="button" data-f="all" aria-pressed="true">全部</button>
+      <button class="chip" type="button" data-f="hundo" aria-pressed="false">100%</button>
+      <button class="chip" type="button" data-f="high" aria-pressed="false">IV ≥ 90%</button>
+      <button class="chip" type="button" data-f="lucky" aria-pressed="false">亮晶晶</button>
+      <button class="chip" type="button" data-f="shadow" aria-pressed="false">暗影</button>
+      <button class="chip" type="button" data-f="purified" aria-pressed="false">淨化</button>
+      <button class="chip" type="button" data-f="fav" aria-pressed="false">我的最愛</button>
+      <span class="count" id="count"></span>
+    </div>
+  </section>
+
+  <main class="grid" id="grid" aria-live="polite"></main>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="sheet" id="sheet" aria-modal="true" role="dialog" aria-labelledby="sTitle" hidden>
+  <div class="s-head">
+    <div><div class="dex" id="sDex"></div><h2 id="sTitle"></h2><div class="mult" id="sMeta" style="text-align:left"></div></div>
+    <button class="x" id="sClose" type="button" aria-label="關閉">×</button>
+  </div>
+  <div class="s-body" id="sBody"></div>
+</aside>
+
+<input type="file" id="file" accept=".csv,text/csv" hidden>
+
+<script>
+(function(){
+const LS='aaron_pokedex_v1';
+const $=id=>document.getElementById(id);
+
+/* ---------- sample data (clearly marked) ---------- */
+const S=(dex,name,cp,a,d,s,lv,q,c,c2,extra)=>Object.assign({dex,name,form:'',cp,hp:0,atk:a,def:d,sta:s,lv,quick:q,charge:c,charge2:c2||'',catch:'',lucky:false,shadow:false,purified:false,fav:false,gender:'',rankG:null,rankU:null,rankL:null},extra||{});
+const SAMPLE=[
+ S(1,'妙蛙種子',612,10,14,15,22,'藤鞭','污泥炸彈','',{catch:'2026-09-14',rankG:2.1,rankU:5.6}),
+ S(3,'妙蛙花',2620,15,15,15,35,'藤鞭','瘋狂植物','污泥炸彈',{catch:'2026-08-02',fav:true}),
+ S(3,'妙蛙花',2405,13,11,14,33,'飛葉快刀','日光束','',{catch:'2026-05-11',shadow:true}),
+ S(6,'噴火龍',2889,14,13,15,33,'火焰之渦','爆炸烈焰','龍爪',{catch:'2026-07-21',lucky:true}),
+ S(6,'噴火龍',2201,8,11,9,28,'火焰之渦','噴射火焰','',{catch:'2025-12-03'}),
+ S(9,'水箭龜',2312,12,15,13,32,'水槍','水砲','冰凍光束',{catch:'2026-03-08',rankG:8.4,rankU:3.2}),
+ S(25,'皮卡丘',892,15,15,15,30,'電擊','伏特攻擊','',{catch:'2026-10-02',fav:true}),
+ S(94,'耿鬼',2654,15,14,14,32,'鬼爪','暗影球','污泥炸彈',{catch:'2026-06-30'}),
+ S(130,'暴鯉龍',3010,12,12,12,30,'龍息','攀瀑','',{catch:'2026-01-19'}),
+ S(130,'暴鯉龍',3290,15,14,13,33,'龍息','攀瀑','暴風雪',{catch:'2026-08-29',purified:true}),
+ S(131,'拉普拉斯',2410,15,15,14,30,'冰礫','暴風雪','衝浪',{catch:'2026-04-17',lucky:true}),
+ S(143,'卡比獸',3120,14,12,15,33,'舌舔','重磅衝撞','',{catch:'2026-02-11'}),
+ S(149,'快龍',3792,15,15,15,40,'龍尾','暴怒','流星群',{catch:'2025-11-22',lucky:true,fav:true}),
+ S(149,'快龍',3402,13,12,14,36,'龍息','暴怒','',{catch:'2026-09-03',shadow:true}),
+ S(150,'超夢',4178,15,13,15,40,'念力','精神強念','',{catch:'2026-07-05'}),
+ S(197,'月精靈',1588,0,15,14,25,'暗影爪','惡之波動','',{catch:'2026-09-20',rankG:0.4,rankU:1.8}),
+ S(248,'班基拉斯',3622,14,15,13,35,'咬碎','碎石','',{catch:'2026-08-14'}),
+ S(282,'沙奈朵',2981,15,15,15,35,'念力','魔法閃耀','精神強念',{catch:'2026-10-11'}),
+ S(373,'暴飛龍',3480,12,15,12,35,'龍尾','暴怒','',{catch:'2026-05-30'}),
+ S(376,'巨金怪',3577,15,14,15,35,'子彈拳','流星拳','',{catch:'2026-06-08',lucky:true}),
+ S(384,'烈空坐',3814,13,13,13,35,'龍尾','畫龍點睛','流星群',{catch:'2026-04-02'}),
+ S(445,'烈咬陸鯊',3510,15,15,14,35,'龍尾','暴怒','',{catch:'2026-03-21',shadow:true}),
+ S(448,'路卡利歐',2490,12,14,10,32,'鋼爪','波導彈','',{catch:'2026-02-27'}),
+ S(658,'甲賀忍蛙',2244,14,11,12,31,'水手裡劍','冰凍光束','',{catch:'2026-09-28'}),
+ S(700,'仙子伊布',2612,15,14,15,33,'妖精之風','魔法閃耀','',{catch:'2026-07-14',fav:true}),
+ S(133,'伊布',415,4,12,9,15,'撞擊','猛撞','',{catch:'2026-10-15'}),
+];
+SAMPLE.forEach(p=>p.hp=Math.round(p.cp/10+40));
+
+/* ---------- state ---------- */
+let mons=SAMPLE, isSample=true, view='dex', filt='all';
+try{const raw=localStorage.getItem(LS);if(raw){const d=JSON.parse(raw);if(Array.isArray(d)&&d.length){mons=d;isSample=false}}}catch(e){}
+try{const v=localStorage.getItem(LS+'_view');if(v==='all'||v==='dex')view=v}catch(e){}
+
+const ivPct=p=>(p.atk+p.def+p.sta)/45*100;
+const isHundo=p=>p.atk===15&&p.def===15&&p.sta===15;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad=n=>'#'+String(n||0).padStart(4,'0');
+const fmtPct=v=>(Math.round(v*10)/10).toFixed(v>=99.95?0:1).replace(/\.0$/,'');
+const dateVal=s=>{if(!s)return 0;const t=Date.parse(String(s).replace(/\//g,'-'));return isNaN(t)?0:t};
+
+function ticks(n){const max=n===15;let h='<span class="ticks'+(max?' max':'')+'">';for(let i=0;i<15;i++)h+='<i class="'+(i<n?'on':'')+'"></i>';return h+'</span>'}
+function ivBlock(p){return '<div class="iv"><span class="l">攻</span>'+ticks(p.atk)+'<span class="n">'+p.atk+'</span><span class="l">防</span>'+ticks(p.def)+'<span class="n">'+p.def+'</span><span class="l">HP</span>'+ticks(p.sta)+'<span class="n">'+p.sta+'</span></div>'}
+function tags(p){let t='';if(p.lucky)t+='<span class="tag lucky">亮晶晶</span>';if(p.shadow)t+='<span class="tag shadow">暗影</span>';if(p.purified)t+='<span class="tag purified">淨化</span>';if(p.fav)t+='<span class="tag fav">最愛</span>';return t}
+
+function pass(p){
+  switch(filt){
+    case 'hundo':return isHundo(p);case 'high':return ivPct(p)>=90;case 'lucky':return p.lucky;
+    case 'shadow':return p.shadow;case 'purified':return p.purified;case 'fav':return p.fav;default:return true}
+}
+function matchQ(p,q){if(!q)return true;q=q.toLowerCase();
+  return [p.name,p.form,p.quick,p.charge,p.charge2,String(p.dex),pad(p.dex)].some(x=>String(x||'').toLowerCase().includes(q))}
+const key=p=>p.dex+'|'+p.name+'|'+(p.form||'');
+
+function stats(){
+  const sp=new Set(mons.map(p=>p.dex+'|'+p.name));
+  $('sTotal').textContent=mons.length;$('sSpecies').textContent=sp.size;
+  $('sHundo').textContent=mons.filter(isHundo).length;$('sHigh').textContent=mons.filter(p=>ivPct(p)>=90).length;
+  $('sLucky').textContent=mons.filter(p=>p.lucky).length;$('sShadow').textContent=mons.filter(p=>p.shadow||p.purified).length;
+  $('sampleNote').hidden=!isSample;$('resetBtn').hidden=isSample;
+}
+
+function render(){
+  const q=$('q').value.trim(), sort=$('sort').value, list=mons.filter(p=>pass(p)&&matchQ(p,q));
+  const grid=$('grid');
+  if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">沒有符合條件的寶可夢。換個篩選或清除搜尋字試試。</div>';$('count').textContent='';return}
+  let items;
+  if(view==='dex'){
+    const m=new Map();
+    list.forEach(p=>{const k=key(p);if(!m.has(k))m.set(k,[]);m.get(k).push(p)});
+    items=[...m.values()].map(g=>{g.sort((a,b)=>ivPct(b)-ivPct(a)||b.cp-a.cp);return{best:g[0],all:g,cp:Math.max(...g.map(x=>x.cp)),date:Math.max(...g.map(x=>dateVal(x.catch)))}});
+  }else items=list.map(p=>({best:p,all:[p],cp:p.cp,date:dateVal(p.catch)}));
+  const by={dex:(a,b)=>a.best.dex-b.best.dex||ivPct(b.best)-ivPct(a.best),iv:(a,b)=>ivPct(b.best)-ivPct(a.best)||b.cp-a.cp,
+    cp:(a,b)=>b.cp-a.cp,count:(a,b)=>b.all.length-a.all.length||a.best.dex-b.best.dex,date:(a,b)=>b.date-a.date};
+  items.sort(by[sort]||by.dex);
+  grid.innerHTML=items.map((it,i)=>{const p=it.best,h=isHundo(p),pc=ivPct(p);
+    return '<button class="card'+(h?' is-hundo':'')+'" type="button" data-i="'+i+'">'+
+      (h?'<span class="seal">100</span>':'')+
+      '<div class="c-head"><div style="min-width:0"><div class="dex">'+pad(p.dex)+'</div><div class="name">'+esc(p.name)+(p.form?'<small>'+esc(p.form)+'</small>':'')+'</div></div>'+
+      '<div><div class="pct'+(h?' p100':'')+'">'+fmtPct(pc)+'<small>%</small></div>'+(view==='dex'?'<div class="mult">持有 '+it.all.length+'</div>':'')+'</div></div>'+
+      ivBlock(p)+
+      '<div class="c-foot"><span>CP <span class="cp">'+p.cp+'</span>'+(p.lv?' · Lv '+p.lv:'')+'</span><span class="tags">'+tags(p)+'</span></div></button>'}).join('');
+  grid._items=items;
+  $('count').textContent=view==='dex'?items.length+' 種 · '+list.length+' 隻':list.length+' 隻';
+}
+
+/* ---------- detail ---------- */
+let lastFocus=null;
+function openSheet(it){
+  const p=it.best, all=mons.filter(x=>key(x)===key(p)).sort((a,b)=>ivPct(b)-ivPct(a)||b.cp-a.cp);
+  $('sDex').textContent=pad(p.dex);$('sTitle').textContent=p.name+(p.form?'（'+p.form+'）':'');
+  $('sMeta').textContent='持有 '+all.length+' 隻 · 最佳 IV '+fmtPct(ivPct(all[0]))+'%';
+  $('sBody').innerHTML=all.map(x=>{const h=isHundo(x);
+    const pv=(x.rankG!=null||x.rankU!=null||x.rankL!=null)?'<div class="pvp"><div>超級聯盟<b>'+(x.rankG!=null?x.rankG+'%':'—')+'</b></div><div>高級聯盟<b>'+(x.rankU!=null?x.rankU+'%':'—')+'</b></div><div>大師聯盟<b>'+(x.rankL!=null?x.rankL+'%':'—')+'</b></div></div>':'';
+    return '<div class="ind'+(h?' is-hundo':'')+'"><div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+
+      '<div class="row"><span>CP <b>'+x.cp+'</b></span>'+(x.hp?'<span>HP <b>'+x.hp+'</b></span>':'')+(x.lv?'<span>Lv <b>'+x.lv+'</b></span>':'')+'<span class="tags">'+tags(x)+'</span></div>'+
+      '<div class="row">'+(x.catch?'<span>捕獲 '+esc(x.catch)+'</span>':'')+(x.gender?'<span>'+esc(x.gender)+'</span>':'')+'</div></div>'+
+      '<div><div class="pct'+(h?' p100':'')+'" style="text-align:left;margin-bottom:6px">'+fmtPct(ivPct(x))+'<small>%</small></div>'+ivBlock(x)+'</div>'+
+      '<div class="moves"><span>招式</span>'+esc(x.quick||'—')+' / '+esc(x.charge||'—')+(x.charge2?' / '+esc(x.charge2):'')+'</div>'+pv+'</div>'}).join('');
+  show();
+}
+function show(){lastFocus=document.activeElement;$('scrim').hidden=false;$('sheet').hidden=false;
+  requestAnimationFrame(()=>{$('scrim').classList.add('show');$('sheet').classList.add('show');$('sClose').focus()})}
+function hide(){$('scrim').classList.remove('show');$('sheet').classList.remove('show');
+  setTimeout(()=>{$('scrim').hidden=true;$('sheet').hidden=true},250);if(lastFocus)lastFocus.focus()}
+$('sClose').onclick=hide;$('scrim').onclick=hide;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheet').hidden)hide()});
+$('grid').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;openSheet($('grid')._items[+c.dataset.i])});
+
+/* ---------- controls ---------- */
+function setView(v){view=v;$('vDex').setAttribute('aria-pressed',v==='dex');$('vAll').setAttribute('aria-pressed',v==='all');
+  try{localStorage.setItem(LS+'_view',v)}catch(e){}render()}
+$('vDex').onclick=()=>setView('dex');$('vAll').onclick=()=>setView('all');
+$('q').oninput=render;$('sort').onchange=render;
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filt=b.dataset.f;
+  document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+
+/* ---------- CSV import ---------- */
+function parseCSV(t){
+  t=t.replace(/^﻿/,'');const rows=[];let row=[],f='',q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;else if(c===','){row.push(f);f=''}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f=''}
+    else f+=c}
+  if(f!==''||row.length){row.push(f);rows.push(row)}
+  return rows.filter(r=>r.some(x=>x.trim()!==''));
+}
+const norm=s=>String(s).toLowerCase().replace(/[\s_\-\.]/g,'').replace('é','e');
+const ALIAS={
+  name:['name','名稱','名字','寶可夢'],form:['form','型態','形態'],dex:['pokemonnumber','pokedexnumber','number','no','編號','圖鑑編號'],
+  gender:['gender','性別'],cp:['cp'],hp:['hp'],atk:['ativ','atkiv','attackiv','攻擊'],def:['defiv','defenseiv','防禦'],sta:['staiv','staminaiv','hpiv','耐力'],
+  lv:['levelmin','level','等級'],quick:['quickmove','fastmove','一般招式','快速招式'],charge:['chargemove','chargemove1','特殊招式'],charge2:['chargemove2','特殊招式2'],
+  catch:['catchdate','捕獲日期','originalscandate','scandate'],lucky:['lucky','亮晶晶'],sp:['shadow/purified','shadowpurified','暗影/淨化'],fav:['favorite','我的最愛'],
+  rankG:['rank%(g)','rank%g'],rankU:['rank%(u)','rank%u'],rankL:['rank%(l)','rank%l']
+};
+function importText(text){
+  const rows=parseCSV(text);if(rows.length<2)throw new Error('檔案裡沒有資料列。請確認是從 Poke Genie 匯出的 CSV。');
+  const head=rows[0].map(norm),col={};
+  for(const k in ALIAS){for(const a of ALIAS[k]){const i=head.indexOf(norm(a));if(i>=0){col[k]=i;break}}}
+  const miss=['name','atk','def','sta'].filter(k=>col[k]==null);
+  if(miss.length)throw new Error('找不到必要欄位：'+miss.join('、')+'。第一列欄位是：'+rows[0].slice(0,8).join(', ')+'…');
+  const g=(r,k)=>col[k]==null?'':String(r[col[k]]||'').trim();
+  const num=(r,k)=>{const v=parseFloat(g(r,k));return isNaN(v)?0:v};
+  const pnum=(r,k)=>{const v=parseFloat(g(r,k).replace('%',''));return isNaN(v)?null:v};
+  const yes=v=>/^(1|true|yes|y|是)$/i.test(v);
+  const out=rows.slice(1).map(r=>{const sp=g(r,'sp');
+    return{dex:Math.round(num(r,'dex')),name:g(r,'name'),form:g(r,'form'),gender:g(r,'gender'),cp:Math.round(num(r,'cp')),hp:Math.round(num(r,'hp')),
+      atk:Math.round(num(r,'atk')),def:Math.round(num(r,'def')),sta:Math.round(num(r,'sta')),lv:num(r,'lv')||'',
+      quick:g(r,'quick'),charge:g(r,'charge'),charge2:g(r,'charge2'),catch:g(r,'catch'),
+      lucky:yes(g(r,'lucky')),shadow:sp==='1'||/shadow|暗影/i.test(sp),purified:sp==='2'||/purif|淨化/i.test(sp),fav:yes(g(r,'fav'))||(+g(r,'fav')>0),
+      rankG:pnum(r,'rankG'),rankU:pnum(r,'rankU'),rankL:pnum(r,'rankL')}}).filter(p=>p.name);
+  if(!out.length)throw new Error('沒有讀到任何寶可夢。');
+  return out;
+}
+function load(list){mons=list;isSample=false;try{localStorage.setItem(LS,JSON.stringify(list))}catch(e){}stats();render()}
+
+function importDialog(){
+  $('sDex').textContent='匯入';$('sTitle').textContent='從 Poke Genie 匯入';$('sMeta').textContent='資料只存在這個瀏覽器裡';
+  $('sBody').innerHTML='<ol class="steps"><li>打開 Poke Genie，進到「寶可夢」列表</li><li>右上角選單 → 匯出 → 選 CSV</li><li>把檔案拖到下面，或點按鈕選檔</li></ol>'+
+    '<div class="drop" id="drop"><p style="margin:0 0 10px">把 CSV 檔拖到這裡</p><button class="btn primary" type="button" id="pick">選擇 CSV 檔</button></div>'+
+    '<label for="paste" style="font-size:13px;color:var(--ink-2)">或直接貼上 CSV 內容</label><textarea id="paste" placeholder="Index,Name,Form,Pokemon Number,…"></textarea>'+
+    '<button class="btn" type="button" id="usePaste">匯入貼上的內容</button><div id="imsg"></div>';
+  const msg=(t,err)=>{$('imsg').innerHTML='<div class="msg'+(err?' err':'')+'">'+esc(t)+'</div>'};
+  const run=text=>{try{const l=importText(text);load(l);msg('已匯入 '+l.length+' 隻寶可夢。');setTimeout(hide,900)}catch(e){msg(e.message,true)}};
+  const readFile=f=>{if(!f)return;const r=new FileReader();r.onload=()=>run(r.result);r.onerror=()=>msg('檔案讀取失敗，請再選一次。',true);r.readAsText(f,'utf-8')};
+  $('pick').onclick=()=>$('file').click();$('file').onchange=e=>{readFile(e.target.files[0]);e.target.value=''};
+  $('usePaste').onclick=()=>run($('paste').value);
+  const d=$('drop');
+  d.ondragover=e=>{e.preventDefault();d.classList.add('over')};d.ondragleave=()=>d.classList.remove('over');
+  d.ondrop=e=>{e.preventDefault();d.classList.remove('over');readFile(e.dataTransfer.files[0])};
+  show();
+}
+$('openImport').onclick=importDialog;
+
+let armed=false;
+$('resetBtn').onclick=()=>{const b=$('resetBtn');
+  if(!armed){armed=true;b.textContent='再按一次確認清除';setTimeout(()=>{armed=false;b.textContent='清除資料'},3000);return}
+  try{localStorage.removeItem(LS)}catch(e){}mons=SAMPLE;isSample=true;armed=false;b.textContent='清除資料';stats();render()};
+
+/* whole-page drop */
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{if(e.target.closest&&e.target.closest('#drop'))return;e.preventDefault();
+  const f=e.dataTransfer.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{load(importText(r.result))}catch(err){importDialog();$('imsg').innerHTML='<div class="msg err">'+esc(err.message)+'</div>'}};r.readAsText(f,'utf-8')});
+
+setView(view);stats();
+})();
+</script>
+
+</body>
+</html>
