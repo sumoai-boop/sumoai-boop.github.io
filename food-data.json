@@ -6867,16 +6867,17 @@
     "visits": 1,
     "gscore": 4.5,
     "addr": "105臺北市松山區中正里慶城街18之1號2樓",
-    "note": "公主",
+    "note": "公主進膳",
     "maps": "https://www.google.com/maps/place/%E6%98%8E%E6%B0%B4%E7%84%B6%E7%84%A1%E8%8F%9C%E5%96%AE%E9%90%B5%E6%9D%BF%E7%87%92+%E6%85%B6%E5%9F%8E%E5%BA%97/@25.053294,121.545481,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abe7756adb1f:0xa7c55981179c6aeb!8m2!3d25.053294!4d121.545481!16s%2Fg%2F11dxddl73g?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2025-11-04",
-    "score": 3.4,
+    "score": 0,
     "visitLog": [
       {
         "date": "2025-11-04",
         "meal": "晚餐",
         "price": 3751,
-        "menu": ""
+        "menu": "",
+        "score": null
       }
     ],
     "imgs": [
@@ -6887,7 +6888,7 @@
     ],
     "img": "https://i.ibb.co/LdVZTkCR/499c69aaa457.jpg",
     "createdAt": 1779281849102,
-    "updatedAt": 1779463859005,
+    "updatedAt": 1792500825809,
     "meal": ""
   },
   {
