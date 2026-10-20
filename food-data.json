@@ -775,8 +775,8 @@
   },
   {
     "id": "1787236821144",
-    "name": "隱覓鉄板燒 台北南京東店",
-    "name1": "隱覓鉄板燒",
+    "name": "隱覓鐵板燒 台北南京東店",
+    "name1": "隱覓鐵板燒",
     "name2": "台北南京東店",
     "type": "鐵板燒",
     "meal": "",
@@ -784,7 +784,7 @@
     "visits": 1,
     "gscore": 4.6,
     "addr": "105臺北市松山區東勢里南京東路四段133巷4弄18號1樓",
-    "note": "公主",
+    "note": "公主進膳",
     "maps": "https://www.google.com.tw/maps/place/%E9%9A%B1%E8%A6%93%E9%89%84%E6%9D%BF%E7%87%92+%E5%8F%B0%E5%8C%97%E5%8D%97%E4%BA%AC%E6%9D%B1/@25.0523684,121.5533152,19z/data=!4m6!3m5!1s0x3442abee3e9dfca5:0x1ed29e7ed6f70163!8m2!3d25.0523684!4d121.5544417!16s%2Fg%2F11z269clv6?entry=ttu&g_ep=EgoyMDI2MDgxNy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-08-20",
     "score": 4.8,
@@ -802,7 +802,7 @@
     ],
     "img": "https://i.ibb.co/KpdLKV6R/21dd140d3ac1.jpg",
     "createdAt": 1787236821144,
-    "updatedAt": 1787277338090
+    "updatedAt": 1792500699128
   },
   {
     "id": "1787149781695",
