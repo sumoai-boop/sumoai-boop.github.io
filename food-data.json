@@ -6792,14 +6792,17 @@
     "visits": 1,
     "gscore": 4.6,
     "addr": "11072臺北市信義區新仁里忠孝東路四段553巷22弄2號",
-    "note": "公主",
+    "note": "公主進膳",
     "maps": "https://www.google.com/maps/place/BURGER+OUT/@25.0431633,121.563065,17z/data=!3m1!4b1!4m6!3m5!1s0x3442ab3840592b03:0xc668a05950184f80!8m2!3d25.0431633!4d121.563065!16s%2Fg%2F11fhv3pgdx?entry=ttu&g_ep=EgoyMDI2MDUxMy4wIKXMDSoASAFQAw%3D%3D",
     "date": "2025-12-07",
-    "score": 4,
+    "score": 0,
     "visitLog": [
       {
         "date": "2025-12-07",
-        "price": 950
+        "meal": "",
+        "price": 950,
+        "menu": "",
+        "score": null
       }
     ],
     "imgs": [
@@ -6807,8 +6810,8 @@
     ],
     "img": "https://i.ibb.co/39GhgC5X/2b404b0823b1.jpg",
     "createdAt": 1779332947008,
-    "meal": "晚餐",
-    "updatedAt": 1779341667426
+    "meal": "",
+    "updatedAt": 1792500650143
   },
   {
     "id": "1779282062114",
