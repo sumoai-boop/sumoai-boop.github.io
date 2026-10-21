@@ -869,7 +869,7 @@ function scoreWeekFor(w,lg){
   const cats=(lg.cats||[]).map(catOf).filter(Boolean);
   let W=0,L=0,T=0,n=0;const per={};
   cats.forEach(c=>{const r=judge(c,(w.me||{})[c.k],(w.op||{})[c.k]);per[c.k]=r;if(r){n++;if(r==='W')W++;else if(r==='L')L++;else T++}});
-  const done=n===cats.length;
+  const done=n===cats.length&&(!w.end||w.end<todayStr());   // 週還沒打完 → 進行中
   const res=n===0?null:(W>L?'W':W<L?'L':'T');
   return {W,L,T,n,per,res,done};
 }
@@ -1068,9 +1068,9 @@ function sortedWeeks(){return Wk().slice().sort((a,b)=>a.week-b.week||(a.playoff
 function season(){
   const o={mW:0,mL:0,mT:0,cW:0,cL:0,cT:0,played:0};
   o.pf=0;o.pa=0;o.pn=0;
-  Wk().forEach(w=>{const s=scoreWeek(w);if(!s.n)return;o.cW+=s.W;o.cL+=s.L;o.cT+=s.T;
+  Wk().forEach(w=>{const s=scoreWeek(w);if(!s.n||!s.done)return;o.cW+=s.W;o.cL+=s.L;o.cT+=s.T;
     if(s.a!=null){o.pf+=s.a;o.pa+=s.b;o.pn++}
-    if(!s.done)return;o.played++;if(s.res==='W')o.mW++;else if(s.res==='L')o.mL++;else o.mT++});
+    o.played++;if(s.res==='W')o.mW++;else if(s.res==='L')o.mL++;else o.mT++});
   return o;
 }
 function catStats(){
