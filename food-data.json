@@ -3496,7 +3496,10 @@
         "meal": "午餐",
         "price": 140,
         "menu": "雞腿飯",
-        "score": 3
+        "score": 3,
+        "imgs": [
+          "https://i.ibb.co/9k6KM0Z8/878225087e4d.jpg"
+        ]
       }
     ],
     "imgs": [
@@ -3504,7 +3507,7 @@
     ],
     "img": "https://i.ibb.co/5XtFRsv3/262044fb415a.jpg",
     "createdAt": 1779804418646,
-    "updatedAt": 1792590003181
+    "updatedAt": 1792590030843
   },
   {
     "id": "1779804307222",
