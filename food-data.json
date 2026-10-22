@@ -10,7 +10,7 @@
     "visits": 1,
     "gscore": 4.9,
     "addr": "110臺北市信義區松壽路22號2 樓",
-    "note": "",
+    "note": "公主進膳",
     "maps": "https://www.google.com.tw/maps/place/%E7%84%A1%E8%80%81%E9%8D%8B(%E5%8F%B0%E5%8C%97%E4%BF%A1%E7%BE%A9%E5%BA%97)/@25.035365,121.5679137,17z/data=!4m15!1m8!3m7!1s0x3442ab8ab0d6a0a9:0xe036e71d260ec3d3!2z54Sh6ICB6Y2LKOWPsOWMl-S_oee-qeW6lyk!8m2!3d25.035365!4d121.5679137!10e9!16s%2Fg%2F11l72td740!3m5!1s0x3442ab8ab0d6a0a9:0xe036e71d260ec3d3!8m2!3d25.035365!4d121.5679137!16s%2Fg%2F11l72td740?entry=ttu&g_ep=EgoyMDI2MTAxOS4wIKXMDSoASAFQAw%3D%3D",
     "date": "2026-10-22",
     "score": 4.5,
@@ -28,7 +28,8 @@
     ],
     "imgs": [],
     "img": "",
-    "createdAt": 1792691532102
+    "createdAt": 1792691532102,
+    "updatedAt": 1792691542027
   },
   {
     "id": "1792412378588",
