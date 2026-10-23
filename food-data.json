@@ -1,5 +1,36 @@
 [
   {
+    "id": "1792780386245",
+    "name": "摩斯漢堡 東湖店",
+    "name1": "摩斯漢堡",
+    "name2": "東湖店",
+    "type": "快餐",
+    "meal": "",
+    "price": 505,
+    "visits": 1,
+    "gscore": 3.3,
+    "addr": "114臺北市內湖區五分里東湖路110號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%91%A9%E6%96%AF%E6%BC%A2%E5%A0%A1+%E6%9D%B1%E6%B9%96%E5%BA%97%EF%BC%88%E8%BA%AB%E5%BF%83%E9%9A%9C%E7%A4%99%E5%A4%A5%E4%BC%B4%EF%BC%89/@25.0682384,121.6157045,17z/data=!4m15!1m8!3m7!1s0x3442ac7becf5a725:0xed067812d8434acf!2z5pGp5pav5ryi5aChIOadsea5luW6l--8iOi6q-W_g-manOekmeWkpeS8tO-8iQ!8m2!3d25.0682384!4d121.6157045!10e5!16s%2Fg%2F1hhx08q9r!3m5!1s0x3442ac7becf5a725:0xed067812d8434acf!8m2!3d25.0682384!4d121.6157045!16s%2Fg%2F1hhx08q9r?entry=ttu&g_ep=EgoyMDI2MTAxOS4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-23",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-10-23",
+        "meal": "晚餐",
+        "price": 505,
+        "menu": "和風炸雞",
+        "score": 4,
+        "imgs": [
+          "https://i.ibb.co/B5Wm34Rd/ce6bec2594d4.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1792780386245
+  },
+  {
     "id": "1792691532102",
     "name": "無老鍋 台北信義店",
     "name1": "無老鍋",
