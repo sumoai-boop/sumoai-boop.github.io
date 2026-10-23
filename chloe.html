@@ -205,6 +205,29 @@ button,a,select,.cal-cell,.cal-up-item{-webkit-tap-highlight-color:transparent;t
 .exp-page-btn:disabled{opacity:.35;cursor:default;}
 .exp-page-dots{padding:0 4px;color:var(--ink-2);line-height:36px;}
 
+
+/* ---------- 各月份支出 ---------- */
+.exm{margin-top:20px;padding-top:18px;border-top:2px dashed var(--line);}
+.exm-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.exm-head .exp-chart-title{margin-bottom:0;}
+.exm-year{display:flex;align-items:center;gap:6px;}
+.exm-year .exp-nav-btn{width:32px;height:32px;font-size:10px;}
+.exm-year-label{font-family:var(--f-round);font-size:18px;min-width:3.4em;text-align:center;font-variant-numeric:tabular-nums;}
+.exm-list{list-style:none;}
+.exm-row{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:7px 8px;margin:0 -8px;width:calc(100% + 16px);border:0;border-radius:10px;background:transparent;text-align:left;font-size:14px;color:var(--ink);transition:background-color .15s;}
+.exm-row:hover{background:#FBE9EF;}
+.exm-row.active{background:var(--ink);color:var(--paper);}
+.exm-row.active .exm-bar{background:rgba(255,248,250,.2);}
+.exm-row.active .exm-bar i{background:var(--paper);}
+.exm-row.empty{cursor:default;color:var(--ink-3);}
+.exm-row.empty:hover{background:transparent;}
+.exm-m{font-weight:500;}
+.exm-bar{height:8px;background:var(--track);border-radius:99px;overflow:hidden;}
+.exm-bar i{display:block;height:100%;background:var(--cherry);border-radius:99px;}
+.exm-row.future .exm-bar i{background:var(--mint);}
+.exm-v{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;}
+.exm-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2);}
+.exm-total b{font-family:var(--f-round);font-weight:400;font-size:24px;color:var(--ink);font-variant-numeric:tabular-nums;}
 /* ---------- calendar ---------- */
 .cal-upcoming{margin-bottom:24px;}
 .cal-upcoming:empty{display:none;}
@@ -511,6 +534,18 @@ button,a,select,.cal-cell,.cal-up-item{-webkit-tap-highlight-color:transparent;t
         <div class="exp-chart">
           <div class="exp-chart-title">各分類花費</div>
           <div id="cat-chart"></div>
+        </div>
+        <div class="exm">
+          <div class="exm-head">
+            <span class="exp-chart-title">各月份支出</span>
+            <div class="exm-year">
+              <button class="exp-nav-btn" id="expYearPrev" onclick="stepExpYear(-1)" aria-label="上一年">&#9664;</button>
+              <span class="exm-year-label" id="expYearLabel"></span>
+              <button class="exp-nav-btn" id="expYearNext" onclick="stepExpYear(1)" aria-label="下一年">&#9654;</button>
+            </div>
+          </div>
+          <ol class="exm-list" id="expMonthsList"></ol>
+          <div class="exm-total" id="expYearTotal"></div>
         </div>
       </div>
     </aside>
@@ -1372,6 +1407,7 @@ function setExpFilter(f,btn){
 
 function renderExpenses(){
   if(typeof renderHero==='function')renderHero();
+  if(typeof renderMonthly==='function')renderMonthly();
   // 日期新到舊排序
   expenses.sort(function(a,b){
     if(a.date===b.date)return (b.id||0)-(a.id||0);
@@ -1882,6 +1918,60 @@ function renderHero(){
     '<p class="hn-count">'+(n===1?'明天':n+' 天後')+'</p>'+
     '<p class="hn-name">'+calIcon(next).i+' '+calEsc(next.desc)+'</p>'+
     '<p class="hn-meta">'+(+p[1])+'/'+(+p[2])+(next.note?'・'+calEsc(next.note):'')+'</p>';
+}
+
+// ---------- 各月份支出（依年份） ----------
+var expYear=null;
+var EXM_NAMES=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+function expYears(){
+  var ys={};(expenses||[]).forEach(function(e){if(e.date)ys[e.date.slice(0,4)]=1;});
+  return Object.keys(ys).sort();
+}
+function stepExpYear(d){
+  var ys=expYears();if(!ys.length)return;
+  var i=ys.indexOf(String(expYear));
+  i=Math.max(0,Math.min(ys.length-1,(i<0?ys.length-1:i)+d));
+  expYear=+ys[i];renderMonthly();
+}
+function pickExpMonth(ym){
+  setExpMonth(expMonth===ym?'全部':ym);
+  if(window.innerWidth<980){var el=document.getElementById('expMonth');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function renderMonthly(){
+  var list=document.getElementById('expMonthsList');if(!list)return;
+  var ys=expYears(), today=calLocalToday(), curY=+today.slice(0,4), curM=+today.slice(5,7);
+  if(!ys.length){list.innerHTML='';setText('expYearLabel','');setHTML('expYearTotal','');return;}
+  if(expYear===null||ys.indexOf(String(expYear))<0){
+    var past=ys.filter(function(y){return +y<=curY;});
+    expYear=+(past.length?past[past.length-1]:ys[0]);
+  }
+  setText('expYearLabel',expYear+' 年');
+  var yi=ys.indexOf(String(expYear));
+  var pb=document.getElementById('expYearPrev'),nb=document.getElementById('expYearNext');
+  if(pb)pb.disabled=yi<=0; if(nb)nb.disabled=yi>=ys.length-1;
+  var sums={},yTotal=0,maxM=0;
+  (expenses||[]).forEach(function(e){
+    if(!e.date||+e.date.slice(0,4)!==expYear)return;
+    var m=+e.date.slice(5,7),a=parseFloat(e.amount)||0;
+    sums[m]=(sums[m]||0)+a;yTotal+=a;if(m>maxM)maxM=m;
+  });
+  var top=maxM; if(expYear===curY&&curM>top)top=curM; if(expYear<curY&&!top)top=12;
+  var maxV=0;for(var k in sums)if(sums[k]>maxV)maxV=sums[k];
+  var h='';
+  for(var m=top;m>=1;m--){
+    var ym=expYear+'-'+calPad(m), v=sums[m];
+    var fut=(expYear>curY)||(expYear===curY&&m>curM);
+    if(v===undefined){
+      h+='<li><div class="exm-row empty"><span class="exm-m">'+EXM_NAMES[m-1]+'</span><span></span><span class="exm-v">—</span></div></li>';
+    }else{
+      h+='<li><button class="exm-row'+(expMonth===ym?' active':'')+(fut?' future':'')+'" onclick="pickExpMonth(\''+ym+'\')" aria-label="'+EXM_NAMES[m-1]+' '+fmtMoney(Math.round(v))+'，點一下只看這個月">'+
+        '<span class="exm-m">'+EXM_NAMES[m-1]+'</span>'+
+        '<span class="exm-bar"><i style="width:'+(maxV?Math.max(2,Math.round(v/maxV*100)):0)+'%"></i></span>'+
+        '<span class="exm-v">'+fmtMoney(Math.round(v))+'</span></button></li>';
+    }
+  }
+  list.innerHTML=h;
+  setHTML('expYearTotal','<span>'+expYear+' 年合計</span><b>'+fmtMoney(Math.round(yTotal))+'</b>');
 }
 
 renderMast();
