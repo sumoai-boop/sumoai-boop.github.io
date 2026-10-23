@@ -3,265 +3,312 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
 <title>Netflix Top 10 追蹤器</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
+/* ─────────────────────────────────────────────
+   放映廳：黑色舞台、絨布座椅紫褐、Netflix 紅幕、鎢絲燈泡金
+   金色只給名次數字與冠軍，紅色只給品牌與「選中」狀態
+   ───────────────────────────────────────────── */
 :root{
-  --red:#E50914;--red-dark:#B20710;
-  --bg:#0d0d0d;--surface:#1a1a1a;--surface2:#242424;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
-  --text:#f0f0f0;--muted:#888;--muted2:#555;
+  --stage:#000;
+  --velvet:#1B1317;      /* 卡片底：座椅絨布 */
+  --velvet-2:#261B21;    /* 提升一層：hover、輸入框 */
+  --seam:#3A2B33;        /* 分隔線 */
+  --red:#E50914;
+  --red-deep:#A80710;
+  --bulb:#F4C46A;        /* 名次與冠軍 */
+  --bulb-dim:#8A6B3A;
+  --screen:#F3EEE6;      /* 主要文字 */
+  --dim:#9A8C94;         /* 次要文字 */
+  --dimmer:#5E5058;
+  --ok:#7BC47F;
+  --display:'Big Shoulders Display','Noto Sans TC',sans-serif;
+  --body:'Noto Sans TC',system-ui,sans-serif;
+  --r-lg:14px;--r-md:8px;--r-sm:4px;
+  /* 舊變數名：腳本裡少數行內樣式還在用 */
+  --surface2:var(--velvet-2);--border2:var(--seam);--border:var(--seam);--muted:var(--dim);--muted2:var(--dimmer);--text:var(--screen);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh}
+html{background:var(--stage)}
+body{padding-top:28px;background:var(--stage);color:var(--screen);font-family:var(--body);font-size:15px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--bulb);outline-offset:3px;border-radius:2px}
+img{display:block}
+.flag{display:inline-block;width:20px;height:15px;border-radius:2px;margin-right:6px;vertical-align:-2px;object-fit:cover}
 
-header{background:#000;border-bottom:2px solid var(--red);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:28px;z-index:100}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:2px}
-.logo span{color:var(--text);font-size:16px;margin-left:12px;letter-spacing:1px;opacity:0.7}
-.sync-status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted2);flex-shrink:0}
-.sync-dot.ok{background:#43A047}
+/* ── 共用頂部選單列（全站慣例） ── */
+.menubar{position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;background:rgba(0,0,0,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:rgba(255,255,255,.92)}
+.gm-left{display:flex;align-items:center;gap:16px;font-weight:600}
+.gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:.85}
+.mb-menu{padding:0 6px;border-radius:4px;cursor:default;font-size:12px}
+.mb-menu:hover{background:rgba(255,255,255,.2)}
+
+/* ── 頁首 ── */
+header{position:sticky;top:28px;z-index:100;background:rgba(0,0,0,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--seam)}
+.head-in{max-width:1120px;margin:0 auto;height:58px;padding:0 24px;display:flex;align-items:center;gap:28px}
+.logo{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.logo b{font-family:var(--display);font-weight:900;font-size:28px;letter-spacing:.02em;color:var(--red);line-height:1}
+.logo span{font-size:14px;color:var(--dim);font-weight:500}
+nav{display:flex;gap:2px;margin-right:auto}
+nav button{background:none;border:0;padding:0 14px;height:58px;font-size:15px;color:var(--dim);cursor:pointer;position:relative}
+nav button:hover{color:var(--screen)}
+nav button.active{color:var(--screen);font-weight:700}
+nav button.active::after{content:'';position:absolute;left:14px;right:14px;bottom:-1px;height:3px;background:var(--red);border-radius:3px 3px 0 0}
+.sync-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);white-space:nowrap}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--dimmer)}
+.sync-dot.ok{background:var(--ok)}
 .sync-dot.err{background:var(--red)}
-.sync-dot.loading{background:#FB8C00;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.sync-dot.loading{background:var(--bulb);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
 
-nav{display:flex;gap:4px}
-nav button{background:transparent;border:none;color:var(--muted);font-size:13px;font-family:'Noto Sans TC',sans-serif;padding:8px 16px;cursor:pointer;border-radius:4px;transition:all .2s;letter-spacing:0.5px}
-nav button:hover{color:var(--text);background:rgba(255,255,255,0.05)}
-nav button.active{color:var(--text);background:var(--surface2);border-bottom:2px solid var(--red)}
-
-main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 28px + 60px)}
+main{max-width:1120px;margin:0 auto;padding:28px 24px 80px}
 .section{display:none}.section.active{display:block}
 
-.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:2rem}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;position:relative;overflow:hidden}
-.metric::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red)}
-.metric .val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);letter-spacing:1px}
-.metric .lbl{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px}
+/* ── 類別切換：放在舞台正上方，像節目單分頁 ── */
+.cats{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat-btn{flex:0 0 auto;padding:9px 18px;border-radius:999px;font-size:14px;font-weight:500;cursor:pointer;border:1px solid var(--seam);background:transparent;color:var(--dim);transition:color .15s,border-color .15s,background .15s}
+.cat-btn:hover{color:var(--screen);border-color:var(--dimmer)}
+.cat-btn.active{background:var(--red);border-color:var(--red);color:#fff}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.25rem;min-width:0;overflow:hidden}
-.card-title{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
-.card-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;margin-bottom:1.25rem}
+/* ══ 舞台（Hero）：某一週的 Top 10 ══ */
+#hero{position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--velvet);margin-bottom:28px;isolation:isolate}
+.hero-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.hero-bg img.poster{border-radius:0;box-shadow:none;width:100%;height:100%;object-fit:cover;filter:blur(48px) saturate(1.3);transform:scale(1.25);opacity:.38}
+.hero-bg img.poster.blank{opacity:0}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,.88) 100%),linear-gradient(0deg,rgba(0,0,0,.9) 0%,transparent 40%)}
 
-.rank-row{display:flex;align-items:center;gap:14px;padding:8px 0;min-height:112px;border-bottom:1px solid var(--border)}
-.rank-row:last-child{border-bottom:none}
-/* 名次：借 Netflix Top 10 自己的視覺語言 —— 巨大的描邊數字，實心留給前三名 */
-.rank-num{font-family:'Bebas Neue',sans-serif;font-size:58px;line-height:1;width:46px;text-align:center;flex-shrink:0;
-  color:transparent;-webkit-text-stroke:1.8px var(--muted2);letter-spacing:-1px;user-select:none}
-.rank-num.gold{color:#FFD700;-webkit-text-stroke:0}
-.rank-num.silver{color:#C0C0C0;-webkit-text-stroke:0}
-.rank-num.bronze{color:#CD7F32;-webkit-text-stroke:0}
+.hero-bar{display:flex;align-items:center;gap:10px;padding:18px 24px 0;flex-wrap:wrap}
+.step{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);font-size:20px;line-height:1;cursor:pointer;color:var(--screen);display:grid;place-items:center;padding-bottom:2px}
+.step:hover:not(:disabled){border-color:var(--screen)}
+.step:disabled{opacity:.25;cursor:default}
+.week-pick{position:relative;display:flex;align-items:baseline;gap:10px;padding:4px 6px;cursor:pointer}
+.week-pick select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.wk-no{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.02em}
+.wk-range{font-size:14px;color:var(--dim)}
+.week-pick:hover .wk-range{color:var(--screen)}
+.latest{font-size:12px;color:var(--bulb);border:1px solid var(--bulb-dim);border-radius:999px;padding:2px 10px}
+.to-latest{font-size:12px;color:var(--dim);background:none;border:1px solid var(--seam);border-radius:999px;padding:3px 10px;cursor:pointer}
+.to-latest:hover{color:var(--screen);border-color:var(--dim)}
 
-/* 海報 */
-.poster{width:64px;height:96px;flex-shrink:0;border-radius:4px;object-fit:cover;
-  background:linear-gradient(145deg,#1c1c1c,#111);box-shadow:0 3px 12px rgba(0,0,0,.55);
-  transition:transform .25s ease}
-.poster.blank{box-shadow:none}
-.ones-row .poster{width:56px;height:84px}
-.rank-row:hover .poster,.ones-row:hover .poster{transform:scale(1.06)}
-@media (prefers-reduced-motion:reduce){.poster{transition:none}.rank-row:hover .poster,.ones-row:hover .poster{transform:none}}
-.rank-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;min-height:52px;}
-.rank-title-text{font-size:18px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sub-title{font-size:14px;color:rgba(255,255,255,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.ones-title>div:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rank-bar-wrap{width:80px;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:5px}
+.hero-main{padding:18px 24px 28px}
+.champ{display:grid;grid-template-columns:auto 184px minmax(0,1fr);align-items:end;gap:0 26px;margin-bottom:30px}
+.champ-num{font-family:var(--display);font-weight:900;font-size:260px;line-height:.74;color:var(--bulb);margin-right:-22px;letter-spacing:-.04em;user-select:none;text-shadow:0 0 60px rgba(244,196,106,.25)}
+.poster.champ-poster{width:184px;height:276px;border-radius:var(--r-md);object-fit:cover;background:#0c0809;box-shadow:0 20px 50px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);position:relative;z-index:1}
+.champ-info{padding-bottom:4px;min-width:0}
+.champ-kicker{font-size:14px;color:var(--bulb);font-weight:700;margin-bottom:6px}
+.champ-title{font-size:clamp(28px,4.2vw,46px);font-weight:900;line-height:1.12;letter-spacing:-.01em;text-wrap:balance}
+.champ-en{font-size:16px;color:var(--dim);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.champ-facts{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:20px}
+.champ-facts dt{font-size:12px;color:var(--dim)}
+.champ-facts dd{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.1;letter-spacing:.01em}
+.champ-facts dd.cc,.champ-facts dd.gn{font-family:var(--body);font-size:16px;font-weight:500;line-height:1.9;display:flex;align-items:center}
+
+/* Netflix 首頁 Top 10 排的語彙：巨大描邊數字躲在海報左後方 */
+.rail{list-style:none;display:flex;gap:6px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:var(--seam) transparent}
+.rail::-webkit-scrollbar{height:6px}.rail::-webkit-scrollbar-thumb{background:var(--seam);border-radius:3px}
+.rail-item{flex:0 0 auto;display:grid;grid-template-columns:auto auto;scroll-snap-align:start}
+.rail-num{font-family:var(--display);font-weight:900;font-size:150px;line-height:.76;color:var(--stage);-webkit-text-stroke:2px #6f6168;margin-right:-26px;letter-spacing:-.06em;user-select:none;grid-row:1;grid-column:1;align-self:end}
+.rail-item:nth-child(-n+2) .rail-num{-webkit-text-stroke-color:var(--bulb-dim)}
+.rail-card{position:relative;z-index:1;width:108px;grid-row:1;grid-column:2}
+.poster.rail-poster{width:108px;height:162px;border-radius:var(--r-sm);object-fit:cover;background:#120c0f;box-shadow:0 8px 22px rgba(0,0,0,.6)}
+.rail-cap{display:flex;flex-direction:column;margin-top:8px;grid-row:2;grid-column:2;width:108px}
+.rc-t{font-size:13px;font-weight:500;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
+.rc-v{font-family:var(--display);font-weight:700;font-size:15px;color:var(--dim);letter-spacing:.02em}
+
+/* 換週時唯一的一段動畫：冠軍淡入、榜單由左到右依序亮起 */
+.swap .champ{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.swap .rail-item{animation:rise .4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d) * 35ms + 80ms)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── 統計數字：一條橫向刻度，不做成卡片 ── */
+.figs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--seam);border-bottom:1px solid var(--seam);margin-bottom:36px}
+.fig{padding:16px 20px;display:flex;align-items:baseline;gap:10px;min-width:0}
+.fig+.fig{border-left:1px solid var(--seam)}
+.fig b{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;letter-spacing:.01em}
+.fig span{font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── 區塊 ── */
+.block{margin-bottom:40px;min-width:0}
+.block-head{display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.block-head h3{font-size:20px;font-weight:900;letter-spacing:.01em;margin-right:auto}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 40px;margin-bottom:40px}
+.grid2 .block{margin-bottom:0}
+.panel{background:var(--velvet);border-radius:var(--r-lg);padding:6px 18px}
+.card-title{font-size:20px;font-weight:900}   /* 匯入頁沿用 */
+
+.year-tabs{display:flex;gap:2px;flex-wrap:wrap;background:var(--velvet);border-radius:999px;padding:3px}
+.year-btn{padding:4px 12px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em;cursor:pointer;border:0;background:transparent;color:var(--dim)}
+.year-btn:hover{color:var(--screen)}
+.year-btn.active{background:var(--screen);color:#000}
+
+/* 排行列 */
+.rank-row{display:flex;align-items:center;gap:14px;padding:10px 0;min-height:112px;border-bottom:1px solid var(--seam);cursor:pointer}
+.panel>div:last-child>.rank-row,.panel>.rank-row:last-child{border-bottom:0}
+.rank-num{font-family:var(--display);font-weight:900;font-size:58px;line-height:.8;width:48px;text-align:center;flex-shrink:0;color:transparent;-webkit-text-stroke:1.6px var(--dimmer);letter-spacing:-.04em;user-select:none}
+.rank-num.gold{color:var(--bulb);-webkit-text-stroke:0}
+.rank-num.silver{color:#D9D2CB;-webkit-text-stroke:0}
+.rank-num.bronze{color:#C98A5A;-webkit-text-stroke:0}
+.poster{width:64px;height:96px;flex-shrink:0;border-radius:var(--r-sm);object-fit:cover;background:#120c0f;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.poster.blank{box-shadow:inset 0 0 0 1px var(--seam)}
+.rank-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.rank-title-text{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center}
+.rank-row:hover .rank-title-text{color:var(--bulb)}
+.rank-row:not(:has(.poster)){min-height:0;padding:12px 0}
+.rank-row:not(:has(.poster)) .rank-num{font-size:40px;width:44px}
+.sub-title{font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.rank-bar-wrap{width:100%;max-width:140px;height:3px;background:var(--velvet-2);border-radius:2px;overflow:hidden;margin-top:8px}
 .rank-bar{height:100%;background:var(--red);border-radius:2px}
-.rank-val{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right;width:62px;flex-shrink:0}
+.rank-val{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.01em;white-space:nowrap;text-align:right;min-width:64px;flex-shrink:0}
+.detail-panel{display:none;padding:4px 0 12px 76px;border-bottom:1px solid var(--seam)}
+.detail-panel.open{display:block}
+.detail-week{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13px;color:var(--dim);border-bottom:1px dashed rgba(255,255,255,.06)}
+.detail-week:last-child{border-bottom:0}
+.detail-week-label{color:var(--screen)}
 
-.badge{display:inline-block;font-size:10px;padding:2px 6px;border-radius:3px;margin-left:6px;vertical-align:middle}
-.b-movie{background:rgba(229,9,20,0.15);color:#ff6b6b;border:1px solid rgba(229,9,20,0.3)}
-.b-show{background:rgba(30,136,229,0.15);color:#64b5f6;border:1px solid rgba(30,136,229,0.3)}
-.b-en{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
-.b-nonen{background:rgba(67,160,71,0.15);color:#81c784;border:1px solid rgba(67,160,71,0.3)}
+/* 各週冠軍：海報牆，依時間從新到舊 */
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:22px 14px}
+.tile{min-width:0}
+.tile-poster{position:relative}
+.tile .poster{width:100%;height:auto;aspect-ratio:2/3;border-radius:var(--r-md)}
+.tile-week{position:absolute;left:6px;bottom:6px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.02em;background:rgba(0,0,0,.78);padding:1px 7px;border-radius:var(--r-sm)}
+.tile.streak .poster{box-shadow:0 0 0 2px var(--bulb-dim),0 4px 14px rgba(0,0,0,.5)}
+.tile figcaption{margin-top:8px}
+.tile-title{font-size:14px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tile-title .flag{width:16px;height:12px;margin-right:4px}
+.tile-views{font-size:12px;color:var(--dim);margin-top:2px}
 
-.ones-row{display:flex;align-items:center;gap:13px;padding:8px 0;min-height:100px;border-bottom:1px solid var(--border)}
-.ones-row:last-child{border-bottom:none}
-.ones-week{color:var(--muted);font-size:11px;width:130px;flex-shrink:0}
-@media (max-width:640px){.ones-week{width:96px;font-size:10px}.rank-val,.ones-views{width:52px}
-  .poster{width:48px;height:72px}.ones-row .poster{width:44px;height:66px}
-  .rank-row{min-height:92px;gap:10px}.ones-row{min-height:84px;gap:10px}
-  .rank-num{font-size:42px;width:34px}.detail-panel{padding-left:60px}}
-.ones-title{flex:1;color:var(--text);display:flex;flex-direction:column;justify-content:center;min-height:52px;}
-.ones-views{color:var(--muted);font-size:12px;white-space:nowrap;text-align:right;width:62px;flex-shrink:0}
-.chart-wrap{position:relative;width:100%;height:240px;margin-top:8px}
-.cat-btn{padding:7px 16px;border-radius:var(--border-radius-md,6px);font-size:12px;cursor:pointer;border:1px solid rgba(229,9,20,0.3);background:transparent;color:var(--muted);font-family:inherit;transition:all .2s;}
-.cat-btn:hover{border-color:var(--red);color:var(--text);}
-.cat-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
-.card-title.has-tools::after{display:none}
-.ct-line{flex:1;height:1px;background:var(--border)}
-.year-tabs{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
-.year-btn{padding:4px 11px;border-radius:var(--border-radius-md,6px);font-size:11px;letter-spacing:.5px;cursor:pointer;border:1px solid var(--border2, rgba(255,255,255,0.12));background:transparent;color:var(--muted);font-family:inherit;transition:all .18s;}
-.year-btn:hover{border-color:var(--red);color:var(--text);}
-.year-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
-.year-btn:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
-
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+/* ── 表單（匯入頁）── */
+.form-card{background:var(--velvet);border-radius:var(--r-lg);padding:26px 28px;margin-bottom:20px}
+.form-card.primary{box-shadow:inset 0 0 0 1px rgba(229,9,20,.45)}
+.form-card .card-title{margin-bottom:6px}
+.lede{font-size:14px;color:var(--dim);margin-bottom:20px;max-width:62ch}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .form-group{display:flex;flex-direction:column;gap:6px}
-.form-group label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
-.form-group input,.form-group select,.form-group textarea{
-  background:var(--surface2);border:1px solid var(--border2);border-radius:6px;
-  color:var(--text);font-size:13px;padding:8px 12px;font-family:'Noto Sans TC',sans-serif;
-  outline:none;transition:border-color .2s
-}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--red)}
-.form-group select option{background:var(--surface2)}
+.form-group label{font-size:13px;color:var(--dim)}
+.form-group input,.form-group select,.form-group textarea,.edit-field input,#nf-worker{background:var(--velvet-2);border:1px solid var(--seam);border-radius:var(--r-md);color:var(--screen);font-size:15px;padding:10px 12px;outline:none;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus,.edit-field input:focus,#nf-worker:focus{border-color:var(--bulb-dim)}
+.form-group select option{background:var(--velvet-2)}
 .form-group textarea{resize:vertical;line-height:1.6}
+.check{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--dim);margin:4px 0 14px;cursor:pointer}
+.check input{width:16px;height:16px;margin-top:4px;accent-color:var(--red);flex-shrink:0}
+details.adv{margin-bottom:14px;font-size:14px;color:var(--dim)}
+details.adv summary{cursor:pointer}
+details.adv input{margin-top:8px;font-size:13px}
+.btn-red{background:var(--red);color:#fff;border:0;padding:11px 24px;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-red:hover{background:var(--red-deep)}
+.btn-red:disabled{background:var(--dimmer);cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--screen);border:1px solid var(--seam);padding:10px 20px;border-radius:999px;font-size:14px;cursor:pointer}
+.btn-ghost:hover{border-color:var(--dim)}
+.btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.btn-row .spacer{flex:1}
+.status-box{font-size:14px;padding:12px 14px;border-radius:var(--r-md);margin-top:14px;background:var(--velvet-2);color:var(--dim);border-left:3px solid var(--bulb-dim)}
+.status-box.ok{border-left-color:var(--ok);color:#A9D9AC}
+.status-box.err{border-left-color:var(--red);color:#FF8A8F}
+.hint{background:var(--velvet-2);border-radius:var(--r-md);padding:12px 14px;font-size:13px;color:var(--dim);line-height:1.8;margin-bottom:8px}
+.hint a{color:var(--bulb)}
+.hint code{color:var(--screen);font-size:12px;word-break:break-all}
+#upload-zone{border:1.5px dashed var(--seam);border-radius:var(--r-md);padding:22px;text-align:center;cursor:pointer;background:var(--velvet-2);color:var(--dim);font-size:14px}
+#upload-zone:hover{border-color:var(--dim)}
+.preview-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--seam);font-size:14px}
+.preview-item:last-child{border-bottom:0}
+.preview-num{font-family:var(--display);font-weight:900;font-size:22px;color:var(--bulb);width:28px;text-align:center}
+.preview-item input{background:var(--velvet-2)!important;border-color:var(--seam)!important}
 
-.btn-red{background:var(--red);color:#fff;border:none;padding:9px 22px;border-radius:6px;font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;font-weight:500;transition:background .2s}
-.btn-red:hover{background:var(--red-dark)}
-.btn-red:disabled{background:var(--muted2);cursor:not-allowed}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);padding:9px 22px;border-radius:6px;font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;transition:all .2s}
-.btn-ghost:hover{color:var(--text)}
-.btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-
-.status-box{font-size:13px;padding:10px 14px;border-radius:6px;margin-top:10px;border-left:3px solid var(--red);background:var(--surface2);color:var(--muted)}
-.status-box.ok{border-left-color:#43A047;color:#81c784}
-.status-box.err{border-left-color:var(--red);color:#ff6b6b}
-
-.week-block{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden}
-.week-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;background:var(--surface2);cursor:pointer;user-select:none}
-.week-header:hover{background:#2a2a2a}
-.week-title{font-size:14px;font-weight:500}
-.week-meta{font-size:12px;color:var(--muted)}
-.week-toggle{color:var(--muted);font-size:18px;transition:transform .2s}
-.week-toggle.open{transform:rotate(180deg)}
-.week-body{padding:1rem 1.25rem;display:none}
+/* ── 歷史 ── */
+.week-block{background:var(--velvet);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden}
+.week-header{display:flex;align-items:center;gap:16px;padding:14px 20px;cursor:pointer;user-select:none}
+.week-header:hover{background:var(--velvet-2)}
+.week-no{font-family:var(--display);font-weight:900;font-size:34px;line-height:1;color:var(--bulb);min-width:56px}
+.week-head-text{flex:1;min-width:0}
+.week-title{font-size:16px;font-weight:700}
+.week-meta{font-size:13px;color:var(--dim)}
+.week-tools{display:flex;align-items:center;gap:12px}
+.week-toggle{width:10px;height:10px;border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.week-toggle.open{transform:rotate(225deg) translate(-2px,-2px)}
+.week-body{padding:4px 20px 18px;display:none}
 .week-body.open{display:block}
-.cat-section{margin-bottom:1rem}
-.cat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.del-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;padding:2px 6px;transition:color .2s;line-height:1;font-family:inherit}
-.del-btn:hover{color:var(--red)}
+.cat-section{margin-bottom:14px}
+.cat-label{font-size:14px;font-weight:700;color:var(--bulb);padding:10px 0 6px;border-bottom:1px solid var(--seam)}
+.del-btn{background:none;border:1px solid transparent;color:var(--dimmer);cursor:pointer;font-size:13px;padding:4px 10px;border-radius:999px}
+.del-btn:hover{color:#FF8A8F;border-color:rgba(229,9,20,.5)}
+.rec-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.rec-row:last-child{border-bottom:0}
+.rec-rank{font-family:var(--display);font-weight:900;font-size:24px;line-height:1;text-align:center;color:transparent;-webkit-text-stroke:1.2px var(--dim)}
+.rec-name{min-width:0}
+.rec-en{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center}
+.rec-zh{font-size:12px;color:var(--dim)}
+.rec-views{font-family:var(--display);font-weight:700;font-size:17px;color:var(--dim)}
+.rec-edit-btn{background:none;border:1px solid var(--seam);color:var(--dim);cursor:pointer;font-size:12px;padding:3px 10px;border-radius:999px}
+.rec-edit-btn:hover{color:var(--screen);border-color:var(--dim)}
 
-.preview-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
-.preview-item:last-child{border-bottom:none}
-.preview-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted2);width:24px;text-align:center}
-.empty{text-align:center;padding:4rem 1rem;color:var(--muted);font-size:14px}
+.empty{text-align:center;padding:48px 16px;color:var(--dim);font-size:14px}
+#err-banner{display:none;margin-bottom:24px;padding:16px 18px;border-radius:var(--r-md);background:rgba(229,9,20,.1);box-shadow:inset 0 0 0 1px rgba(229,9,20,.6);font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-all}
 
-.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:999}
-.loading-box{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:2rem 2.5rem;text-align:center}
-.loading-box p{color:var(--muted);font-size:13px;margin-top:10px}
-.spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+/* 載入遮罩與 modal */
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:999}
+.loading-box{background:var(--velvet);border-radius:var(--r-lg);padding:28px 36px;text-align:center}
+.loading-box p{color:var(--dim);font-size:14px;margin-top:12px}
+.spinner{width:30px;height:30px;border:3px solid var(--seam);border-top-color:var(--bulb);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
+.edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.edit-modal-overlay.open{display:flex}
+.edit-modal{background:var(--velvet);border-radius:var(--r-lg);padding:26px;width:440px;max-width:92vw}
+.edit-modal h3{font-size:19px;font-weight:900;margin-bottom:16px}
+.edit-field{margin-bottom:14px}
+.edit-field label{font-size:13px;color:var(--dim);display:block;margin-bottom:5px}
+.edit-btn-row{display:flex;gap:10px;margin-top:18px}
 
-@media(max-width:640px){
-  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid2{grid-template-columns:1fr}
-  .form-row{grid-template-columns:1fr}
-  header{padding:0 1rem}
+/* ── 窄螢幕 ── */
+@media (max-width:860px){
+  .champ{grid-template-columns:auto 132px minmax(0,1fr);gap:0 18px}
+  .champ-num{font-size:190px;margin-right:-18px}
+  .poster.champ-poster{width:132px;height:198px}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  .head-in{padding:0 16px;gap:12px}
   .logo span{display:none}
-  main{padding:1.5rem 1rem}
-  nav button{padding:8px 10px;font-size:12px}
+  nav button{padding:0 10px;font-size:14px}
+  nav button.active::after{left:10px;right:10px}
+  .sync-status span{display:none}
+  main{padding:20px 16px 64px}
+  .hero-bar{padding:14px 16px 0}
+  .hero-main{padding:14px 16px 20px}
+  .champ{grid-template-columns:max-content max-content;justify-content:start;gap:0 14px;margin-bottom:22px}
+  .champ-num{font-size:150px;margin-right:-14px}
+  .poster.champ-poster{width:104px;height:156px}
+  .champ-info{grid-column:1/-1;padding-top:16px}
+  .champ-facts{gap:10px 24px}
+  .champ-facts dd{font-size:24px}
+  .rail-num{font-size:116px;margin-right:-20px}
+  .rail-card,.rail-cap,.poster.rail-poster{width:88px}.poster.rail-poster{height:132px}
+  .figs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fig:nth-child(3){border-left:0}
+  .fig:nth-child(n+3){border-top:1px solid var(--seam)}
+  .fig{padding:12px 14px;flex-direction:column;gap:2px}
+  .fig b{font-size:28px}
+  .panel{padding:4px 12px}
+  .rank-row{min-height:92px;gap:10px}
+  .rank-num{font-size:42px;width:34px}
+  .poster{width:48px;height:72px}
+  .rank-title-text{font-size:15px}
+  .rank-val{font-size:17px;min-width:52px}
+  .detail-panel{padding-left:44px}
+  .wall{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:18px 10px}
+  .form-card{padding:20px 18px}
+  .form-row{grid-template-columns:1fr}
+  .rec-row{grid-template-columns:28px minmax(0,1fr) auto;gap:8px}
+  .rec-edit-btn{grid-column:2/-1;justify-self:start;margin-top:-2px}
+  .menubar{font-size:10px;padding:0 8px}.mb-menu{display:none}
+  button{min-height:36px}
 }
-
-  /* ── Menubar ── */
-  .menubar{position:fixed;top:0;left:0;right:0;z-index:9999;height:28px;background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:rgba(255,255,255,0.92);}
-  .gm-left{display:flex;align-items:center;gap:16px;font-weight:600;}
-  .gm-right{display:flex;align-items:center;gap:10px;font-size:11px;opacity:0.85;}
-  .mb-menu{padding:0 6px;border-radius:4px;cursor:default;transition:background 0.15s;font-size:12px;font-family:'Noto Sans TC',sans-serif;}
-  .mb-menu:hover{background:rgba(255,255,255,0.2);}
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  @media(max-width:600px){}
-
-.global-dock-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(calc(100% - 2px));z-index:9998;transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;opacity:0;}
-.global-dock-wrap.visible{transform:translateX(-50%) translateY(-12px);opacity:1;}
-.global-dock{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,0.16);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.25);border-radius:20px 20px 0 0;padding:10px 14px 14px;box-shadow:0 -4px 30px rgba(0,0,0,0.25);}
-.gd-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;position:relative;}
-.gd-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 3px 12px rgba(0,0,0,0.28);}
-.gd-item:hover .gd-icon{transform:translateY(-10px) scale(1.22);}
-.gd-label{font-size:9px;letter-spacing:0.05em;color:rgba(255,255,255,0.8);text-transform:uppercase;opacity:0;transition:opacity 0.15s;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;position:absolute;bottom:-20px;font-family:'Space Mono',monospace;}
-.gd-item:hover .gd-label{opacity:1;}
-.gd-sep{width:1px;height:40px;background:rgba(255,255,255,0.2);margin:0 3px;align-self:center;}
-.gd-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.7);margin-top:2px;}
-.ic-about{background:linear-gradient(145deg,#4F8EF7,#1A5FD4);}
-.ic-ai{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-photos{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-dramas{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-food{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-threads{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-uber{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-weight{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-reminder{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-netflix{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-mlb{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-chloe{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.ic-trips{background:linear-gradient(145deg,#111,#1a1a1a);border:1px solid rgba(255,255,255,0.15);}
-.dock-trigger-zone{position:fixed;bottom:0;left:0;right:0;height:8px;z-index:9997;}
-.edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
-.edit-modal-overlay.open{display:flex;}
-.edit-modal{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:1.5rem;width:420px;max-width:92vw;}
-.edit-modal h3{font-size:15px;font-weight:500;margin-bottom:1rem;color:var(--text);}
-.edit-field{margin-bottom:12px;}
-.edit-field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;}
-.edit-field input{width:100%;padding:7px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:13px;font-family:inherit;outline:none;}
-.edit-field input:focus{border-color:var(--red);}
-.edit-btn-row{display:flex;gap:8px;margin-top:1rem;}
-.rec-edit-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 6px;transition:color .2s;line-height:1;}
-.rec-edit-btn:hover{color:var(--text);}
-.rank-row{cursor:pointer;}
-.rank-row:hover .rank-title-text{color:#E50914;}
-.detail-panel{display:none;padding:8px 0 4px 138px;border-bottom:1px solid var(--border);}
-@media (max-width:640px){.detail-panel{padding-left:60px}}
-.detail-panel.open{display:block;}
-.detail-week{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.04);}
-.detail-week:last-child{border-bottom:none;}
-.detail-week-label{color:rgba(255,255,255,0.6);}
-
-/* ===== 手機版共用修正 ===== */
-@media(max-width:768px){
-  /* Dock 縮小，12 個項目完整顯示 */
-  .global-dock-wrap{max-width:100vw;}
-  .global-dock{gap:2px!important;padding:5px 6px!important;border-radius:14px!important;
-    max-width:calc(100vw - 12px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .global-dock::-webkit-scrollbar{display:none;}
-  .gd-icon{width:29px!important;height:29px!important;border-radius:8px!important;font-size:15px!important;}
-  .gd-icon svg{width:25px!important;height:25px!important;}
-  .gd-icon span{font-size:17px!important;}
-  .gd-item{flex-shrink:0;}
-  .gd-item:hover .gd-icon{transform:translateY(-5px) scale(1.12)!important;}
-  .gd-sep{height:22px!important;margin:0 1px!important;}
-  .gd-label{display:none!important;}
-  /* Menubar 精簡 */
-  .menubar{font-size:10px!important;padding:0 8px!important;}
-  .mb-menu{display:none!important;}
-  .menubar-left{gap:8px!important;}
-  .menubar-right{gap:7px!important;}
-  /* 觸控目標加大 */
-  button,.btn,a.btn{min-height:40px;}
-  /* 內文最小字級，避免過小難讀 */
-  body{-webkit-text-size-adjust:100%;}
-  /* 表格一律可橫向捲動 */
-  table{max-width:100%;}
-  .table-wrap,.trip-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
-  /* 圖片不溢出 */
-  img,video,canvas{max-width:100%;height:auto;}
-}
-@media(max-width:420px){
-  .gd-icon{width:26px!important;height:26px!important;border-radius:7px!important;}
-  .gd-icon svg{width:22px!important;height:22px!important;}
-  .gd-icon span{font-size:15px!important;}
-  .global-dock{gap:1px!important;padding:4px 5px!important;}
-  .gd-sep{height:19px!important;margin:0 1px!important;}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
 </head>
@@ -270,180 +317,186 @@ main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;padding-top:calc(2rem + 2
 <div class="menubar">
   <div class="gm-left">
     <span style="font-size:16px">🗿</span>
-    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,0.92);text-decoration:none;">Sumoai's Reel</a>
+    <a href="index.html" style="font-weight:700;color:rgba(255,255,255,.92);text-decoration:none;">Sumoai's Reel</a>
     <span class="mb-menu">檔案</span><span class="mb-menu">編輯</span>
     <span class="mb-menu">顯示方式</span><span class="mb-menu">前往</span>
     <span class="mb-menu">視窗</span><span class="mb-menu">輔助說明</span>
   </div>
   <div class="gm-right">
-    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="vertical-align:middle;border-radius:1px">
+    <img src="https://flagcdn.com/16x12/tw.png" width="16" height="12" style="border-radius:1px" alt="">
     <span id="mbTime"></span>
   </div>
 </div>
 
 <div class="loading-overlay" id="loading-overlay">
-  <div class="loading-box">
-    <div class="spinner"></div>
-    <p id="loading-msg">載入中...</p>
-  </div>
+  <div class="loading-box"><div class="spinner"></div><p id="loading-msg">載入中...</p></div>
 </div>
 
 <header>
-  <div class="logo">NETFLIX<span>TOP 10 追蹤器</span></div>
-  <div style="display:flex;align-items:center;gap:1.5rem">
-    <div class="sync-status">
+  <div class="head-in">
+    <div class="logo"><b>NETFLIX</b><span>Top 10 追蹤器</span></div>
+    <nav>
+      <button class="active" onclick="showTab('dashboard',this)">統計</button>
+      <button onclick="showTab('add',this)">匯入</button>
+      <button onclick="showTab('records',this)">歷史</button>
+    </nav>
+    <div class="sync-status" title="與 GitHub 的同步狀態">
       <div class="sync-dot loading" id="sync-dot"></div>
       <span id="sync-text">連線中...</span>
     </div>
-    <nav>
-      <button class="active" onclick="showTab('dashboard',this)">統計</button>
-      <button onclick="showTab('add',this)">＋ 新增</button>
-      <button onclick="showTab('records',this)">歷史</button>
-    </nav>
   </div>
 </header>
 
 <main>
 
-<!-- DASHBOARD -->
+<!-- 統計 -->
 <div id="tab-dashboard" class="section active">
-  <div id="err-banner" style="display:none;margin-bottom:1.25rem;padding:14px 16px;border:1px solid var(--red);border-radius:var(--border-radius-md,6px);background:rgba(229,9,20,0.08);font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-all;font-family:monospace;"></div>
-  <div class="metrics" id="metrics-row">
-    <div class="metric"><div class="val">—</div><div class="lbl">已記錄週數</div></div>
-    <div class="metric"><div class="val">—</div><div class="lbl">不重複作品</div></div>
-    <div class="metric"><div class="val">—</div><div class="lbl">累計觀看次數</div></div>
-    <div class="metric"><div class="val">—</div><div class="lbl">冠軍記錄筆數</div></div>
+  <div id="err-banner"></div>
+
+  <div class="cats" role="tablist" aria-label="榜單類別">
+    <button class="cat-btn active" role="tab" aria-selected="true" data-cat="Movies|English" onclick="switchCat(this)">電影</button>
+    <button class="cat-btn" role="tab" aria-selected="false" data-cat="Movies|Non-English" onclick="switchCat(this)">非英語電影</button>
+    <button class="cat-btn" role="tab" aria-selected="false" data-cat="Shows|English" onclick="switchCat(this)">影集</button>
+    <button class="cat-btn" role="tab" aria-selected="false" data-cat="Shows|Non-English" onclick="switchCat(this)">非英語影集</button>
   </div>
-  <!-- 分類切換 -->
-  <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
-    <button class="cat-btn active" data-cat="Movies|English" onclick="switchCat(this)">🎬 電影</button>
-    <button class="cat-btn" data-cat="Movies|Non-English" onclick="switchCat(this)">🌍 非英語電影</button>
-    <button class="cat-btn" data-cat="Shows|English" onclick="switchCat(this)">📺 影集</button>
-    <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchCat(this)">🌏 非英語影集</button>
-  </div>
+
+  <section id="hero" aria-label="單週榜單"><div class="empty">載入中...</div></section>
+
+  <div class="figs" id="metrics-row"></div>
+
   <div class="grid2">
-    <div class="card"><div class="card-title has-tools" id="title-weeks"><span>上榜週數最多</span><span class="ct-line"></span><div class="year-tabs" id="weeks-years"></div></div><div id="rank-weeks"><div class="empty">載入中...</div></div></div>
-    <div class="card"><div class="card-title has-tools" id="title-views"><span>累計觀看最高</span><span class="ct-line"></span><div class="year-tabs" id="views-years"></div></div><div id="rank-views"><div class="empty">載入中...</div></div></div>
+    <section class="block">
+      <div class="block-head"><h3>上榜週數最多</h3><div class="year-tabs" id="weeks-years"></div></div>
+      <div class="panel" id="rank-weeks"><div class="empty">載入中...</div></div>
+    </section>
+    <section class="block">
+      <div class="block-head"><h3>累計觀看最高</h3><div class="year-tabs" id="views-years"></div></div>
+      <div class="panel" id="rank-views"><div class="empty">載入中...</div></div>
+    </section>
   </div>
-  <div class="card"><div class="card-title has-tools" id="title-ones"><span>各週 #1 作品</span><span class="ct-line"></span><div class="year-tabs" id="ones-years"></div></div><div id="ones-list"><div class="empty">載入中...</div></div></div>
+
+  <section class="block">
+    <div class="block-head"><h3>每週冠軍</h3><div class="year-tabs" id="ones-years"></div></div>
+    <div id="ones-list"><div class="empty">載入中...</div></div>
+  </section>
+
   <div class="grid2">
-    <div class="card"><div class="card-title" id="stat1-title">各國家上榜部數（不重複）</div><div id="country-titles"></div></div>
-    <div class="card"><div class="card-title" id="stat2-title">各國家上榜次數（含重複週次）</div><div id="country-weeks"></div></div>
+    <section class="block">
+      <div class="block-head"><h3 id="stat1-title">各國家上榜部數（不重複）</h3></div>
+      <div class="panel" id="country-titles"></div>
+    </section>
+    <section class="block">
+      <div class="block-head"><h3 id="stat2-title">各國家上榜次數（含重複週次）</h3></div>
+      <div class="panel" id="country-weeks"></div>
+    </section>
   </div>
 </div>
 
-<!-- ADD -->
+<!-- 匯入 -->
 <div id="tab-add" class="section">
-  <div class="card" style="border-color:rgba(229,9,20,0.35);">
-    <div class="card-title">從 Netflix 官方資料匯入</div>
-    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;">
-      直接讀 Netflix 每週二發布的官方統計檔，四個榜單一次匯入，不需要截圖或辨識。
-    </div>
+  <div class="form-card primary">
+    <h3 class="card-title">從 Netflix 官方資料匯入</h3>
+    <p class="lede">直接讀 Netflix 每週二發布的官方統計檔，四個榜單一次匯入。</p>
     <div class="form-row">
       <div class="form-group">
-        <label>週次</label>
-        <select id="nf-week"><option value="">先按右邊「載入週次」</option></select>
+        <label for="nf-week">週次</label>
+        <select id="nf-week"><option value="">先按「載入週次」</option></select>
       </div>
       <div class="form-group">
-        <label>一次匯入幾週（往前算）</label>
+        <label for="nf-count">一次匯入幾週（往前算）</label>
         <input type="number" id="nf-count" value="1" min="1" max="20" step="1">
       </div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:12px;cursor:pointer;">
-      <input type="checkbox" id="nf-fresh" style="width:15px;height:15px;accent-color:var(--red);cursor:pointer;">
-      強制重查 TMDB（忽略檔案裡既有的中文片名／國家／類型，用來修正抓錯的片子）
+    <label class="check">
+      <input type="checkbox" id="nf-fresh">
+      <span>強制重查 TMDB：忽略檔案裡既有的中文片名、國家、類型，用來修正抓錯的片子</span>
     </label>
-    <details style="margin-bottom:12px;">
-      <summary style="cursor:pointer;font-size:12px;color:var(--muted);outline:none;">Worker 網址設定</summary>
-      <input type="text" id="nf-worker" placeholder="https://netflix-top10-sync.你的帳號.workers.dev"
-        style="margin-top:8px;font-family:monospace;font-size:12px;">
+    <details class="adv">
+      <summary>Worker 網址設定</summary>
+      <input type="text" id="nf-worker" placeholder="https://netflix-top10-sync.你的帳號.workers.dev">
     </details>
     <div id="nf-status" class="status-box" style="display:none"></div>
     <div class="btn-row">
-      <button class="btn-ghost" onclick="clearPosterCache()">清除封面快取</button>
       <button class="btn-ghost" id="nf-btn-load" onclick="nfLoadWeeks()">載入週次</button>
       <button class="btn-red" id="nf-btn-import" onclick="nfImport()">匯入並儲存</button>
+      <span class="spacer"></span>
+      <button class="btn-ghost" onclick="clearPosterCache()">清除封面快取</button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">手動新增（截圖備援）</div>
+  <div class="form-card">
+    <h3 class="card-title">手動新增</h3>
+    <p class="lede">官方檔還沒更新時的備援：截圖交給 Claude 轉成 JSON，再貼進來。</p>
     <div class="form-row">
       <div class="form-group">
-        <label>週次</label>
+        <label for="in-week">週次</label>
         <input type="text" id="in-week" placeholder="例：4/13/26 - 4/19/26">
       </div>
       <div class="form-group">
-        <label>類別</label>
+        <label for="in-cat">類別</label>
         <select id="in-cat">
-          <option value="Movies|English">電影 · 英語</option>
-          <option value="Movies|Non-English">電影 · 非英語</option>
-          <option value="Shows|English">影集 · 英語</option>
-          <option value="Shows|Non-English">影集 · 非英語</option>
+          <option value="Movies|English">電影（英語）</option>
+          <option value="Movies|Non-English">電影（非英語）</option>
+          <option value="Shows|English">影集（英語）</option>
+          <option value="Shows|Non-English">影集（非英語）</option>
         </select>
       </div>
     </div>
-    <div class="form-group" style="margin-bottom:0">
-      <label>步驟 1：上傳截圖（選擇性，方便對照）</label>
-      <div id="upload-zone" onclick="document.getElementById('img-input').click()"
-        style="border:2px dashed rgba(229,9,20,0.3);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-        <div style="font-size:28px">📷</div>
-        <div style="font-size:13px;color:var(--muted)">點擊或拖曳截圖到此處</div>
-      </div>
+    <div class="form-group">
+      <label>截圖（選填，方便對照）</label>
+      <div id="upload-zone" onclick="document.getElementById('img-input').click()"><div>點一下或把截圖拖到這裡</div></div>
       <input type="file" id="img-input" accept="image/*" style="display:none" onchange="onImageSelected(this)">
-      <img id="img-preview" style="display:none;max-width:100%;border-radius:8px;margin-top:8px;max-height:260px;object-fit:contain;">
+      <img id="img-preview" style="display:none;max-width:100%;border-radius:8px;margin-top:8px;max-height:260px;object-fit:contain;" alt="">
     </div>
-    <div class="form-group" style="margin-bottom:0;margin-top:1rem">
-      <label>步驟 2：把截圖丟給 Claude 解析，貼入回傳的 JSON</label>
-      <div style="background:rgba(229,9,20,0.08);border:1px solid rgba(229,9,20,0.25);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;">
-        把截圖上傳給 <a href="https://claude.ai" target="_blank" style="color:#E50914;text-decoration:none;">claude.ai</a>，並輸入提示詞：<br>
-        <span style="color:rgba(255,255,255,0.7);font-family:monospace;">「從這張 Netflix Top10 截圖提取資料，回傳純 JSON 陣列：[{"rank":1,"title":"片名","views":觀看數純數字},...]」</span>
+    <div class="form-group" style="margin-top:16px">
+      <label for="in-paste">Claude 回傳的 JSON</label>
+      <div class="hint">
+        把截圖上傳到 <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>，提示詞：<br>
+        <code>「從這張 Netflix Top10 截圖提取資料，回傳純 JSON 陣列：[{"rank":1,"title":"片名","views":觀看數純數字},...]」</code>
       </div>
-      <textarea id="in-paste" rows="6" placeholder='[{"rank":1,"title":"Swapped","views":38700000},{"rank":2,"title":"Apex","views":16200000}]' style="font-family:monospace;font-size:12px;"></textarea>
+      <textarea id="in-paste" rows="6" placeholder='[{"rank":1,"title":"Swapped","views":38700000}]' style="font-size:13px"></textarea>
     </div>
     <div id="ai-status" class="status-box" style="display:none"></div>
-    <div class="btn-row">
-      <button class="btn-red" id="btn-ai" onclick="parseJSON()">✦ 解析 JSON</button>
-    </div>
+    <div class="btn-row"><button class="btn-red" id="btn-ai" onclick="parseJSON()">解析 JSON</button></div>
   </div>
-  <div id="preview-card" class="card" style="display:none">
-    <div class="card-title">解析結果預覽</div>
+
+  <div id="preview-card" class="form-card" style="display:none">
+    <h3 class="card-title">確認這 10 筆</h3>
     <div id="preview-list"></div>
     <div id="save-status" class="status-box" style="display:none"></div>
     <div class="btn-row">
-      <button class="btn-red" id="btn-confirm" onclick="confirmSave()">確認儲存到雲端</button>
+      <button class="btn-red" id="btn-confirm" onclick="confirmSave()">儲存到 GitHub</button>
       <button class="btn-ghost" onclick="cancelPreview()">取消</button>
     </div>
   </div>
 </div>
 
-<!-- RECORDS -->
+<!-- 歷史 -->
 <div id="tab-records" class="section">
-  <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
+  <div class="cats">
     <button class="cat-btn active" data-cat="all" onclick="switchRecordCat(this)">全部</button>
-    <button class="cat-btn" data-cat="Movies|English" onclick="switchRecordCat(this)">🎬 電影</button>
-    <button class="cat-btn" data-cat="Movies|Non-English" onclick="switchRecordCat(this)">🌍 非英語電影</button>
-    <button class="cat-btn" data-cat="Shows|English" onclick="switchRecordCat(this)">📺 影集</button>
-    <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchRecordCat(this)">🌏 非英語影集</button>
+    <button class="cat-btn" data-cat="Movies|English" onclick="switchRecordCat(this)">電影</button>
+    <button class="cat-btn" data-cat="Movies|Non-English" onclick="switchRecordCat(this)">非英語電影</button>
+    <button class="cat-btn" data-cat="Shows|English" onclick="switchRecordCat(this)">影集</button>
+    <button class="cat-btn" data-cat="Shows|Non-English" onclick="switchRecordCat(this)">非英語影集</button>
   </div>
   <div id="records-list"></div>
 </div>
 
 </main>
 
-<!-- 編輯記錄 Modal -->
 <div class="edit-modal-overlay" id="editModalOverlay">
-  <div class="edit-modal">
-    <h3>✎ 編輯記錄</h3>
-    <div class="edit-field"><label>片名（英文）</label><input type="text" id="edit-title" readonly style="color:var(--muted);"></div>
-    <div class="edit-field"><label>中文片名</label><input type="text" id="edit-titleZh" placeholder="留空則顯示英文片名"></div>
-    <div class="edit-field"><label>國家代碼（如 KR 或 KR,US）</label><input type="text" id="edit-country" placeholder="KR / TH / IN,US"></div>
-    <div class="edit-field"><label>觀看數</label><input type="number" id="edit-views" placeholder="38700000"></div>
+  <div class="edit-modal" role="dialog" aria-labelledby="edit-h">
+    <h3 id="edit-h">編輯這筆記錄</h3>
+    <div class="edit-field"><label for="edit-title">片名（英文）</label><input type="text" id="edit-title" readonly style="color:var(--dim)"></div>
+    <div class="edit-field"><label for="edit-titleZh">中文片名</label><input type="text" id="edit-titleZh" placeholder="留空就顯示英文片名"></div>
+    <div class="edit-field"><label for="edit-country">國家代碼（例：KR 或 KR,US）</label><input type="text" id="edit-country" placeholder="KR / TH / IN,US"></div>
+    <div class="edit-field"><label for="edit-views">觀看數</label><input type="number" id="edit-views" placeholder="38700000"></div>
     <div class="edit-btn-row">
       <button class="btn-red" onclick="saveEditRecord()">儲存</button>
       <button class="btn-ghost" onclick="closeEditModal()">取消</button>
     </div>
-    <div id="edit-status" class="status-box" style="display:none;margin-top:10px;"></div>
+    <div id="edit-status" class="status-box" style="display:none"></div>
   </div>
 </div>
 
@@ -543,7 +596,8 @@ async function ghFetch(url, opt, label) {
 
 // 從「列目錄」取檔案的 blob SHA：目錄清單不含檔案內容，所以不受 1MB 限制
 async function ghFileInfo(auth) {
-  const r = await ghFetch(DIR_BASE, { headers: { Authorization: auth, Accept: 'application/vnd.github+json' } }, '列出檔案');
+  // 加時間戳 + no-store：api.github.com 會讓瀏覽器快取 60 秒，剛寫完又寫就會拿到舊 SHA → 409
+  const r = await ghFetch(DIR_BASE + '?t=' + Date.now(), { cache: 'no-store', headers: { Authorization: auth, Accept: 'application/vnd.github+json' } }, '列出檔案');
   if (!r.ok) throw await ghErr(r, '列出檔案失敗');
   const arr = await r.json();
   if (!Array.isArray(arr)) throw new Error('列目錄回傳格式異常');
@@ -608,26 +662,33 @@ async function ghRead() {
 async function ghWrite(data) {
   if (!Array.isArray(data)) throw new Error('要寫入的資料不是陣列，已中止');
   // 讀取走 raw 不會帶回 SHA，寫入前補抓一次（這裡才需要 api.github.com）
-  if (!fileSha) { const info = await ghFileInfo('token ' + (getGHToken()||'')); fileSha = info ? info.sha : null; }
   const slim = data.map(slimEntry);
   const content = b64encode(new TextEncoder().encode(JSON.stringify(slim)));
-  const body = { message: 'update top10-data.json (' + slim.length + ' 筆)', content };
-  if (fileSha) body.sha = fileSha;
-  const r = await fetch(API_BASE, {
-    method: 'PUT',
-    headers: {
-      Authorization: 'token ' + (getGHToken()||''),
-      Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (!r.ok) {
-    const err = await r.json();
-    throw new Error(err.message || '寫入失敗');
+  // 每次寫入前都現抓 SHA，不信任先前記下的值；遇到 409（SHA 不符）再抓一次重試
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const info = await ghFileInfo('token ' + (getGHToken()||''));
+    fileSha = info ? info.sha : null;
+    const body = { message: 'update top10-data.json (' + slim.length + ' 筆)', content };
+    if (fileSha) body.sha = fileSha;
+    const r = await fetch(API_BASE, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'token ' + (getGHToken()||''),
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (r.status === 409 && attempt === 0) { await new Promise(res => setTimeout(res, 800)); continue; }
+    if (!r.ok) {
+      let msg = '寫入失敗';
+      try { msg = (await r.json()).message || msg; } catch (e) {}
+      throw new Error(msg + '（HTTP ' + r.status + '）');
+    }
+    const j = await r.json();
+    fileSha = j.content.sha;
+    return;
   }
-  const j = await r.json();
-  fileSha = j.content.sha;
 }
 
 function showErr(e) {
@@ -636,7 +697,7 @@ function showErr(e) {
   const box = document.getElementById('err-banner');
   if (box) {
     box.style.display = 'block';
-    box.textContent = '載入失敗\n\n' + msg +
+    box.textContent = '資料沒有載入\n\n' + msg +
       '\n\n若是 401/403，多半是 GitHub token 過期或權限不足，可在右上角重新輸入。';
     const btn = document.createElement('button');
     btn.className = 'btn-red';
@@ -712,6 +773,7 @@ function toggleDetail(el) {
 
 function fmtViews(n) {
   if (!n && n !== 0) return '—';
+  if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
   if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
   if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
   return n + '';
@@ -909,7 +971,7 @@ function countryFlag(countryStr) {
 // 直接從 code 產生旗子 HTML
 function flagImg(code) {
   if (!code) return '';
-  return '<img src="https://flagcdn.com/16x12/' + code.toLowerCase() + '.png" style="vertical-align:middle;margin-right:5px;border-radius:1px;" alt="' + code + '">';
+  return '<img class="flag" src="https://flagcdn.com/20x15/' + code.trim().toLowerCase() + '.png" width="20" height="15" alt="' + code.trim() + '">';
 }
 
 /* ══════════ TMDB 海報 ══════════
@@ -1046,13 +1108,14 @@ function paintPoster(el, path) {
   else el.classList.add('blank');
 }
 // 產生一個 <img>：有海報直接給，沒有就標記待補
-function posterTag(title, cat, week, titleZh, country) {
+function posterTag(title, cat, week, titleZh, country, extra) {
+  const cls = 'poster' + (extra ? ' ' + extra : '');
   const hit = knownPoster(title, cat);
   const y = onesYearOf(week) || new Date().getFullYear();
   const esc = x => String(x == null ? '' : x).replace(/"/g, '&quot;');
-  if (hit) return '<img class="poster" loading="lazy" alt="" src="' + posterUrl(hit) + '">';
-  if (hit === '') return '<img class="poster blank" alt="">';
-  return '<img class="poster blank" alt="" data-need="1" data-t="' + esc(title) + '" data-c="' + esc(cat) +
+  if (hit) return '<img class="' + cls + '" loading="lazy" alt="" src="' + posterUrl(hit) + '">';
+  if (hit === '') return '<img class="' + cls + ' blank" alt="">';
+  return '<img class="' + cls + ' blank" alt="" data-need="1" data-t="' + esc(title) + '" data-c="' + esc(cat) +
          '" data-y="' + y + '" data-zh="' + esc(titleZh) + '" data-cc="' + esc(country) + '">';
 }
 
@@ -1224,8 +1287,9 @@ function cancelPreview() {
 let currentCat = 'Movies|English';
 
 function switchCat(btn) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#tab-dashboard .cat-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
   btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
   currentCat = btn.dataset.cat;
   renderDashboard();
 }
@@ -1333,18 +1397,19 @@ function switchOnesYear(y) {
 
 function renderOnesList() {
   const list = onesYear === 'all' ? onesAll : onesAll.filter(e => onesYearOf(e.week) === onesYear);
-  document.getElementById('ones-list').innerHTML = list.length ? list.map(e => {
+  // 同一部片連霸時，只有第一週（最早那週）標出「連霸 N 週」
+  document.getElementById('ones-list').innerHTML = list.length ? '<div class="wall">' + list.map((e, i) => {
     const disp = e.titleZh || e.title;
-    const sub  = e.titleZh ? '<div class="sub-title">' + e.title + '</div>' : '';
     const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
     const viewTxt = e.views ? (e.est ? '≈' : '') + fmtViews(e.views) : '—';
-    return '<div class="ones-row"><span class="ones-week">' + e.week + '</span>' +
-      posterTag(e.title, e.cat, e.week, e.titleZh, e.country) +
-      '<div class="ones-title" style="flex:1;min-width:0">' +
-        '<div style="font-size:18px;">' + flag + disp + '</div>' + sub +
-      '</div>' +
-      '<span class="ones-views" title="' + (e.est ? '官方未提供，由總時數÷片長推算' : '') + '">' + viewTxt + '</span></div>';
-  }).join('') : '<div class="empty">這一年尚無資料</div>';
+    const same = list[i + 1] && list[i + 1].title === e.title;
+    return '<figure class="tile' + (same ? ' streak' : '') + '" title="' + (e.titleZh ? e.title.replace(/"/g,'&quot;') : '') + '">' +
+      '<div class="tile-poster">' + posterTag(e.title, e.cat, e.week, e.titleZh, e.country) +
+        '<span class="tile-week">' + shortWeek(e.week) + '</span></div>' +
+      '<figcaption><div class="tile-title">' + flag + disp + '</div>' +
+      '<div class="tile-views"' + (e.est ? ' title="官方未提供，由總時數÷片長推算"' : '') + '>' + viewTxt + ' 次觀看</div></figcaption>' +
+    '</figure>';
+  }).join('') + '</div>' : '<div class="empty">這一年還沒有資料</div>';
   fillPosters();
 }
 
@@ -1366,11 +1431,14 @@ function renderDashboard() {
     if (!titleMap[e.title].country && e.country) titleMap[e.title].country = e.country;
   });
   const totalViews = filtered.reduce((s, e) => s + (e.views || 0), 0);
+  const fig = (v, l) => '<div class="fig"><b>' + v + '</b><span>' + l + '</span></div>';
   document.getElementById('metrics-row').innerHTML =
-    '<div class="metric"><div class="val">' + weeks.length + '</div><div class="lbl">已記錄週數</div></div>' +
-    '<div class="metric"><div class="val">' + Object.keys(titleMap).length + '</div><div class="lbl">不重複作品</div></div>' +
-    '<div class="metric"><div class="val">' + fmtViews(totalViews) + '</div><div class="lbl">累計觀看次數</div></div>' +
-    '<div class="metric"><div class="val">' + filtered.filter(e => e.rank === 1).length + '</div><div class="lbl">冠軍記錄筆數</div></div>';
+    fig(weeks.length, '週已記錄') +
+    fig(Object.keys(titleMap).length.toLocaleString(), '部不重複作品') +
+    fig(fmtViews(totalViews), '次累計觀看') +
+    fig(filtered.filter(e => e.rank === 1).length, '次登上冠軍');
+
+  renderHero(filtered);
 
   dashFiltered = filtered;
   renderRankCard('weeks');
@@ -1562,10 +1630,11 @@ function renderRecords() {
     const weekNum = weekNumMap[w] || '';
     return '<div class="week-block">' +
       '<div class="week-header" onclick="toggleWeek(this)">' +
-        '<div><div class="week-title"><span style="color:var(--red);font-family:Bebas Neue,sans-serif;font-size:20px;margin-right:8px;">第' + weekNum + '週</span>' + w + '</div><div class="week-meta">' + total + ' 筆記錄</div></div>' +
-        '<div style="display:flex;align-items:center;gap:12px">' +
-          '<button class="del-btn" title="刪除此週" onclick="event.stopPropagation();deleteWeek(\'' + w.replace(/'/g,"\\'") + '\')">✕</button>' +
-          '<span class="week-toggle">▾</span>' +
+        '<span class="week-no">' + weekNum + '</span>' +
+        '<div class="week-head-text"><div class="week-title">' + w + '</div><div class="week-meta">第 ' + weekNum + ' 週，' + total + ' 筆</div></div>' +
+        '<div class="week-tools">' +
+          '<button class="del-btn" title="刪除這一週" onclick="event.stopPropagation();deleteWeek(\'' + w.replace(/'/g,"\\'") + '\')">刪除</button>' +
+          '<span class="week-toggle" aria-hidden="true"></span>' +
         '</div>' +
       '</div>' +
       '<div class="week-body">' +
@@ -1576,14 +1645,13 @@ function renderRecords() {
           return '<div class="cat-section">' + catHeader +
             items.map(e => {
               const flag = e.country ? e.country.split(',').map(flagImg).join('') : '';
-              const zh   = e.titleZh ? '<div style="font-size:11px;color:var(--muted);margin-top:1px;">' + e.titleZh + '</div>' : '';
+              const zh   = e.titleZh ? '<div class="rec-zh">' + e.titleZh + '</div>' : '';
               const eKey = JSON.stringify({week:e.week,cat:e.cat,title:e.title}).replace(/"/g,'&quot;');
-              return '<div class="rank-row"><span class="rank-num">' + e.rank + '</span>' +
-                '<div style="flex:1;min-width:0"><div style="font-size:13px;">' + flag + e.title + '</div>' + zh + '</div>' +
-                '<div style="display:flex;align-items:center;gap:6px;">' +
-                  '<span style="font-size:12px;color:var(--muted);white-space:nowrap;">' + fmtViews(e.views) + '</span>' +
-                  '<button class="rec-edit-btn" title="編輯" onclick="openEditModal(' + eKey + ')">✎</button>' +
-                '</div></div>';
+              return '<div class="rec-row"><span class="rec-rank">' + e.rank + '</span>' +
+                '<div class="rec-name"><div class="rec-en">' + flag + e.title + '</div>' + zh + '</div>' +
+                '<span class="rec-views">' + (e.views ? (e.est ? '≈' : '') + fmtViews(e.views) : '—') + '</span>' +
+                '<button class="rec-edit-btn" title="編輯這筆" aria-label="編輯 ' + e.title.replace(/"/g,'&quot;') + '" onclick="openEditModal(' + eKey + ')">編輯</button>' +
+                '</div>';
             }).join('') +
             '</div>';
         }).join('') +
@@ -1689,6 +1757,83 @@ async function deleteWeek(w) {
   hideLoading();
 }
 
+/* ══════════ 本週舞台：選定類別的某一週 Top 10 ══════════ */
+let heroWeek = null;
+let heroWeeks = [];
+let heroRows = [];
+
+function shortWeek(w) {
+  if (!w) return '';
+  const p = w.split(' - ').map(x => x.trim().split('/').slice(0, 2).join('/'));
+  return p.length === 2 ? p[0] + '–' + p[1] : w;
+}
+function weekYear(w) { const y = onesYearOf(w); return y ? y : ''; }
+
+function heroStep(d) {
+  const i = heroWeeks.indexOf(heroWeek);
+  const j = i + d;
+  if (j < 0 || j >= heroWeeks.length) return;
+  heroWeek = heroWeeks[j];
+  paintHero(true);
+}
+function heroPick(sel) { heroWeek = sel.value; paintHero(true); }
+
+function renderHero(filtered) {
+  heroWeeks = [...new Set(filtered.map(e => e.week))].sort((a,b) => parseWeekDate(b) - parseWeekDate(a));
+  heroRows = filtered;
+  if (heroWeeks.indexOf(heroWeek) < 0) heroWeek = heroWeeks[0] || null;
+  paintHero(false);
+}
+
+function paintHero(animate) {
+  const box = document.getElementById('hero');
+  if (!heroWeek) { box.innerHTML = '<div class="empty">這個類別還沒有資料。到「匯入」把 Netflix 官方週榜抓進來。</div>'; return; }
+  const rows = heroRows.filter(e => e.week === heroWeek).sort((a,b) => a.rank - b.rank);
+  const top = rows[0];
+  const i = heroWeeks.indexOf(heroWeek);
+  const flag = top.country ? top.country.split(',').map(flagImg).join('') : '';
+  const ctry = top.country ? top.country.split(',').map(c => COUNTRY_MAP[c.trim()] || c.trim()).join('、') : '';
+  const genres = (top.genres || []).slice(0, 3).join('、');
+  const views = top.views ? (top.est ? '≈' : '') + fmtViews(top.views) : '—';
+  const opts = heroWeeks.map(w => '<option value="' + w + '"' + (w === heroWeek ? ' selected' : '') + '>第 ' + getWeekNum(w) + ' 週　' + w + '</option>').join('');
+
+  box.innerHTML =
+    '<div class="hero-bg" aria-hidden="true">' + posterTag(top.title, top.cat, top.week, top.titleZh, top.country, 'hero-bg-img') + '</div>' +
+    '<div class="hero-bar">' +
+      '<button class="step" onclick="heroStep(1)" ' + (i >= heroWeeks.length - 1 ? 'disabled' : '') + ' aria-label="上一週">‹</button>' +
+      '<label class="week-pick"><span class="wk-no">第 ' + getWeekNum(heroWeek) + ' 週</span><span class="wk-range">' + heroWeek + '</span>' +
+        '<select onchange="heroPick(this)" aria-label="選擇週次">' + opts + '</select></label>' +
+      '<button class="step" onclick="heroStep(-1)" ' + (i <= 0 ? 'disabled' : '') + ' aria-label="下一週">›</button>' +
+      (i === 0 ? '<span class="latest">最新一週</span>' : '<button class="to-latest" onclick="heroStep(-' + i + ')">回到最新一週</button>') +
+    '</div>' +
+    '<div class="hero-main' + (animate ? ' swap' : '') + '">' +
+      '<div class="champ">' +
+        '<span class="champ-num" aria-hidden="true">1</span>' +
+        posterTag(top.title, top.cat, top.week, top.titleZh, top.country, 'champ-poster') +
+        '<div class="champ-info">' +
+          '<div class="champ-kicker">本週冠軍</div>' +
+          '<h2 class="champ-title">' + (top.titleZh || top.title) + '</h2>' +
+          (top.titleZh ? '<div class="champ-en">' + top.title + '</div>' : '') +
+          '<dl class="champ-facts">' +
+            '<div><dt>本週觀看</dt><dd>' + views + '</dd></div>' +
+            (top.weeksIn ? '<div><dt>上榜</dt><dd>' + top.weeksIn + ' 週</dd></div>' : '') +
+            (ctry ? '<div><dt>產地</dt><dd class="cc">' + flag + ctry + '</dd></div>' : '') +
+            (genres ? '<div><dt>類型</dt><dd class="gn">' + genres + '</dd></div>' : '') +
+          '</dl>' +
+        '</div>' +
+      '</div>' +
+      '<ol class="rail" aria-label="第 2 到第 10 名">' + rows.slice(1).map(e =>
+        '<li class="rail-item" style="--d:' + (e.rank - 2) + '">' +
+          '<span class="rail-num" aria-hidden="true">' + e.rank + '</span>' +
+          '<div class="rail-card">' + posterTag(e.title, e.cat, e.week, e.titleZh, e.country, 'rail-poster') + '</div>' +
+            '<div class="rail-cap"><span class="rc-t">' + (e.titleZh || e.title) + '</span>' +
+            '<span class="rc-v">' + (e.views ? (e.est ? '≈' : '') + fmtViews(e.views) : '—') + '</span></div>' +
+        '</li>').join('') +
+      '</ol>' +
+    '</div>';
+  fillPosters();
+}
+
 init();
 </script>
 
@@ -1705,9 +1850,5 @@ function updateMbTime(){
 updateMbTime();
 setInterval(updateMbTime,10000);
 </script>
-
-
-
-
 </body>
 </html>
