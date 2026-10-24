@@ -669,7 +669,6 @@ body{font-variant-numeric:tabular-nums}
       <div class="fld"><label>加入日期</label><input id="pDate" type="date"></div>
       <div class="fld full" id="pSwapBox"><label>同時丟掉（選填）</label><select id="pSwap"></select><span class="help">撿人通常要丟一個人，在這裡選，兩筆異動會一起記下來</span></div>
       <div class="fld full"><label>上季數據（<span class="sznL"></span>，每場平均）</label><div class="stin" id="pStats"></div><span class="help">照 Yahoo 球員頁的數字填，空著就不顯示</span></div>
-      <div class="fld full"><label>本季數據（<span class="cszL"></span>，每場平均）</label><div class="stin" id="pCur"></div><span class="help">照 Yahoo 球員頁本季的數字填，陣容頁顯示的就是這裡</span></div>
       <div class="fld full" id="pLogBox"><label>異動紀錄</label><div class="plog" id="pLog"></div></div>
       <div class="fld full"><label>備註</label><textarea id="pNote" placeholder="為什麼選他、傷病狀況、交易內容…"></textarea></div>
     </div>
@@ -877,7 +876,7 @@ function scoreWeekFor(w,lg){
 
 /* ===== 正規化 ===== */
 /* 上季數據（每場平均）。mpg 存成 "35:46" 文字 */
-const SZN='2025-26',CSZN='2026-27';
+const SZN='2025-26';
 const STK=[['gp','GP'],['mpg','MPG'],['pts','PTS'],['reb','REB'],['ast','AST'],['st','ST'],['blk','BLK'],['to','TO'],['fp','Fan Pts'],['cur','目前排名'],['start','% Start']];
 /* 球員數據欄位：依聯盟的計分項目決定（積分盟固定 PTS～TO＋FP） */
 const SDEF={fgp:{l:'FG%',pct:1},ftp:{l:'FT%',pct:1},tpm:{l:'3PTM'},tpp:{l:'3PT%',pct:1},pts:{l:'PTS'},oreb:{l:'OREB'},dreb:{l:'DREB'},reb:{l:'REB'},ast:{l:'AST'},
@@ -921,7 +920,7 @@ function normP(p){
   if(!log.length){log=[{a:how,d:date,n:'',t:1}];if(p.status==='已釋出'||p.status==='交易出')log.push({a:p.status==='交易出'?'交易出':'釋出',d:date,n:'',t:2})}
   sortLog(log);
   return {id:p.id||uid('p'),lg:p.lg||'lg1',name:String(p.name||'').trim(),nba:p.nba||'',pos:Array.isArray(p.pos)?p.pos.filter(x=>POS.includes(x)):[],
-    how,round:+p.round||0,price:Math.max(0,+p.price||0),ord:+p.ord||0,pick:+p.pick||0,st:normSt(p.st),cs:normSt(p.cs),date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
+    how,round:+p.round||0,price:Math.max(0,+p.price||0),ord:+p.ord||0,pick:+p.pick||0,st:normSt(p.st),date,status:statusFrom(log),log,note:p.note||'',u:+p.u||0};
 }
 function addMove(p,a,d,n){p.log.push({a,d,n:n||'',t:Date.now()+p.log.length});sortLog(p.log);p.status=statusFrom(p.log);p.u=Date.now()}
 /* 球員每週數據 */
@@ -1251,10 +1250,10 @@ function renderDraft(){
 function rosterListHTML(list){
   const SK=statKeys();
   let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr><th>球員</th><th>GP</th>'+SK.map(k=>'<th>'+SDEF[k].l+'</th>').join('')+'</tr></thead><tbody>';
-  list.forEach(p=>{const s=p.cs,out=p.status!=='在隊',t=TC[p.nba];
+  list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',t=TC[p.nba];
     h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(t?' style="--tc:'+t[0]+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
-      '<td>'+(s&&s.gp!=null?s.gp:'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+'</tr>'});
-  return h+'</tbody></table></div><div class="rl-cap">'+CSZN+' 本季每場平均・點球員填，或按上面「📋 貼上本季數據」一次更新</div>';
+      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+'</tr>'});
+  return h+'</tbody></table></div><div class="rl-cap">本季平均（每週對戰填的球員數據自動平均；全部週都有 GP 就是場均，否則是週均）</div>';
 }
 function renderRoster(){
   const el=$('v-roster');
@@ -1263,7 +1262,7 @@ function renderRoster(){
   const nIn=moves.filter(x=>x.m.a==='自由球員'||x.m.a==='交易').length,nOut=moves.filter(x=>isOut(x.m.a)).length;
   let h='<div class="rhead"><div class="rh-l"><div class="rh-n">'+on.length+'<small>人在隊</small></div><div class="rh-pos">'+
     POS.map(k=>'<span data-p="'+k+'">'+k+'<b>'+on.filter(p=>p.pos.includes(k)).length+'</b></span>').join('')+'</div></div>'+
-    '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn sm" id="btnPasteCs">📋 貼上本季數據</button><button class="btn sm danger" id="btnDropP">− 丟掉</button><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
+    '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn sm danger" id="btnDropP">− 丟掉</button><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
   if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
   const ord=(a,b)=>draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
   const card=p=>pcardHTML(p,'season');
@@ -1278,7 +1277,7 @@ function renderRoster(){
   h+='</div></div>';
   if(off.length)h+='<div class="rgroup"><h3>已離隊 '+off.length+'</h3>'+rosterListHTML(off.sort(ord))+'</div>';
   el.innerHTML=h;
-  $('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnPasteCs').onclick=openPlPaste;
+  $('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});
   el.querySelectorAll('.rl tr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   el.querySelectorAll('.tlr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   $('btnDropP').onclick=()=>openMove(null,'out');
@@ -1522,8 +1521,6 @@ function openPlayer(id,preset){
   $('pPick').value=v.pick||'';$('pPrice').value=v.price||'';$('pOrd').value=v.ord||'';
   document.querySelectorAll('.sznL').forEach(x=>x.textContent=SZN);
   const stk=[['gp','GP'],['mpg','MPG']].concat(statKeys().map(k=>[k,SDEF[k].l]),[['cur','目前排名'],['start','% Start']]);
-  document.querySelectorAll('.cszL').forEach(x=>x.textContent=CSZN);
-  $('pCur').innerHTML=[['gp','GP'],['mpg','MPG']].concat(statKeys().map(k=>[k,SDEF[k].l])).map(([k,l])=>'<label>'+l+'<input data-cs="'+k+'" '+(k==='mpg'?'placeholder="35:46"':SDEF[k]&&SDEF[k].pct?'placeholder=".475" inputmode="decimal"':'inputmode="decimal"')+' value="'+(v.cs&&v.cs[k]!=null?esc(SDEF[k]&&SDEF[k].pct?fmtS(k,v.cs[k]):v.cs[k]):'')+'"></label>').join('');
   $('pStats').innerHTML=stk.map(([k,l])=>'<label>'+l+'<input data-st="'+k+'" '+(k==='mpg'?'placeholder="35:46"':SDEF[k]&&SDEF[k].pct?'placeholder=".475" inputmode="decimal"':'inputmode="decimal"')+' value="'+(v.st&&v.st[k]!=null?esc(SDEF[k]&&SDEF[k].pct?fmtS(k,v.st[k]):v.st[k]):'')+'"></label>').join('');
   pPosSel=new Set(v.pos);paintPos();syncHow();
   $('pDel').classList.toggle('hidden',!p);
@@ -1549,7 +1546,7 @@ $('pSave').onclick=()=>{
   const clash=round?draftedIn(round):null;
   if(clash&&clash.id!==curP){toast('第 '+round+' 輪已經有 '+clash.name+'，先改掉那一位');return}
   const date=$('pDate').value||todayStr();
-  const data={name,nba:$('pTeam').value,pos:POS.filter(k=>pPosSel.has(k)),how,round,pick:Math.max(0,Math.round(+$('pPick').value||0)),price:how==='選秀'&&isAuc()?Math.max(0,Math.round(+$('pPrice').value||0)):0,ord:how==='選秀'&&isAuc()?Math.max(0,Math.round(+$('pOrd').value||0)):0,st:(()=>{const o={};$('pStats').querySelectorAll('input').forEach(i=>{o[i.dataset.st]=i.value.trim()});const old=(curP&&Pl().find(x=>x.id===curP)||{}).st||{};return normSt(Object.assign({},old,o))})(),cs:(()=>{const o={};$('pCur').querySelectorAll('input').forEach(i=>{o[i.dataset.cs]=i.value.trim()});const old=(curP&&Pl().find(x=>x.id===curP)||{}).cs||{};const m=normSt(Object.assign({},old,o));if(m)Object.keys(o).forEach(k=>{if(o[k]==='')delete m[k]});return m&&Object.keys(m).length?m:null})(),date,note:$('pNote').value.trim()};
+  const data={name,nba:$('pTeam').value,pos:POS.filter(k=>pPosSel.has(k)),how,round,pick:Math.max(0,Math.round(+$('pPick').value||0)),price:how==='選秀'&&isAuc()?Math.max(0,Math.round(+$('pPrice').value||0)):0,ord:how==='選秀'&&isAuc()?Math.max(0,Math.round(+$('pOrd').value||0)):0,st:(()=>{const o={};$('pStats').querySelectorAll('input').forEach(i=>{o[i.dataset.st]=i.value.trim()});const old=(curP&&Pl().find(x=>x.id===curP)||{}).st||{};return normSt(Object.assign({},old,o))})(),date,note:$('pNote').value.trim()};
   let p=curP&&Pl().find(x=>x.id===curP),msg='已儲存 '+name;
   if(p){Object.assign(p,data);p.log=pLogWork&&pLogWork.length?pLogWork:[{a:how,d:date,n:'',t:1}];p.log[0].a=how;p.log[0].d=date;sortLog(p.log);p.status=statusFrom(p.log)}
   else{
@@ -1683,17 +1680,17 @@ function openPlPaste(){$('plPasteTxt').value='';$('plPasteMsg').className='msg';
 $('plPasteGo').onclick=()=>{
   let d;try{d=parsePaste($('plPasteTxt').value)}catch(e){$('plPasteMsg').className='msg err';$('plPasteMsg').textContent='讀不懂這段資料：'+e.message;return}
   if(d.league){const L=D.leagues.find(l=>l.name===d.league)||D.leagues.find(l=>normName(l.name).includes(normName(d.league))||normName(d.league).includes(normName(l.name)));if(L&&L.id!==LG().id){setLg(L.id);render()}}
-  const list=d.players||{},miss=[];let n=0;const now=Date.now(),cur=d.season==='cur'||d.season===CSZN;
+  const list=d.players||{},miss=[];let n=0;const now=Date.now();
   Object.keys(list).forEach(name=>{const p=findPlayer(name),s=list[name]||{};if(!p){miss.push(name);return}
     const st={};Object.keys(s).forEach(k0=>{const k1=String(k0).toLowerCase(),k=PS_ALIAS[k1]||k1;if(k==='pick'||k==='nba'||k==='pos')return;st[k]=s[k0]});
-    if(cur)p.cs=normSt(Object.assign({},p.cs||{},st));else p.st=normSt(Object.assign({},p.st||{},st));
-    if(s.pick>0&&!cur)p.pick=Math.round(+s.pick);
+    p.st=normSt(Object.assign({},p.st||{},st));
+    if(s.pick>0)p.pick=Math.round(+s.pick);
     if(s.nba&&TC[String(s.nba).toUpperCase()])p.nba=String(s.nba).toUpperCase();
     if(Array.isArray(s.pos)){const ps=s.pos.map(x=>String(x).toUpperCase()).filter(x=>POS.includes(x));if(ps.length)p.pos=ps}
     p.u=now;n++});
   if(n){if(isDemo)render();else{saveLocal();setDirty(getDirty()+1);setSync();render();scheduleSync(1500)}}
   $('plPasteMsg').className='msg'+(miss.length||!n?' err':'');
-  $('plPasteMsg').textContent=(n?'已更新 '+n+' 位球員'+(cur?'的本季數據':'')+'（'+LG().name+'）':'沒有更新任何球員')+(miss.length?'。名單裡找不到：'+miss.join('、'):'');
+  $('plPasteMsg').textContent=(n?'已更新 '+n+' 位球員（'+LG().name+'）':'沒有更新任何球員')+(miss.length?'。名單裡找不到：'+miss.join('、'):'');
   if(n&&!miss.length)setTimeout(()=>hide('plPasteModal'),1200);
 };
 function pasteTarget(d){if(!d.week)return curW;const w=Wk().find(x=>x.week===+d.week&&!!x.playoff===!!d.playoff);return w?w.id:curW}
