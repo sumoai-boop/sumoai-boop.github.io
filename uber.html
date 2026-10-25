@@ -194,6 +194,10 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
   font-weight:700;cursor:pointer;}
 .btn-add:hover{filter:brightness(1.08);}
 /* 次要動作：匯入／匯出這種不是主線的操作，不跟主按鈕搶 */
+/* 金額欄：由費用欄位自動帶出，標一個小標籤讓人知道不用自己算 */
+.auto-tag{display:inline-block;font-size:10px;font-weight:600;color:var(--in);background:var(--in-soft);
+  padding:1px 6px;border-radius:var(--r-pill);margin-left:4px;vertical-align:1px;letter-spacing:0;}
+#f-detail{border-color:rgba(52,210,123,0.35);}
 .btn-ghost{margin-top:var(--s4);padding:11px 18px;background:transparent;color:var(--ink-2);
   border:1px solid var(--line-strong);border-radius:var(--r-sm);font-size:14px;
   font-weight:600;cursor:pointer;}
@@ -357,6 +361,20 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
 .hr-min{font-size:14px;color:var(--ink-2);margin-top:2px;}
 
 /* ── 排行列 ── */
+/* ── 客人排行 TOP30：三欄由上往下排，讀起來是 1–10、11–20、21–30 ── */
+.gt-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.gt-title span{font-size:12px;font-weight:400;color:var(--ink-3);margin-left:8px;}
+.gt-sub{font-size:12px;color:var(--ink-4);margin-bottom:12px;}
+.gt-cols{column-count:3;column-gap:28px;}
+@media(max-width:1100px){.gt-cols{column-count:2;}}
+@media(max-width:620px){.gt-cols{column-count:1;}}
+/* 固定列高：前三名的獎牌比數字高，不固定的話三欄的列會對不齊 */
+.gt-row{break-inside:avoid;gap:10px;height:42px;padding-top:0;padding-bottom:0;}
+.gt-name{flex:1;min-width:0;font-size:15px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gt-name.is-top{color:var(--ink);font-weight:600;}
+.gt-cnt{flex-shrink:0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:700;color:var(--in);}
+.gt-cnt span{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--ink-3);margin-left:3px;}
+.gt-foot{font-size:12px;color:var(--ink-4);margin-top:12px;}
 .top10-row{display:flex;justify-content:space-between;align-items:center;padding:10px 8px;
   border-radius:var(--r-sm);border-bottom:1px solid var(--line);transition:background .15s;}
 .top10-row:last-child{border-bottom:none;}
@@ -447,7 +465,6 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
   .chart-card{padding:var(--s4);}
   .sec-head{margin:var(--s5) 0 var(--s3);}
   #top5Section{grid-template-columns:1fr!important;}
-  #guestTop10 .gt-last{display:none;}
 
   #total-net-display{text-align:left!important;width:100%;}
   .form-grid{grid-template-columns:1fr 1fr!important;gap:var(--s2)!important;}
@@ -719,7 +736,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
         <div class="form-group"><label>過路費</label><input inputmode="decimal" class="form-input" type="number" id="f-toll" placeholder="0"></div>
         <div class="form-group"><label>小費</label><input inputmode="decimal" class="form-input" type="number" id="f-tip" placeholder="0"></div>
         <div class="form-group"><label>服務費</label><input inputmode="decimal" class="form-input" type="number" id="f-service" placeholder="0"></div>
-        <div class="form-group"><label>費用明細</label><input inputmode="decimal" class="form-input" type="number" id="f-detail" placeholder="0"></div>
+        <div class="form-group"><label>金額 <span class="auto-tag" title="行程費用＋加成費用＋過路費＋小費－服務費">自動計算</span></label><input inputmode="decimal" class="form-input" type="number" id="f-detail" placeholder="0" title="行程費用＋加成費用＋過路費＋小費－服務費（可手動修改）"></div>
         <div class="form-group"><label>人數</label><input inputmode="decimal" class="form-input" type="number" id="f-pax" placeholder="1" min="1"></div>
         <div class="form-group" style="position:relative;"><label>乘客</label><input class="form-input" type="text" id="f-guest" placeholder="客人名字" autocomplete="off" oninput="acShow(this,'f-guest')" onfocus="acShow(this,'f-guest')" onblur="acHide('f-guest')"><div id="ac-f-guest" class="ac-list"></div></div>
         <div class="form-group"><label>國籍</label><select class="form-input" id="f-nat"><option value="本國">本國</option><option value="外國">外國</option></select></div>
@@ -784,7 +801,7 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
             <th onclick="sortTrips('toll')" style="cursor:pointer;text-align:center">過路<br>費 ↕</th>
             <th onclick="sortTrips('tip')" style="cursor:pointer;text-align:center">小費 ↕</th>
             <th onclick="sortTrips('service')" style="cursor:pointer;text-align:center">服務<br>費 ↕</th>
-            <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">費用<br>明細 ↕</th>
+            <th onclick="sortTrips('detail')" style="cursor:pointer;text-align:center">金額 ↕</th>
             <th style="text-align:center">人數</th>
             <th onclick="sortTrips('guest')" style="cursor:pointer;text-align:center">乘客 ↕</th>
             <th onclick="sortTrips('nat')" style="cursor:pointer;text-align:center">國籍 ↕</th>
@@ -1041,12 +1058,10 @@ function renderTop5(){
   renderGuestTop10();
 }
 
-// ── 客人排行 TOP10 ──
+// ── 客人排行 TOP30：只看「名字出現幾次」──
 // 名字是手動輸入的自由欄位，同一個人可能寫成「陳」「陳先生」而被算成兩個人，
 // 所以這裡只做去頭尾空白 + 不分大小寫的合併，不做更激進的猜測。
-var guestTopSort='amt';   // 'amt'=依實收金額，'cnt'=依趟數
-function setGuestTopSort(k){ guestTopSort=k; renderGuestTop10(); }
-
+var GUEST_TOP_N=30;
 function renderGuestTop10(){
   var el=document.getElementById('guestTop10'); if(!el) return;
   var trips=getData('uberTrips');
@@ -1058,48 +1073,41 @@ function renderGuestTop10(){
     var n=(t.guest||'').trim(); if(!n) return;
     named++;
     var k=n.toLowerCase();
-    if(!map[k]) map[k]={name:n, cnt:0, amt:0, last:''};
+    if(!map[k]) map[k]={name:n, cnt:0, last:''};
     map[k].cnt++;
-    map[k].amt+=(t.detail||0);
     if(t.d && t.d>map[k].last) map[k].last=t.d;
   });
   var list=Object.keys(map).map(function(k){ return map[k]; });
-  // 主排序依選定指標，同分時用另一個指標當次要排序，避免順序每次重整都跳動
+  // 依次數排；次數相同時，最近搭過的排前面（再同就照名字），順序才固定不會每次跳動
   list.sort(function(a,b){
-    return guestTopSort==='cnt' ? (b.cnt-a.cnt)||(b.amt-a.amt)
-                                : (b.amt-a.amt)||(b.cnt-a.cnt);
+    return (b.cnt-a.cnt) || (a.last<b.last?1:a.last>b.last?-1:0) || a.name.localeCompare(b.name);
   });
-  var top=list.slice(0,10);
-
-  var chip=function(k,label){
-    var on=(guestTopSort===k);
-    return '<span id="guestSortChips"><button class="'+(on?'on':'')+'" onclick="setGuestTopSort(\''+k+'\')">'+label+'</button></span>';
-  };
+  var top=list.slice(0,GUEST_TOP_N);
+  // 第 30 名同次數、但排在 30 名之外的人數
+  var cutCnt=top.length?top[top.length-1].cnt:0;
+  var hidden=list.slice(GUEST_TOP_N).filter(function(g){ return g.cnt===cutCnt; }).length;
 
   var rows=top.map(function(g,i){
     var medal=i<3;
-    // 目前排序依據的那一欄用進帳綠標出來，另一欄退成次要灰
-    var cntCol=guestTopSort==='cnt'?'var(--in)':'var(--ink-2)';
-    var amtCol=guestTopSort==='amt'?'var(--in)':'var(--ink-2)';
-    return '<div class="top10-row" style="gap:10px;">'
+    return '<div class="top10-row gt-row">'
       +rankBadge(i)
-      +'<span style="flex:1;min-width:0;font-size:15px;color:'+(medal?'var(--ink)':'var(--ink-2)')+';font-weight:'+(medal?'600':'400')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(g.name)+'">'+esc(g.name)+'</span>'
-      +'<span style="width:66px;flex-shrink:0;text-align:right;font-family:var(--mono);font-size:16px;font-weight:700;color:'+cntCol+';">'+g.cnt
-        +'<span style="font-size:12px;color:var(--ink-3);font-weight:400;margin-left:3px;">趟</span></span>'
-      +'<span style="width:96px;flex-shrink:0;text-align:right;font-family:var(--mono);font-size:16px;font-weight:700;color:'+amtCol+';">$'+fmt(Math.round(g.amt))+'</span>'
-      +'<span class="gt-last" style="width:74px;flex-shrink:0;text-align:right;font-family:\'Space Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.35);">'+(g.last?g.last.slice(5):'—')+'</span>'
+      +'<span class="gt-name'+(medal?' is-top':'')+'" title="'+esc(g.name)+'">'+esc(g.name)+'</span>'
+      +'<span class="gt-cnt">'+g.cnt+'<span>次</span></span>'
     +'</div>';
   }).join('');
 
-  var cover=trips.length ? '共 '+named+' 趟有填乘客（佔全部 '+trips.length+' 趟的 '+(named/trips.length*100).toFixed(0)+'%）· '+list.length+' 位不重複客人' : '';
+  var cover=trips.length
+    ? named+' 趟有填乘客（佔全部 '+trips.length+' 趟的 '+(named/trips.length*100).toFixed(0)+'%）· '+list.length+' 個不同名字'
+    : '';
+  var note=hidden
+    ? '次數相同時依最近一次搭乘排序；另有 '+hidden+' 位同樣是 '+cutCnt+' 次，排在 '+GUEST_TOP_N+' 名之外'
+    : '次數相同時依最近一次搭乘排序';
 
   el.innerHTML='<div class="chart-card" style="padding:18px 20px;">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px;">'
-      +'<div style="font-size:11px;letter-spacing:0.12em;color:rgba(0,200,83,0.7);text-transform:uppercase;">客人排行 TOP10</div>'
-      +'<div>'+chip('amt','依實收金額')+chip('cnt','依趟數')+'</div>'
-    +'</div>'
-    +'<div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px;">'+cover+'</div>'
-    +(rows||'<div style="color:rgba(255,255,255,0.2);font-size:13px;">尚無乘客名字資料</div>')
+    +'<div class="gt-title">客人排行 TOP'+GUEST_TOP_N+'<span>依名字出現次數</span></div>'
+    +'<div class="gt-sub">'+cover+'</div>'
+    +(rows ? '<div class="gt-cols">'+rows+'</div><div class="gt-foot">'+note+'</div>'
+           : '<div style="color:var(--ink-4);font-size:13px;">尚無乘客名字資料</div>')
   +'</div>';
 }
 
@@ -1418,6 +1426,32 @@ function fmt(n){return Number(n).toLocaleString('zh-TW');}
 // 行程
 var tripSortKey='d', tripSortAsc=false, tripPage=1;
 var TRIP_PAGE_SIZE=25;
+
+// ── 金額自動計算 ──
+// 金額 ＝ 行程費用 ＋ 加成費用 ＋ 過路費 ＋ 小費 － 服務費
+// 只在使用者改動這五個費用欄時重算；載入舊行程編輯時不會動到原本存的金額。
+// 金額欄仍可手動修改（極少數行程平台實付跟公式對不上），直到再改任一費用欄才會被重算覆蓋。
+var TRIP_FEE_FIELDS=[['f-fare',1],['f-bonus',1],['f-toll',1],['f-tip',1],['f-service',-1]];
+function calcTripAmount(){
+  var out=document.getElementById('f-detail'); if(!out) return;
+  var any=false, sum=0;
+  TRIP_FEE_FIELDS.forEach(function(f){
+    var el=document.getElementById(f[0]); if(!el) return;
+    if(el.value!=='') any=true;
+    sum+=(parseFloat(el.value)||0)*f[1];
+  });
+  out.value = any ? String(Math.round(sum*100)/100) : '';
+}
+(function(){
+  function bind(){
+    TRIP_FEE_FIELDS.forEach(function(f){
+      var el=document.getElementById(f[0]);
+      if(el) el.addEventListener('input', calcTripAmount);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+})();
 
 function addTrip(){
   var d=document.getElementById('f-date').value;
