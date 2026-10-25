@@ -1,5 +1,36 @@
 [
   {
+    "id": "1792897991201",
+    "name": "摩斯漢堡 木新店",
+    "name1": "摩斯漢堡",
+    "name2": "木新店",
+    "type": "快餐",
+    "meal": "",
+    "price": 200,
+    "visits": 1,
+    "gscore": 3.8,
+    "addr": "116臺北市文山區樟腳里木新路三段170號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%91%A9%E6%96%AF%E6%BC%A2%E5%A0%A1+%E6%9C%A8%E6%96%B0/@24.9818623,121.5607736,17z/data=!4m15!1m8!3m7!1s0x3442aa13b8c27e23:0xf7e3e03295511c84!2z5pGp5pav5ryi5aChIOacqOaWsA!8m2!3d24.981875!4d121.5607793!10e5!16s%2Fg%2F1tj5nf7c!3m5!1s0x3442aa13b8c27e23:0xf7e3e03295511c84!8m2!3d24.981875!4d121.5607793!16s%2Fg%2F1tj5nf7c?entry=ttu&g_ep=EgoyMDI2MTAyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-24",
+    "score": 3.8,
+    "visitLog": [
+      {
+        "date": "2026-10-24",
+        "meal": "晚餐",
+        "price": 200,
+        "menu": "摩斯熱狗堡",
+        "score": 3.8,
+        "imgs": [
+          "https://i.ibb.co/G4sPFxYX/11cee7cda94f.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1792897991201
+  },
+  {
     "id": "1792780386245",
     "name": "摩斯漢堡 東湖店",
     "name1": "摩斯漢堡",
