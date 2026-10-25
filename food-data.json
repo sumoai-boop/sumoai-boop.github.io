@@ -163,14 +163,14 @@
     "name2": "微風南山店",
     "type": "韓國",
     "meal": "",
-    "price": 1247,
-    "visits": 1,
+    "price": 1056,
+    "visits": 2,
     "gscore": 4,
     "addr": "110臺北市信義區西村里松智路17號5F",
     "note": "公主進膳",
     "maps": "https://www.google.com.tw/maps/place/%E6%B6%93%E8%B1%86%E8%85%90+%E5%BE%AE%E9%A2%A8%E5%8D%97%E5%B1%B1%E5%BA%97/@25.0360548,121.5654308,17z/data=!3m1!5s0x3442abefe94582a9:0x7fa0fbeca2d2cad5!4m15!1m8!3m7!1s0x3442ab874dd776e1:0x508d8488a32eeee4!2z5raT6LGG6IWQIOW-rumiqOWNl-WxseW6lw!8m2!3d25.034247!4d121.5660377!10e9!16s%2Fg%2F11v0sqh39q!3m5!1s0x3442ab874dd776e1:0x508d8488a32eeee4!8m2!3d25.034247!4d121.5660377!16s%2Fg%2F11v0sqh39q?entry=ttu&g_ep=EgoyMDI2MTAxMy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-10-17",
-    "score": 4.5,
+    "date": "2026-10-25",
+    "score": 4.6,
     "visitLog": [
       {
         "date": "2026-10-17",
@@ -183,12 +183,22 @@
           "https://i.ibb.co/FvgpCnt/720a98b5faea.jpg",
           "https://i.ibb.co/DP1gtxh9/a44b9872b585.jpg"
         ]
+      },
+      {
+        "date": "2026-10-25",
+        "meal": "晚餐",
+        "price": 865,
+        "menu": "打爆起司年糕嫩豆腐煲、海菜起司年糕鮮魚嫩豆腐煲",
+        "score": 4.6,
+        "imgs": [
+          "https://i.ibb.co/q3cG8nJF/5ceabeb40c49.jpg"
+        ]
       }
     ],
     "imgs": [],
     "img": "",
     "createdAt": 1792255854574,
-    "updatedAt": 1792500663656
+    "updatedAt": 1792946555235
   },
   {
     "id": "1791646348898",
