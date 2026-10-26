@@ -1,5 +1,36 @@
 [
   {
+    "id": "1793023990333",
+    "name": "麥當勞 板橋雨農店",
+    "name1": "麥當勞",
+    "name2": "板橋雨農店",
+    "type": "快餐",
+    "meal": "",
+    "price": 260,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "No. 60號, Yunong Rd, 新翠里板橋區新北市220",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E9%BA%A5%E7%95%B6%E5%8B%9E-%E6%9D%BF%E6%A9%8B%E9%9B%A8%E8%BE%B2%E9%A4%90%E5%BB%B3/@25.024152,121.4580806,17z/data=!3m1!4b1!4m6!3m5!1s0x3442a81162b1ebe3:0xa63d37163ff2a9b2!8m2!3d25.0241472!4d121.4606555!16s%2Fg%2F1hc6sdm_c?entry=ttu&g_ep=EgoyMDI2MTAyMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-26",
+    "score": 4.1,
+    "visitLog": [
+      {
+        "date": "2026-10-26",
+        "meal": "晚餐",
+        "price": 260,
+        "menu": "金薯松露安格斯牛肉黑堡",
+        "score": 4.1,
+        "imgs": [
+          "https://i.ibb.co/zC2yqxP/c28715281fec.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1793023990333
+  },
+  {
     "id": "1792897991201",
     "name": "摩斯漢堡 木新店",
     "name1": "摩斯漢堡",
