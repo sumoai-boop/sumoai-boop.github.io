@@ -601,8 +601,12 @@ body{font-variant-numeric:tabular-nums}
 .tbl.rl td{padding:10px;font-size:14.5px;font-variant-numeric:tabular-nums}
 .tbl.rl tbody tr{cursor:pointer}
 .tbl.rl tbody tr:hover td{background:#F8F9FC}
-.tbl.rl th:first-child,.tbl.rl td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:150px;box-shadow:inset 4px 0 0 var(--tc,transparent)}
+.tbl.rl th:first-child,.tbl.rl td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:150px;box-shadow:inset 4px 0 0 var(--pc,transparent)}
 .tbl.rl th:first-child{background:#F6F7FA;z-index:2;box-shadow:none}
+.tbl.rl th[data-k]{cursor:pointer;user-select:none;white-space:nowrap}
+.tbl.rl th.on{color:var(--me)}
+.tbl.rl th.on::after{content:" ↓"}
+.tbl.rl th.on.asc::after{content:" ↑"}
 .tbl.rl tbody tr:hover td:first-child{background:#F8F9FC}
 .tbl.rl tr:first-child td{border-top:0}
 .rl-n{font-weight:700;font-size:15px;color:var(--ink);white-space:nowrap}
@@ -1248,11 +1252,20 @@ function renderDraft(){
 }
 
 /* 陣容：橫式列表（名字・球隊・本季數據），欄位跟著聯盟比項 */
+/* 陣容列表排序：點標題列切換；預設照位置（PG→C） */
+let rlSort={k:'pos',asc:true};
+function rlVal(p,k){const s=seasonOf(p);if(k==='gp')return s?(s.per==='g'?s.gp:s.wk):null;const v=s?s[k]:null;return v==null||v===''||isNaN(+v)?null:+v}
+function rlSorted(list,ord){
+  const k=rlSort.k;
+  if(k==='pos')return rlSort.asc?list:list.slice().reverse();
+  return list.slice().sort((a,b)=>{const x=rlVal(a,k),y=rlVal(b,k);if(x==null&&y==null)return ord(a,b);if(x==null)return 1;if(y==null)return -1;return (rlSort.asc?x-y:y-x)||ord(a,b)});
+}
 function rosterListHTML(list){
   const SK=statKeys();
-  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr><th>球員</th><th>GP</th>'+SK.map(k=>'<th>'+SDEF[k].l+'</th>').join('')+'</tr></thead><tbody>';
-  list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',t=TC[p.nba];
-    h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(t?' style="--tc:'+t[0]+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
+  const th=(k,l)=>'<th data-k="'+k+'" class="'+(rlSort.k===k?'on'+(rlSort.asc?' asc':''):'')+'">'+l+'</th>';
+  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr>'+th('pos','球員')+th('gp','GP')+SK.map(k=>th(k,SDEF[k].l)).join('')+'</tr></thead><tbody>';
+  list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',pp=POS[posRank(p)];
+    h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(pp?' data-p="'+pp+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
       '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+'</tr>'});
   return h+'</tbody></table></div><div class="rl-cap">本季平均（每週對戰填的球員數據自動平均；全部週都有 GP 就是場均，否則是週均）</div>';
 }
@@ -1267,7 +1280,7 @@ function renderRoster(){
   if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
   const ord=(a,b)=>posRank(a)-posRank(b)||draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
   const card=p=>pcardHTML(p,'season');
-  h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3>'+rosterListHTML(on.sort(ord))+'</div>';
+  h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3>'+rosterListHTML(rlSorted(on.sort(ord),ord))+'</div>';
   /* 異動紀錄：選秀併成一行，其他每筆都列 */
   const drafted=moves.filter(x=>x.m.a==='選秀'),other=moves.filter(x=>x.m.a!=='選秀').sort((a,b)=>String(b.m.d).localeCompare(String(a.m.d))||(b.m.t||0)-(a.m.t||0));
   h+='<div class="rgroup"><h3>異動紀錄 '+other.length+'</h3><div class="tl">';
@@ -1276,10 +1289,11 @@ function renderRoster(){
     '<span class="who"><b>'+esc(x.p.name)+'</b> '+teamTag(x.p,true)+(x.m.n?'<span class="nt">'+esc(x.m.n)+'</span>':'')+'</span></div>'});
   if(drafted.length){const ds=drafted.map(x=>x.m.d).filter(Boolean).sort();h+='<div class="tlr" style="cursor:default"><span class="d">'+(ds[0]?md(ds[0]):'—')+'</span><span class="mv draft">＋ 選秀</span><span class="who"><b>選秀 '+drafted.length+' 人</b><span class="nt">在「選秀」頁看每一輪</span></span></div>'}
   h+='</div></div>';
-  if(off.length)h+='<div class="rgroup"><h3>已離隊 '+off.length+'</h3>'+rosterListHTML(off.sort(ord))+'</div>';
+  if(off.length)h+='<div class="rgroup"><h3>已離隊 '+off.length+'</h3>'+rosterListHTML(rlSorted(off.sort(ord),ord))+'</div>';
   el.innerHTML=h;
   $('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});
   el.querySelectorAll('.rl tr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
+  el.querySelectorAll('.rl th[data-k]').forEach(t=>t.onclick=()=>{const k=t.dataset.k;rlSort=rlSort.k===k?{k,asc:!rlSort.asc}:{k,asc:k==='pos'||!!(SDEF[k]&&SDEF[k].low)};renderRoster()});
   el.querySelectorAll('.tlr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   $('btnDropP').onclick=()=>openMove(null,'out');
 }
