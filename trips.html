@@ -240,9 +240,10 @@ h1.th-title{font-size:36px;font-weight:900;line-height:1.1;letter-spacing:.01em;
 body.is-dragging,body.is-dragging *{cursor:grabbing!important;}
 body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .cev-row{display:flex;align-items:baseline;gap:8px;}
-/* 備註分欄：方塊夠寬時，寫不下的內容往右邊下一欄排，善用右側空間 */
-.cev-note{margin-top:3px;font-size:13px;line-height:18px;columns:260px;column-gap:28px;column-fill:auto;overflow:hidden;color:color-mix(in oklab,var(--k) 55%,#1A2238);white-space:pre-wrap;word-break:break-word;opacity:.92;}
+.cev-note{margin-top:3px;font-size:13px;line-height:18px;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;color:color-mix(in oklab,var(--k) 55%,#1A2238);white-space:pre-wrap;word-break:break-word;opacity:.92;}
 .cev-time{font-family:var(--f-num);font-size:13px;font-weight:500;line-height:1.3;color:color-mix(in oklab,var(--k) 78%,#fff);font-variant-numeric:tabular-nums;}
+.cev-note.cols{display:block;columns:260px;column-gap:28px;column-fill:auto;white-space:normal;}
+.cev-note.cols .nl{break-inside:avoid;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cev-time-in{flex-shrink:0;margin-left:2px;white-space:nowrap;font-family:var(--f-num);font-size:13px;font-weight:500;color:color-mix(in oklab,var(--k) 78%,#fff);}
 .cev-row .cev-cost{margin-left:auto;}
 .cev-title{flex:0 1 auto;min-width:0;font-size:14px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -1044,7 +1045,14 @@ function renderDayCalendar(t,day){
     var tm='<span class="cev-time-in">'+tTxt+'</span>';
     // 備註：依方塊高度算出放得下幾行，放不下的用「…」收尾，不會切到半行字
     var ntLines=Math.floor((hgt-10-19-(isPhone()?17:0))/18); // 手機上時間另起一行
-    var nt=(!o.cont&&x.note&&ntLines>=1)?'<div class="cev-note" style="height:'+(ntLines*18)+'px;">'+esc(x.note)+'</div>':'';
+    var nt='';
+    if(!o.cont&&x.note&&ntLines>=1){
+      var nls=String(x.note).split(/\n/).filter(function(l){return l.trim()!=='';});
+      // 備註有分行、而且一欄放不下：一行一段排成多欄（每段不會被拆開）；
+      // 一整段連續文字：寬度排滿、放不下用「…」收尾，避免一句話被切成兩欄
+      if(nls.length>ntLines&&!isPhone())nt='<div class="cev-note cols" style="height:'+(ntLines*18)+'px;">'+nls.map(function(l){return '<div class="nl">'+esc(l)+'</div>';}).join('')+'</div>';
+      else nt='<div class="cev-note" style="-webkit-line-clamp:'+ntLines+';">'+esc(x.note)+'</div>';
+    }
     var _d=Math.min(_i*26,320);
     var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+day+'"';
     var vt=(o.bg&&o.hasFg)?' ev-v':'';
