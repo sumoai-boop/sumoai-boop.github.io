@@ -1062,6 +1062,29 @@ function renderTop5(){
 // 名字是手動輸入的自由欄位，同一個人可能寫成「陳」「陳先生」而被算成兩個人，
 // 所以這裡只做去頭尾空白 + 不分大小寫的合併，不做更激進的猜測。
 var GUEST_TOP_N=30;
+
+// 名字合併規則（排行、乘客自動完成共用）：
+// 不分大小寫（vicky = Vicky = VICKY）、全形英文字轉半形、中間多個空白當一個。
+// 只影響「怎麼歸類」，每一趟原本存的名字一個字都不改。
+function guestKey(n){
+  var s=String(n||'');
+  try{ s=s.normalize('NFKC'); }catch(e){}
+  return s.replace(/\s+/g,' ').trim().toLowerCase();
+}
+// 同一個人有好幾種寫法時，要顯示哪一種：
+// 用最多次的那種；一樣多時，優先「首字大寫」的寫法（Vicky 勝過 vicky、VICKY），再不行就用最近一次的寫法。
+function guestDisplayName(spellings){
+  var best=null;
+  Object.keys(spellings).forEach(function(sp){
+    var v=spellings[sp];
+    var title=/^[A-Z][a-z]/.test(sp) && sp.slice(1)===sp.slice(1).toLowerCase();
+    var cand={sp:sp,cnt:v.cnt,last:v.last,title:title};
+    if(!best || cand.cnt>best.cnt
+       || (cand.cnt===best.cnt && cand.title && !best.title)
+       || (cand.cnt===best.cnt && cand.title===best.title && cand.last>best.last)) best=cand;
+  });
+  return best?best.sp:'';
+}
 function renderGuestTop10(){
   var el=document.getElementById('guestTop10'); if(!el) return;
   var trips=getData('uberTrips');
@@ -1072,12 +1095,18 @@ function renderGuestTop10(){
   trips.forEach(function(t){
     var n=(t.guest||'').trim(); if(!n) return;
     named++;
-    var k=n.toLowerCase();
-    if(!map[k]) map[k]={name:n, cnt:0, last:''};
+    var k=guestKey(n);
+    if(!map[k]) map[k]={name:n, cnt:0, last:'', sp:{}};
     map[k].cnt++;
     if(t.d && t.d>map[k].last) map[k].last=t.d;
+    var sp=map[k].sp[n]||(map[k].sp[n]={cnt:0,last:''});
+    sp.cnt++; if(t.d && t.d>sp.last) sp.last=t.d;
   });
-  var list=Object.keys(map).map(function(k){ return map[k]; });
+  var list=Object.keys(map).map(function(k){
+    var g=map[k]; g.name=guestDisplayName(g.sp);
+    g.alts=Object.keys(g.sp).length;   // 這個人有幾種寫法
+    return g;
+  });
   // 依次數排；次數相同時，最近搭過的排前面（再同就照名字），順序才固定不會每次跳動
   list.sort(function(a,b){
     return (b.cnt-a.cnt) || (a.last<b.last?1:a.last>b.last?-1:0) || a.name.localeCompare(b.name);
@@ -1091,7 +1120,7 @@ function renderGuestTop10(){
     var medal=i<3;
     return '<div class="top10-row gt-row">'
       +rankBadge(i)
-      +'<span class="gt-name'+(medal?' is-top':'')+'" title="'+esc(g.name)+'">'+esc(g.name)+'</span>'
+      +'<span class="gt-name'+(medal?' is-top':'')+'" title="'+esc(g.alts>1?'合併：'+Object.keys(g.sp).join('、'):g.name)+'">'+esc(g.name)+'</span>'
       +'<span class="gt-cnt">'+g.cnt+'<span>次</span></span>'
     +'</div>';
   }).join('');
@@ -2562,12 +2591,17 @@ var _acIdx={};
 function acPool(which){
   // 乘客名字：從歷史記錄的 guest 欄位取候選
   if(which==='f-guest'){
+    // 大小寫不同的寫法合併成同一個候選（vicky、Vicky 只出現一次，次數合計）
     var gc={};
     getData('uberTrips').forEach(function(t){
-      var g=(t.guest||'').trim();
-      if(g) gc[g]=(gc[g]||0)+1;
+      var g=(t.guest||'').trim(); if(!g) return;
+      var k=guestKey(g);
+      var e=gc[k]||(gc[k]={cnt:0,sp:{}});
+      e.cnt++;
+      var sp=e.sp[g]||(e.sp[g]={cnt:0,last:''});
+      sp.cnt++; if(t.d && t.d>sp.last) sp.last=t.d;
     });
-    return Object.keys(gc).map(function(k){return [k,gc[k]];})
+    return Object.keys(gc).map(function(k){return [guestDisplayName(gc[k].sp),gc[k].cnt];})
       .sort(function(a,b){return b[1]-a[1];});
   }
   // which: 'f-from-road' 用上車地點 fr、'f-to-road' 用下車地點 tr
