@@ -782,6 +782,7 @@ const CATS=[
   {k:'PTS',l:'PTS'},{k:'OREB',l:'OREB'},{k:'DREB',l:'DREB'},{k:'REB',l:'REB'},{k:'AST',l:'AST'},{k:'ST',l:'ST'},{k:'BLK',l:'BLK'},
   {k:'TO',l:'TO',low:1},{k:'AT',l:'A/T',dec:2},{k:'TECH',l:'TECH',low:1},{k:'DD',l:'DD'}];
 const POS=['PG','SG','SF','PF','C'];
+const posRank=p=>{const r=(p.pos||[]).map(k=>POS.indexOf(k)).filter(i=>i>=0);return r.length?Math.min(...r):99};
 /* 積分制：總分、預估分，以及可選填的六項數據（和 Yahoo 對戰頁的欄位一樣） */
 const EXTRA=[{k:'FP',l:'Fan Pts',dec:2},{k:'PROJ',l:'原始預估',dec:2}];
 const PSTATS=['PTS','REB','AST','BLK','ST','TO'];
@@ -1264,7 +1265,7 @@ function renderRoster(){
     POS.map(k=>'<span data-p="'+k+'">'+k+'<b>'+on.filter(p=>p.pos.includes(k)).length+'</b></span>').join('')+'</div></div>'+
     '<div class="rh-r"><span class="rh-mv">撿人 <b>'+nIn+'</b> · 丟掉 <b>'+nOut+'</b></span><button class="btn sm danger" id="btnDropP">− 丟掉</button><button class="btn pri sm" id="btnAddP">＋ 撿人</button></div></div>';
   if(!Pl().length){el.innerHTML=h+'<div class="card empty"><div class="big">🏀</div>選秀後在「選秀」頁把每一輪選到的球員填進去，<br>之後從自由球員撿人、交易換來的球員在這裡新增。</div>';$('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});$('btnDropP').onclick=()=>toast('還沒有在隊球員');return}
-  const ord=(a,b)=>draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
+  const ord=(a,b)=>posRank(a)-posRank(b)||draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
   const card=p=>pcardHTML(p,'season');
   h+='<div class="rgroup"><h3>在隊 '+on.length+'</h3>'+rosterListHTML(on.sort(ord))+'</div>';
   /* 異動紀錄：選秀併成一行，其他每筆都列 */
@@ -1619,7 +1620,7 @@ function openWeek(id,paste){
   $('statRows').querySelectorAll('input').forEach(i=>{i.addEventListener('input',liveScore);i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const all=Array.from($('statRows').querySelectorAll('input'));const n=all[all.indexOf(i)+1];if(n)n.focus();else $('wSave').focus()}})});
   $('wDel').classList.toggle('hidden',!w);
   const ks=psKeys(),ps=w?w.ps:{};
-  const ord=(a,b)=>draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
+  const ord=(a,b)=>posRank(a)-posRank(b)||draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
   const rows=Pl().filter(p=>p.status==='在隊'||ps[p.id]).sort(ord);
   $('wPsHead').innerHTML='<tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr>';
   $('wPs').innerHTML=rows.length?rows.map(p=>'<tr class="'+(p.status!=='在隊'?'off':'')+'" data-pid="'+p.id+'"><td title="'+esc(p.name)+'">'+esc(p.name)+'</td>'+ks.map(k=>'<td><input data-ps="'+k+'" inputmode="decimal" value="'+(ps[p.id]&&ps[p.id][k]!=null?ps[p.id][k]:'')+'"></td>').join('')+'</tr>').join('')
