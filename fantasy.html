@@ -601,7 +601,8 @@ body{font-variant-numeric:tabular-nums}
 .tbl.rl td{padding:10px;font-size:14.5px;font-variant-numeric:tabular-nums}
 .tbl.rl tbody tr{cursor:pointer}
 .tbl.rl tbody tr:hover td{background:#F8F9FC}
-.tbl.rl th:first-child,.tbl.rl td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:150px;box-shadow:inset 4px 0 0 var(--pc,transparent)}
+.tbl.rl th:first-child,.tbl.rl td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:150px;box-shadow:inset 8px 0 0 var(--pc,transparent)}
+.tbl.rl td:first-child{padding-left:18px}
 .tbl.rl th:first-child{background:#F6F7FA;z-index:2;box-shadow:none}
 .tbl.rl th[data-k]{cursor:pointer;user-select:none;white-space:nowrap}
 .tbl.rl th.on{color:var(--me)}
@@ -1254,7 +1255,7 @@ function renderDraft(){
 /* 陣容：橫式列表（名字・球隊・本季數據），欄位跟著聯盟比項 */
 /* 陣容列表排序：點標題列切換；預設照位置（PG→C） */
 let rlSort={k:'pos',asc:true};
-function rlVal(p,k){const s=seasonOf(p);if(k==='gp')return s?(s.per==='g'?s.gp:s.wk):null;const v=s?s[k]:null;return v==null||v===''||isNaN(+v)?null:+v}
+function rlVal(p,k){if(k==='pick')return curPick(p).v||null;const s=seasonOf(p);if(k==='gp')return s?(s.per==='g'?s.gp:s.wk):null;const v=s?s[k]:null;return v==null||v===''||isNaN(+v)?null:+v}
 function rlSorted(list,ord){
   const k=rlSort.k;
   if(k==='pos')return rlSort.asc?list:list.slice().reverse();
@@ -1263,10 +1264,10 @@ function rlSorted(list,ord){
 function rosterListHTML(list){
   const SK=statKeys();
   const th=(k,l)=>'<th data-k="'+k+'" class="'+(rlSort.k===k?'on'+(rlSort.asc?' asc':''):'')+'">'+l+'</th>';
-  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr>'+th('pos','球員')+th('gp','GP')+SK.map(k=>th(k,SDEF[k].l)).join('')+'</tr></thead><tbody>';
+  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr>'+th('pos','球員')+th('gp','GP')+SK.map(k=>th(k,SDEF[k].l)).join('')+th('pick','PICK')+'</tr></thead><tbody>';
   list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',pp=POS[posRank(p)];
     h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(pp?' data-p="'+pp+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
-      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+'</tr>'});
+      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+(()=>{const c=curPick(p);return '<td>'+(c.v?c.v+dlHTML(c.v,c.prev):'—')+'</td>'})()+'</tr>'});
   return h+'</tbody></table></div><div class="rl-cap">本季平均（每週對戰填的球員數據自動平均；全部週都有 GP 就是場均，否則是週均）</div>';
 }
 function renderRoster(){
@@ -1293,7 +1294,7 @@ function renderRoster(){
   el.innerHTML=h;
   $('btnAddP').onclick=()=>openPlayer(null,{how:'自由球員'});
   el.querySelectorAll('.rl tr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
-  el.querySelectorAll('.rl th[data-k]').forEach(t=>t.onclick=()=>{const k=t.dataset.k;rlSort=rlSort.k===k?{k,asc:!rlSort.asc}:{k,asc:k==='pos'||!!(SDEF[k]&&SDEF[k].low)};renderRoster()});
+  el.querySelectorAll('.rl th[data-k]').forEach(t=>t.onclick=()=>{const k=t.dataset.k;rlSort=rlSort.k===k?{k,asc:!rlSort.asc}:{k,asc:k==='pos'||k==='pick'||!!(SDEF[k]&&SDEF[k].low)};renderRoster()});
   el.querySelectorAll('.tlr[data-id]').forEach(c=>c.onclick=()=>openPlayer(c.dataset.id));
   $('btnDropP').onclick=()=>openMove(null,'out');
 }
