@@ -240,6 +240,7 @@ h1.th-title{font-size:36px;font-weight:900;line-height:1.1;letter-spacing:.01em;
 body.is-dragging,body.is-dragging *{cursor:grabbing!important;}
 body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
 .cev-row{display:flex;align-items:baseline;gap:8px;}
+.cev-note{margin-top:2px;font-size:13px;line-height:18px;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;color:color-mix(in oklab,var(--k) 55%,#1A2238);white-space:pre-wrap;word-break:break-word;opacity:.92;}
 .cev-time{font-family:var(--f-num);font-size:13px;font-weight:500;line-height:1.3;color:color-mix(in oklab,var(--k) 78%,#fff);font-variant-numeric:tabular-nums;}
 .cev-time-in{margin-left:8px;font-family:var(--f-num);font-size:13px;font-weight:500;color:color-mix(in oklab,var(--k) 78%,#fff);}
 .cev-title{flex:1;min-width:0;font-size:14px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -1034,12 +1035,15 @@ function renderDayCalendar(t,day){
     var title=(o.cont?'↳ ':'')+esc(x.title);
     var tTxt=o.cont?('～ '+minHHMM(o.e%1440)):(minHHMM(o.s)+' – '+minHHMM(o.e%1440)+(o.e>1440||o.e===1440?' 隔天':''));
     var tm=(o.e-o.s>=45)?'<div class="cev-time">'+tTxt+'</div>':'';
+    // 備註：依方塊高度算出放得下幾行，放不下的用「…」收尾，不會切到半行字
+    var ntLines=Math.floor((hgt-10-19-(tm?17:0))/18);
+    var nt=(!o.cont&&x.note&&ntLines>=1)?'<div class="cev-note" style="-webkit-line-clamp:'+ntLines+';">'+esc(x.note)+'</div>':'';
     if(!tm)title+='<span class="cev-time-in">'+tTxt+'</span>';
     var _d=Math.min(_i*26,320);
     var dg=o.cont?'':' data-id="'+x.id+'" data-s="'+o.s+'" data-e="'+o.e+'" data-day="'+day+'"';
     var vt=(o.bg&&o.hasFg)?' ev-v':'';
     return '<div class="cal-ev'+(o.bg?' ev-bg':'')+vt+(o.cont?'':' dg')+'"'+dg+' onclick="openEntryDetail(\''+x.id+'\',this)" style="animation-delay:'+_d+'ms;top:'+top.toFixed(1)+'px;height:'+hgt.toFixed(1)+'px;'+evPos(o,3,38)+'--c:'+ty.pie+';--k:'+ty.c+';'+(o.cont?'opacity:0.88;':'')+'">'
-      +(vt?'<div class="cev-vt">'+title+'</div>':'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'+tm)
+      +(vt?'<div class="cev-vt">'+title+'</div>':'<div class="cev-row"><div class="cev-title" style="color:'+ty.c+';">'+title+'</div>'+cost+'</div>'+tm+nt)
       +(o.cont?'':'<i class="ev-rs" aria-hidden="true"></i>')+'</div>';
   }).join('');
   return chips+'<div class="cal-scroll"><div class="cal" style="height:'+bodyH+'px;"><div class="cal-grid">'+grid+'</div><div class="cal-body" onclick="calSlotClick(event)">'+evs+'</div></div></div>';
