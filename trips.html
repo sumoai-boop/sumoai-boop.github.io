@@ -742,16 +742,21 @@ function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 // ── 本地儲存 / 髒資料標記 ──
 function saveLocal(){localStorage.setItem(LOCAL_KEY,JSON.stringify(DB));}
 function markDirty(){
+  stampChanges();
   var n=(+localStorage.getItem(DIRTY_KEY)||0)+1;
   localStorage.setItem(DIRTY_KEY,String(n));
   saveLocal();renderSync();
+  scheduleSync(2500);
 }
 function clearDirty(){localStorage.setItem(DIRTY_KEY,'0');renderSync();}
 function dirtyCount(){return +localStorage.getItem(DIRTY_KEY)||0;}
+var _syncMsg='';
 function renderSync(){
-  var el=document.getElementById('syncState'),n=dirtyCount();
+  var el=document.getElementById('syncState'),n=dirtyCount();if(!el)return;
+  if(_syncing){el.className='sync-state dirty';el.textContent='同步中…';return;}
+  if(_syncMsg){el.className='sync-state dirty';el.textContent=_syncMsg;return;}
   if(n>0){el.className='sync-state dirty';el.textContent='未同步 '+n+' 筆變更';}
-  else{el.className='sync-state ok';el.textContent='已同步';}
+  else{el.className='sync-state ok';el.textContent='已同步'+(_lastSyncAt?' '+String(_lastSyncAt.getHours()).padStart(2,'0')+':'+String(_lastSyncAt.getMinutes()).padStart(2,'0'):'');}
 }
 function countRecords(db){
   return (db.trips||[]).reduce((s,t)=>s+1+(t.entries||[]).length+(t.itinerary||[]).length+(t.expenses||[]).length,0);
@@ -773,26 +778,15 @@ function migrateTrip(t){
   t.entries=out;delete t.itinerary;delete t.expenses;
 }
 
-// ── 載入：raw 讀取 + 防止舊快取覆蓋本地新資料 ──
+// ── 載入：先顯示本機資料，再自動跟雲端合併 ──
 function loadData(){
   var local=null;
   try{local=JSON.parse(localStorage.getItem(LOCAL_KEY)||'null');}catch(e){}
-  fetch('https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/'+GH_BRANCH+'/'+GH_DATA_PATH+'?t='+Date.now())
-    .then(r=>r.ok?r.json():null)
-    .then(remote=>{
-      if(remote&&remote.trips){
-        if(local&&dirtyCount()>0&&countRecords(local)>=countRecords(remote)){
-          DB=local; // 本地有未同步的新資料，不被 CDN 舊快取蓋掉
-        }else{
-          DB=remote;saveLocal();clearDirty();
-        }
-      }else if(local){
-        DB=local;
-      }
-      init();
-    })
-    .catch(function(){if(local)DB=local;init();});
+  if(local&&local.trips){DB=local;if(!getBase())setBase(clone(local));init();_inited=true;}
+  syncNow({initial:true});
+  startAutoSync();
 }
+var _inited=false;
 
 function init(){
   if(!DB.trips)DB.trips=[];
@@ -1842,46 +1836,159 @@ function getToken(){
 }
 window.clearGHToken=function(){localStorage.removeItem(GH_TOKEN_KEY);alert('Token 已清除');};
 
-var _pushing=false;
-async function pushToGitHub(){
-  if(_pushing){showToast('⏳ 推送中，請稍候...',false);return;}
-  _pushing=true;
+/* ══════════ 自動同步（多裝置合併，不會互相覆蓋） ══════════
+   每筆行程、每趟旅程都有更新時間 u；刪除會留下刪除紀錄 DB.del。
+   同步時：讀雲端最新版（GitHub API，不走會快取的 raw CDN）→ 和本機逐筆合併
+   （同一筆以較新的修改為準）→ 有差異才寫回雲端。寫入衝突時重讀再合併重試。
+   觸發：開啟頁面、每次修改後 2.5 秒、回到這個分頁、每 60 秒。 */
+var _syncing=false,_syncAgain=false,_syncTimer=null,_lastSyncAt=null;
+var BASE_KEY='trips_sync_base';
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function stripU(o){var c=Object.assign({},o);delete c.u;delete c.entries;return JSON.stringify(c);}
+function getBase(){try{return JSON.parse(localStorage.getItem(BASE_KEY)||'null');}catch(e){return null;}}
+function setBase(db){try{localStorage.setItem(BASE_KEY,JSON.stringify(db));}catch(e){}}
+/* 跟上一份已知狀態比對，有改動的旅程／行程蓋上時間戳，消失的記為刪除 */
+function stampChanges(){
+  var now=Date.now(),base=getBase()||{trips:[]};
+  if(!DB.del)DB.del={};
+  var bt={};(base.trips||[]).forEach(function(t){bt[t.id]=t;});
+  var alive={};
+  DB.trips.forEach(function(t){
+    alive[t.id]=1;
+    var b=bt[t.id];
+    if(!b||stripU(b)!==stripU(t))t.u=now;
+    var be={};((b&&b.entries)||[]).forEach(function(e){be[e.id]=e;});
+    (t.entries||[]).forEach(function(e){
+      alive[e.id]=1;
+      var o=be[e.id];
+      if(!o||stripU(o)!==stripU(e))e.u=now;
+    });
+  });
+  (base.trips||[]).forEach(function(t){
+    if(!alive[t.id])DB.del[t.id]=now;
+    (t.entries||[]).forEach(function(e){if(!alive[e.id])DB.del[e.id]=now;});
+  });
+  Object.keys(alive).forEach(function(id){if(DB.del[id])delete DB.del[id];}); // 復原刪除
+  setBase(clone(DB));
+}
+/* 合併兩份資料：同一筆以 u 較新者為準；刪除紀錄比修改新就刪掉 */
+function mergeDB(L,R){
+  var preferLocal=dirtyCount()>0;
+  var del=Object.assign({},(R&&R.del)||{});
+  Object.keys((L&&L.del)||{}).forEach(function(k){del[k]=Math.max(del[k]||0,L.del[k]);});
+  var cut=Date.now()-180*864e5;Object.keys(del).forEach(function(k){if(del[k]<cut)delete del[k];});
+  function pick(a,b){ // a=本機, b=雲端
+    if(!a)return b;if(!b)return a;
+    var ua=a.u||0,ub=b.u||0;
+    if(ua!==ub)return ua>ub?a:b;
+    return preferLocal?a:b;
+  }
+  function dead(x){return x&&del[x.id]&&del[x.id]>=(x.u||0);}
+  var rt={};((R&&R.trips)||[]).forEach(function(t){rt[t.id]=t;});
+  var order=[];((L&&L.trips)||[]).forEach(function(t){order.push(t.id);});
+  ((R&&R.trips)||[]).forEach(function(t){if(order.indexOf(t.id)<0)order.push(t.id);});
+  var lt={};((L&&L.trips)||[]).forEach(function(t){lt[t.id]=t;});
+  var trips=[];
+  order.forEach(function(id){
+    var a=lt[id],b=rt[id],w=pick(a,b);
+    if(dead(w))return;
+    var t=Object.assign({},w);
+    var ae={},be={},eo=[];
+    ((a&&a.entries)||[]).forEach(function(e){ae[e.id]=e;eo.push(e.id);});
+    ((b&&b.entries)||[]).forEach(function(e){be[e.id]=e;if(!ae[e.id])eo.push(e.id);});
+    t.entries=[];
+    eo.forEach(function(eid){var e=pick(ae[eid],be[eid]);if(e&&!dead(e))t.entries.push(e);});
+    trips.push(t);
+  });
+  return {trips:trips,del:del};
+}
+function b64DecodeUtf8(b64){
+  var bin=atob(b64.replace(/\s/g,'')),bytes=new Uint8Array(bin.length);
+  for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+var API_URL='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
+async function pullRemote(token){
+  var h={'Accept':'application/vnd.github.v3+json'};if(token)h.Authorization='token '+token;
   try{
-    var token=getToken();if(!token)return;
-    var api='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_DATA_PATH;
-    var hdrs={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    showToast('⏳ 連線 GitHub...',false);
-    var sha=localStorage.getItem(SHA_KEY);
-    if(!sha){
-      var r=await fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:hdrs});
-      if(r.ok){var fi=await r.json();sha=fi.sha;}
-      else if(r.status===401){localStorage.removeItem(GH_TOKEN_KEY);showToast('❌ Token 無效',true);return;}
-      else if(r.status===404){sha=null;}
-      else{showToast('❌ 連線失敗('+r.status+')',true);return;}
-    }
-    var encoded=b64EncodeUtf8(JSON.stringify(DB,null,2));
-    showToast('⏳ 推送中...',false);
-    var body={message:'更新旅遊行程記帳',content:encoded,branch:GH_BRANCH};
-    if(sha)body.sha=sha;
-    var pr=await fetch(api,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
-    if(!pr.ok){
-      var e2=await pr.json().catch(()=>({}));
-      localStorage.removeItem(SHA_KEY);
-      showToast('❌ 推送失敗：'+(e2.message||pr.status)+'，請再按一次同步',true);
-    }else{
-      var prData=await pr.json();
-      var newSha=prData.content&&prData.content.sha;
-      if(newSha)localStorage.setItem(SHA_KEY,newSha);
-      else localStorage.removeItem(SHA_KEY);
-      clearDirty();
-      showToast('✅ 已同步到 GitHub',false);
+    var r=await fetch(API_URL+'?ref='+GH_BRANCH+'&t='+Date.now(),{headers:h,cache:'no-store'});
+    if(r.status===404)return {data:{trips:[]},sha:null};
+    if(r.status===401&&token){localStorage.removeItem(GH_TOKEN_KEY);return pullRemote(null);}
+    if(r.ok){var j=await r.json();
+      var txt=j.content?b64DecodeUtf8(j.content):await (await fetch(j.download_url+'?t='+Date.now(),{cache:'no-store'})).text();
+      return {data:JSON.parse(txt),sha:j.sha};}
+  }catch(e){}
+  // API 不通（例如次數上限）才退回 raw；raw 可能是舊快取，所以只合併、不拿來覆蓋
+  try{var r2=await fetch('https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/'+GH_BRANCH+'/'+GH_DATA_PATH+'?t='+Date.now(),{cache:'no-store'});
+    if(r2.ok)return {data:await r2.json(),sha:null,stale:true};}catch(e){}
+  return null;
+}
+function canon(db){return JSON.stringify({trips:db.trips||[],del:db.del||{}});}
+function busyEditing(){
+  return (typeof _drag!=='undefined'&&_drag&&_drag.active)||(typeof _detailEdit!=='undefined'&&_detailEdit&&document.getElementById('detailModal').classList.contains('open'));
+}
+function applyDB(next){
+  var before=canon(DB);
+  DB=next;
+  if(!DB.trips)DB.trips=[];
+  DB.trips.forEach(migrateTrip);
+  saveLocal();
+  if(!_inited){init();_inited=true;return;}
+  if(canon(DB)===before)return;
+  if(currentTripId&&!DB.trips.some(function(t){return t.id===currentTripId;})){
+    currentTripId=DB.trips.length?[...DB.trips].sort((a,b)=>b.start.localeCompare(a.start))[0].id:null;
+  }
+  if(busyEditing()){_syncAgain=true;return;}  // 正在拖動或編輯，等一下再重畫
+  var sc=document.querySelector('#logTimeline .cal-scroll'),st=sc?sc.scrollTop:null;
+  renderAll();
+  var sc2=document.querySelector('#logTimeline .cal-scroll');if(sc2&&st!=null)sc2.scrollTop=st;
+}
+function scheduleSync(ms){clearTimeout(_syncTimer);_syncTimer=setTimeout(function(){syncNow();},ms||0);}
+async function syncNow(opt){
+  opt=opt||{};
+  if(_syncing){_syncAgain=true;return;}
+  _syncing=true;_syncMsg='';renderSync();
+  try{
+    var token=localStorage.getItem(GH_TOKEN_KEY);
+    if(opt.manual&&!token){token=getToken();}
+    for(var attempt=0;attempt<4;attempt++){
+      var rem=await pullRemote(token);
+      if(!rem){_syncMsg=navigator.onLine===false?'離線中，連線後自動同步':'暫時連不到雲端';
+        if(!_inited){init();_inited=true;}break;}
+      var merged=mergeDB(DB&&DB.trips?DB:{trips:[]},rem.data||{trips:[]});
+      var needPush=canon(merged)!==canon(rem.data||{});
+      applyDB(merged);
+      setBase(clone(DB));
+      if(!needPush||rem.stale){ if(!needPush){clearDirty();_lastSyncAt=new Date();} break; }
+      if(!token){_syncMsg='未設定 Token，只能讀取（按同步設定）';break;}
+      var body={message:'更新旅遊行程記帳',content:b64EncodeUtf8(JSON.stringify(DB,null,2)),branch:GH_BRANCH};
+      if(rem.sha)body.sha=rem.sha;
+      var pr=await fetch(API_URL,{method:'PUT',headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(pr.ok){clearDirty();_lastSyncAt=new Date();if(opt.manual)showToast('✅ 已同步',false);break;}
+      if(pr.status===401){localStorage.removeItem(GH_TOKEN_KEY);_syncMsg='Token 無效，按同步重新設定';break;}
+      if(pr.status===409||pr.status===422){continue;} // 別台裝置剛寫入：重讀、再合併一次
+      _syncMsg='同步失敗（'+pr.status+'），稍後自動重試';break;
     }
   }catch(err){
-    showToast('❌ '+(err.message||'同步失敗'),true);
+    _syncMsg='同步失敗，稍後自動重試';
+    if(!_inited){init();_inited=true;}
   }finally{
-    _pushing=false;
+    _syncing=false;renderSync();
+    if(_syncAgain){_syncAgain=false;scheduleSync(1500);}
   }
 }
+function startAutoSync(){
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')scheduleSync(300);});
+  window.addEventListener('focus',function(){scheduleSync(300);});
+  window.addEventListener('online',function(){scheduleSync(300);});
+  setInterval(function(){
+    if(document.visibilityState!=='visible')return;
+    if(!localStorage.getItem(GH_TOKEN_KEY)&&Math.random()<0.8)return; // 沒 Token 時少打 API（每小時 60 次上限）
+    syncNow();
+  },60000);
+}
+/* 側欄的「同步」按鈕：立即同步（第一次會要求輸入 Token） */
+function pushToGitHub(){syncNow({manual:true});}
 
 function updateNowLine(){
   var el=document.querySelector('.cal-now');if(!el)return;
