@@ -339,6 +339,18 @@
           "end": "14:00",
           "amount": 0,
           "cur": "THB"
+        },
+        {
+          "id": "mvs55ywrwwkad",
+          "date": "2026-11-26",
+          "time": "18:00",
+          "type": "餐飲",
+          "title": "必比登 傳統泰北菜",
+          "note": "Huen Muan Jai",
+          "end": "19:30",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793193592060
         }
       ]
     },
@@ -1687,5 +1699,6 @@
       "budget": 0,
       "entries": []
     }
-  ]
+  ],
+  "del": {}
 }
