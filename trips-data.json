@@ -353,6 +353,18 @@
           "amount": 0,
           "cur": "THB",
           "u": 1793195252123
+        },
+        {
+          "id": "mvs8e2iawhk2x",
+          "date": "2026-11-26",
+          "time": "15:00",
+          "type": "餐飲",
+          "title": "火山媽媽麵",
+          "note": "Mae–Jin Thai Food & Bistro",
+          "end": "16:00",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793199008818
         }
       ]
     },
