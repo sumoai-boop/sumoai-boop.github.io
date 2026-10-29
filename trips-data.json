@@ -385,14 +385,26 @@
         {
           "id": "mvtlmtf56go4f",
           "date": "2026-11-28",
-          "time": "11:30",
+          "time": "11:15",
           "type": "地點",
           "title": "Baan Kang Wat藝術村",
           "note": "",
-          "end": "13:30",
+          "end": "13:15",
           "amount": 0,
           "cur": "THB",
-          "u": 1793281986645
+          "u": 1793282064550
+        },
+        {
+          "id": "mvtlu55b1lnjv",
+          "date": "2026-11-28",
+          "time": "10:00",
+          "type": "餐飲",
+          "title": "早午餐",
+          "note": "Khao Ngai Breakfast and Brunch",
+          "end": "11:00",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793282059919
         }
       ]
     },
