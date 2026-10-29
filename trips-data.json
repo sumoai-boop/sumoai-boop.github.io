@@ -198,28 +198,6 @@
           "cur": "THB"
         },
         {
-          "id": "mumia2nndhlsu",
-          "date": "2026-11-26",
-          "time": "15:00",
-          "type": "其他",
-          "title": "MAYA百貨",
-          "note": "",
-          "end": "16:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mumiaql9to5sn",
-          "date": "2026-11-26",
-          "time": "17:00",
-          "type": "其他",
-          "title": "尼曼一號",
-          "note": "",
-          "end": "18:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "munf1996afqff",
           "date": "2026-11-27",
           "time": "08:30",
@@ -231,26 +209,16 @@
           "cur": "THB"
         },
         {
-          "id": "munf490ifj8ys",
-          "date": "2026-11-26",
-          "time": "10:30",
-          "type": "景點",
-          "title": "逛Raya Heritage",
-          "note": "",
-          "end": "13:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "munfnwto5ybak",
           "date": "2026-11-26",
-          "time": "11:30",
+          "time": "11:00",
           "type": "餐飲",
           "title": "午餐-Khu Khao at Raya Heritage",
           "note": "",
-          "end": "13:00",
+          "end": "12:30",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793236540182
         },
         {
           "id": "mvrwgl67bxp1i",
@@ -1836,6 +1804,9 @@
   ],
   "del": {
     "mumi9bxuojb3o": 1793236517244,
-    "mvdd868oto6ye": 1793236520670
+    "mvdd868oto6ye": 1793236520670,
+    "mumia2nndhlsu": 1793236530326,
+    "mumiaql9to5sn": 1793236532036,
+    "munf490ifj8ys": 1793236536927
   }
 }
