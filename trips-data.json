@@ -198,17 +198,6 @@
           "cur": "THB"
         },
         {
-          "id": "munf1996afqff",
-          "date": "2026-11-27",
-          "time": "08:30",
-          "type": "其他",
-          "title": "一日遊",
-          "note": "",
-          "end": "18:30",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "munfnwto5ybak",
           "date": "2026-11-26",
           "time": "11:00",
@@ -1807,6 +1796,7 @@
     "mvdd868oto6ye": 1793236520670,
     "mumia2nndhlsu": 1793236530326,
     "mumiaql9to5sn": 1793236532036,
-    "munf490ifj8ys": 1793236536927
+    "munf490ifj8ys": 1793236536927,
+    "munf1996afqff": 1793236546242
   }
 }
