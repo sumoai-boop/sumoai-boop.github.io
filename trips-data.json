@@ -405,6 +405,18 @@
           "amount": 0,
           "cur": "THB",
           "u": 1793282059919
+        },
+        {
+          "id": "mvtlzqdwwetol",
+          "date": "2026-11-27",
+          "time": "20:00",
+          "type": "餐飲",
+          "title": "必比登 晚餐",
+          "note": "Kang Jingjai",
+          "end": "21:00",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793282320724
         }
       ]
     },
