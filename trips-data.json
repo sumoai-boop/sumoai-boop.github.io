@@ -165,17 +165,6 @@
           "cur": "THB"
         },
         {
-          "id": "mvdd4jh2c8q4m",
-          "date": "2026-11-29",
-          "time": "09:00",
-          "type": "地點",
-          "title": "真心市集",
-          "note": "",
-          "end": "12:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "mvdd7siw6js4w",
           "date": "2026-11-26",
           "time": "13:00",
@@ -389,6 +378,18 @@
           "end": "20:00",
           "amount": 0,
           "cur": "THB"
+        },
+        {
+          "id": "mvtlmtf56go4f",
+          "date": "2026-11-29",
+          "time": "10:00",
+          "type": "地點",
+          "title": "Baan Kang Wat藝術村",
+          "note": "",
+          "end": "12:00",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793281718129
         }
       ]
     },
@@ -1749,6 +1750,7 @@
     "mumi1ajn5tqbx": 1793236554496,
     "mumhx0z46ltzz": 1793236560894,
     "mvdddpibpdvnr": 1793236565692,
-    "mumhoz17kp7yx": 1793236568981
+    "mumhoz17kp7yx": 1793236568981,
+    "mvdd4jh2c8q4m": 1793281720841
   }
 }
