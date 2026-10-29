@@ -132,17 +132,6 @@
           "cur": "TWD"
         },
         {
-          "id": "mumhoz17kp7yx",
-          "date": "2026-11-29",
-          "time": "17:00",
-          "type": "景點",
-          "title": "週日夜市",
-          "note": "",
-          "end": "20:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "mumhqduk9gh6x",
           "date": "2026-11-29",
           "time": "18:00",
@@ -161,17 +150,6 @@
           "title": "無菜單料理",
           "note": "B Samcook Home16",
           "end": "20:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mumhx0z46ltzz",
-          "date": "2026-11-28",
-          "time": "13:30",
-          "type": "景點",
-          "title": "古城區觀光",
-          "note": "",
-          "end": "17:30",
           "amount": 0,
           "cur": "THB"
         },
@@ -273,17 +251,6 @@
           "title": "一日遊",
           "note": "",
           "end": "18:30",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mvdddpibpdvnr",
-          "date": "2026-11-28",
-          "time": "18:30",
-          "type": "餐飲",
-          "title": "B Samcook Home16",
-          "note": "",
-          "end": "20:30",
           "amount": 0,
           "cur": "THB"
         },
@@ -1777,6 +1744,9 @@
     "munf490ifj8ys": 1793236536927,
     "munf1996afqff": 1793236546242,
     "mumhvb0tkfja8": 1793236552886,
-    "mumi1ajn5tqbx": 1793236554496
+    "mumi1ajn5tqbx": 1793236554496,
+    "mumhx0z46ltzz": 1793236560894,
+    "mvdddpibpdvnr": 1793236565692,
+    "mumhoz17kp7yx": 1793236568981
   }
 }
