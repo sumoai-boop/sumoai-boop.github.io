@@ -198,17 +198,6 @@
           "cur": "THB"
         },
         {
-          "id": "mumi9bxuojb3o",
-          "date": "2026-11-26",
-          "time": "14:30",
-          "type": "景點",
-          "title": "尼曼區觀光",
-          "note": "",
-          "end": "18:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "mumia2nndhlsu",
           "date": "2026-11-26",
           "time": "15:00",
@@ -1857,5 +1846,7 @@
       "entries": []
     }
   ],
-  "del": {}
+  "del": {
+    "mumi9bxuojb3o": 1793236517244
+  }
 }
