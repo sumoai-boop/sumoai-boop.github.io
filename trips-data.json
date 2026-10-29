@@ -145,13 +145,14 @@
         {
           "id": "mumhrwcd0asqt",
           "date": "2026-11-28",
-          "time": "18:00",
+          "time": "19:30",
           "type": "餐飲",
           "title": "無菜單料理",
           "note": "B Samcook Home16",
-          "end": "20:00",
+          "end": "21:30",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793236652124
         },
         {
           "id": "munfnwto5ybak",
