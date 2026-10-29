@@ -213,25 +213,27 @@
         },
         {
           "id": "mvddlv4vww0yb",
-          "date": "2026-11-28",
-          "time": "15:00",
+          "date": "2026-11-29",
+          "time": "15:30",
           "type": "景點",
           "title": "藤編一條街",
           "note": "",
-          "end": "16:00",
+          "end": "16:30",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793281810578
         },
         {
           "id": "mvddrd6adpk0p",
-          "date": "2026-11-28",
-          "time": "16:00",
+          "date": "2026-11-29",
+          "time": "16:45",
           "type": "景點",
           "title": "瓦洛洛市場 Warorot Market",
           "note": "",
-          "end": "17:00",
+          "end": "17:45",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793281812258
         },
         {
           "id": "mvomo3f74g53b",
