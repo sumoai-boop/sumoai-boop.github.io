@@ -251,9 +251,10 @@
           "type": "地點",
           "title": "一日遊",
           "note": "",
-          "end": "18:30",
+          "end": "19:00",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793237099293
         },
         {
           "id": "mvddf6twlp5lu",
