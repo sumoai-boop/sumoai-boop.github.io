@@ -165,17 +165,6 @@
           "cur": "THB"
         },
         {
-          "id": "mumhvb0tkfja8",
-          "date": "2026-11-28",
-          "time": "09:00",
-          "type": "景點",
-          "title": "真心市集 Jing Jai Market",
-          "note": "",
-          "end": "13:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "mumhx0z46ltzz",
           "date": "2026-11-28",
           "time": "13:30",
@@ -183,17 +172,6 @@
           "title": "古城區觀光",
           "note": "",
           "end": "17:30",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mumi1ajn5tqbx",
-          "date": "2026-11-29",
-          "time": "09:00",
-          "type": "景點",
-          "title": "真心市集 Jing Jai Market",
-          "note": "",
-          "end": "13:00",
           "amount": 0,
           "cur": "THB"
         },
@@ -1797,6 +1775,8 @@
     "mumia2nndhlsu": 1793236530326,
     "mumiaql9to5sn": 1793236532036,
     "munf490ifj8ys": 1793236536927,
-    "munf1996afqff": 1793236546242
+    "munf1996afqff": 1793236546242,
+    "mumhvb0tkfja8": 1793236552886,
+    "mumi1ajn5tqbx": 1793236554496
   }
 }
