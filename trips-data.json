@@ -55,17 +55,6 @@
           "cur": "TWD"
         },
         {
-          "id": "mruophkmvlvj6",
-          "date": "2026-11-25",
-          "time": "",
-          "type": "住宿",
-          "title": "The Grand Napat Hotel",
-          "note": "11 月 25 日~11 月 30 日",
-          "end": "",
-          "amount": 15655,
-          "cur": "TWD"
-        },
-        {
           "id": "mruos29zzivq3",
           "date": "2026-11-25",
           "time": "15:00",
@@ -1779,6 +1768,7 @@
     "mumhx0z46ltzz": 1793236560894,
     "mvdddpibpdvnr": 1793236565692,
     "mumhoz17kp7yx": 1793236568981,
-    "mvdd4jh2c8q4m": 1793281720841
+    "mvdd4jh2c8q4m": 1793281720841,
+    "mruophkmvlvj6": 1793376402259
   }
 }
