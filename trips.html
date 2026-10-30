@@ -406,7 +406,74 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
   .tk-en{font-size:21px;}
   .tk-total dd{font-size:30px;}
 }
+/* ════════ 路線檢視 ════════ */
+.rv-scope{margin-left:6px;}
+.rv-scope[style*="none"]{display:none!important;}
+.rv-day{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px;align-items:start;margin-bottom:34px;}
+.rv-hero{position:relative;overflow:hidden;border-radius:20px;padding:22px 28px 20px;margin-bottom:20px;color:#fff;
+  background:radial-gradient(120% 140% at 100% 0%,#F7864F 0%,var(--accent) 38%,#C9420E 100%);box-shadow:0 18px 36px -20px rgba(201,66,14,.8);}
+.rv-hero::after{content:'';position:absolute;right:-40px;bottom:-70px;width:240px;height:240px;border-radius:50%;border:38px solid rgba(255,255,255,.08);}
+.rv-k{font-size:12px;font-weight:700;letter-spacing:.12em;opacity:.85;}
+.rv-big{font-family:var(--f-num);font-size:52px;font-weight:700;line-height:1;margin-top:2px;}
+.rv-big small{font-family:var(--f-ui);font-size:18px;font-weight:700;margin-left:10px;opacity:.9;}
+.rv-stat{display:flex;gap:26px;margin-top:12px;position:relative;z-index:1;}
+.rv-stat div{font-size:12px;opacity:.88;}
+.rv-stat b{display:block;font-family:var(--f-num);font-size:21px;font-weight:600;}
+.rv-path{position:relative;padding-left:60px;}
+.rv-path::before{content:'';position:absolute;left:22px;top:28px;bottom:28px;width:2px;background:repeating-linear-gradient(180deg,var(--ink-3) 0 6px,transparent 6px 12px);opacity:.35;}
+.rv-stop{position:relative;background:var(--sheet);border-radius:16px;padding:14px 18px;box-shadow:0 1px 0 rgba(26,34,56,.04),0 1px 3px rgba(26,34,56,.07);cursor:pointer;
+  transition:transform .2s cubic-bezier(.23,1,.32,1),box-shadow .2s cubic-bezier(.23,1,.32,1);}
+.rv-stop:hover{transform:translateY(-1px);box-shadow:0 10px 26px -14px rgba(26,34,56,.35);}
+.rv-pin{position:absolute;left:-55px;top:12px;width:34px;height:34px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:var(--c);
+  box-shadow:0 0 0 4px var(--paper),0 6px 12px -4px color-mix(in oklab,var(--c) 80%,#000);display:grid;place-items:center;}
+.rv-pin b{transform:rotate(45deg);font-family:var(--f-num);font-weight:700;color:#fff;font-size:15px;}
+.rv-hd{display:flex;align-items:center;gap:12px;}
+.rv-tt{min-width:0;}
+.rv-t{font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums;}
+.rv-stop h4{font-size:16.5px;font-weight:900;line-height:1.3;}
+.rv-ic{width:30px;height:30px;flex-shrink:0;border-radius:9px;display:grid;place-items:center;background:color-mix(in oklab,var(--c) 24%,#fff);color:var(--k);}
+.rv-ic svg{width:16px;height:16px;}
+.rv-amt{margin-left:auto;font-family:var(--f-num);font-weight:600;font-size:16px;color:var(--local);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.rv-amt.twd{color:var(--twd);}
+.rv-amt small{font-size:12px;margin-left:2px;font-weight:500;}
+.rv-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--rule-soft);color:var(--ink-2);font-size:13.5px;line-height:1.6;white-space:pre-line;}
+.rv-gap{display:flex;align-items:center;gap:8px;padding:8px 0 8px 4px;font-size:12.5px;color:var(--ink-3);}
+.rv-gap svg{width:14px;height:14px;}
+.rv-gap.free{color:var(--accent-dk);font-weight:700;}
+.rv-gap.free span{background:var(--wash);padding:2px 10px;border-radius:99px;}
+.rv-zone{display:flex;align-items:center;gap:12px;margin:16px 0 10px -60px;padding:9px 16px;border-radius:14px;cursor:pointer;color:var(--k);
+  background:linear-gradient(100deg,color-mix(in oklab,var(--c) 30%,#fff),color-mix(in oklab,var(--c) 8%,#fff) 72%);}
+.rv-zone:first-child{margin-top:0;}
+.rv-zone b{font-size:15px;font-weight:900;}
+.rv-zt{font-family:var(--f-num);font-weight:600;font-size:13.5px;}
+.rv-side{position:sticky;top:44px;display:flex;flex-direction:column;gap:14px;}
+.rv-card{background:var(--sheet);border-radius:18px;padding:16px 18px;box-shadow:0 1px 0 rgba(26,34,56,.04),0 1px 3px rgba(26,34,56,.07);}
+.rv-card h3{font-size:13px;font-weight:700;color:var(--ink-3);margin-bottom:10px;}
+.rv-donut{display:flex;align-items:center;gap:14px;}
+.rv-donut svg{width:92px;height:92px;flex-shrink:0;}
+.rv-donut ul{list-style:none;flex:1;font-size:13px;}
+.rv-donut li{display:flex;align-items:center;gap:6px;padding:2px 0;}
+.rv-donut li i{width:8px;height:8px;border-radius:2px;background:var(--c);}
+.rv-donut li span{margin-left:auto;font-family:var(--f-num);font-weight:600;}
+.rv-allday{display:flex;gap:10px;align-items:center;margin-top:6px;cursor:pointer;font-size:13px;color:var(--ink-2);}
+.rv-allday b{display:block;color:var(--ink);font-size:14px;}
+.rv-muted{color:var(--ink-3);font-size:13px;}
+.rv-empty{padding:16px 0;}
+.rv-day.compact .rv-stop{padding:11px 16px;}
+.rv-day.compact .rv-hero{padding:18px 24px 16px;}
+.rv-day.compact .rv-big{font-size:42px;}
 @media (max-width:768px){
+  .rv-day{grid-template-columns:1fr;gap:14px;}
+  .rv-side{position:static;}
+  .rv-hero{padding:18px 20px;}
+  .rv-big{font-size:40px;}
+  .rv-stat{gap:18px;}
+  .rv-path{padding-left:50px;}
+  .rv-path::before{left:17px;}
+  .rv-pin{left:-48px;width:30px;height:30px;}
+  .rv-zone{margin-left:-50px;}
+  .rv-stop{padding:12px 14px;}
+  .cal-toolbar{row-gap:8px;}
   .mb-menu{display:none;}
   .sidebar{transform:translateX(-100%);box-shadow:none;}
   .sidebar.open{transform:none;box-shadow:0 0 40px rgba(26,34,56,.25);}
@@ -565,6 +632,11 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
         <div class="cal-seg" role="tablist">
           <button id="segDay" onclick="setCalMode('day')">日</button>
           <button id="segWeek" onclick="setCalMode('week')">週</button>
+          <button id="segRoute" onclick="setCalMode('route')">路線</button>
+        </div>
+        <div class="cal-seg rv-scope" id="rvScope" role="tablist" aria-label="路線範圍">
+          <button id="rvOne" onclick="setRouteScope('day')">一日</button>
+          <button id="rvAll" onclick="setRouteScope('all')">全部</button>
         </div>
       </div>
       <div class="day-tabs" id="logDayTabs"></div>
@@ -717,7 +789,8 @@ let DB={trips:[]};
 let currentTripId=null;
 let currentView='log';
 let itSelectedDate=null;
-let calMode=(function(){try{return localStorage.getItem('trips_cal_mode')==='week'?'week':'day';}catch(e){return 'day';}})();
+let calMode=(function(){try{var m=localStorage.getItem('trips_cal_mode');return (m==='week'||m==='route')?m:'day';}catch(e){return 'day';}})();
+let routeScope=(function(){try{return localStorage.getItem('trips_route_scope')==='all'?'all':'day';}catch(e){return 'day';}})();
 
 // ── 工具 ──
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -928,26 +1001,34 @@ function renderLog(){
   }).join('');
   var wk=weekDaysFor(itSelectedDate);
   var inTrip=function(d){return d>=t.start&&d<=t.end;};
-  var viewDays=calMode==='week'?wk.filter(inTrip):[itSelectedDate];
+  var routeAll=(calMode==='route'&&routeScope==='all');
+  var viewDays=calMode==='week'?wk.filter(inTrip):routeAll?days:[itSelectedDate];
   var items=t.entries.filter(x=>viewDays.indexOf(x.date)>=0);
   var sub=items.reduce((s,x)=>s+entryTWD(x,t),0);
-  document.getElementById('logDaySub').innerHTML=calMode==='week'
+  document.getElementById('logDaySub').innerHTML=routeAll
+    ?(sub>0?'<span class="ds-sum">全部 NT$ '+num(sub)+'</span>':'')
+    :calMode==='week'
     ?'<span class="ds-day">'+fmtMD(wk[0])+' – '+fmtMD(wk[6])+'</span>'+(sub>0?'<span class="ds-sum">本週 NT$ '+num(sub)+'</span>':'')
     :(items.length?'<span class="ds-day">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
       +(sub>0?'<span class="ds-sum">當日 NT$ '+num(sub)+'</span>':''):'');
   document.getElementById('segDay').className=calMode==='day'?'on':'';
   document.getElementById('segWeek').className=calMode==='week'?'on':'';
-  document.getElementById('calRange').textContent=calMode==='week'
+  document.getElementById('segRoute').className=calMode==='route'?'on':'';
+  document.getElementById('rvScope').style.display=calMode==='route'?'':'none';
+  document.getElementById('rvOne').className=(calMode==='route'&&!routeAll)?'on':'';
+  document.getElementById('rvAll').className=routeAll?'on':'';
+  document.getElementById('calRange').textContent=routeAll?('全部 '+days.length+' 天・'+fmtMD(days[0])+' – '+fmtMD(days[days.length-1])):calMode==='week'
     ?(wk[0].slice(0,4)+' '+fmtMD(wk[0])+' – '+fmtMD(wk[6]))
     :(itSelectedDate.slice(0,4)+' '+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate));
   var todayBtn=document.getElementById('calTodayBtn');
   if(todayBtn){todayBtn.hidden=!inTrip(today);todayBtn.disabled=false;}   /* 不在旅程期間就不顯示，不再留一顆灰掉的按鈕 */
-  document.getElementById('logDayTabs').style.display=calMode==='week'?'none':'';
+  document.getElementById('logDayTabs').style.display=(calMode==='week'||routeAll)?'none':'';
   var at=document.querySelector('#logDayTabs .day-tab.active');
   if(at&&at.scrollIntoView&&window.matchMedia('(max-width:768px)').matches){var dt=document.getElementById('logDayTabs');dt.scrollLeft=at.offsetLeft-dt.offsetWidth/2+at.offsetWidth/2;}
   var host=document.getElementById('logTimeline');
   document.getElementById('logEmpty').style.display='none';
   host.style.display='block';
+  if(calMode==='route'){host.innerHTML=renderRouteView(t,viewDays,routeAll);return;}
   host.innerHTML=calMode==='week'?renderWeekCalendar(t,wk):renderDayCalendar(t,itSelectedDate);
   var sc=host.querySelector('.cal-scroll');
   fitCalHeight();
@@ -1153,8 +1234,79 @@ window.addEventListener('resize',function(){
     if(calcHP(_reserve[calMode])!==HPX){renderLog();}else{fitCalHeight();}
   },200);
 });
+/* ══════════ 路線檢視：一天一條路線，站點編號、標出移動與空檔 ══════════ */
+var RV_P='fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"';
+var RV_ICON={
+ '景點':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+ '餐飲':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1.3-3.5 4-3.5 7.5V14H17"/></svg>',
+ '交通':'<svg viewBox="0 0 24 24" '+RV_P+'><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8 21l1.5-4M16 21l-1.5-4"/></svg>',
+ '機票':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M10.5 13.5 3 11l1.5-1.5 7.5 1 4.5-5c1-1 2.5-1.2 3.2-.5s.5 2.2-.5 3.2l-5 4.5 1 7.5L13 22l-2.5-7.5z"/></svg>',
+ '購物':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M5 7h14l-1 13H6z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>',
+ '住宿':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>',
+ '地點':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+ '其他':'<svg viewBox="0 0 24 24" '+RV_P+'><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>'};
+var RV_WALK='<svg viewBox="0 0 24 24" '+RV_P+'><circle cx="13" cy="4" r="1.6"/><path d="M10 21l2-6-2.5-2.5L11 8l3 3 3 1M8.5 11 7 15"/></svg>';
+var RV_CUP='<svg viewBox="0 0 24 24" '+RV_P+'><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v3M12 3v3"/></svg>';
+function rvSty(x){var g=TAG[x.type]||TAG['其他'];return '--c:'+g.pie+';--k:'+g.c+';';}
+function rvIc(x){return '<span class="rv-ic" style="'+rvSty(x)+'">'+(RV_ICON[x.type]||RV_ICON['其他'])+'</span>';}
+function rvAmt(x){if(!(+x.amount>0))return '';return '<span class="rv-amt'+(x.cur==='TWD'?' twd':'')+'">'+(x.cur==='TWD'?'NT$'+num(x.amount):num(x.amount)+'<small>'+esc(x.cur||'')+'</small>')+'</span>';}
+function rvDur(m){return m>=60?(Math.floor(m/60)+' 小時'+(m%60?' '+(m%60)+' 分':'')):(m+' 分');}
+function rvRange(x){return minHHMM(x.s%1440)+' – '+minHHMM(x.e%1440)+(x.e>1440?' 隔天':'');}
+function rvDonut(by){
+  var keys=Object.keys(by).sort(function(a,b){return by[b]-by[a];}),tot=keys.reduce(function(s,k){return s+by[k];},0);
+  if(!tot)return '<div class="rv-muted">這天沒有記錄花費</div>';
+  var a=-Math.PI/2,R=42,r=28,c=48,paths='';
+  if(keys.length===1)paths='<circle cx="48" cy="48" r="35" fill="none" stroke="'+TAG[keys[0]].pie+'" stroke-width="14"/>';
+  else keys.forEach(function(k){var b=a+by[k]/tot*Math.PI*2,L=(b-a)>Math.PI?1:0,p=function(rr,an){return (c+rr*Math.cos(an)).toFixed(1)+' '+(c+rr*Math.sin(an)).toFixed(1);};
+    paths+='<path d="M'+p(R,a)+' A'+R+' '+R+' 0 '+L+' 1 '+p(R,b)+' L'+p(r,b)+' A'+r+' '+r+' 0 '+L+' 0 '+p(r,a)+'Z" fill="'+TAG[k].pie+'" stroke="#fff" stroke-width="1.5"/>';a=b;});
+  return '<div class="rv-donut"><svg viewBox="0 0 96 96">'+paths+'</svg><ul>'+keys.map(function(k){return '<li style="--c:'+TAG[k].pie+'"><i></i>'+k+'<span>'+num(by[k])+'</span></li>';}).join('')+'</ul></div>';
+}
+function rvDay(t,d,compact){
+  var days=dateRange(t.start,t.end),idx=days.indexOf(d);
+  var all=(t.entries||[]).filter(function(e){return e.date===d;});
+  var timed=all.filter(function(e){return toMin(e.time)!=null;}).map(function(e){var s=toMin(e.time),en=toMin(e.end);if(en==null)en=s+60;else if(en<=s)en+=1440;return {x:e,s:s,e:en,type:e.type};})
+    .sort(function(a,b){return a.s-b.s||b.e-a.e;});
+  var zones=timed.filter(function(o){return o.type==='地點';});zones.forEach(function(z){z.kids=[];});
+  var top=[];
+  timed.forEach(function(o){if(o.type==='地點')return;var z=zones.find(function(z){return o.s>=z.s&&o.s<z.e;});if(z)z.kids.push(o);else top.push(o);});
+  var list=top.concat(zones).sort(function(a,b){return a.s-b.s||(a.type==='地點'?-1:1);});
+  var n=0,prev=null,path='',first=null,last=null;
+  function stop(o){
+    var x=o.x;
+    if(prev!=null){var g=o.s-prev;
+      if(g>=60)path+='<div class="rv-gap free">'+RV_CUP+'<span>空檔 '+rvDur(g)+'</span></div>';
+      else if(g>0)path+='<div class="rv-gap">'+RV_WALK+'移動 '+g+' 分</div>';}
+    n++;if(!first)first=o;last=o;
+    path+='<div class="rv-stop" style="'+rvSty(x)+'" onclick="openEntryDetail(\''+x.id+'\',this)"><span class="rv-pin"><b>'+n+'</b></span>'
+      +'<div class="rv-hd">'+rvIc(x)+'<div class="rv-tt"><div class="rv-t">'+rvRange(o)+'</div><h4>'+esc(x.title)+'</h4></div>'+rvAmt(x)+'</div>'
+      +(x.note&&!compact?'<div class="rv-note">'+esc(x.note)+'</div>':'')+'</div>';
+    prev=Math.max(prev||0,o.e);
+  }
+  list.forEach(function(o){
+    if(o.type==='地點'&&o.kids.length){
+      path+='<div class="rv-zone" style="'+rvSty(o.x)+'" onclick="openEntryDetail(\''+o.x.id+'\',this)">'+rvIc(o.x)+'<b>'+esc(o.x.title)+'</b><span class="rv-zt">'+rvRange(o)+'</span>'+rvAmt(o.x)+'</div>';
+      o.kids.forEach(stop);
+    }else stop(o);
+  });
+  var sum=all.reduce(function(s,e){return s+entryTWD(e,t);},0),by={};
+  all.forEach(function(e){var v=entryTWD(e,t);if(v>0)by[e.type]=(by[e.type]||0)+v;});
+  var untimed=all.filter(function(e){return toMin(e.time)==null;});
+  var hero='<div class="rv-hero"><div class="rv-k">DAY '+String(idx+1).padStart(2,'0')+'</div><div class="rv-big">'+fmtMD(d)+'<small>'+weekdayZh(d)+'</small></div>'
+    +'<div class="rv-stat"><div><b>'+n+'</b>站</div><div><b>'+(first?minHHMM(first.s%1440):'—')+'</b>出發</div><div><b>'+(last?minHHMM(prev%1440):'—')+'</b>結束</div><div><b>'+(sum?num(sum):'0')+'</b>NT$</div></div></div>';
+  var side='<aside class="rv-side"><div class="rv-card"><h3>當天花費</h3>'+rvDonut(by)+'</div>'
+    +(untimed.length?'<div class="rv-card"><h3>全天</h3>'+untimed.map(function(e){return '<div class="rv-allday" onclick="openEntryDetail(\''+e.id+'\',this)">'+rvIc(e)+'<div><b>'+esc(e.title)+'</b>'+(e.note?'<span>'+esc(e.note)+'</span>':'')+'</div></div>';}).join('')+'</div>':'')+'</aside>';
+  return '<section class="rv-day'+(compact?' compact':'')+'"><div>'+hero+'<div class="rv-path">'+(path||'<div class="rv-muted rv-empty">這天還沒有行程，按「記一筆」新增</div>')+'</div></div>'+side+'</section>';
+}
+function renderRouteView(t,viewDays,all){
+  return '<div class="rv">'+viewDays.map(function(d){return rvDay(t,d,all);}).join('')+'</div>';
+}
+function setRouteScope(s){
+  routeScope=(s==='all')?'all':'day';
+  try{localStorage.setItem('trips_route_scope',routeScope);}catch(e){}
+  renderLog();
+}
 function setCalMode(m){
-  calMode=(m==='week')?'week':'day';
+  calMode=(m==='week'||m==='route')?m:'day';
   try{localStorage.setItem('trips_cal_mode',calMode);}catch(e){}
   renderLog();
 }
