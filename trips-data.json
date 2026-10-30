@@ -243,8 +243,9 @@
           "title": "搭Grab到飯店放行李休息",
           "note": "The Grand Napat Hotel",
           "end": "12:00",
-          "amount": 0,
-          "cur": "THB"
+          "amount": 15655,
+          "cur": "TWD",
+          "u": 1793376398482
         },
         {
           "id": "mvoo3zulh2cht",
