@@ -132,52 +132,6 @@
           "cur": "TWD"
         },
         {
-          "id": "mumhqduk9gh6x",
-          "date": "2026-11-29",
-          "time": "18:00",
-          "type": "其他",
-          "title": "播放泰國國歌",
-          "note": "",
-          "end": "18:30",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mumhrwcd0asqt",
-          "date": "2026-11-28",
-          "time": "17:30",
-          "type": "餐飲",
-          "title": "無菜單料理",
-          "note": "B Samcook Home16",
-          "end": "19:30",
-          "amount": 0,
-          "cur": "THB",
-          "u": 1793236675714
-        },
-        {
-          "id": "munfnwto5ybak",
-          "date": "2026-11-26",
-          "time": "11:00",
-          "type": "餐飲",
-          "title": "午餐-Khu Khao at Raya Heritage",
-          "note": "",
-          "end": "12:30",
-          "amount": 0,
-          "cur": "THB",
-          "u": 1793236540182
-        },
-        {
-          "id": "mvrwgl67bxp1i",
-          "date": "2026-11-26",
-          "time": "18:30",
-          "type": "餐飲",
-          "title": "必比登 傳統泰北菜",
-          "note": "Huen Muan Jai",
-          "end": "20:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
           "id": "mvdd08jgvx3dv",
           "date": "2026-11-29",
           "time": "18:00",
@@ -381,6 +335,52 @@
           "amount": 0,
           "cur": "THB",
           "u": 1793278361929
+        },
+        {
+          "id": "mumhqduk9gh6x",
+          "date": "2026-11-29",
+          "time": "18:00",
+          "type": "其他",
+          "title": "播放泰國國歌",
+          "note": "",
+          "end": "18:30",
+          "amount": 0,
+          "cur": "THB"
+        },
+        {
+          "id": "mumhrwcd0asqt",
+          "date": "2026-11-28",
+          "time": "17:30",
+          "type": "餐飲",
+          "title": "無菜單料理",
+          "note": "B Samcook Home16",
+          "end": "19:30",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793236675714
+        },
+        {
+          "id": "munfnwto5ybak",
+          "date": "2026-11-26",
+          "time": "11:00",
+          "type": "餐飲",
+          "title": "午餐-Khu Khao at Raya Heritage",
+          "note": "",
+          "end": "12:30",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793236540182
+        },
+        {
+          "id": "mvrwgl67bxp1i",
+          "date": "2026-11-26",
+          "time": "18:30",
+          "type": "餐飲",
+          "title": "必比登 傳統泰北菜",
+          "note": "Huen Muan Jai",
+          "end": "20:00",
+          "amount": 0,
+          "cur": "THB"
         },
         {
           "id": "mvtlmtf56go4f",
