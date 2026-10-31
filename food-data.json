@@ -1,5 +1,36 @@
 [
   {
+    "id": "1793471131556",
+    "name": "すき家 SUKIYA 台北市政府店",
+    "name1": "すき家 SUKIYA",
+    "name2": "台北市政府店",
+    "type": "日本",
+    "meal": "",
+    "price": 273,
+    "visits": 1,
+    "gscore": 3.2,
+    "addr": "110臺北市信義區興雅里忠孝東路五段135號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E3%81%99%E3%81%8D%E5%AE%B6+SUKIYA+%E5%8F%B0%E5%8C%97%E5%B8%82%E6%94%BF%E5%BA%9C%E5%BA%97/@25.0412238,121.5677256,21z/data=!4m6!3m5!1s0x3442ab89a740040d:0x742077ded8d16d5!8m2!3d25.0412238!4d121.5677256!16s%2Fg%2F11ny1g6mm_?entry=ttu&g_ep=EgoyMDI2MTAyOC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-10-31",
+    "score": 2.7,
+    "visitLog": [
+      {
+        "date": "2026-10-31",
+        "meal": "午餐",
+        "price": 273,
+        "menu": "溫玉麻婆豆腐牛丼",
+        "score": 2.7,
+        "imgs": [
+          "https://i.ibb.co/pB9C9RQC/7a02c90d415c.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1793471131556
+  },
+  {
     "id": "1793023990333",
     "name": "麥當勞 板橋雨農店",
     "name1": "麥當勞",
