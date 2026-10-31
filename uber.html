@@ -243,6 +243,15 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
 .wk-chip-val.in{color:var(--in);}
 .wk-chip-val .u{font-size:12px;color:var(--ink-4);font-weight:500;margin-left:3px;font-family:var(--sans);}
 /* 收入比例長條：單一色，長度就是大小 */
+/* 每日收入表：可排序的標題、時薪欄 */
+.wk-table th.wk-sortable{cursor:pointer;user-select:none;}
+.wk-table th.wk-sortable:hover{color:var(--ink)!important;}
+.wk-table th.is-sorted{color:var(--ink)!important;}
+.wk-arrow{margin-left:4px;font-size:11px;color:var(--ink-4);}
+.wk-table th.is-sorted .wk-arrow{color:var(--in);}
+.wk-table .c-wage{color:var(--ink);}
+.wg-u{display:none;}
+.wk-sortbar{display:none;}
 .wk-bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;}
 .wk-bar>i{display:block;height:100%;background:var(--in);border-radius:3px;opacity:.85;}
 /* ── 星期平均收入卡 ── */
@@ -481,13 +490,13 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
   /* 每日收入表：改成一列一張卡 */
   .wk-table,.wk-table tbody{display:block;width:100%;}
   .wk-table thead,.wk-table colgroup{display:none;}
-  .wk-table tr{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;
-    grid-template-areas:"date dow inc inc del" "bar bar bar bar bar" "trips hrs pts note note";
+  .wk-table tr{display:grid;grid-template-columns:auto auto auto auto minmax(0,1fr) auto;
+    grid-template-areas:"date dow inc inc inc del" "bar bar bar bar bar bar" "trips hrs wage pts note note";
     column-gap:var(--s3);row-gap:7px;padding:var(--s3) var(--s4);align-items:center;
     border-bottom:1px solid var(--line);}
-  .wk-table tr.empty{grid-template-areas:"date dow inc inc del";padding:var(--s2) var(--s4);}
+  .wk-table tr.empty{grid-template-areas:"date dow inc inc inc del";padding:var(--s2) var(--s4);}
   .wk-table tr.empty .c-bar,.wk-table tr.empty .c-trips,.wk-table tr.empty .c-hrs,
-  .wk-table tr.empty .c-pts,.wk-table tr.empty .c-note{display:none;}
+  .wk-table tr.empty .c-pts,.wk-table tr.empty .c-note,.wk-table tr.empty .c-wage{display:none;}
   .wk-table td{padding:0!important;font-size:14px!important;border:0!important;}
   .wk-table .c-date{grid-area:date;font-size:15px!important;}
   .wk-table .c-dow{grid-area:dow;}
@@ -496,6 +505,12 @@ input[type="date"],input[type="time"],input[type="number"]{color-scheme:dark;}
   .wk-table .c-trips{grid-area:trips;text-align:left!important;}
   .wk-table .c-hrs{grid-area:hrs;text-align:left!important;}
   .wk-table .c-pts{grid-area:pts;text-align:left!important;}
+  .wk-table .c-wage{grid-area:wage;text-align:left!important;}
+  .wg-u{display:inline;font-size:11px;color:var(--ink-3);font-family:var(--sans);}
+  .wk-sortbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:var(--s2);
+    font-size:12px;color:var(--ink-3);}
+  .wk-sortbar select{background:var(--surface-2);color:var(--ink);border:1px solid var(--line-strong);
+    border-radius:var(--r-sm);padding:7px 10px;font-size:16px;}
   .wk-table .c-note{grid-area:note;text-align:right!important;overflow:hidden;text-overflow:ellipsis;}
   .wk-table .c-del{grid-area:del;}
   .wk-table .c-del .del-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;}
@@ -1849,6 +1864,20 @@ function renderWeekdayAvg(){
     +'<div style="display:flex;gap:8px;">'+cells+'</div>';
 }
 
+// ── 每日收入表排序 ──
+// 點標題列排序；再點同一欄就反向。數字欄第一次點是「大到小」（通常想看最多的），日期是「舊到新」。
+// 沒記錄的日子、或那一欄沒有值的，不論正反向一律排在最後，有資料的才會集中在上面。
+var wkSort={key:'date',dir:1};
+var WK_SORT_LABEL={date:'日期',dow:'星期',inc:'收入',trips:'行程數',mins:'時數',wage:'時薪',pts:'積分',note:'備註'};
+function setWkSort(key){
+  if(wkSort.key===key) wkSort.dir=-wkSort.dir;
+  else wkSort={key:key, dir:(key==='date'||key==='dow'||key==='note')?1:-1};
+  renderWeekly();
+}
+function setWkSortFromSelect(v){
+  var p=v.split(':'); wkSort={key:p[0],dir:+p[1]}; renderWeekly();
+}
+
 function renderWeekly(){
   var el=document.getElementById('weeklyList'),lbl=document.getElementById('weeklyPageLabel'); if(!el) return;
   renderWeekdayAvg();
@@ -1858,11 +1887,14 @@ function renderWeekly(){
   var dim=new Date(yr,mo+1,0).getDate(),allDates=[];
   for(var d=1;d<=dim;d++) allDates.push(targetYM+'-'+String(d).padStart(2,'0'));
   var rmap={};getData('uberWeekly').forEach(function(w){if(w.date)rmap[w.date]=w;});
+  // 時薪＝當天跑車實收 ÷ 時數，不含額外獎勵（跟總覽「工時效率分析」同一個算法）
+  var netByDate={};
+  getData('uberTrips').forEach(function(t){ if(t.d&&t.d.slice(0,7)===targetYM) netByDate[t.d]=(netByDate[t.d]||0)+(t.detail||0); });
   var max=1;allDates.forEach(function(dt){if(rmap[dt]&&rmap[dt].income>max)max=rmap[dt].income;});
   var DN=['日','一','二','三','四','五','六'];
 
   // ── 當月合計（隨月份切換即時更新）──
-  var sumInc=0,sumTrips=0,sumMins=0,sumPoints=0,sumDays=0;
+  var sumInc=0,sumTrips=0,sumMins=0,sumPoints=0,sumDays=0,sumNet=0;
   allDates.forEach(function(dt){
     var w=rmap[dt]; if(!w) return;
     var mins=(w.hours||0)*60+(w.mins||0);
@@ -1871,6 +1903,7 @@ function renderWeekly(){
     sumTrips+=(w.tripCount||0);
     sumMins+=mins;
     sumPoints+=(w.points||0);
+    sumNet+=(netByDate[dt]||0);
   });
   var sEl=document.getElementById('weeklyMonthSummary');
   if(sEl){
@@ -1887,26 +1920,75 @@ function renderWeekly(){
       +chip('總行程數',fmt(sumTrips),'趟')
       +chip('總時數',Math.floor(sumMins/60)+'h'+(sumMins%60)+'m','')
       +chip('總積分',fmt(sumPoints),'分')
+      +chip('平均時薪 <span class="wk-chip-sub">不含獎勵</span>',sumMins?'$'+fmt(Math.round(sumNet/(sumMins/60))):'—','')
     +'</div>';
   }
-  el.innerHTML='<div class="data-wrap">'
+  // 先把每一天整理成一筆資料，排序完再畫
+  var rows=allDates.map(function(dt){
+    var w=rmap[dt],dow=new Date(dt+'T00:00:00').getDay(),has=!!w;
+    var mins=has?(w.hours||0)*60+(w.mins||0):0, net=netByDate[dt]||0;
+    return {dt:dt,w:w,has:has,dow:dow,
+      inc:has?(w.income||0):0, trips:has?(w.tripCount||0):0, mins:mins,
+      // 有時數、也有行程明細才算得出時薪
+      wage:(mins>0&&net>0)?net/(mins/60):null, net:net,
+      pts:has?(w.points||0):0, note:has?(w.note||''):''};
+  });
+  var K=wkSort.key, D=wkSort.dir;
+  var valOf=function(r){
+    if(K==='date') return r.dt;
+    if(K==='dow')  return (r.dow+6)%7;          // 週一排第一
+    if(!r.has) return null;
+    if(K==='wage') return r.wage;
+    if(K==='note') return r.note||null;
+    var v=r[K]; return v?v:null;                // 0 視同沒有值，排到最後
+  };
+  rows.sort(function(a,b){
+    var va=valOf(a), vb=valOf(b);
+    if(va===null&&vb===null) return a.dt<b.dt?-1:1;
+    if(va===null) return 1;
+    if(vb===null) return -1;
+    var c = (typeof va==='string') ? va.localeCompare(vb) : va-vb;
+    return c ? c*D : (a.dt<b.dt?-1:1);
+  });
+
+  var th=function(key,label,cls,extra){
+    var on=(K===key);
+    return '<th class="wk-sortable'+(cls?' '+cls:'')+(on?' is-sorted':'')+'"'+(extra||'')
+      +' onclick="setWkSort(\''+key+'\')">'+label
+      +'<span class="wk-arrow">'+(on?(D>0?'↑':'↓'):'↕')+'</span></th>';
+  };
+  // 手機上沒有標題列，改用下拉選單排序
+  var opt=function(key,dir,label){
+    var v=key+':'+dir; return '<option value="'+v+'"'+(K===key&&D===dir?' selected':'')+'>'+label+'</option>';
+  };
+  var sortBar='<div class="wk-sortbar"><span>排序</span><select onchange="setWkSortFromSelect(this.value)">'
+    +opt('date',1,'日期（舊→新）')+opt('date',-1,'日期（新→舊）')
+    +opt('inc',-1,'收入（高→低）')+opt('inc',1,'收入（低→高）')
+    +opt('wage',-1,'時薪（高→低）')+opt('wage',1,'時薪（低→高）')
+    +opt('mins',-1,'時數（多→少）')+opt('trips',-1,'行程數（多→少）')
+    +opt('pts',-1,'積分（多→少）')+opt('dow',1,'星期（一→日）')
+    +'</select></div>';
+
+  el.innerHTML=sortBar+'<div class="data-wrap">'
     +'<table class="wk-table data-table" style="table-layout:fixed;">'
-    +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:34%"><col style="width:13%"><col style="width:6%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
+    +'<colgroup><col style="width:7%"><col style="width:5%"><col style="width:26%"><col style="width:12%"><col style="width:6%"><col style="width:8%"><col style="width:8%"><col style="width:6%"><col><col style="width:3%"></colgroup>'
     +'<thead><tr>'
-      +'<th style="padding-left:14px;">日期</th>'
-      +'<th class="c">週</th>'
-      +'<th>收入比例</th>'
-      +'<th class="r">收入</th>'
-      +'<th class="r">行程數</th>'
-      +'<th class="r">時數</th>'
-      +'<th class="r">積分</th>'
-      +'<th class="c">備註</th>'
+      +th('date','日期','',' style="padding-left:14px;"')
+      +th('dow','週','c')
+      +th('inc','收入比例','')
+      +th('inc','收入','r')
+      +th('trips','行程數','r')
+      +th('mins','時數','r')
+      +th('wage','時薪','r',' title="當天跑車實收 ÷ 時數，不含額外獎勵"')
+      +th('pts','積分','r')
+      +th('note','備註','c')
       +'<th></th>'
     +'</tr></thead>'
-    +'<tbody>'+allDates.map(function(dt){
-      var w=rmap[dt],dobj=new Date(dt+'T00:00:00'),dow=dobj.getDay(),isWE=(dow===0||dow===6);
-      var has=!!w,inc=has?(w.income||0):0,pct=inc>0?inc/max*100:0;
+    +'<tbody>'+rows.map(function(r){
+      var w=r.w,dt=r.dt,dow=r.dow,isWE=(dow===0||dow===6),has=r.has,inc=r.inc,pct=inc>0?inc/max*100:0;
       var hStr=has?(w.hours||0)+'h'+(w.mins||0)+'m':'';
+      var wageStr=r.wage!==null?'$'+fmt(Math.round(r.wage))+'<span class="wg-u">/時</span>'
+        :(has&&r.mins>0?'<span title="這天沒有行程明細，算不出時薪">—</span>':'');
       return '<tr class="'+(has?'':'empty')+'">'
         +'<td class="c-date num" style="padding-left:14px;white-space:nowrap;color:'+(isWE?'var(--ink)':'var(--ink-2)')+';">'+dt.slice(5)+'</td>'
         +'<td class="c-dow c" style="font-size:13px;color:'+(isWE?'var(--ink-2)':'var(--ink-3)')+';">週'+DN[dow]+'</td>'
@@ -1914,6 +1996,7 @@ function renderWeekly(){
         +'<td class="c-inc num r" style="font-size:17px;color:'+(inc>0?'var(--in)':'var(--ink-4)')+';font-weight:700;white-space:nowrap;">'+(inc>0?'$'+fmt(inc):'—')+'</td>'
         +'<td class="c-trips num r" style="white-space:nowrap;">'+(has&&w.tripCount?w.tripCount:'')+'</td>'
         +'<td class="c-hrs num r" style="font-size:14px;white-space:nowrap;">'+hStr+'</td>'
+        +'<td class="c-wage num r" style="white-space:nowrap;">'+wageStr+'</td>'
         +'<td class="c-pts num r" style="white-space:nowrap;">'+(has&&w.points?w.points:'')+'</td>'
         +'<td class="c-note c" style="font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+(has&&w.note?w.note:'')+'">'+(has&&w.note?w.note:'')+'</td>'
         +'<td class="c-del c" style="padding-right:10px;">'+(has?'<span class="del-btn" onclick="deleteWeekly('+w.id+')">✕</span>':'')+'</td>'
