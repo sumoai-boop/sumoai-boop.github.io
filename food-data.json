@@ -1,5 +1,38 @@
 [
   {
+    "id": "1793545948439",
+    "name": "滇發哥·雲南臭豆腐火鍋",
+    "name1": "滇發哥·雲南臭豆腐火鍋",
+    "name2": "",
+    "type": "火鍋",
+    "meal": "",
+    "price": 2479,
+    "visits": 1,
+    "gscore": 4.8,
+    "addr": "106臺北市大安區車層里忠孝東路四段223巷46號1樓",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%BB%87%E7%99%BC%E5%93%A5%C2%B7%E9%9B%B2%E5%8D%97%E8%87%AD%E8%B1%86%E8%85%90%E7%81%AB%E9%8D%8B/@25.0436077,121.5518999,18z/data=!4m6!3m5!1s0x3442ab4a33fd7b9b:0x80e6ed1c43ec392b!8m2!3d25.0436078!4d121.5531875!16s%2Fg%2F11yz8fqxyl?entry=ttu&g_ep=EgoyMDI2MTAyOC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-11-01",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-11-01",
+        "meal": "晚餐",
+        "price": 2479,
+        "menu": "",
+        "score": 4,
+        "imgs": [
+          "https://i.ibb.co/99hRg1bK/c94f009bff2e.jpg",
+          "https://i.ibb.co/nq9RzshK/816e4dfaabbf.jpg",
+          "https://i.ibb.co/SDW07mwL/4006e5554024.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1793545948439
+  },
+  {
     "id": "1793471131556",
     "name": "すき家 SUKIYA 台北市政府店",
     "name1": "すき家 SUKIYA",
