@@ -250,14 +250,14 @@
         {
           "id": "mvddlv4vww0yb",
           "date": "2026-11-27",
-          "time": "14:30",
+          "time": "15:00",
           "type": "景點",
           "title": "藤編一條街",
           "note": "",
-          "end": "15:30",
+          "end": "16:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793591303379
+          "u": 1793591310614
         },
         {
           "id": "mvddrd6adpk0p",
@@ -309,15 +309,15 @@
         },
         {
           "id": "mvtlzqdwwetol",
-          "date": "2026-11-27",
-          "time": "15:45",
+          "date": "2026-11-26",
+          "time": "16:30",
           "type": "餐飲",
           "title": "必比登 晚餐",
           "note": "Kang Jingjai",
-          "end": "16:45",
+          "end": "17:30",
           "amount": 0,
           "cur": "THB",
-          "u": 1793591142775
+          "u": 1793591308528
         },
         {
           "id": "mvyp30cb0tm7h",
