@@ -279,26 +279,26 @@
         {
           "id": "mvtlmtf56go4f",
           "date": "2026-11-29",
-          "time": "10:30",
+          "time": "10:00",
           "type": "景點",
           "title": "Baan Kang Wat藝術村",
           "note": "",
-          "end": "13:00",
+          "end": "12:30",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600776314
+          "u": 1793600814807
         },
         {
           "id": "mvtlu55b1lnjv",
           "date": "2026-11-29",
-          "time": "13:00",
+          "time": "12:30",
           "type": "餐飲",
           "title": "Khao Ngai： Maggi 豬肉飯、蝦仁炒蛋",
           "note": "Khao Ngai Breakfast and Brunch",
-          "end": "14:00",
+          "end": "13:30",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600782024
+          "u": 1793600818316
         },
         {
           "id": "mvtlzqdwwetol",
@@ -315,26 +315,26 @@
         {
           "id": "mvyp30cb0tm7h",
           "date": "2026-11-29",
-          "time": "09:15",
+          "time": "08:45",
           "type": "景點",
           "title": "Wat Pha Lad 帕拉寺：黃金大佛古寺",
           "note": "門票 100 泰銖",
-          "end": "10:15",
+          "end": "09:45",
           "amount": 200,
           "cur": "THB",
-          "u": 1793600774150
+          "u": 1793600813291
         },
         {
           "id": "mvypbgqe3xni7",
           "date": "2026-11-29",
-          "time": "15:30",
+          "time": "14:00",
           "type": "餐飲",
           "title": "The Baristro Asian Style：日式庭園風抹茶咖啡館",
           "note": "The Baristro Asian Style",
-          "end": "16:30",
+          "end": "15:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600802789
+          "u": 1793600820618
         },
         {
           "id": "mvypffia3lsp3",
@@ -351,14 +351,14 @@
         {
           "id": "mvypk24par8zh",
           "date": "2026-11-29",
-          "time": "11:00",
+          "time": "10:30",
           "type": "餐飲",
           "title": "Yook Samai：咖哩雞腿麵",
           "note": "",
-          "end": "12:00",
+          "end": "11:30",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600786214
+          "u": 1793600816553
         },
         {
           "id": "mvypss80ni7nf",
