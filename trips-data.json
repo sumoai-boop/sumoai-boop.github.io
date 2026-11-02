@@ -283,22 +283,22 @@
           "type": "景點",
           "title": "Baan Kang Wat藝術村",
           "note": "",
-          "end": "12:30",
+          "end": "14:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600864169
+          "u": 1793600877616
         },
         {
           "id": "mvtlu55b1lnjv",
           "date": "2026-11-29",
-          "time": "13:00",
+          "time": "12:30",
           "type": "餐飲",
           "title": "Khao Ngai： Maggi 豬肉飯、蝦仁炒蛋",
           "note": "Khao Ngai Breakfast and Brunch",
-          "end": "14:00",
+          "end": "13:30",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600870552
+          "u": 1793600879896
         },
         {
           "id": "mvtlzqdwwetol",
