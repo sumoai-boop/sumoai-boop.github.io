@@ -61,9 +61,10 @@
           "type": "地點",
           "title": "2026 清邁 CAD 文化藝術中心天燈節 VIP 票x2",
           "note": "VIP 門票請於清邁國際會展中心集合",
-          "end": "21:00",
+          "end": "22:00",
           "amount": 12452,
-          "cur": "TWD"
+          "cur": "TWD",
+          "u": 1793592912724
         },
         {
           "id": "mruotmww5lsvc",
