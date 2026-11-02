@@ -169,13 +169,14 @@
         {
           "id": "mvdd08jgvx3dv",
           "date": "2026-11-29",
-          "time": "18:00",
+          "time": "17:00",
           "type": "地點",
           "title": "週日夜市",
           "note": "",
-          "end": "21:00",
+          "end": "20:00",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793591464879
         },
         {
           "id": "mvdd0tjwq6kf7",
