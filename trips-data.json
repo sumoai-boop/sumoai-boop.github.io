@@ -423,38 +423,38 @@
         {
           "id": "mvyq8ikpzil20",
           "date": "2026-11-26",
-          "time": "14:45",
+          "time": "14:30",
           "type": "景點",
           "title": "Wat Chedi Luang 柴迪隆寺",
           "note": "門票 50 泰銖",
-          "end": "15:30",
+          "end": "15:15",
           "amount": 100,
           "cur": "THB",
-          "u": 1793600401567
+          "u": 1793601873229
         },
         {
           "id": "mvyqa1xptzpmk",
           "date": "2026-11-26",
-          "time": "15:45",
+          "time": "15:15",
           "type": "餐飲",
           "title": "WaanD：芒果糯米飯",
           "note": "",
-          "end": "16:30",
+          "end": "16:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600404873
+          "u": 1793601874697
         },
         {
           "id": "mvyqbgxaozgwx",
           "date": "2026-11-26",
-          "time": "16:30",
+          "time": "16:00",
           "type": "景點",
           "title": "Tha Phae Gate 塔佩門",
           "note": "",
-          "end": "17:15",
+          "end": "16:45",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600425289
+          "u": 1793601876119
         }
       ]
     },
