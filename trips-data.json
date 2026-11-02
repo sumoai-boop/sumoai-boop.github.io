@@ -279,26 +279,26 @@
         {
           "id": "mvtlmtf56go4f",
           "date": "2026-11-29",
-          "time": "10:00",
+          "time": "09:00",
           "type": "景點",
           "title": "Baan Kang Wat藝術村",
           "note": "週日早市，會多出很多手作、二手小物和小吃攤，很多人是專門為了這個去的。",
-          "end": "14:00",
+          "end": "13:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793601007256
+          "u": 1793601634378
         },
         {
           "id": "mvtlu55b1lnjv",
           "date": "2026-11-29",
-          "time": "12:30",
+          "time": "12:00",
           "type": "餐飲",
           "title": "Khao Ngai： Maggi 豬肉飯、蝦仁炒蛋",
           "note": "Khao Ngai Breakfast and Brunch",
-          "end": "13:30",
+          "end": "13:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793600879896
+          "u": 1793601639176
         },
         {
           "id": "mvtlzqdwwetol",
@@ -351,14 +351,14 @@
         {
           "id": "mvypk24par8zh",
           "date": "2026-11-29",
-          "time": "11:00",
+          "time": "09:30",
           "type": "餐飲",
           "title": "Yook Samai：咖哩雞腿麵",
           "note": "觀光客必吃，好拍又好吃",
-          "end": "12:00",
+          "end": "10:30",
           "amount": 0,
           "cur": "THB",
-          "u": 1793601193004
+          "u": 1793601636310
         },
         {
           "id": "mvypss80ni7nf",
