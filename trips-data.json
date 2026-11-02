@@ -395,6 +395,18 @@
           "amount": 200,
           "cur": "THB",
           "u": 1793589874207
+        },
+        {
+          "id": "mvypbgqe3xni7",
+          "date": "2026-11-28",
+          "time": "15:45",
+          "type": "餐飲",
+          "title": "日式庭園風的抹茶咖啡館",
+          "note": "The Baristro Asian Style",
+          "end": "16:45",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793590237815
         }
       ]
     },
