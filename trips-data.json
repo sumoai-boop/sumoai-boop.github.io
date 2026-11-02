@@ -160,14 +160,14 @@
         {
           "id": "mvrwgl67bxp1i",
           "date": "2026-11-28",
-          "time": "19:30",
+          "time": "18:15",
           "type": "餐飲",
           "title": "Huen Muan Jai：必比登 傳統泰北菜",
           "note": "Huen Muan Jai",
-          "end": "20:30",
+          "end": "19:15",
           "amount": 0,
           "cur": "THB",
-          "u": 1793592644649
+          "u": 1793600906976
         },
         {
           "id": "mvdd08jgvx3dv",
@@ -220,14 +220,14 @@
         {
           "id": "mvdd9b4pdbhfx",
           "date": "2026-11-28",
-          "time": "18:30",
+          "time": "17:15",
           "type": "景點",
           "title": "尼曼一號One Nimman",
           "note": "",
-          "end": "19:30",
+          "end": "18:15",
           "amount": 0,
           "cur": "THB",
-          "u": 1793592633072
+          "u": 1793600904911
         },
         {
           "id": "mvdd9p3lbr1z8",
@@ -387,14 +387,14 @@
         {
           "id": "mvypvyostodh7",
           "date": "2026-11-28",
-          "time": "20:30",
+          "time": "19:45",
           "type": "景點",
           "title": "瑪雅百貨",
           "note": "",
-          "end": "21:30",
+          "end": "20:45",
           "amount": 0,
           "cur": "THB",
-          "u": 1793592641341
+          "u": 1793600910065
         },
         {
           "id": "mvypz5eaklrcb",
