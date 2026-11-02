@@ -290,15 +290,15 @@
         },
         {
           "id": "mvtlu55b1lnjv",
-          "date": "2026-11-28",
-          "time": "11:30",
+          "date": "2026-11-29",
+          "time": "13:00",
           "type": "餐飲",
           "title": "Khao Ngai： Maggi 豬肉飯、蝦仁炒蛋",
           "note": "Khao Ngai Breakfast and Brunch",
-          "end": "12:30",
+          "end": "14:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793591416285
+          "u": 1793600782024
         },
         {
           "id": "mvtlzqdwwetol",
@@ -350,15 +350,15 @@
         },
         {
           "id": "mvypk24par8zh",
-          "date": "2026-11-28",
-          "time": "13:00",
+          "date": "2026-11-29",
+          "time": "11:00",
           "type": "餐飲",
           "title": "Yook Samai：咖哩雞腿麵",
           "note": "",
-          "end": "14:15",
+          "end": "12:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793592604765
+          "u": 1793600786214
         },
         {
           "id": "mvypss80ni7nf",
