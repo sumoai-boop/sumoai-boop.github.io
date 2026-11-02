@@ -179,14 +179,15 @@
         },
         {
           "id": "mvdd0tjwq6kf7",
-          "date": "2026-11-29",
-          "time": "13:00",
+          "date": "2026-11-26",
+          "time": "13:15",
           "type": "地點",
           "title": "古城區",
           "note": "",
-          "end": "18:00",
+          "end": "18:15",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793591457655
         },
         {
           "id": "mvdd47kmucmxo",
