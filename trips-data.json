@@ -158,13 +158,14 @@
         {
           "id": "mvrwgl67bxp1i",
           "date": "2026-11-26",
-          "time": "18:30",
+          "time": "19:00",
           "type": "餐飲",
           "title": "必比登 傳統泰北菜",
           "note": "Huen Muan Jai",
-          "end": "20:00",
+          "end": "20:30",
           "amount": 0,
-          "cur": "THB"
+          "cur": "THB",
+          "u": 1793591574418
         },
         {
           "id": "mvdd08jgvx3dv",
@@ -185,10 +186,10 @@
           "type": "地點",
           "title": "古城區",
           "note": "",
-          "end": "18:30",
+          "end": "19:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793591568184
+          "u": 1793591577160
         },
         {
           "id": "mvdd47kmucmxo",
