@@ -441,6 +441,18 @@
           "amount": 0,
           "cur": "THB",
           "u": 1793591894035
+        },
+        {
+          "id": "mvyqbgxaozgwx",
+          "date": "2026-11-26",
+          "time": "13:00",
+          "type": "景點",
+          "title": "Tha Phae Gate 塔佩門",
+          "note": "",
+          "end": "13:45",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1793591917678
         }
       ]
     },
