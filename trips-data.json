@@ -230,10 +230,10 @@
           "type": "地點",
           "title": "一日遊",
           "note": "",
-          "end": "19:00",
+          "end": "15:45",
           "amount": 0,
           "cur": "THB",
-          "u": 1793237099293
+          "u": 1793590339092
         },
         {
           "id": "mvddf6twlp5lu",
@@ -281,50 +281,6 @@
           "amount": 15655,
           "cur": "TWD",
           "u": 1793376398482
-        },
-        {
-          "id": "mvoo791sulk1k",
-          "date": "2026-11-27",
-          "time": "12:00",
-          "type": "景點",
-          "title": "白廟",
-          "note": "參觀白廟 (Wat Rong Khun)",
-          "end": "13:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mvoo7rnkvllql",
-          "date": "2026-11-27",
-          "time": "14:30",
-          "type": "景點",
-          "title": "藍廟",
-          "note": "走訪藍廟 (Wat Rong Seur Ten)，推薦您自費品嚐當地美味的藍色冰淇淋",
-          "end": "15:30",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mvoo896h1v96b",
-          "date": "2026-11-27",
-          "time": "16:00",
-          "type": "景點",
-          "title": "Lalitta Café",
-          "note": "在輕鬆的氛圍中，盡情享用擺盤精美、風味獨特的當地美食（自費）。",
-          "end": "17:00",
-          "amount": 0,
-          "cur": "THB"
-        },
-        {
-          "id": "mvooa502hi3c0",
-          "date": "2026-11-27",
-          "time": "13:00",
-          "type": "餐飲",
-          "title": "在白龍寺附近的餐廳享用午餐",
-          "note": "",
-          "end": "14:00",
-          "amount": 0,
-          "cur": "THB"
         },
         {
           "id": "mvtlmtf56go4f",
@@ -1751,6 +1707,10 @@
     "mvs55ywrwwkad": 1793589400032,
     "mvs8e2iawhk2x": 1793590210695,
     "mvoo3zulh2cht": 1793590328628,
-    "mvoo4pctj6ss8": 1793590330499
+    "mvoo4pctj6ss8": 1793590330499,
+    "mvoo791sulk1k": 1793590332083,
+    "mvooa502hi3c0": 1793590333612,
+    "mvoo7rnkvllql": 1793590335104,
+    "mvoo896h1v96b": 1793590336866
   }
 }
