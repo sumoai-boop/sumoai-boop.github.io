@@ -435,26 +435,26 @@
         {
           "id": "mvyqa1xptzpmk",
           "date": "2026-11-26",
-          "time": "15:15",
+          "time": "16:30",
           "type": "餐飲",
           "title": "WaanD：芒果糯米飯",
           "note": "",
-          "end": "16:00",
+          "end": "17:15",
           "amount": 0,
           "cur": "THB",
-          "u": 1793601874697
+          "u": 1793604087473
         },
         {
           "id": "mvyqbgxaozgwx",
           "date": "2026-11-26",
-          "time": "16:00",
+          "time": "17:15",
           "type": "景點",
           "title": "Tha Phae Gate 塔佩門",
           "note": "",
-          "end": "16:45",
+          "end": "18:00",
           "amount": 0,
           "cur": "THB",
-          "u": 1793601876119
+          "u": 1793604085309
         },
         {
           "id": "mvyx1punzqlvo",
