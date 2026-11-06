@@ -735,6 +735,8 @@ const POSTERS=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEA
 const TMDB='e174d0983218845b167176a27b04b83f';
 
 // ── 全域海報快取（TOP5 與行事曆共用，避免重複打 TMDB）──
+// 海報比對邏輯改版時把舊快取（可能存了錯的海報）清掉
+(function(){ try{ if(localStorage.getItem('_posterVer')!=='3'){ localStorage.removeItem('_posterCache'); localStorage.removeItem('_tmdbMatch'); localStorage.setItem('_posterVer','3'); } }catch(e){} })();
 var POSTER_CACHE = (function(){ try{ return JSON.parse(localStorage.getItem('_posterCache')||'{}'); }catch(e){ return {}; } })();
 var _pcSaveTimer = null;
 function savePosterCache(){
@@ -776,6 +778,7 @@ const TMDB_ID_OVERRIDE={
   'SMILE2': 1100782,
   '微笑 2': 1100782,
   '夜王': 1602727,
+  '奇遇': 1399515,
 };
 const TMDB_TV_OVERRIDE={
   '新聞急先鋒': 15621,
@@ -804,6 +807,83 @@ const TMDB_TV_OVERRIDE={
   '乩身': 213703,
   '乩身：踏火伏魔的罪人': 213703,
 };
+
+// ══ 統一的 TMDB 比對（海報、燈箱、行事曆、票根全部共用）══
+// 作法：中文名、原文名 × 電影、影集 全部搜一輪，把結果放在一起打分數，
+// 分數最高且過門檻才採用；寧可沒海報，也不要放錯的海報。
+var TMDB_MATCH = (function(){ try{ return JSON.parse(localStorage.getItem('_tmdbMatch')||'{}'); }catch(e){ return {}; } })();
+var _tmSaveTimer=null, _tmPending={};
+function _tmSave(){ clearTimeout(_tmSaveTimer); _tmSaveTimer=setTimeout(function(){ try{ localStorage.setItem('_tmdbMatch', JSON.stringify(TMDB_MATCH)); }catch(e){} },800); }
+var TMDB_LANG={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko','US':'en','GB':'en','AU':'en','CA':'en','NZ':'en','IE':'en',
+  'FR':'fr','DE':'de','AT':'de','CH':'de','ES':'es','MX':'es','AR':'es','IT':'it','IN':'hi','ID':'id','TR':'tr','IR':'fa',
+  'NL':'nl','BE':'nl','MY':'ms','TH':'th','VN':'vi','PH':'tl','RU':'ru','PL':'pl','SE':'sv','DK':'da','NO':'no','FI':'fi',
+  'BR':'pt','PT':'pt','IL':'he','EG':'ar','SA':'ar','CO':'es','CL':'es'};
+function _tmClean(t){
+  return String(t||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').replace(/\s*시즌\s*\d+$/,'').trim();
+}
+function _tmNorm(t){
+  return String(t||'').normalize('NFKC').toLowerCase().replace(/[\s\-–—:：·・,，.。!！?？'"「」『』《》()（）\[\]]/g,'').replace(/^the(?=\w)/,'');
+}
+function _tmKey(m){ return (m.title||'')+'|'+(m.year||0)+'|'+(m.type||''); }
+function _tmScore(r, m, want){
+  var yr=parseInt((r.release_date||r.first_air_date||'').slice(0,4))||0;
+  var y=m.year||0, s=0;
+  var tZh=_tmNorm(_tmClean(m.title)), tOr=_tmNorm(_tmClean(m.orig!=='nan'?m.orig:''));
+  var names=[r.title,r.name,r.original_title,r.original_name].filter(Boolean).map(_tmNorm);
+  if(names.some(function(n){ return n && (n===tZh || (tOr && n===tOr)); })) s+=40;
+  else if(names.some(function(n){ return n && ((tZh.length>1&&n.indexOf(tZh)>=0)||(tOr.length>3&&n.indexOf(tOr)>=0)); })) s+=12;
+  if(y>0){
+    if(!yr) s-=10;
+    else if(yr===y) s+=30;
+    else if(Math.abs(yr-y)===1) s+=18;
+    else if(r._mt==='tv' && yr<y && y-yr<=20) s+=10;     // 續季：開播年早於這季的年份
+    else s-=40;
+  }
+  var lang=TMDB_LANG[m.lang];
+  if(lang){ s += (r.original_language===lang)?15:-8; }
+  if(r._mt===want) s+=10;
+  if(r.poster_path) s+=5;
+  s+=Math.min(9, Math.log10((r.vote_count||0)+1)*3);
+  return s;
+}
+async function _tmDetail(mt,id){
+  var d=await tmdbFetch('https://api.themoviedb.org/3/'+mt+'/'+id+'?api_key='+TMDB+'&language=zh-TW');
+  return d&&d.id?{mt:mt,id:d.id,poster_path:d.poster_path||null}:null;
+}
+async function tmdbMatch(m){
+  var key=_tmKey(m);
+  if(TMDB_MATCH[key]!==undefined) return TMDB_MATCH[key];
+  if(_tmPending[key]) return _tmPending[key];
+  _tmPending[key]=(async function(){
+    var res=null;
+    try{
+      if(TMDB_TV_OVERRIDE[m.title]) res=await _tmDetail('tv',TMDB_TV_OVERRIDE[m.title]);
+      else if(TMDB_ID_OVERRIDE[m.title]) res=await _tmDetail('movie',TMDB_ID_OVERRIDE[m.title]);
+      if(!res){
+        var want=(m.type==='影集'||m.type==='綜藝')?'tv':'movie';
+        var qs=[_tmClean(m.title), _tmClean(m.orig!=='nan'?m.orig:'')].filter(function(q,i,a){ return q && a.indexOf(q)===i; });
+        var types=want==='tv'?['tv','movie']:['movie','tv'];
+        var jobs=[];
+        qs.forEach(function(q){ types.forEach(function(t){
+          jobs.push(tmdbFetch('https://api.themoviedb.org/3/search/'+t+'?api_key='+TMDB+'&query='+encodeURIComponent(q)+'&language=zh-TW')
+            .then(function(d){ return ((d&&d.results)||[]).slice(0,10).map(function(r){ r._mt=t; return r; }); })
+            .catch(function(){ return []; }));
+        }); });
+        var all=[].concat.apply([], await Promise.all(jobs)), seen={}, best=null, bestS=-1e9;
+        all.forEach(function(r){
+          var k=r._mt+r.id; if(seen[k]) return; seen[k]=1;
+          var sc=_tmScore(r,m,want);
+          if(sc>bestS){ bestS=sc; best=r; }
+        });
+        if(best && bestS>=45) res={mt:best._mt,id:best.id,poster_path:best.poster_path||null};
+      }
+    }catch(e){ delete _tmPending[key]; return undefined; }   // 網路錯誤不記錄，下次再試
+    TMDB_MATCH[key]=res; _tmSave(); delete _tmPending[key];
+    if(res && m.tmdbId!==res.id){ m.tmdbId=res.id; }
+    return res;
+  })();
+  return _tmPending[key];
+}
 
 const DIST_LOGO={
   'Netflix':     '<span style="display:inline-block;font-size:11px;font-weight:700;color:#fff;background:#E50914;padding:2px 7px;border-radius:4px;letter-spacing:0.3px;white-space:nowrap">Netflix</span>',
@@ -880,91 +960,14 @@ window.addEventListener('resize',setTkCut);
 
 async function fetchPosterForCard(m, imgEl){
   try{
-    // 先查共用快取（null 代表查過但沒有，不再重打）
-    var _ck = 'c:' + (m.title||'');
-    if(POSTER_CACHE[_ck] !== undefined){
-      if(POSTER_CACHE[_ck]) imgEl.src = POSTER_CACHE[_ck];
-      return;
-    }
-    const LANG_MAP2={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
-      'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
-      'IT':'it','IN':'hi','ID':'id','TR':'tr','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
-    const origLang = LANG_MAP2[m.lang]||null;
-    const year = m.year||0;
-
-    // 去掉季數後綴
-    const cleanTitle = (m.title||'').replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
-    const cleanOrig  = (m.orig ||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
-
-    // 直接指定 TMDB ID
-    if(TMDB_ID_OVERRIDE[m.title]){
-      const d=await tmdbFetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
-      if(d.poster_path){const u=`https://image.tmdb.org/t/p/w300${d.poster_path}`;POSTER_CACHE[_ck]=u;savePosterCache();imgEl.src=u;return;}
-    }
-
-    // 用年份+語言篩選最佳結果
-    function pickBest(results){
-      if(!results||!results.length) return null;
-      let pool=results;
-      // 先用國家語言篩
-      if(origLang){
-        const langMatch=results.filter(r=>r.original_language===origLang);
-        if(langMatch.length) pool=langMatch;
-      }
-      // 再用年份篩
-      if(year>0){
-        const exact=pool.find(r=>(r.release_date||r.first_air_date||'').startsWith(String(year)));
-        if(exact) return exact;
-        const near=pool.find(r=>Math.abs(parseInt((r.release_date||r.first_air_date||'0').slice(0,4))-year)<=1);
-        if(near) return near;
-      }
-      return pool[0];
-    }
-
-    async function search(query, mediaType){
-      const d=await tmdbFetch(`https://api.themoviedb.org/3/search/${mediaType}?api_key=${TMDB}&query=${encodeURIComponent(query)}&language=zh-TW`);
-      return pickBest(d.results);
-    }
-
-    let poster=null;
-
-    // TV ID 直接指定
-    if(TMDB_TV_OVERRIDE[m.title]){
-      const d=await tmdbFetch(`https://api.themoviedb.org/3/tv/${TMDB_TV_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
-      if(d.poster_path){const u=`https://image.tmdb.org/t/p/w300${d.poster_path}`;POSTER_CACHE[_ck]=u;savePosterCache();imgEl.src=u;return;}
-    }
-    // Movie ID 直接指定
-    if(TMDB_ID_OVERRIDE[m.title]){
-      const d=await tmdbFetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
-      if(d.poster_path){const u=`https://image.tmdb.org/t/p/w300${d.poster_path}`;POSTER_CACHE[_ck]=u;savePosterCache();imgEl.src=u;return;}
-    }
-
-    const queries=[cleanOrig, cleanTitle].filter(q=>q&&q!=='nan');
-    const types=['movie','tv'];
-
-    // 依序：原文名movie → 原文名tv → 中文名movie → 中文名tv
-    for(const q of queries){
-      for(const t of types){
-        if(poster) break;
-        const hit=await search(q,t);
-        if(hit&&hit.poster_path){
-          poster=hit.poster_path;
-          // 順便存 tmdbId 供演員搜尋用
-          if(hit.id && !m.tmdbId){
-            m.tmdbId = hit.id;
-            try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch{}
-          }
-        }
-      }
-      if(poster) break;
-    }
-
-    if(poster){
-      const u=`https://image.tmdb.org/t/p/w300${poster}`;
-      POSTER_CACHE[_ck]=u; savePosterCache();
-      imgEl.src=u;
+    var _ck='c:'+(m.title||'');
+    if(POSTER_CACHE[_ck]!==undefined){ if(POSTER_CACHE[_ck]) imgEl.src=POSTER_CACHE[_ck]; return; }
+    var r=await tmdbMatch(m);
+    if(r&&r.poster_path){
+      var u='https://image.tmdb.org/t/p/w300'+r.poster_path;
+      POSTER_CACHE[_ck]=u; savePosterCache(); imgEl.src=u;
     } else {
-      POSTER_CACHE[_ck]=null; savePosterCache();   // 記錄「查過但沒有」，不再重打
+      if(r!==undefined){ POSTER_CACHE[_ck]=null; savePosterCache(); }
       imgEl.style.display='none';
     }
   }catch(e){ imgEl.style.display='none'; }
@@ -1417,137 +1420,22 @@ async function openPoster(m){
     reviewWrap.style.display = 'none';
   }
   try{
-    // 年份+語言比對函數
-    const LANG_MAP2={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
-      'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
-      'IT':'it','IN':'hi','ID':'id','TR':'tr','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
-    const origLang2 = LANG_MAP2[m.lang]||null;
-    function pickBest(results, year){
-      if(!results||!results.length) return null;
-      let pool = results;
-      if(origLang2){
-        const langMatch = results.filter(r=>r.original_language===origLang2);
-        if(langMatch.length) pool = langMatch;
-      }
-      if(year&&year>0){
-        const exact=pool.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
-        if(exact) return exact;
-        const near=pool.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
-        if(near) return near;
-      }
-      return pool[0];
+    const r=await tmdbMatch(m);
+    if(r===undefined){ pmPlaceholder.textContent='載入失敗'; return; }
+    if(!r){ pmPlaceholder.textContent='找不到資料'; return; }
+    if(r.poster_path){
+      pmImg.onload=()=>{pmPlaceholder.style.display='none';pmImg.style.display='block';};
+      pmImg.onerror=()=>{pmPlaceholder.textContent='無海報圖';};
+      pmImg.src=`https://image.tmdb.org/t/p/w500${r.poster_path}`;
+    } else { pmPlaceholder.textContent='無海報圖'; }
+    const d=await tmdbFetch(`https://api.themoviedb.org/3/${r.mt}/${r.id}?api_key=${TMDB}&language=zh-TW`);
+    if(d&&d.genres) document.getElementById('pmTags').innerHTML=d.genres.slice(0,5).map(g=>`<span class="pm-tag">${g.name}</span>`).join('');
+    let overview=(d&&d.overview)||'';
+    if(!overview){
+      const d2=await tmdbFetch(`https://api.themoviedb.org/3/${r.mt}/${r.id}?api_key=${TMDB}&language=en-US`);
+      overview=(d2&&d2.overview)||'';
     }
-    const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
-    const year=m.year||0;
-    const cleanTitle2=(m.title||'').replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
-    const cleanOrig2=(m.orig||'').replace(/\s*S\d+$/i,'').replace(/\s*Season\s*\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').trim();
-
-    // TV ID 直接指定
-    if(TMDB_TV_OVERRIDE[m.title]){
-      const r0=await fetch(`https://api.themoviedb.org/3/tv/${TMDB_TV_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
-      const d0=await r0.json();
-      if(d0.poster_path){
-        pmImg.onload=()=>{pmPlaceholder.style.display='none';pmImg.style.display='block';};
-        pmImg.src=`https://image.tmdb.org/t/p/w500${d0.poster_path}`;
-        if(d0.genres) document.getElementById('pmTags').innerHTML=d0.genres.slice(0,5).map(g=>`<span class="pm-tag">${g.name}</span>`).join('');
-        document.getElementById('pmOverview').textContent=d0.overview||'暫無簡介';
-        return;
-      }
-    }
-    // Movie ID 直接指定
-    if(TMDB_ID_OVERRIDE[m.title]){
-      const r0=await fetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[m.title]}?api_key=${TMDB}&language=zh-TW`);
-      const d0=await r0.json();
-      if(d0.poster_path){
-        pmImg.onload=()=>{pmPlaceholder.style.display='none';pmImg.style.display='block';};
-        pmImg.src=`https://image.tmdb.org/t/p/w500${d0.poster_path}`;
-        if(d0.genres) document.getElementById('pmTags').innerHTML=d0.genres.slice(0,5).map(g=>`<span class="pm-tag">${g.name}</span>`).join('');
-        document.getElementById('pmOverview').textContent=d0.overview||'暫無簡介';
-        return;
-      }
-    }
-    let movie=null;
-    const isTV2 = m.type==='影集'||m.type==='綜藝';
-
-    function pickBestTV(results, year){
-      if(!results||!results.length) return null;
-      let pool = results;
-      if(origLang2){
-        const lm=results.filter(r=>r.original_language===origLang2);
-        if(lm.length) pool=lm;
-      }
-      if(year&&year>0){
-        const exact=pool.find(r=>{const d=r.first_air_date||r.release_date||'';return parseInt(d.substring(0,4))===year;});
-        if(exact) return exact;
-        const near=pool.find(r=>{const d=r.first_air_date||r.release_date||'';return Math.abs(parseInt(d.substring(0,4))-year)<=1;});
-        if(near) return near;
-      }
-      return pool[0];
-    }
-
-    if(isTV2){
-      // 影集/綜藝：直接搜 TV
-      // 1. 原文名
-      if(cleanOrig2&&cleanOrig2!=='nan'){
-        let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
-        let json=await res.json();
-        movie=pickBestTV(json.results,year);
-      }
-      // 2. 中文名
-      if(!movie||!movie.poster_path){
-        let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
-        let json=await res.json();
-        movie=pickBestTV(json.results,year)||movie;
-      }
-    } else {
-      // 電影：搜 movie
-      // 1. 英文原名（拉丁）
-      if(cleanOrig2&&cleanOrig2!=='nan'&&isLatin(cleanOrig2)){
-        let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
-        let json=await res.json();
-        movie=pickBest(json.results,year);
-      }
-      // 2. 中文片名
-      if(!movie||!movie.poster_path){
-        let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
-        let json=await res.json();
-        movie=pickBest(json.results,year)||movie;
-      }
-      // 3. 非拉丁原名（韓文/日文）
-      if((!movie||!movie.poster_path)&&cleanOrig2&&cleanOrig2!=='nan'&&!isLatin(cleanOrig2)){
-        let res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB}&query=${encodeURIComponent(cleanOrig2)}&language=zh-TW`);
-        let json=await res.json();
-        movie=pickBest(json.results,year)||movie;
-      }
-      // 4. 電影也用 TV 備援（有些記錄類型標錯）
-      if(!movie||!movie.poster_path){
-        let res=await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB}&query=${encodeURIComponent(cleanTitle2)}&language=zh-TW`);
-        let json=await res.json();
-        movie=pickBestTV(json.results,year)||movie;
-      }
-    }
-    if(movie){
-      // 自動把 TMDB ID 存回資料（供演員搜尋用）
-      if(movie.id && !m.tmdbId){
-        m.tmdbId = movie.id;
-        try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch{}
-      }
-      if(movie.poster_path){
-        pmImg.onload=()=>{pmPlaceholder.style.display='none';pmImg.style.display='block';};
-        pmImg.onerror=()=>{pmPlaceholder.textContent='無海報圖';};
-        pmImg.src=`https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-      }else{pmPlaceholder.textContent='無海報圖';}
-      if(movie.genre_ids&&movie.genre_ids.length){
-        document.getElementById('pmTags').innerHTML=movie.genre_ids.slice(0,5).map(id=>GENRE[id]?`<span class="pm-tag">${GENRE[id]}</span>`:'').join('');
-      }
-      let overview=movie.overview||'';
-      if(!overview){
-        const r2=await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${TMDB}&language=en-US`);
-        const d2=await r2.json();
-        overview=d2.overview||'';
-      }
-      document.getElementById('pmOverview').textContent=overview||'暫無簡介';
-    }else{pmPlaceholder.textContent='找不到資料';}
+    document.getElementById('pmOverview').textContent=overview||'暫無簡介';
   }catch(e){pmPlaceholder.textContent='載入失敗';}
 }
 
@@ -1726,135 +1614,13 @@ render();
   async function fetchPoster(movie){
     const title = movie.title;
     if(posterCache[title]!==undefined) return posterCache[title];
-    posterCache[title] = null;
-    // 年份比對：優先完全符合，其次差1年
-    function pickBest(results, year){
-      if(!results||!results.length) return null;
-      if(year&&year>0){
-        const exact=results.find(r=>r.release_date&&parseInt(r.release_date.substring(0,4))===year);
-        if(exact) return exact;
-        const near=results.find(r=>r.release_date&&Math.abs(parseInt(r.release_date.substring(0,4))-year)<=1);
-        if(near) return near;
-      }
-      return results[0];
-    }
-    try {
-      const year = movie.year||0;
-      const isLatin = s => Array.from(s||'').every(c=>c.charCodeAt(0)<0x0400);
-      const isTV = movie.type==='影集' || movie.type==='綜藝';
-
-      // 直接指定 TMDB TV ID
-      if(TMDB_TV_OVERRIDE[title]){
-        const r = await fetch(`https://api.themoviedb.org/3/tv/${TMDB_TV_OVERRIDE[title]}?api_key=${TMDB_KEY}&language=zh-TW`);
-        const d = await r.json();
-        if(d.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${d.poster_path}`;
-          return posterCache[title];
-        }
-      }
-
-      // 直接指定 TMDB Movie ID（解決搜尋易出錯的片）
-      if(TMDB_ID_OVERRIDE[title]){
-        const r = await fetch(`https://api.themoviedb.org/3/movie/${TMDB_ID_OVERRIDE[title]}?api_key=${TMDB_KEY}&language=zh-TW`);
-        const d = await r.json();
-        if(d.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${d.poster_path}`;
-          return posterCache[title];
-        }
-      }
-
-      // 語言代碼 → TMDB original_language
-      const LANG_MAP={'CN':'zh','TW':'zh','HK':'zh','JP':'ja','KR':'ko',
-        'US':'en','GB':'en','AU':'en','FR':'fr','DE':'de','ES':'es',
-        'IT':'it','IN':'hi','ID':'id','TR':'tr','IR':'fa','NL':'nl','CH':'de','MY':'ms'};
-      const origLang = LANG_MAP[movie.lang]||null;
-
-      // pickBest 加入 original_language 比對
-      function pickBestWithLang(results, year, origLang){
-        if(!results||!results.length) return null;
-        let pool = results;
-        // 先用 original_language 過濾，若無符合則保留全部
-        if(origLang){
-          const langMatch = results.filter(r=>r.original_language===origLang);
-          if(langMatch.length) pool = langMatch;
-        }
-        const getYear = r => parseInt((r.release_date||r.first_air_date||'0').substring(0,4));
-        if(year>0){
-          const exact = pool.find(r=>getYear(r)===year);
-          if(exact) return exact;
-          const near = pool.find(r=>Math.abs(getYear(r)-year)<=1);
-          if(near) return near;
-        }
-        return pool[0];
-      }
-
-      // 影集優先走 TV 搜尋
-      if(isTV && movie.orig && movie.orig!=='nan'){
-        const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
-        const json = await res.json();
-        const m = pickBestWithLang(json.results, year, origLang);
-        if(m && m.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
-          return posterCache[title];
-        }
-      }
-      if(isTV){
-        const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
-        const json = await res.json();
-        const m = pickBestWithLang(json.results, year, origLang);
-        if(m && m.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
-          return posterCache[title];
-        }
-      }
-
-      // 英文原名搜電影（拉丁字母）
-      if(movie.orig && movie.orig!=='nan' && isLatin(movie.orig)){
-        const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
-        const json = await res.json();
-        const m = pickBestWithLang(json.results, year, origLang);
-        if(m && m.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${m.poster_path}`;
-          return posterCache[title];
-        }
-      }
-      // 中文片名搜電影
-      const res2 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.title)}&language=zh-TW`);
-      const json2 = await res2.json();
-      const m2 = pickBestWithLang(json2.results, year, origLang);
-      if(m2 && m2.poster_path){
-        posterCache[title] = `https://image.tmdb.org/t/p/w185${m2.poster_path}`;
-        return posterCache[title];
-      }
-      // 非拉丁原名搜電影
-      if(movie.orig && movie.orig!=='nan' && !isLatin(movie.orig)){
-        const res3 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movie.orig)}&language=zh-TW`);
-        const json3 = await res3.json();
-        const m3 = pickBestWithLang(json3.results, year, origLang);
-        if(m3 && m3.poster_path){
-          posterCache[title] = `https://image.tmdb.org/t/p/w185${m3.poster_path}`;
-          return posterCache[title];
-        }
-      }
-      // 最後備援：不過濾語言，直接取 TV 搜尋第一筆（跟燈箱邏輯一致）
-      const fallbackQueries = [movie.orig, movie.title].filter(q=>q&&q!=='nan');
-      for(const fq of fallbackQueries){
-        const cleanQ = fq.replace(/\s*S\d+$/i,'').replace(/\s*第[一二三四五六七八九十\d]+季$/,'').replace(/\s*시즌\s*\d+$/,'').trim();
-        try{
-          const rf = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanQ)}&language=zh-TW`);
-          const jf = await rf.json();
-          if(jf.results && jf.results[0] && jf.results[0].poster_path){
-            posterCache[title] = `https://image.tmdb.org/t/p/w185${jf.results[0].poster_path}`;
-            return posterCache[title];
-          }
-        }catch{}
-      }
-
-      posterCache[title] = null;
-      return null;
-    } catch(e){ return null; } finally{
-      try{ localStorage.setItem('_posterCache', JSON.stringify(posterCache)); }catch{}
-    }
+    try{
+      const r = await tmdbMatch(movie);
+      if(r===undefined) return null;   // 網路失敗：不寫快取，下次再抓
+      posterCache[title] = (r&&r.poster_path) ? `https://image.tmdb.org/t/p/w185${r.poster_path}` : null;
+      savePosterCache();
+      return posterCache[title];
+    }catch(e){ return null; }
   }
 
   async function prefetchMonthPosters(){
