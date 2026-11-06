@@ -615,6 +615,8 @@ body{font-variant-numeric:tabular-nums}
 .tbl.rl tr.off td{color:var(--ink3)}.tbl.rl tr.off .rl-n{color:var(--ink3);font-weight:500}
 .rl-cap{font-size:11.5px;color:var(--ink3);margin:6px 2px 0}
 @media (max-width:600px){.tbl.rl td{padding:9px 8px;font-size:14px}.tbl.rl th:first-child,.tbl.rl td:first-child{min-width:136px;max-width:136px}.rl-n{white-space:normal;font-size:14px;line-height:1.25}}
+.wfp{display:block;font-family:var(--mono);font-size:12px;color:var(--ink3);margin-top:2px}.wfp b{font-weight:700}.wfp .me{color:var(--me)}.wfp .op{color:var(--op)}
+.box tr.fprow td{border-top:2px solid var(--line2)}
 </style>
 </head>
 <body>
@@ -755,6 +757,7 @@ body{font-variant-numeric:tabular-nums}
       <div class="fld full"><label>Yahoo 聯盟網址</label><input id="sUrl"></div>
       <div class="fld full"><label>玩法</label><select id="sMode"><option value="cat">Head-to-Head 類別制（逐項比勝負）</option><option value="pts">Head-to-Head 積分制（比 Fan Pts 總分）</option></select></div>
       <div class="fld full" id="sCatsBox"><label>計分類別</label><div class="toggles" id="sCats"></div></div>
+      <div class="fld full" id="sFpwBox"><label>自訂 Fan Pts（選填，每 1 單位換幾分）</label><div class="wgrid" id="sFpw"></div><span class="help">類別制聯盟也想看積分就填；空著的類別不算分，全空就不顯示 Fan Pts。</span></div>
       <div class="fld full hidden" id="sWBox"><label>計分公式（每 1 單位換幾分）</label><div class="wgrid" id="sW"></div><span class="help">預設是 Yahoo 積分制的標準設定；你們聯盟如果不一樣，照 League → Settings 改。填了每週的 PTS / REB… 數字後，統計頁會用這個公式算出得分來源。</span></div>
       <div class="fld full"><label>其他隊伍（一行一隊）</label><textarea id="sOpps" rows="5" placeholder="選秀後把其他隊伍的隊名貼進來，填對戰時可以直接選"></textarea></div>
     </div>
@@ -943,6 +946,8 @@ function normW(w){const me={},op={};CATS.concat(EXTRA).forEach(c=>{const a=w.me&
 function normL(l){l=Object.assign({},DEF_LEAGUE,l||{});l.id=l.id||uid('lg');l.name=String(l.name||'').trim();l.teams=Math.min(20,Math.max(2,+l.teams||14));l.rounds=Math.min(30,Math.max(1,+l.rounds||13));
   l.slot=+l.slot||0;if(l.slot>l.teams)l.slot=0;l.proj=+l.proj||0;if(l.proj>l.teams)l.proj=0;l.opps=Array.isArray(l.opps)?l.opps.map(s=>String(s).trim()).filter(Boolean):[];
   l.cats=Array.isArray(l.cats)?l.cats.filter(k=>CATS.some(c=>c.k===k)):DEF_LEAGUE.cats.slice();
+  l.fpw=(l.fpw&&typeof l.fpw==='object')?Object.fromEntries(Object.entries(l.fpw).filter(([k,v])=>CATS.some(c=>c.k===k)&&v!==''&&v!=null&&isFinite(+v)).map(([k,v])=>[k,+v])):{};
+  if(l.id==='lg1'&&!l.mig2){l.mig2=1;if(!Object.keys(l.fpw).length)l.fpw={PTS:1,REB:1.2,AST:1.5,BLK:3,ST:3,TO:-1,'3PTM':2,AT:5,TECH:-3,DD:3}}   // 沒有特異功能俱樂部：自訂 Fan Pts
   if(l.id==='lgmvaa8zi6aioj'&&!l.mig1){l.mig1=1;if(!l.cats.includes('DREB'))l.cats=CATS.map(c=>c.k).filter(k=>k==='DREB'||l.cats.includes(k))}   // Nate's Cool League 有 DREB
   l.draft=l.draft==='auction'?'auction':'snake';l.budget=Math.max(1,Math.round(+l.budget||200));
   l.mode=l.mode==='pts'||l.mode==='cat'?l.mode:(/pts|points|積分/i.test(l.name)?'pts':'cat');
@@ -1088,6 +1093,11 @@ function catStats(){
 }
 function wlt(W,L,T){return '<span class="wlt"><b class="w">'+W+'</b>-<b class="l">'+L+'</b>-<b class="t">'+T+'</b></span>'}
 function fp(v){return v==null||!isFinite(v)?'—':(+v).toFixed(1)}
+/* 類別制聯盟的自訂 Fan Pts（league.fpw：類別 → 每 1 單位幾分） */
+function hasFpw(lg){lg=lg||LG();return !isPts(lg)&&Object.keys(lg.fpw||{}).length>0}
+function fpSum(get,lg){lg=lg||LG();let t=0,n=0;Object.entries(lg.fpw||{}).forEach(([c,w])=>{const v=get(c);if(v!=null&&v!==''&&isFinite(+v)){t+=w*v;n++}});return n?Math.round(t*10)/10:null}
+function fpTeam(o,lg){return fpSum(c=>(o||{})[c],lg)}
+function fpPlayer(st,lg){return st?fpSum(c=>st[CAT2K[c]],lg):null}
 function pctTxt(x){return x==null?'—':(x*100).toFixed(0)+'%'}
 
 /* ===== 渲染 ===== */
@@ -1153,7 +1163,7 @@ function seasonOf(p){
   const t={},n={};ks.forEach(k=>{t[k]=0;n[k]=0});let g=0,allGp=true;
   ws.forEach(w=>{const s=w.ps[p.id];if(!(s.gp>0))allGp=false;g+=s.gp||0;ks.forEach(k=>{if(s[k]!=null&&s[k]!==''){t[k]+=+s[k];n[k]++}})});
   const div=allGp&&g>0?g:ws.length,o={per:allGp&&g>0?'g':'w',gp:g,wk:ws.length};
-  ks.forEach(k=>o[k]=SDEF[k]&&SDEF[k].pct?(n[k]?t[k]/n[k]:null):(n[k]?t[k]/div:null));return o;
+  ks.forEach(k=>o[k]=(SDEF[k]&&SDEF[k].pct)||k==='at'?(n[k]?t[k]/n[k]:null):(n[k]?t[k]/div:null));return o;   // 比率類（%、A/T）取每週平均
 }
 function seasonHTML(p){
   const s=seasonOf(p);if(!s)return '<div class="nostat" title="在「每週對戰」填球員本週數據後會自動平均">本季尚無數據</div>';
@@ -1255,7 +1265,7 @@ function renderDraft(){
 /* 陣容：橫式列表（名字・球隊・本季數據），欄位跟著聯盟比項 */
 /* 陣容列表排序：點標題列切換；預設照位置（PG→C） */
 let rlSort={k:'pos',asc:true};
-function rlVal(p,k){if(k==='pick')return curPick(p).v||null;const s=seasonOf(p);if(k==='gp')return s?(s.per==='g'?s.gp:s.wk):null;const v=s?s[k]:null;return v==null||v===''||isNaN(+v)?null:+v}
+function rlVal(p,k){if(k==='pick')return curPick(p).v||null;const s=seasonOf(p);if(k==='fpx')return fpPlayer(s);if(k==='gp')return s?(s.per==='g'?s.gp:s.wk):null;const v=s?s[k]:null;return v==null||v===''||isNaN(+v)?null:+v}
 function rlSorted(list,ord){
   const k=rlSort.k;
   if(k==='pos')return rlSort.asc?list:list.slice().reverse();
@@ -1264,10 +1274,10 @@ function rlSorted(list,ord){
 function rosterListHTML(list){
   const SK=statKeys();
   const th=(k,l)=>'<th data-k="'+k+'" class="'+(rlSort.k===k?'on'+(rlSort.asc?' asc':''):'')+'">'+l+'</th>';
-  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr>'+th('pos','球員')+th('gp','GP')+SK.map(k=>th(k,SDEF[k].l)).join('')+th('pick','PICK')+'</tr></thead><tbody>';
+  let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr>'+th('pos','球員')+th('gp','GP')+SK.map(k=>th(k,SDEF[k].l)).join('')+(hasFpw()?th('fpx','FP'):'')+th('pick','PICK')+'</tr></thead><tbody>';
   list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',pp=POS[posRank(p)];
     h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(pp?' data-p="'+pp+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
-      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+(()=>{const c=curPick(p);return '<td>'+(c.v?c.v+dlHTML(c.v,c.prev):'—')+'</td>'})()+'</tr>'});
+      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+(hasFpw()?'<td><b>'+fp(fpPlayer(s))+'</b></td>':'')+(()=>{const c=curPick(p);return '<td>'+(c.v?c.v+dlHTML(c.v,c.prev):'—')+'</td>'})()+'</tr>'});
   return h+'</tbody></table></div><div class="rl-cap">本季平均（每週對戰填的球員數據自動平均；全部週都有 GP 就是場均，否則是週均）</div>';
 }
 function renderRoster(){
@@ -1312,7 +1322,7 @@ function renderWeeks(){
     const s=scoreWeek(w);
     h+='<div class="wk'+(openWeeks.has(w.id)?' open':'')+'" data-id="'+w.id+'"><div class="wk-h">'+
       '<div class="wk-n"><small>'+(w.playoff?'PLAYOFF':'WEEK')+'</small>'+w.week+'</div>'+
-      '<div class="wk-o">vs '+esc(w.opp||'—')+'<span class="d">'+(w.start?md(w.start)+' – '+md(w.end):'')+'</span></div>'+
+      '<div class="wk-o">vs '+esc(w.opp||'—')+'<span class="d">'+(w.start?md(w.start)+' – '+md(w.end):'')+(hasFpw()&&fpTeam(w.me)!=null?'<span class="wfp">FP <b class="me">'+fp(fpTeam(w.me))+'</b> : <b class="op">'+fp(fpTeam(w.op))+'</b></span>':'')+'</span></div>'+
       (isPts()?'<div class="wk-s pt ptsline">'+(s.n?'<span class="me">'+fp(s.a)+'</span><small>:</small><span class="op">'+fp(s.b)+'</span>':'<span style="color:var(--ink3);font-size:18px">未填</span>')+'</div>'
         :'<div class="wk-s">'+(s.n?wlt(s.W,s.L,s.T):'<span style="color:var(--ink3);font-size:18px">未填</span>')+'</div>')+
       '<div class="res '+(s.done&&s.res?s.res:'P')+'">'+(s.done&&s.res?s.res:'進行')+'</div></div><div class="wk-b">';
@@ -1321,10 +1331,11 @@ function renderWeeks(){
       const r=c.k==='FP'?s.per.FP:(isPts()?null:s.per[c.k]);
       h+='<tr><td>'+c.l+(c.low?'<span class="lowtag">↓</span>':'')+'</td><td class="me '+(r==='W'?'win':r==='L'?'dim':'')+'"><span class="v">'+fmtVal(c,w.me[c.k])+'</span></td><td class="op '+(r==='L'?'win':r==='W'?'dim':'')+'"><span class="v">'+fmtVal(c,w.op[c.k])+'</span></td></tr>';
     });
+    if(hasFpw()){const a=fpTeam(w.me),b=fpTeam(w.op);h+='<tr class="fprow"><td>Fan Pts<span class="lowtag">自訂</span></td><td class="me '+(a!=null&&b!=null&&a>b?'win':'')+'"><span class="v">'+fp(a)+'</span></td><td class="op '+(a!=null&&b!=null&&b>a?'win':'')+'"><span class="v">'+fp(b)+'</span></td></tr>'}
     h+='</tbody></table>';
     const pids=Object.keys(w.ps||{}).filter(id=>Pl().some(p=>p.id===id));
-    if(pids.length){const ks=psKeys();h+='<div class="wkps"><h4>球員本週數據</h4><div class="scroll-x"><table class="tbl"><thead><tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr></thead><tbody>'+
-      pids.map(id=>{const p=Pl().find(x=>x.id===id),s=w.ps[id];return '<tr><td>'+esc(p.name)+'</td>'+ks.map(k=>'<td>'+fmtW(k,s[k])+'</td>').join('')+'</tr>'}).join('')+'</tbody></table></div></div>'}
+    if(pids.length){const ks=psKeys();h+='<div class="wkps"><h4>球員本週數據</h4><div class="scroll-x"><table class="tbl"><thead><tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+(hasFpw()?'<th>FP</th>':'')+'</tr></thead><tbody>'+
+      pids.map(id=>{const p=Pl().find(x=>x.id===id),s=w.ps[id];return '<tr><td>'+esc(p.name)+'</td>'+ks.map(k=>'<td>'+fmtW(k,s[k])+'</td>').join('')+(hasFpw()?'<td><b>'+fp(fpPlayer(s))+'</b></td>':'')+'</tr>'}).join('')+'</tbody></table></div></div>'}
     h+=(w.note?'<div class="wk-note">'+esc(w.note)+'</div>':'')+'<div class="wk-act"><button class="btn sm" data-edit="'+w.id+'">編輯</button></div></div></div>';
   });
   el.innerHTML=h+'</div>';
@@ -1752,13 +1763,14 @@ function openSettings(isNew){
   fillSlot(L.teams,L.slot);$('sDraft').value=L.draft;$('sBudget').value=L.budget;syncDraft();
   sCatSel=new Set(L.cats);
   $('sMode').value=L.mode;syncMode();
+  $('sFpw').innerHTML=CATS.map(c=>'<label>'+c.l+'<input data-fw="'+c.k+'" inputmode="decimal" value="'+(L.fpw&&L.fpw[c.k]!=null?L.fpw[c.k]:'')+'"></label>').join('');
   $('sW').innerHTML=PSTATS.map(k=>'<label>'+k+'<input data-w="'+k+'" inputmode="decimal" value="'+L.w[k]+'"></label>').join('');
   $('sCats').innerHTML=CATS.map(c=>'<button type="button" data-k="'+c.k+'" class="'+(sCatSel.has(c.k)?'on':'')+'">'+c.l+'</button>').join('');
   $('sCats').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;sCatSel.has(k)?sCatSel.delete(k):sCatSel.add(k);b.classList.toggle('on')});
   $('sDel').classList.toggle('hidden',isNew||D.leagues.length<2);
   show('setModal');if(isNew)setTimeout(()=>$('sLeague').focus(),60);
 }
-function syncMode(){const p=$('sMode').value==='pts';$('sCatsBox').classList.toggle('hidden',p);$('sWBox').classList.toggle('hidden',!p)}
+function syncMode(){const p=$('sMode').value==='pts';$('sCatsBox').classList.toggle('hidden',p);$('sFpwBox').classList.toggle('hidden',p);$('sWBox').classList.toggle('hidden',!p)}
 $('sMode').onchange=syncMode;
 function syncDraft(){const a=$('sDraft').value==='auction';$('sSlotBox').classList.toggle('hidden',a);$('sBudgetBox').classList.toggle('hidden',!a);$('sRoundsL').textContent=a?'名單人數（要買幾人）':'選秀輪數'}
 $('sDraft').onchange=syncDraft;
@@ -1771,7 +1783,7 @@ $('sSave').onclick=()=>{
   const wts={};let bad=false;$('sW').querySelectorAll('input').forEach(i=>{const v=parseFloat(i.value);if(!isFinite(v))bad=true;wts[i.dataset.w]=v});
   if(mode==='pts'&&bad){toast('計分公式要填數字');return}
   const data={name,team:$('sTeam').value.trim(),teams:+$('sTeams').value,rounds:+$('sRounds').value,
-    slot:+$('sSlot').value,draft:$('sDraft').value,budget:+$('sBudget').value||200,week1:$('sWeek1').value,url:$('sUrl').value.trim(),cats:CATS.map(c=>c.k).filter(k=>sCatSel.has(k)),mode,w:bad?undefined:wts,
+    slot:+$('sSlot').value,draft:$('sDraft').value,budget:+$('sBudget').value||200,week1:$('sWeek1').value,url:$('sUrl').value.trim(),cats:CATS.map(c=>c.k).filter(k=>sCatSel.has(k)),mode,w:bad?undefined:wts,fpw:(()=>{const o={};$('sFpw').querySelectorAll('input').forEach(i=>{const v=i.value.trim();if(v!==''&&isFinite(+v))o[i.dataset.fw]=+v});return o})(),
     opps:Array.from(new Set($('sOpps').value.split('\n').map(s=>s.trim()).filter(Boolean)))};
   let L;
   if(editLg){L=D.leagues.find(l=>l.id===editLg);Object.assign(L,normL(Object.assign({},L,data)))}
