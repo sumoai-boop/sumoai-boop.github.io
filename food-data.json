@@ -1,5 +1,37 @@
 [
   {
+    "id": "1794129702071",
+    "name": "泰和樓",
+    "name1": "泰和樓",
+    "name2": "",
+    "type": "中菜館",
+    "meal": "",
+    "price": 571,
+    "visits": 1,
+    "gscore": 4.3,
+    "addr": "106臺北市大安區錦泰里杭州南路二段61-20號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E6%B3%B0%E5%92%8C%E6%A8%93/@25.0295511,121.5222331,18z/data=!4m6!3m5!1s0x3442aa29f214256f:0x805bcb2b22b8f052!8m2!3d25.0302486!4d121.5222653!16s%2Fg%2F11f57d3w21!5m1!1e1?entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-11-08",
+    "score": 4.2,
+    "visitLog": [
+      {
+        "date": "2026-11-08",
+        "meal": "午餐",
+        "price": 571,
+        "menu": "",
+        "score": 4.2,
+        "imgs": [
+          "https://i.ibb.co/rBY1QtT/af8a3be1959d.jpg",
+          "https://i.ibb.co/MDdCmdNv/36e4717926ce.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1794129702071
+  },
+  {
     "id": "1794067347651",
     "name": "撈汁黍到山 東北麻辣燙",
     "name1": "撈汁黍到山 東北麻辣燙",
