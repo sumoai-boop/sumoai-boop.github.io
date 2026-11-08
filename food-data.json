@@ -1,5 +1,36 @@
 [
   {
+    "id": "1794129747902",
+    "name": "金錦町 JinJinDing 金華店",
+    "name1": "金錦町 JinJinDing",
+    "name2": "金華店",
+    "type": "咖啡廳",
+    "meal": "",
+    "price": 528,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "106臺北市大安區錦泰里金華街84、86號",
+    "note": "",
+    "maps": "https://www.google.com/maps/place/%E9%87%91%E9%8C%A6%E7%94%BA+JinJinDing(%E9%87%91%E8%8F%AF%E5%BA%97)/@25.0296726,121.5230378,18z/data=!4m6!3m5!1s0x3442a95af51a8a25:0x6e810fe2d5a9aa8c!8m2!3d25.0302983!4d121.5248801!16s%2Fg%2F11f7st7v1d!5m1!1e1?entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-11-08",
+    "score": 4,
+    "visitLog": [
+      {
+        "date": "2026-11-08",
+        "meal": "午餐",
+        "price": 528,
+        "menu": "",
+        "score": 4,
+        "imgs": [
+          "https://i.ibb.co/rGVszyFm/f0f7a9d0046b.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1794129747902
+  },
+  {
     "id": "1794129702071",
     "name": "泰和樓",
     "name1": "泰和樓",
