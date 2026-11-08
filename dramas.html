@@ -112,7 +112,8 @@
   .title-cell:hover{color:var(--velvet);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:5px;}
   .orig-cell{color:var(--faint);font-size:13px;margin-top:2px;}
   .score-badge{display:inline-block;font-family:var(--f-num);font-size:24px;font-weight:700;line-height:1;}
-  .score-perfect{color:var(--gold);font-family:var(--f-ui);font-size:15px;letter-spacing:1px;}
+  .score-perfect,.tk-facts dd.tk-score.score-perfect{font-family:var(--f-num);font-size:40px;font-weight:700;line-height:1;background:linear-gradient(110deg,#94650A 0%,#D9A520 28%,#FFF7CF 44%,#FFE27A 50%,#D9A520 64%,#94650A 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 5px rgba(255,196,40,0.55));animation:goldShine 2.8s ease-in-out infinite;}
+  @keyframes goldShine{0%{background-position:100% 0;}55%,100%{background-position:-60% 0;}}
   .score-high{color:var(--velvet);font-size:30px;}
   .score-mid{color:var(--ink);}
   .score-low{color:var(--faint);}
@@ -941,7 +942,7 @@ function renderTicket(){
   document.getElementById('tkOrig').textContent=(m.orig&&m.orig!=='nan')?m.orig:'';
   document.getElementById('tkVenue').textContent=(m.venue||'—').replace(/^🎬\s*/,'').replace(/^🏠\s*/,'');
   document.getElementById('tkType').innerHTML=(m.type||'—')+(typeof epBadge==='function'?epBadge(m):'');
-  document.getElementById('tkScore').textContent=(m.personal>0)?(window.st?st(m.personal):m.personal):'—';
+  var _tks=document.getElementById('tkScore'); _tks.textContent=(m.personal>0)?(window.st?st(m.personal):m.personal):'—'; _tks.classList.toggle('score-perfect', m.personal===10);
   t.onclick=document.getElementById('tkPoster').onclick=function(){openPoster(m);};
   setTkCut();
   if(key===_tkKey) return; _tkKey=key;
@@ -979,7 +980,7 @@ let actorTmdbIds=null; // null=未搜尋演員, Set=演員搜尋結果（片單 
 let actorName='';      // 目前搜尋的演員名稱
 let actorSearchTimer=null;
 const PAGE_SIZE=25;
-window.st = function(s){ return s===0?'—':s===10?'★ 10':s.toFixed(1); };
+window.st = function(s){ return s===0?'—':s===10?'10':s.toFixed(1); };
 function resetPage(){ currentPage=1; render(); }
 
 window.sc = function(s){ return s===10?'score-perfect':s>=8?'score-high':s>=6?'score-mid':'score-low'; };
