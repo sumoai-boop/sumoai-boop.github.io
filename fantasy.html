@@ -1296,7 +1296,7 @@ function rosterListHTML(list){
   let h='<div class="scroll-x rl-wrap"><table class="tbl rl"><thead><tr>'+th('pos','球員')+th('gp','GP')+SK.map(k=>th(k,SDEF[k].l)).join('')+(hasFpw()?th('fpx','FP'):'')+th('pick','PICK')+'</tr></thead><tbody>';
   list.forEach(p=>{const s=seasonOf(p),out=p.status!=='在隊',pp=POS[posRank(p)];
     h+='<tr data-id="'+p.id+'" class="'+(out?'off':'')+'"'+(pp?' data-p="'+pp+'"':'')+'><td><div class="rl-n">'+esc(p.name)+'</div><div class="rl-t">'+(p.nba||'—')+(out?' · '+p.status:'')+'</div></td>'+
-      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+(hasFpw()?'<td><b>'+fp(fpPlayer(s))+'</b></td>':'')+(()=>{const c=curPick(p);return '<td>'+(c.v?c.v+dlHTML(c.v,c.prev):'—')+'</td>'})()+'</tr>'});
+      '<td>'+(s?(s.per==='g'?s.gp:s.wk+'週'):'—')+'</td>'+SK.map(k=>'<td>'+(s&&s[k]!=null?fmtS(k,s[k]):'—')+'</td>').join('')+(hasFpw()?'<td><b>'+fp(fpPlayer(s))+'</b></td>':'')+(()=>{const c=curPick(p);return '<td>'+(c.v?'<b>'+c.v+'</b>':'—')+'</td>'})()+'</tr>'});
   return h+'</tbody></table></div><div class="rl-cap">本季平均（每週對戰填的球員數據自動平均；全部週都有 GP 就是場均，否則是週均）</div>';
 }
 function renderRoster(){
