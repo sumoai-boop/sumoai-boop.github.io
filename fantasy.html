@@ -622,6 +622,11 @@ body{font-variant-numeric:tabular-nums}
 .rkstat small{display:block;font-size:11.5px;color:var(--ink3)}
 .rkstat b{font-family:var(--mono);font-size:34px;font-weight:800;color:var(--ink);line-height:1}
 .rkstat i{font-style:normal;font-size:12px;color:var(--ink3);margin-left:3px}
+.psadd{margin-top:8px;font-size:13px;padding:7px 10px;border:1px dashed var(--line2);border-radius:8px;background:#fff;color:var(--ink2);max-width:100%}
+.pktbl th{font-size:13px}
+.pktbl td{font-family:var(--mono);font-size:17px;font-weight:600;padding-top:10px;padding-bottom:10px;font-variant-numeric:tabular-nums}
+.pktbl td:first-child{font-family:inherit;font-size:15px;font-weight:600}
+.pktbl td:last-child{font-weight:800}
 </style>
 </head>
 <body>
@@ -738,6 +743,7 @@ body{font-variant-numeric:tabular-nums}
     <div class="livescore" id="liveScore"></div>
     <div class="fld full" style="margin-top:14px"><label>球員本週數據（選填・整週合計）</label>
       <div class="scroll-x"><table class="pstbl"><thead id="wPsHead"></thead><tbody id="wPs"></tbody></table></div>
+      <select id="wPsAdd" class="psadd"></select>
       <span class="help">PICK 填這週的 FB 排名（統計頁會畫成曲線）；其他照 Yahoo 對戰頁每位球員那一列填；GP 是本週出賽場數，有填的話陣容頁會算場均，沒填就算每週平均。</span></div>
     <div class="fld full" style="margin-top:12px"><label>備註</label><textarea id="wNote" placeholder="這週的關鍵：誰受傷、哪個類別差一點…"></textarea></div>
     <div class="mact">
@@ -1442,7 +1448,7 @@ function appendPickPanel(){
     '<div class="chartbox" id="pkChart"></div>';
   /* 表格：全部球員 × 每週 */
   h+='<div class="scroll-x" style="margin-top:14px"><table class="tbl pktbl"><thead><tr><th>球員</th><th>季前</th>'+ws.map(w=>'<th>W'+w.week+'</th>').join('')+'<th>變化</th></tr></thead><tbody>'+
-    ps.map(p=>{let prev=pickOf(p)||null;const first=prev;let last=null;const cells=ws.map(w=>{const v=w.ps[p.id]&&w.ps[p.id].pick>0?w.ps[p.id].pick:null;if(v==null)return '<td>—</td>';const c='<td>'+v+dlHTML(v,prev)+'</td>';prev=v;last=v;return c}).join('');
+    ps.map(p=>{let prev=pickOf(p)||null;const first=prev;let last=null;const cells=ws.map(w=>{const v=w.ps[p.id]&&w.ps[p.id].pick>0?w.ps[p.id].pick:null;if(v==null)return '<td>—</td>';const c='<td>'+v+'</td>';prev=v;last=v;return c}).join('');
       const d=first&&last?first-last:null;
       return '<tr><td>'+esc(p.name)+(p.status!=='在隊'?' <span class="team">（'+p.status+'）</span>':'')+'</td><td>'+(first||'—')+'</td>'+cells+'<td style="color:'+(d>0?'var(--win)':d<0?'var(--loss)':'var(--ink3)')+'">'+(d==null?'—':d>0?'▲'+d:d<0?'▼'+(-d):'—')+'</td></tr>'}).join('')+
     '</tbody></table></div></div>';
@@ -1687,6 +1693,10 @@ function openWeek(id,paste){
   const ks=psKeys(),ps=w?w.ps:{};
   const ord=(a,b)=>posRank(a)-posRank(b)||draftCmp(a,b)||String(a.date).localeCompare(String(b.date));
   const rows=Pl().filter(p=>p.status==='在隊'||ps[p.id]).sort(ord);
+  const fillAdd=()=>{const have=new Set(Array.from($('wPs').querySelectorAll('tr[data-pid]')).map(t=>t.dataset.pid)),rest=Pl().filter(p=>!have.has(p.id));
+    $('wPsAdd').innerHTML='<option value="">＋ 加入已離隊的球員（這週有上場）</option>'+rest.map(p=>'<option value="'+p.id+'">'+esc(p.name)+'（'+p.status+'）</option>').join('');$('wPsAdd').classList.toggle('hidden',!rest.length)};
+  $('wPsAdd').onchange=()=>{const p=Pl().find(x=>x.id===$('wPsAdd').value);if(p){addPsRow(p);fillAdd()}};
+  setTimeout(fillAdd,0);
   $('wPsHead').innerHTML='<tr><th>球員</th>'+ks.map(k=>'<th>'+PSL[k]+'</th>').join('')+'</tr>';
   $('wPs').innerHTML=rows.length?rows.map(p=>'<tr class="'+(p.status!=='在隊'?'off':'')+'" data-pid="'+p.id+'"><td title="'+esc(p.name)+'">'+esc(p.name)+'</td>'+ks.map(k=>'<td><input data-ps="'+k+'" inputmode="decimal" value="'+(ps[p.id]&&ps[p.id][k]!=null?ps[p.id][k]:'')+'"></td>').join('')+'</tr>').join('')
     :'<tr><td colspan="'+(ks.length+1)+'" style="color:var(--ink3);font-size:12.5px;padding:8px 0">陣容裡還沒有球員</td></tr>';
@@ -1711,6 +1721,8 @@ function parsePaste(txt){
   if(i<0||j<i)throw new Error('找不到 { } 包住的資料');
   return JSON.parse(txt.slice(i,j+1));
 }
+function addPsRow(p){const ks=psKeys(),tb=$('wPs');const empty=tb.querySelector('tr:not([data-pid])');if(empty)empty.remove();
+  tb.insertAdjacentHTML('beforeend','<tr class="'+(p.status!=='在隊'?'off':'')+'" data-pid="'+p.id+'"><td title="'+esc(p.name)+'">'+esc(p.name)+'</td>'+ks.map(k=>'<td><input data-ps="'+k+'" inputmode="decimal" value=""></td>').join('')+'</tr>')}
 function applyPaste(d){
   const notes=[],miss=[];let filled=0;
   if(d.week)$('wNum').value=d.week;
@@ -1722,7 +1734,8 @@ function applyPaste(d){
   ['me','op'].forEach(side=>{const o=d[side]||{};Object.keys(o).forEach(k0=>{const k=CAT_ALIAS[String(k0).toUpperCase()]||k0,inp=$('statRows').querySelector('input[data-s="'+side+'"][data-k="'+k+'"]');
     if(inp&&o[k0]!=null&&o[k0]!==''){inp.value=o[k0];filled++}})});
   const put=(name,key,val)=>{const p=findPlayer(name);if(!p){if(!miss.includes(name))miss.push(name);return false}
-    const inp=$('wPs').querySelector('tr[data-pid="'+p.id+'"] input[data-ps="'+key+'"]');if(!inp){if(!miss.includes(name+'（不在陣容）'))miss.push(name+'（不在陣容）');return false}
+    if(!$('wPs').querySelector('tr[data-pid="'+p.id+'"]'))addPsRow(p);   // 已經丟掉的球員，這週有數據一樣記
+    const inp=$('wPs').querySelector('tr[data-pid="'+p.id+'"] input[data-ps="'+key+'"]');if(!inp)return false;
     inp.value=val;return true};
   let np=0,ns=0;
   if(d.pick&&typeof d.pick==='object')Object.keys(d.pick).forEach(n=>{if(put(n,'pick',d.pick[n]))np++});
