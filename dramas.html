@@ -2200,8 +2200,24 @@ render();
         '<input class="ep-date" type="date" data-epd="'+i+'" value="'+d+'">';
       grid.appendChild(cell);
     }
+    epSyncFirst();
     epRecalc();
   }
+
+  // 第一集觀看日期 = 上方觀看日期（雙向同步）
+  function epSyncFirst(){
+    var d1 = document.querySelector('#arEpGrid input[data-epd="0"]');
+    var top = document.getElementById('ar_date');
+    if(d1 && top && top.value) d1.value = top.value;
+  }
+  document.getElementById('ar_date').addEventListener('input', function(){ epSyncFirst(); epRecalc(); });
+  document.getElementById('ar_date').addEventListener('change', function(){ epSyncFirst(); epRecalc(); });
+  document.getElementById('arEpGrid').addEventListener('change', function(e){
+    var t = e.target;
+    if(t && t.getAttribute && t.getAttribute('data-epd') === '0' && t.value){
+      document.getElementById('ar_date').value = t.value;
+    }
+  });
 
   function epRecalc(){
     var inputs = document.querySelectorAll('#arEpGrid input[data-ep]');
