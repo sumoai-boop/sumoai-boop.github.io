@@ -688,6 +688,11 @@ function showTokenModal(onSuccess){
 function requireToken(cb){ var t=getGHToken(); if(t){ cb(t); return; } showTokenModal(cb); }
 
 const DATA=(function(){try{return JSON.parse(localStorage.getItem('_dramasData')||'[]')}catch{return[]}})();
+// ── 本機改動保護：任何新增/編輯/刪除先存本機並標記「未上傳」，上傳成功才清除 ──
+function _dHash(str){ var h=5381; for(var i=0;i<str.length;i++){ h=((h<<5)+h+str.charCodeAt(i))|0; } return String(h>>>0)+':'+str.length; }
+function markDramasDirty(){
+  try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); localStorage.setItem('_dramasDirty', String(Date.now())); }catch(e){}
+}
 // 觀看地點統一格式：影城一律「🎬 名稱」、在家一律「🏠 家庭劇院」
 function venueNorm(v){
   var s=String(v||'').trim().replace(/^[^\p{L}\p{N}]+/u,'').trim();
@@ -1961,6 +1966,30 @@ render();
           return;
         }
         var arr = JSON.parse(text);
+        // ⚠️ 本機有還沒上傳成功的改動：保留本機，並自動補傳
+        if(localStorage.getItem('_dramasDirty')){
+          console.warn('dramas sync: 本機有未上傳的改動，保留本機並重新上傳');
+          render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
+          if(getGHToken()){
+            setTimeout(function(){
+              showToast('⏳ 上次的改動還沒存到 GitHub，重新上傳中…', false);
+              pushToGitHub(null).then(function(ok){ if(ok) showToast('✦ 補傳完成，資料已存到 GitHub', false); });
+            }, 1200);
+          } else {
+            setTimeout(function(){ showToast('⚠️ 有改動還沒存到 GitHub（缺 Token），資料先保留在這台裝置', true, true); }, 800);
+          }
+          return;
+        }
+        // ⚠️ 剛上傳完的 15 分鐘內，若遠端內容跟剛上傳的不同，代表讀到舊快取：不覆蓋
+        var pushedAt = +localStorage.getItem('_dramasPushedAt') || 0;
+        if(Date.now() - pushedAt < 15*60*1000){
+          var ph = localStorage.getItem('_dramasPushedHash');
+          if(ph && _dHash(JSON.stringify(arr)) !== ph){
+            console.warn('dramas sync: 遠端仍是舊版（快取），保留本機');
+            render(); buildTop5(); setTimeout(function(){ if(typeof renderCal==='function') renderCal(); }, 100);
+            return;
+          }
+        }
         if(typeof filterTombs === 'function'){
           var before = arr.length;
           arr = filterTombs(arr);
@@ -1993,8 +2022,14 @@ render();
       }catch(e){ console.warn('dramas parse:', e); }
     }
 
-    fetch(rawUrl + '?t=' + Date.now())
-      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
+    var _tok = getGHToken()||'';
+    var _first = _tok
+      ? fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH + '?ref=' + GH_BRANCH + '&t=' + Date.now(),
+          {headers:{'Authorization':'token '+_tok,'Accept':'application/vnd.github.raw'}, cache:'no-store'})
+          .then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
+          .catch(function(){ return fetch(rawUrl + '?t=' + Date.now(), {cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); }); })
+      : fetch(rawUrl + '?t=' + Date.now(), {cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); });
+    _first
       .then(applyData)
       .catch(function(){
         // raw 失敗，改用 jsDelivr CDN 備援
@@ -2102,25 +2137,40 @@ render();
       }
 
       // 直接把 DATA 推上去
-      var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA))));
+      var json = JSON.stringify(DATA);
+      var encoded = btoa(unescape(encodeURIComponent(json)));
       showToast('⏳ 推送中...', false);
-      var ctrl2 = new AbortController();
-      var t2 = setTimeout(()=>ctrl2.abort(), 30000);
       var putBody = { message: newRecord ? '新增：'+newRecord.title : '更新觀影記錄', content: encoded, branch: GH_BRANCH };
-      if(sha) putBody.sha = sha;
-      var pr = await fetch(api, {method:'PUT', headers:hdrs, signal:ctrl2.signal, body:JSON.stringify(putBody)});
-
-      clearTimeout(t2);
-      if(!pr.ok){
-        var e2 = await pr.json();
+      var pr = null, prData = null;
+      for(var attempt=0; attempt<3; attempt++){
+        if(sha) putBody.sha = sha; else delete putBody.sha;
+        var ctrl2 = new AbortController();
+        var t2 = setTimeout(()=>ctrl2.abort(), 30000);
+        pr = await fetch(api, {method:'PUT', headers:hdrs, signal:ctrl2.signal, body:JSON.stringify(putBody)}).catch(function(){ return null; });
+        clearTimeout(t2);
+        if(pr && pr.ok) break;
+        // SHA 過期（別的裝置或分頁改過）：重新取最新 SHA 再試
+        if(pr && (pr.status===409 || pr.status===422)){
+          var fr = await fetch(api+'?ref='+GH_BRANCH+'&t='+Date.now(), {headers:hdrs, cache:'no-store'}).catch(function(){ return null; });
+          if(fr && fr.ok){ var ff = await fr.json(); sha = ff.sha || null; continue; }
+        }
+        break;
+      }
+      if(!pr || !pr.ok){
+        var msg = pr ? (((await pr.json().catch(function(){return {};})).message) || pr.status) : '網路中斷';
         localStorage.removeItem('gh_dramas_sha');
-        showToast('❌ 推送失敗：'+(e2.message||pr.status), true);
+        showToast('❌ 沒存到 GitHub：'+msg+'。資料已保留在這台裝置，下次打開會自動補傳', true, true);
         return false;
       }
       // 從回應取新 SHA
-      var prData = await pr.json();
+      prData = await pr.json();
       if(prData.content && prData.content.sha) localStorage.setItem('gh_dramas_sha', prData.content.sha);
       else localStorage.removeItem('gh_dramas_sha');
+      try{
+        localStorage.removeItem('_dramasDirty');
+        localStorage.setItem('_dramasPushedAt', String(Date.now()));
+        localStorage.setItem('_dramasPushedHash', _dHash(json));
+      }catch(e){}
       // 存到 localStorage
       try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch{}
       showToast('✦ 已儲存至 GitHub', false);
@@ -2279,6 +2329,7 @@ render();
     } else {
       DATA.unshift(r);
     }
+    markDramasDirty();   // 先存在本機，萬一上傳失敗重整也不會不見
     render();
     if(typeof buildTop5 === 'function') buildTop5();
     // renderCal 移到推送後執行
@@ -2363,27 +2414,13 @@ render();
     const idx = DATA.findIndex(m => m.title === target.title && m.date === target.date && m.personal === target.personal);
     if(idx === -1){ alert('找不到該記錄'); return; }
     DATA.splice(idx, 1);
-    try{ localStorage.setItem('_dramasData', JSON.stringify(DATA)); }catch(e){}
+    markDramasDirty();
     addTombstone(target);          // 記下「已刪除」，防止舊的遠端資料把它復活
     render();
     if(typeof buildTop5 === 'function') buildTop5();
     requireToken(async function(token){
-      var api = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_DATA_PATH;
-      var headers = {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-      showToast('⏳ 正在連線 GitHub...', false);
-      var sha = localStorage.getItem('gh_dramas_sha') || null;
-      if(!sha){
-        var getResp = await fetch(api + '?ref=' + GH_BRANCH, { headers: headers });
-        if(getResp.status === 404){ sha = null; }
-        else if(!getResp.ok){ showToast('❌ GitHub 連線失敗（' + getResp.status + '）', true); return; }
-        else { var fi = await getResp.json(); sha = fi.sha||null; if(sha) localStorage.setItem('gh_dramas_sha', sha); }
-      }
-      var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(DATA))));
-      var putBody = { message: '刪除：'+target.title, content: encoded, branch: GH_BRANCH };
-      if(sha) putBody.sha = sha;
-      var pushResp = await fetch(api, {method:'PUT', headers:headers, body:JSON.stringify(putBody)});
-      if(!pushResp.ok){ var err = await pushResp.json(); showToast('❌ 推送失敗：'+(err.message||pushResp.status), true); }
-      else{ var pd = await pushResp.json(); if(pd.content&&pd.content.sha) localStorage.setItem('gh_dramas_sha', pd.content.sha); showToast('✦ 已刪除「'+target.title+'」', false); }
+      var ok = await pushToGitHub(null);
+      if(ok) showToast('✦ 已刪除「'+target.title+'」', false);
     });
   }
   window.deleteRecord = deleteRecord;
