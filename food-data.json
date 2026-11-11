@@ -1,5 +1,36 @@
 [
   {
+    "id": "1794403765589",
+    "name": "家鴻燒鵝 興安店",
+    "name1": "家鴻燒鵝",
+    "name2": "興安店",
+    "type": "燒臘便當",
+    "meal": "",
+    "price": 140,
+    "visits": 1,
+    "gscore": 3.9,
+    "addr": "10491臺北市中山區朱馥里興安街53-4號",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E5%AE%B6%E9%B4%BB%E7%87%92%E9%B5%9D/@25.0561882,121.5392315,17z/data=!3m1!4b1!4m6!3m5!1s0x3442abe13b3a5367:0x8e52cb6f5fbfbcbf!8m2!3d25.0561834!4d121.5418064!16s%2Fg%2F1v1shxqh?entry=ttu&g_ep=EgoyMDI2MTEwOC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-11-11",
+    "score": 3.3,
+    "visitLog": [
+      {
+        "date": "2026-11-11",
+        "meal": "午餐",
+        "price": 140,
+        "menu": "油雞燒肉飯",
+        "score": 3.3,
+        "imgs": [
+          "https://i.ibb.co/7dHZNRgv/a233fdbea434.jpg"
+        ]
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1794403765589
+  },
+  {
     "id": "1794129747902",
     "name": "金錦町 JinJinDing 金華店",
     "name1": "金錦町 JinJinDing",
