@@ -3005,14 +3005,14 @@
     "name2": "",
     "type": "平價牛排",
     "meal": "",
-    "price": 220,
-    "visits": 1,
+    "price": 110,
+    "visits": 2,
     "gscore": 3.9,
     "addr": "10491臺北市中山區行仁里龍江路356巷28號",
     "note": "",
     "maps": "https://www.google.com.tw/maps/place/%E7%89%9B%E3%81%AE%E9%AC%BC%E7%89%9B%E6%8E%92%E9%A4%A8/@25.0658173,121.5396452,17z/data=!4m15!1m8!3m7!1s0x3442abfd0332b447:0x24966ff0bf565b26!2z54mb44Gu6ay854mb5o6S6aSo!8m2!3d25.0658771!4d121.5397324!10e9!16s%2Fg%2F11b6tpxlmv!3m5!1s0x3442abfd0332b447:0x24966ff0bf565b26!8m2!3d25.0658771!4d121.5397324!16s%2Fg%2F11b6tpxlmv?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D",
-    "date": "2026-05-29",
-    "score": 0,
+    "date": "2026-11-14",
+    "score": 3.8,
     "visitLog": [
       {
         "date": "2026-05-29",
@@ -3020,6 +3020,16 @@
         "price": 220,
         "menu": "脆皮雞腿排",
         "score": null
+      },
+      {
+        "date": "2026-11-14",
+        "meal": "午餐",
+        "price": 0,
+        "menu": "厚片沙朗牛排",
+        "score": 3.8,
+        "imgs": [
+          "https://i.ibb.co/hxrGv0vf/16de8e2ee261.jpg"
+        ]
       }
     ],
     "imgs": [
@@ -3027,7 +3037,7 @@
     ],
     "img": "https://i.ibb.co/hF35qCCd/a4d2a6b8387c.jpg",
     "createdAt": 1780071816555,
-    "updatedAt": 1792322719317
+    "updatedAt": 1794674012103
   },
   {
     "id": "1779870360676",
