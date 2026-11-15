@@ -1,5 +1,33 @@
 [
   {
+    "id": "1794756211279",
+    "name": "涓豆腐 統一時代店",
+    "name1": "涓豆腐",
+    "name2": "統一時代店",
+    "type": "韓國",
+    "meal": "",
+    "price": 909,
+    "visits": 1,
+    "gscore": 4,
+    "addr": "110臺北市信義區興雅里忠孝東路五段8號7F",
+    "note": "",
+    "maps": "https://www.google.com.tw/maps/place/%E6%B6%93%E8%B1%86%E8%85%90+%E7%B5%B1%E4%B8%80%E6%99%82%E4%BB%A3%E5%BA%97/@25.040467,121.5653472,18z/data=!3m1!5s0x36ef31d83d17a355:0x7fc40101c3eaa2f!4m6!3m5!1s0x3442abe2f6c0b977:0x331450fffe662132!8m2!3d25.0406493!4d121.5654008!16s%2Fg%2F11jnw_6fqx?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D",
+    "date": "2026-11-15",
+    "score": 2.8,
+    "visitLog": [
+      {
+        "date": "2026-11-15",
+        "meal": "晚餐",
+        "price": 909,
+        "menu": "神仙霜降雪濃湯+金絲餃子年糕湯",
+        "score": 2.8
+      }
+    ],
+    "imgs": [],
+    "img": "",
+    "createdAt": 1794756211279
+  },
+  {
     "id": "1794673937252",
     "name": "五燈獎豬腳飯",
     "name1": "五燈獎豬腳飯",
