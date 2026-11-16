@@ -148,12 +148,12 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
     </div>
     <div class="imp">
       <button class="btn primary" id="openImport" type="button">匯入 Poke Genie CSV</button>
-      <button class="btn" id="resetBtn" type="button" hidden>清除資料</button>
+      <button class="btn" id="resetBtn" type="button" hidden>還原內建資料</button>
     </div>
   </header>
 
   <div class="notice" id="sampleNote">
-    <span><b>目前顯示的是範例資料。</b>匯入你自己的 Poke Genie CSV 後就會換成你的寶可夢。</span>
+    <span><b>資料來源：</b>2026-11-16 Poke Genie 掃描截圖，共 42 隻。之後匯入新的 CSV 會取代這份。</span>
   </div>
 
   <section class="stats" aria-label="收藏統計">
@@ -209,52 +209,71 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
 const LS='aaron_pokedex_v1';
 const $=id=>document.getElementById(id);
 
-/* ---------- sample data (clearly marked) ---------- */
-const S=(dex,name,cp,a,d,s,lv,q,c,c2,extra)=>Object.assign({dex,name,form:'',cp,hp:0,atk:a,def:d,sta:s,lv,quick:q,charge:c,charge2:c2||'',catch:'',lucky:false,shadow:false,purified:false,fav:false,gender:'',rankG:null,rankU:null,rankL:null},extra||{});
-const SAMPLE=[
- S(1,'妙蛙種子',612,10,14,15,22,'藤鞭','污泥炸彈','',{catch:'2026-09-14',rankG:2.1,rankU:5.6}),
- S(3,'妙蛙花',2620,15,15,15,35,'藤鞭','瘋狂植物','污泥炸彈',{catch:'2026-08-02',fav:true}),
- S(3,'妙蛙花',2405,13,11,14,33,'飛葉快刀','日光束','',{catch:'2026-05-11',shadow:true}),
- S(6,'噴火龍',2889,14,13,15,33,'火焰之渦','爆炸烈焰','龍爪',{catch:'2026-07-21',lucky:true}),
- S(6,'噴火龍',2201,8,11,9,28,'火焰之渦','噴射火焰','',{catch:'2025-12-03'}),
- S(9,'水箭龜',2312,12,15,13,32,'水槍','水砲','冰凍光束',{catch:'2026-03-08',rankG:8.4,rankU:3.2}),
- S(25,'皮卡丘',892,15,15,15,30,'電擊','伏特攻擊','',{catch:'2026-10-02',fav:true}),
- S(94,'耿鬼',2654,15,14,14,32,'鬼爪','暗影球','污泥炸彈',{catch:'2026-06-30'}),
- S(130,'暴鯉龍',3010,12,12,12,30,'龍息','攀瀑','',{catch:'2026-01-19'}),
- S(130,'暴鯉龍',3290,15,14,13,33,'龍息','攀瀑','暴風雪',{catch:'2026-08-29',purified:true}),
- S(131,'拉普拉斯',2410,15,15,14,30,'冰礫','暴風雪','衝浪',{catch:'2026-04-17',lucky:true}),
- S(143,'卡比獸',3120,14,12,15,33,'舌舔','重磅衝撞','',{catch:'2026-02-11'}),
- S(149,'快龍',3792,15,15,15,40,'龍尾','暴怒','流星群',{catch:'2025-11-22',lucky:true,fav:true}),
- S(149,'快龍',3402,13,12,14,36,'龍息','暴怒','',{catch:'2026-09-03',shadow:true}),
- S(150,'超夢',4178,15,13,15,40,'念力','精神強念','',{catch:'2026-07-05'}),
- S(197,'月精靈',1588,0,15,14,25,'暗影爪','惡之波動','',{catch:'2026-09-20',rankG:0.4,rankU:1.8}),
- S(248,'班基拉斯',3622,14,15,13,35,'咬碎','碎石','',{catch:'2026-08-14'}),
- S(282,'沙奈朵',2981,15,15,15,35,'念力','魔法閃耀','精神強念',{catch:'2026-10-11'}),
- S(373,'暴飛龍',3480,12,15,12,35,'龍尾','暴怒','',{catch:'2026-05-30'}),
- S(376,'巨金怪',3577,15,14,15,35,'子彈拳','流星拳','',{catch:'2026-06-08',lucky:true}),
- S(384,'烈空坐',3814,13,13,13,35,'龍尾','畫龍點睛','流星群',{catch:'2026-04-02'}),
- S(445,'烈咬陸鯊',3510,15,15,14,35,'龍尾','暴怒','',{catch:'2026-03-21',shadow:true}),
- S(448,'路卡利歐',2490,12,14,10,32,'鋼爪','波導彈','',{catch:'2026-02-27'}),
- S(658,'甲賀忍蛙',2244,14,11,12,31,'水手裡劍','冰凍光束','',{catch:'2026-09-28'}),
- S(700,'仙子伊布',2612,15,14,15,33,'妖精之風','魔法閃耀','',{catch:'2026-07-14',fav:true}),
- S(133,'伊布',415,4,12,9,15,'撞擊','猛撞','',{catch:'2026-10-15'}),
+/* ---------- Aaron 的收藏：2026-11-16 Poke Genie「我的精靈」截圖整理 ---------- */
+const DATA_DATE='2026-11-16';
+// M(圖鑑編號, 名稱, 型態, 性別, CP, HP, 攻, 防, HP-IV, 等級, 一般招式, 特殊招式, 第二特殊招式, 團戰評級, 其他)
+const M=(dex,name,form,gender,cp,hp,a,d,s,lv,q,c,c2,grade,extra)=>Object.assign({dex,name,form,gender,cp,hp,atk:a,def:d,sta:s,lv,quick:q,charge:c,charge2:c2||'',grade:grade||'',catch:'',lucky:false,shadow:false,purified:false,fav:false,rankG:null,rankU:null,rankL:null,ivp:null,ivRange:''},extra||{});
+const MINE=[
+ M(297,'鐵掌力士','','♂',2023,211,14,13,11,25.5,'雙倍奉還','爆裂拳','','A',{rankU:57.6}),
+ M(243,'雷公','','',1949,132,15,11,14,20,'電擊','瘋狂伏特','','A',{rankU:60.6}),
+ M(245,'水君','','',1942,152,14,15,13,23,'神通力','冰凍光束','','B',{rankU:40.0}),
+ M(426,'隨風球','','♀',1984,242,9,10,15,31.5,'禍不單行','冰凍之風','','D',{rankU:84.8}),
+ M(143,'卡比獸','','♀',2492,239,13,14,12,27.5,'舌舔','破壞光線','','A',{rankU:60.6,lucky:true}),
+ M(473,'象牙豬','','♀',3250,200,12,13,12,40,'細雪','雪崩','十萬馬力',''),
+ M(639,'代拉基翁','','',2054,130,13,11,10,20,'擊落','聖劍','','A',{rankU:29.3}),
+ M(6,'噴火龍','','♂',2105,135,15,15,15,25.5,'火焰旋渦','報恩','過熱','',{rankU:66.3,purified:true}),
+ M(323,'噴火駝','','♀',2109,145,15,12,15,38,'火花','地震','','A-',{rankU:99.5}),
+ M(487,'騎拉帝納','別種','',2372,198,13,13,13,25,'暗影爪','龍爪','','A',{rankU:30.1}),
+ M(382,'蓋歐卡','','',2458,134,12,10,12,21.5,'攀瀑','暴風雪','','A-',{rankU:30.1}),
+ M(503,'大劍鬼','','♂',2484,171,14,10,13,33,'攀瀑','超級角擊','','C',{rankU:25.0}),
+ M(282,'沙奈朵','','♀',2480,130,10,13,12,29,'充電光束','三旋擊','','C',{rankU:65.6}),
+ M(76,'隆隆岩','阿羅拉','♂',2495,150,10,6,11,32.5,'伏特替換','尖石攻擊','','C',{rankU:56.2}),
+ M(68,'怪力','','♀',2135,147,13,11,14,25,'空手劈','爆裂拳','','A',{rankU:30.5}),
+ M(103,'椰蛋樹','阿羅拉','♀',2940,179,15,13,13,39,'種子機關槍','日光束','','B'),
+ M(306,'波士可多拉','','♂',2929,146,13,15,15,39,'金屬音','流星光束','','A'),
+ M(212,'巨鉗螳螂','','♂',3011,147,14,15,13,41,'子彈拳','十字剪','','A-'),
+ M(230,'刺龍王','','♀',2528,151,15,15,15,37,'攀瀑','水炮','','A-'),
+ M(384,'烈空坐','','',2693,152,14,10,15,25,'龍尾','原始之力','','C'),
+ M(395,'帝王拿波','','♂',2819,164,14,13,13,39,'金屬爪','暴風雪','','A'),
+ M(889,'藏瑪然特','百戰勇者','',2695,136,14,12,13,25,'電光一閃','月亮之力','','B'),
+ M(888,'蒼響','百戰勇者','',2682,137,12,12,14,25,'金屬爪','鐵頭','','B'),
+ M(59,'風速狗','','♂',2737,167,14,13,14,34,'火焰牙','大字爆炎','','A-'),
+ M(134,'水伊布','','♂',2783,218,13,12,12,34,'水槍','水流尾','','A',{lucky:true,fav:true,catch:'2016-08-13'}),
+ M(644,'捷克羅姆','','',2812,144,11,14,11,25,'龍息','逆鱗','','A-'),
+ M(68,'怪力','','♀',2824,169,12,13,14,36,'子彈拳','重磅衝撞','爆裂拳','',{lucky:true}),
+ M(94,'耿鬼','','♀',2886,134,14,15,15,40.5,'禍不單行','暗影球','','A'),
+ M(389,'土台龜','','♂',2953,183,15,15,15,40.5,'飛葉快刀','瘋狂植物','尖石攻擊',''),
+ M(150,'超夢','','',3014,153,15,12,14,25.5,'精神利刃','精神擊破','','A'),
+ M(609,'水晶燈火靈','','♂',2979,128,12,13,14,35,'禍不單行','暗影球','蓄能焰襲',''),
+ M(462,'自爆磁怪','','',3101,145,14,15,15,38,'金屬音','磁鐵炸彈','','B'),
+ M(635,'三首惡龍','','♀',3462,173,15,15,14,37,'龍息','狂舞揮打','','A'),
+ M(706,'黏美龍','','♂',3476,175,13,15,15,40,'水槍','濁流','','C'),
+ M(635,'三首惡龍','','♂',3501,175,14,15,14,38,'龍息','狂舞揮打','','A'),
+ M(635,'三首惡龍','','♀',3529,177,13,13,15,39,'龍息','狂舞揮打','','A'),
+ M(635,'三首惡龍','','♂',3578,177,14,13,13,40,'咬住','狂舞揮打','','A'),
+ M(384,'烈空坐','','',3269,166,null,null,null,30,'龍尾','逆鱗','','A',{ivp:96,ivRange:'96%'}),
+ M(149,'快龍','','♂',3834,178,null,null,null,42,'龍息','破壞光線','雷電拳','',{ivp:88,ivRange:'87–89%',lucky:true}),
+ M(534,'修建老匠','','♂',3414,198,13,14,13,43,'毒擊','尖石攻擊','','C'),
+ M(706,'黏美龍','','♂',3483,173,15,14,13,40,'龍息','強力鞭打','','A'),
+ M(68,'怪力','','♂',2128,146,null,null,null,25,'空手劈','十字劈','','B',{ivp:81,ivRange:'80–82%',rankUText:'14.6–34.7%'}),
 ];
-SAMPLE.forEach(p=>p.hp=Math.round(p.cp/10+40));
 
 /* ---------- state ---------- */
-let mons=SAMPLE, isSample=true, view='dex', filt='all';
+let mons=MINE, isSample=true, view='dex', filt='all';
 try{const raw=localStorage.getItem(LS);if(raw){const d=JSON.parse(raw);if(Array.isArray(d)&&d.length){mons=d;isSample=false}}}catch(e){}
 try{const v=localStorage.getItem(LS+'_view');if(v==='all'||v==='dex')view=v}catch(e){}
 
-const ivPct=p=>(p.atk+p.def+p.sta)/45*100;
+const ivPct=p=>p.ivp!=null?p.ivp:(p.atk+p.def+p.sta)/45*100;
 const isHundo=p=>p.atk===15&&p.def===15&&p.sta===15;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pad=n=>'#'+String(n||0).padStart(4,'0');
 const fmtPct=v=>(Math.round(v*10)/10).toFixed(v>=99.95?0:1).replace(/\.0$/,'');
 const dateVal=s=>{if(!s)return 0;const t=Date.parse(String(s).replace(/\//g,'-'));return isNaN(t)?0:t};
 
-function ticks(n){const max=n===15;let h='<span class="ticks'+(max?' max':'')+'">';for(let i=0;i<15;i++)h+='<i class="'+(i<n?'on':'')+'"></i>';return h+'</span>'}
-function ivBlock(p){return '<div class="iv"><span class="l">攻</span>'+ticks(p.atk)+'<span class="n">'+p.atk+'</span><span class="l">防</span>'+ticks(p.def)+'<span class="n">'+p.def+'</span><span class="l">HP</span>'+ticks(p.sta)+'<span class="n">'+p.sta+'</span></div>'}
+function ticks(n){if(n==null)n=-1;const max=n===15;let h='<span class="ticks'+(max?' max':'')+'">';for(let i=0;i<15;i++)h+='<i class="'+(i<n?'on':'')+'"></i>';return h+'</span>'}
+const ivn=n=>n==null?'?':n;
+const pctTxt=p=>p.ivRange?esc(p.ivRange.replace('%','')):fmtPct(ivPct(p));
+function ivBlock(p){return '<div class="iv"><span class="l">攻</span>'+ticks(p.atk)+'<span class="n">'+ivn(p.atk)+'</span><span class="l">防</span>'+ticks(p.def)+'<span class="n">'+ivn(p.def)+'</span><span class="l">HP</span>'+ticks(p.sta)+'<span class="n">'+ivn(p.sta)+'</span></div>'+(p.ivRange?'<div class="mult" style="text-align:left">Poke Genie 未鎖定單項 IV</div>':'')}
 function tags(p){let t='';if(p.lucky)t+='<span class="tag lucky">亮晶晶</span>';if(p.shadow)t+='<span class="tag shadow">暗影</span>';if(p.purified)t+='<span class="tag purified">淨化</span>';if(p.fav)t+='<span class="tag fav">最愛</span>';return t}
 
 function pass(p){
@@ -291,7 +310,7 @@ function render(){
     return '<button class="card'+(h?' is-hundo':'')+'" type="button" data-i="'+i+'">'+
       (h?'<span class="seal">100</span>':'')+
       '<div class="c-head"><div style="min-width:0"><div class="dex">'+pad(p.dex)+'</div><div class="name">'+esc(p.name)+(p.form?'<small>'+esc(p.form)+'</small>':'')+'</div></div>'+
-      '<div><div class="pct'+(h?' p100':'')+'">'+fmtPct(pc)+'<small>%</small></div>'+(view==='dex'?'<div class="mult">持有 '+it.all.length+'</div>':'')+'</div></div>'+
+      '<div><div class="pct'+(h?' p100':'')+'">'+pctTxt(p)+'<small>%</small></div>'+(view==='dex'?'<div class="mult">持有 '+it.all.length+'</div>':'')+'</div></div>'+
       ivBlock(p)+
       '<div class="c-foot"><span>CP <span class="cp">'+p.cp+'</span>'+(p.lv?' · Lv '+p.lv:'')+'</span><span class="tags">'+tags(p)+'</span></div></button>'}).join('');
   grid._items=items;
@@ -305,11 +324,11 @@ function openSheet(it){
   $('sDex').textContent=pad(p.dex);$('sTitle').textContent=p.name+(p.form?'（'+p.form+'）':'');
   $('sMeta').textContent='持有 '+all.length+' 隻 · 最佳 IV '+fmtPct(ivPct(all[0]))+'%';
   $('sBody').innerHTML=all.map(x=>{const h=isHundo(x);
-    const pv=(x.rankG!=null||x.rankU!=null||x.rankL!=null)?'<div class="pvp"><div>超級聯盟<b>'+(x.rankG!=null?x.rankG+'%':'—')+'</b></div><div>高級聯盟<b>'+(x.rankU!=null?x.rankU+'%':'—')+'</b></div><div>大師聯盟<b>'+(x.rankL!=null?x.rankL+'%':'—')+'</b></div></div>':'';
+    const pv=(x.rankG!=null||x.rankU!=null||x.rankL!=null||x.rankUText)?'<div class="pvp"><div>超級聯盟<b>'+(x.rankG!=null?x.rankG+'%':'—')+'</b></div><div>高級聯盟<b>'+(x.rankU!=null?x.rankU+'%':(x.rankUText||'—'))+'</b></div><div>大師聯盟<b>'+(x.rankL!=null?x.rankL+'%':'—')+'</b></div></div>':'';
     return '<div class="ind'+(h?' is-hundo':'')+'"><div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+
       '<div class="row"><span>CP <b>'+x.cp+'</b></span>'+(x.hp?'<span>HP <b>'+x.hp+'</b></span>':'')+(x.lv?'<span>Lv <b>'+x.lv+'</b></span>':'')+'<span class="tags">'+tags(x)+'</span></div>'+
-      '<div class="row">'+(x.catch?'<span>捕獲 '+esc(x.catch)+'</span>':'')+(x.gender?'<span>'+esc(x.gender)+'</span>':'')+'</div></div>'+
-      '<div><div class="pct'+(h?' p100':'')+'" style="text-align:left;margin-bottom:6px">'+fmtPct(ivPct(x))+'<small>%</small></div>'+ivBlock(x)+'</div>'+
+      '<div class="row">'+(x.catch?'<span>捕獲 '+esc(x.catch)+'</span>':'')+(x.gender?'<span>'+esc(x.gender)+'</span>':'')+(x.grade?'<span>團戰評級 <b>'+esc(x.grade)+'</b></span>':'')+'</div></div>'+
+      '<div><div class="pct'+(h?' p100':'')+'" style="text-align:left;margin-bottom:6px">'+pctTxt(x)+'<small>%</small></div>'+ivBlock(x)+'</div>'+
       '<div class="moves"><span>招式</span>'+esc(x.quick||'—')+' / '+esc(x.charge||'—')+(x.charge2?' / '+esc(x.charge2):'')+'</div>'+pv+'</div>'}).join('');
   show();
 }
@@ -389,8 +408,8 @@ $('openImport').onclick=importDialog;
 
 let armed=false;
 $('resetBtn').onclick=()=>{const b=$('resetBtn');
-  if(!armed){armed=true;b.textContent='再按一次確認清除';setTimeout(()=>{armed=false;b.textContent='清除資料'},3000);return}
-  try{localStorage.removeItem(LS)}catch(e){}mons=SAMPLE;isSample=true;armed=false;b.textContent='清除資料';stats();render()};
+  if(!armed){armed=true;b.textContent='再按一次確認還原';setTimeout(()=>{armed=false;b.textContent='還原內建資料'},3000);return}
+  try{localStorage.removeItem(LS)}catch(e){}mons=MINE;isSample=true;armed=false;b.textContent='還原內建資料';stats();render()};
 
 /* whole-page drop */
 document.addEventListener('dragover',e=>e.preventDefault());
