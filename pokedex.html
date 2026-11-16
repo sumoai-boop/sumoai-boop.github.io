@@ -11,16 +11,16 @@
 /* Layout: a field register — trainer summary strip, then a dense specimen grid; each specimen shows its IV appraisal as three 15-tick bars. */
 :root{
   --paper:#EDF0EE; --sheet:#FFFFFF; --ink:#1C2638; --ink-2:#56607A; --rule:#CDD3D6;
-  --tick:#DCE1E4; --signal:#C9252C; --signal-soft:#F7DDDE; --gold:#B7861C; --shadow:#6B4FA6; --purified:#2F8FB3; --high:#1F6FD1;
+  --tick:#DCE1E4; --signal:#C9252C; --signal-soft:#F7DDDE; --gold:#B7861C; --shadow:#6B4FA6; --purified:#2F8FB3; --high:#1F6FD1; --shiny:#C42F86;
   --f-display:"Chakra Petch","Noto Sans TC",ui-monospace,monospace;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#121826; --sheet:#1A2233; --ink:#E6EAF2; --ink-2:#97A2B8; --rule:#2C3650;
-  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; --high:#5AA2F5; color-scheme:dark}}
+  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; --high:#5AA2F5; --shiny:#F27BC0; color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#121826; --sheet:#1A2233; --ink:#E6EAF2; --ink-2:#97A2B8; --rule:#2C3650;
-  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; --high:#5AA2F5; color-scheme:dark}
+  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; --high:#5AA2F5; --shiny:#F27BC0; color-scheme:dark}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -92,7 +92,7 @@ select{border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;
 .cp{font-family:var(--f-display);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
 .tags{display:flex;gap:4px;flex-wrap:wrap}
 .tag{font-size:11px;font-weight:700;padding:1px 7px;border-radius:3px;border:1px solid currentColor;line-height:1.5}
-.tag.lucky{color:var(--gold)} .tag.shadow{color:var(--shadow)} .tag.purified{color:var(--purified)} .tag.fav{color:var(--signal)}
+.tag.lucky{color:var(--gold)} .tag.shiny{color:var(--shiny)} .tag.shadow{color:var(--shadow)} .tag.purified{color:var(--purified)} .tag.fav{color:var(--signal)}
 .seal{position:absolute;top:-9px;right:12px;background:var(--signal);color:#fff;font-family:var(--f-display);font-weight:700;font-size:11px;padding:1px 8px;border-radius:2px;letter-spacing:.06em}
 
 /* IV appraisal bars: 15 ticks each, the game's own scale */
@@ -219,6 +219,7 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
       <button class="chip" type="button" data-f="all" aria-pressed="true">全部</button>
       <button class="chip" type="button" data-f="hundo" aria-pressed="false">100%</button>
       <button class="chip" type="button" data-f="high" aria-pressed="false">IV ≥ 90%</button>
+      <button class="chip" type="button" data-f="shiny" aria-pressed="false">異色</button>
       <button class="chip" type="button" data-f="lucky" aria-pressed="false">亮晶晶</button>
       <button class="chip" type="button" data-f="shadow" aria-pressed="false">暗影</button>
       <button class="chip" type="button" data-f="purified" aria-pressed="false">淨化</button>
@@ -454,17 +455,17 @@ const dateVal=s=>{if(!s)return 0;const t=Date.parse(String(s).replace(/\//g,'-')
 function ticks(n){if(n==null)n=-1;const max=n===15;let h='<span class="ticks'+(max?' max':'')+'">';for(let i=0;i<15;i++)h+='<i class="'+(i<n?'on':'')+'"></i>';return h+'</span>'}
 const SPR='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/';
 const FORM_ID={'76|阿羅拉':10111,'103|阿羅拉':10114};
-const sprite=p=>{const id=FORM_ID[p.dex+'|'+p.form]||p.dex;return id>0?SPR+id+'.png':''};
+const sprite=p=>{const id=FORM_ID[p.dex+'|'+p.form]||p.dex;return id>0?SPR+(p.shiny?'shiny/':'')+id+'.png':''};
 function art(p,cls){const u=sprite(p);return u?'<img class="'+cls+'" src="'+u+'" alt="" loading="lazy" onerror="this.remove()">':''}
 const ivn=n=>n==null?'?':n;
 const pctCls=p=>(isHundo(p)||ivPct(p)>=99.95)?' p100':(ivPct(p)>=90?' p90':'');
 const pctTxt=p=>p.ivRange?esc(p.ivRange.replace('%','')):fmtPct(ivPct(p));
 function ivBlock(p){return '<div class="iv"><span class="l">攻</span>'+ticks(p.atk)+'<span class="n">'+ivn(p.atk)+'</span><span class="l">防</span>'+ticks(p.def)+'<span class="n">'+ivn(p.def)+'</span><span class="l">HP</span>'+ticks(p.sta)+'<span class="n">'+ivn(p.sta)+'</span></div>'+(p.ivRange?'<div class="mult" style="text-align:left">Poke Genie 未鎖定單項 IV</div>':'')}
-function tags(p){let t='';if(p.lucky)t+='<span class="tag lucky">亮晶晶</span>';if(p.shadow)t+='<span class="tag shadow">暗影</span>';if(p.purified)t+='<span class="tag purified">淨化</span>';if(p.fav)t+='<span class="tag fav">最愛</span>';return t}
+function tags(p){let t='';if(p.shiny)t+='<span class="tag shiny">✦ 異色</span>';if(p.lucky)t+='<span class="tag lucky">亮晶晶</span>';if(p.shadow)t+='<span class="tag shadow">暗影</span>';if(p.purified)t+='<span class="tag purified">淨化</span>';if(p.fav)t+='<span class="tag fav">最愛</span>';return t}
 
 function pass(p){
   switch(filt){
-    case 'hundo':return isHundo(p);case 'high':return ivPct(p)>=90;case 'lucky':return p.lucky;
+    case 'hundo':return isHundo(p);case 'high':return ivPct(p)>=90;case 'lucky':return p.lucky;case 'shiny':return !!p.shiny;
     case 'shadow':return p.shadow;case 'purified':return p.purified;case 'fav':return p.fav;default:return true}
 }
 function matchQ(p,q){if(!q)return true;q=q.toLowerCase();
@@ -515,7 +516,7 @@ function openSheet(it){
       '<div class="row">'+(x.catch?'<span>捕獲 '+esc(x.catch)+'</span>':'')+(x.gender?'<span>'+esc(x.gender)+'</span>':'')+(x.grade?'<span>團戰評級 <b>'+esc(x.grade)+'</b></span>':'')+'</div></div>'+
       '<div><div class="pct'+pctCls(x)+'" style="text-align:left;margin-bottom:6px">'+pctTxt(x)+'<small>%</small></div>'+ivBlock(x)+'</div>'+
       '<div class="moves"><span>招式</span>'+esc(x.quick||'—')+' / '+esc(x.charge||'—')+(x.charge2?' / '+esc(x.charge2):'')+'</div>'+pv+
-      '<div class="acts"><button class="mini" type="button" data-act="lucky" data-id="'+x.id+'" aria-pressed="'+!!x.lucky+'">亮晶晶</button><button class="mini" type="button" data-act="fav" data-id="'+x.id+'" aria-pressed="'+!!x.fav+'">最愛</button><button class="mini" type="button" data-act="purified" data-id="'+x.id+'" aria-pressed="'+!!x.purified+'">淨化</button><button class="mini del" type="button" data-act="del" data-id="'+x.id+'">從圖鑑刪除</button></div></div>'}).join('');
+      '<div class="acts"><button class="mini" type="button" data-act="shiny" data-id="'+x.id+'" aria-pressed="'+!!x.shiny+'">異色</button><button class="mini" type="button" data-act="lucky" data-id="'+x.id+'" aria-pressed="'+!!x.lucky+'">亮晶晶</button><button class="mini" type="button" data-act="fav" data-id="'+x.id+'" aria-pressed="'+!!x.fav+'">最愛</button><button class="mini" type="button" data-act="purified" data-id="'+x.id+'" aria-pressed="'+!!x.purified+'">淨化</button><button class="mini del" type="button" data-act="del" data-id="'+x.id+'">從圖鑑刪除</button></div></div>'}).join('');
   $('sBody').dataset.mode='detail';$('sBody')._it=it;
   show();
 }
@@ -529,7 +530,7 @@ $('sBody').addEventListener('click',e=>{const b=e.target.closest('[data-act]');i
   if(a==='del'){if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='再按一次確認刪除';setTimeout(()=>{b.classList.remove('armed');b.textContent='從圖鑑刪除'},3000);return}
     mons=mons.filter(m=>m.id!==x.id);markDirty();stats();render();
     const left=mons.filter(m=>key(m)===key(x));if(left.length)openSheet({best:left[0]});else hide();return}
-  x[a]=!x[a];b.setAttribute('aria-pressed',!!x[a]);markDirty();stats();render()});
+  x[a]=!x[a];b.setAttribute('aria-pressed',!!x[a]);markDirty();stats();render();if(a==='shiny')openSheet({best:x})});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheet').hidden)hide()});
 $('grid').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;openSheet($('grid')._items[+c.dataset.i])});
 
@@ -773,6 +774,7 @@ function renderReview(fail){
       '<label>特殊招式<input data-f="charge" list="dlMoves" value="'+esc(o.charge)+'"></label>'+
       '<label>特殊招式 2<input data-f="charge2" list="dlMoves" value="'+esc(o.charge2)+'"></label>'+
       '<label class="ck"><input type="checkbox" data-f="lucky"'+(o.lucky?' checked':'')+'>亮晶晶</label>'+
+      '<label class="ck"><input type="checkbox" data-f="shiny"'+(o.shiny?' checked':'')+'>異色</label>'+
       '<label class="wide actl">處理方式<select data-f="act"><option value="add"'+(o.act==='add'?' selected':'')+'>新增成一隻</option>'+(o.target?'<option value="upd"'+(o.act==='upd'?' selected':'')+'>更新圖鑑裡那隻</option>':'')+'<option value="skip"'+(o.act==='skip'?' selected':'')+'>略過</option></select></label>'+
       '</div><div class="rv-note">'+esc(o.why)+'</div></div>'}).join('')+
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+btn+'<button class="btn" type="button" id="moreShots">再加截圖</button></div>';
@@ -795,8 +797,8 @@ $('sBody').addEventListener('click',e=>{
     const dex=NAMES.indexOf(name)+1;
     const rec={name,form:v('form'),dex,cp,hp:parseInt(v('hp'),10)||0,lv:parseFloat(v('lv'))||'',quick:v('quick'),charge:v('charge'),charge2:v('charge2'),rankU:o.rankU!=null?o.rankU:null};
     Object.assign(rec,iv);
-    if(act==='upd'&&o.target){const t=mons.find(m=>m.id===o.target);if(t){Object.assign(t,rec);if(v('lucky'))t.lucky=true;upd++;return}}
-    mons.push(Object.assign({id:rid(),gender:'',grade:'',catch:'',lucky:v('lucky'),shadow:false,purified:false,fav:false,rankG:null,rankL:null},rec));added++;
+    if(act==='upd'&&o.target){const t=mons.find(m=>m.id===o.target);if(t){Object.assign(t,rec);if(v('lucky'))t.lucky=true;if(v('shiny'))t.shiny=true;upd++;return}}
+    mons.push(Object.assign({id:rid(),gender:'',grade:'',catch:'',lucky:v('lucky'),shiny:v('shiny'),shadow:false,purified:false,fav:false,rankG:null,rankL:null},rec));added++;
   });
   if(bad){note('有 '+bad+' 隻的名稱、CP 或 IV 格式不對（紅框），改好再按一次「加入圖鑑」。IV 請寫成 13-14-15 或 96%。',true);return}
   if(!added&&!upd){note('沒有要加入的寶可夢。');hide();return}
