@@ -11,16 +11,16 @@
 /* Layout: a field register — trainer summary strip, then a dense specimen grid; each specimen shows its IV appraisal as three 15-tick bars. */
 :root{
   --paper:#EDF0EE; --sheet:#FFFFFF; --ink:#1C2638; --ink-2:#56607A; --rule:#CDD3D6;
-  --tick:#DCE1E4; --signal:#C9252C; --signal-soft:#F7DDDE; --gold:#B7861C; --shadow:#6B4FA6; --purified:#2F8FB3;
+  --tick:#DCE1E4; --signal:#C9252C; --signal-soft:#F7DDDE; --gold:#B7861C; --shadow:#6B4FA6; --purified:#2F8FB3; --high:#1F6FD1;
   --f-display:"Chakra Petch","Noto Sans TC",ui-monospace,monospace;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#121826; --sheet:#1A2233; --ink:#E6EAF2; --ink-2:#97A2B8; --rule:#2C3650;
-  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; color-scheme:dark}}
+  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; --high:#5AA2F5; color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#121826; --sheet:#1A2233; --ink:#E6EAF2; --ink-2:#97A2B8; --rule:#2C3650;
-  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; color-scheme:dark}
+  --tick:#2A3349; --signal:#F0525A; --signal-soft:#3A1E26; --gold:#E2B64A; --shadow:#A98BE6; --purified:#5FC0E2; --high:#5AA2F5; color-scheme:dark}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -82,6 +82,11 @@ select{border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;
 .pct{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1;font-variant-numeric:tabular-nums;text-align:right}
 .pct small{font-size:13px;margin-left:1px}
 .pct.p100{color:var(--signal)}
+.pct.p90{color:var(--high)}
+.pct.pfoot{font-size:32px;text-align:left}
+.pct.pfoot small{font-size:15px}
+.cpbig{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cpbig small{font-size:12px;font-weight:600;color:var(--ink-2);margin-right:3px}
 .mult{font-size:12px;color:var(--ink-2);text-align:right;margin-top:3px}
 .c-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
 .cp{font-family:var(--f-display);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -165,7 +170,7 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
   .art{width:40px;height:40px}.who{gap:4px}
   .top{grid-template-columns:1fr}.imp{justify-content:flex-start}
   .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-  .card{padding:12px 10px 10px}.name{font-size:15px}.pct{font-size:22px}
+  .card{padding:12px 10px 10px}.name{font-size:15px}.pct{font-size:22px}.pct.pfoot{font-size:26px}.cpbig{font-size:19px}
   .ind{grid-template-columns:1fr}.count{margin-left:0;width:100%}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -181,7 +186,7 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
     </div>
     <div class="imp">
       <button class="btn primary" id="openImport" type="button">上傳截圖</button>
-      <button class="btn" id="syncBtn" type="button">同步</button>
+      <button class="btn" id="syncBtn" type="button" hidden>設定自動同步</button>
       <span class="sync" id="syncState"><span class="dot"></span><span id="syncTxt">讀取中</span></span>
     </div>
   </header>
@@ -435,7 +440,7 @@ let meta={dirty:false,base:''}; /* base = the cloud copy's "updated" stamp this 
 try{const d=JSON.parse(lsGet(LS)||'null');if(Array.isArray(d)&&d.length)mons=d;const m=JSON.parse(lsGet(LS+'_meta')||'null');if(m)meta=m}catch(e){}
 mons.forEach(p=>{if(!p.id)p.id=rid()});
 function saveLocal(){lsSet(LS,JSON.stringify(mons));lsSet(LS+'_meta',JSON.stringify(meta))}
-function markDirty(){meta.dirty=true;saveLocal();syncUI()}
+function markDirty(){meta.dirty=true;editVer++;saveLocal();if(typeof scheduleSync==='function')scheduleSync();else syncUI()}
 function note(t,err){$('note').hidden=!t;$('note').classList.toggle('err',!!err);$('noteTxt').innerHTML=t||''}
 try{const v=localStorage.getItem(LS+'_view2');if(v==='all'||v==='dex')view=v}catch(e){}
 
@@ -452,6 +457,7 @@ const FORM_ID={'76|阿羅拉':10111,'103|阿羅拉':10114};
 const sprite=p=>{const id=FORM_ID[p.dex+'|'+p.form]||p.dex;return id>0?SPR+id+'.png':''};
 function art(p,cls){const u=sprite(p);return u?'<img class="'+cls+'" src="'+u+'" alt="" loading="lazy" onerror="this.remove()">':''}
 const ivn=n=>n==null?'?':n;
+const pctCls=p=>(isHundo(p)||ivPct(p)>=99.95)?' p100':(ivPct(p)>=90?' p90':'');
 const pctTxt=p=>p.ivRange?esc(p.ivRange.replace('%','')):fmtPct(ivPct(p));
 function ivBlock(p){return '<div class="iv"><span class="l">攻</span>'+ticks(p.atk)+'<span class="n">'+ivn(p.atk)+'</span><span class="l">防</span>'+ticks(p.def)+'<span class="n">'+ivn(p.def)+'</span><span class="l">HP</span>'+ticks(p.sta)+'<span class="n">'+ivn(p.sta)+'</span></div>'+(p.ivRange?'<div class="mult" style="text-align:left">Poke Genie 未鎖定單項 IV</div>':'')}
 function tags(p){let t='';if(p.lucky)t+='<span class="tag lucky">亮晶晶</span>';if(p.shadow)t+='<span class="tag shadow">暗影</span>';if(p.purified)t+='<span class="tag purified">淨化</span>';if(p.fav)t+='<span class="tag fav">最愛</span>';return t}
@@ -489,9 +495,9 @@ function render(){
     return '<button class="card'+(h?' is-hundo':'')+'" type="button" data-i="'+i+'">'+
       (h?'<span class="seal">100</span>':'')+
       '<div class="c-head"><div class="who">'+art(p,'art')+'<div style="min-width:0"><div class="dex">'+pad(p.dex)+'</div><div class="name">'+esc(p.name)+(p.form?'<small>'+esc(p.form)+'</small>':'')+'</div></div></div>'+
-      '<div><div class="pct'+(h?' p100':'')+'">'+pctTxt(p)+'<small>%</small></div>'+(view==='dex'?'<div class="mult">持有 '+it.all.length+'</div>':'')+'</div></div>'+
+      '<div><div class="cpbig"><small>CP</small>'+p.cp+'</div><div class="mult">'+(p.lv?'Lv '+p.lv:'')+(view==='dex'?(p.lv?' · ':'')+'持有 '+it.all.length:'')+'</div></div></div>'+
       ivBlock(p)+
-      '<div class="c-foot"><span>CP <span class="cp">'+p.cp+'</span>'+(p.lv?' · Lv '+p.lv:'')+'</span><span class="tags">'+tags(p)+'</span></div></button>'}).join('');
+      '<div class="c-foot"><span class="pct pfoot'+pctCls(p)+'">'+pctTxt(p)+'<small>%</small></span><span class="tags">'+tags(p)+'</span></div></button>'}).join('');
   grid._items=items;
   $('count').textContent=view==='dex'?items.length+' 種 · '+list.length+' 隻':list.length+' 隻';
 }
@@ -507,7 +513,7 @@ function openSheet(it){
     return '<div class="ind'+(h?' is-hundo':'')+'"><div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+
       '<div class="row"><span>CP <b>'+x.cp+'</b></span>'+(x.hp?'<span>HP <b>'+x.hp+'</b></span>':'')+(x.lv?'<span>Lv <b>'+x.lv+'</b></span>':'')+'<span class="tags">'+tags(x)+'</span></div>'+
       '<div class="row">'+(x.catch?'<span>捕獲 '+esc(x.catch)+'</span>':'')+(x.gender?'<span>'+esc(x.gender)+'</span>':'')+(x.grade?'<span>團戰評級 <b>'+esc(x.grade)+'</b></span>':'')+'</div></div>'+
-      '<div><div class="pct'+(h?' p100':'')+'" style="text-align:left;margin-bottom:6px">'+pctTxt(x)+'<small>%</small></div>'+ivBlock(x)+'</div>'+
+      '<div><div class="pct'+pctCls(x)+'" style="text-align:left;margin-bottom:6px">'+pctTxt(x)+'<small>%</small></div>'+ivBlock(x)+'</div>'+
       '<div class="moves"><span>招式</span>'+esc(x.quick||'—')+' / '+esc(x.charge||'—')+(x.charge2?' / '+esc(x.charge2):'')+'</div>'+pv+
       '<div class="acts"><button class="mini" type="button" data-act="lucky" data-id="'+x.id+'" aria-pressed="'+!!x.lucky+'">亮晶晶</button><button class="mini" type="button" data-act="fav" data-id="'+x.id+'" aria-pressed="'+!!x.fav+'">最愛</button><button class="mini" type="button" data-act="purified" data-id="'+x.id+'" aria-pressed="'+!!x.purified+'">淨化</button><button class="mini del" type="button" data-act="del" data-id="'+x.id+'">從圖鑑刪除</button></div></div>'}).join('');
   $('sBody').dataset.mode='detail';$('sBody')._it=it;
@@ -601,58 +607,82 @@ const API='https://api.github.com/repos/'+GH.owner+'/'+GH.repo+'/contents/'+GH.p
 function b64enc(str){const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s)}
 function b64dec(b64){const bin=atob(String(b64).replace(/\s/g,''));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)}
 let cloud={known:false,exists:false,updated:'',count:0};
+let syncErr='',syncConflict=null,pushing=false,editVer=0,autoTimer=null,lastSync='';
+const hm=d=>{d=new Date(d);return isNaN(d)?'':String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 function syncUI(){
-  const s=$('syncState'),t=$('syncTxt');s.classList.remove('ok','dirty');
-  if(meta.dirty){s.classList.add('dirty');t.textContent='有變更還沒同步'}
-  else if(cloud.known&&cloud.exists){s.classList.add('ok');t.textContent='已同步 · '+mons.length+' 隻'}
-  else if(cloud.known){t.textContent='雲端還沒有資料'}
+  const s=$('syncState'),t=$('syncTxt'),b=$('syncBtn');s.classList.remove('ok','dirty');
+  const tok=!!lsGet(GH.tokenKey);
+  if(pushing){s.classList.add('dirty');t.textContent='同步中…'}
+  else if(syncConflict){s.classList.add('dirty');t.textContent='雲端有別的版本'}
+  else if(meta.dirty&&!tok){s.classList.add('dirty');t.textContent='還沒設定同步'}
+  else if(meta.dirty&&syncErr){s.classList.add('dirty');t.textContent='同步失敗'}
+  else if(meta.dirty){s.classList.add('dirty');t.textContent='等待同步…'}
+  else if(cloud.known&&cloud.exists){s.classList.add('ok');t.textContent='已自動同步'+(lastSync?' · '+lastSync:'')}
+  else if(cloud.known)t.textContent='雲端還沒有資料';
   else t.textContent='只存在這台裝置';
+  /* the button only shows when something needs the user */
+  b.hidden=!( (!tok&&(meta.dirty||!cloud.exists)) || (meta.dirty&&syncErr) );
+  b.textContent=!tok?'設定自動同步':'重試同步';
 }
+function scheduleSync(delay){clearTimeout(autoTimer);if(lsGet(GH.tokenKey))autoTimer=setTimeout(()=>pushRemote(),delay==null?1500:delay);syncUI()}
+function adoptRemote(d){d.items.forEach(p=>{if(!p.id)p.id=rid()});mons=d.items;meta={dirty:false,base:d.updated||''};cloud={known:true,exists:true,updated:d.updated||'',count:d.items.length};lastSync=hm(d.updated);saveLocal();stats();render()}
 async function pullRemote(){
+  if(pushing)return;
   try{
     const r=await fetch(RAW+'?t='+Date.now(),{cache:'no-store'});
     cloud.known=true;
-    if(r.status===404){cloud.exists=false;syncUI();return}
+    if(r.status===404){cloud.exists=false;syncUI();if(meta.dirty||mons.length)scheduleSync(300);return}
     if(!r.ok)throw new Error(r.status);
     const d=await r.json();if(!d||!Array.isArray(d.items))throw new Error('格式不對');
     cloud={known:true,exists:true,updated:d.updated||'',count:d.items.length};
-    if(!meta.dirty){d.items.forEach(p=>{if(!p.id)p.id=rid()});mons=d.items;meta.base=cloud.updated;saveLocal();stats();render()}
-    else if(cloud.updated!==meta.base)note('雲端在你上次同步之後有其他更新（'+cloud.count+' 隻）。按「同步」會用這台裝置的資料覆蓋雲端。');
+    if(!meta.dirty){if(d.updated!==meta.base||!lastSync)adoptRemote(d)}
+    else scheduleSync(300);
   }catch(e){cloud.known=false}
   syncUI();
 }
-let syncArmed=false;
-async function pushRemote(){
-  const tok=lsGet(GH.tokenKey);if(!tok){tokenDialog();return}
-  const b=$('syncBtn');b.disabled=true;b.textContent='同步中…';
+/* force: overwrite the cloud even if another device changed it since this one last synced */
+async function pushRemote(force){
+  if(pushing){scheduleSync(1000);return}
+  const tok=lsGet(GH.tokenKey);if(!tok){syncUI();return}
+  if(!meta.dirty&&cloud.exists&&!force){syncUI();return}
+  pushing=true;syncErr='';syncUI();const ver=editVer;
   try{
     const hd={Authorization:'token '+tok,Accept:'application/vnd.github+json'};
     const g=await fetch(API+'?ref='+GH.branch+'&t='+Date.now(),{headers:hd,cache:'no-store'});
     let sha=null,remote=null;
     if(g.status===200){const j=await g.json();sha=j.sha;try{remote=JSON.parse(b64dec(j.content))}catch(e){}}
-    else if(g.status===401||g.status===403)throw new Error('GitHub 權杖無效或沒有寫入權限（'+g.status+'）。按「同步」旁的說明重新設定權杖。');
+    else if(g.status===401||g.status===403)throw new Error('GitHub 權杖無效或沒有寫入權限（'+g.status+'），按「設定自動同步」重新輸入。');
     else if(g.status!==404)throw new Error('讀取雲端失敗（'+g.status+'）');
-    if(remote&&remote.updated&&remote.updated!==meta.base&&!syncArmed){
-      syncArmed=true;setTimeout(()=>{syncArmed=false},8000);
-      note('雲端在你上次同步之後被其他裝置更新過（'+(remote.items||[]).length+' 隻）。要用這台的 '+mons.length+' 隻覆蓋，請在 8 秒內再按一次「同步」。',true);return}
-    syncArmed=false;
+    if(remote&&remote.updated&&remote.updated!==meta.base&&force!==true){
+      syncConflict=remote;
+      note('另一台裝置在你上次同步後也改過圖鑑（雲端 '+(remote.items||[]).length+' 隻，這台 '+mons.length+' 隻），所以先暫停自動同步。'+
+        ' <button class="mini" type="button" data-sync="mine">用這台的覆蓋雲端</button> <button class="mini" type="button" data-sync="cloud">改用雲端的</button>',true);
+      return}
     const body={version:1,updated:new Date().toISOString(),items:mons};
     const put=await fetch(API,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},hd),
       body:JSON.stringify(Object.assign({message:'pokedex: '+mons.length+' Pokémon',content:b64enc(JSON.stringify(body)),branch:GH.branch},sha?{sha}:{}))});
+    if(put.status===409){scheduleSync(800);return}
     if(!put.ok){const j=await put.json().catch(()=>({}));throw new Error('上傳失敗（'+put.status+'）'+(j.message?'：'+j.message:''))}
-    meta={dirty:false,base:body.updated};cloud={known:true,exists:true,updated:body.updated,count:mons.length};saveLocal();
-    note('已同步到 GitHub，'+mons.length+' 隻。其他裝置重新整理就會看到。');setTimeout(()=>note(''),5000);
-  }catch(e){note(esc(e.message||'同步失敗，請確認網路連線'),true)}
-  finally{b.disabled=false;b.textContent='同步';syncUI()}
+    meta.base=body.updated;if(editVer===ver)meta.dirty=false;
+    cloud={known:true,exists:true,updated:body.updated,count:mons.length};lastSync=hm(body.updated);syncConflict=null;saveLocal();
+    if(/同步|另一台/.test($('noteTxt').textContent))note('');
+    if(meta.dirty)scheduleSync(500);
+  }catch(e){syncErr=e.message||'同步失敗';note(esc(syncErr==='Failed to fetch'?'連不上 GitHub，等網路恢復會自動再試。':syncErr),true)}
+  finally{pushing=false;syncUI()}
 }
-$('syncBtn').onclick=pushRemote;
+$('syncBtn').onclick=()=>{if(!lsGet(GH.tokenKey))tokenDialog();else pushRemote()};
+$('note').addEventListener('click',e=>{const b=e.target.closest('[data-sync]');if(!b)return;
+  if(b.dataset.sync==='mine'){syncConflict=null;note('');pushRemote(true)}
+  else if(syncConflict){adoptRemote(syncConflict);syncConflict=null;note('');syncUI()}});
+window.addEventListener('online',()=>{if(meta.dirty)scheduleSync(300)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(meta.dirty)scheduleSync(300);else pullRemote()}});
 function tokenDialog(){
   $('sBody').dataset.mode='token';
-  $('sArt').innerHTML='';$('sDex').textContent='同步';$('sTitle').textContent='設定 GitHub 權杖';$('sMeta').textContent='跟網站其他頁面共用同一組權杖';
+  $('sArt').innerHTML='';$('sDex').textContent='同步';$('sTitle').textContent='設定自動同步';$('sMeta').textContent='跟網站其他頁面共用同一組權杖';
   $('sBody').innerHTML='<p style="margin:0">同步會把圖鑑存成 repo 裡的 <b>pokedex-data.json</b>，手機和電腦就會看到同一份。需要一組有這個 repo 寫入權限的 GitHub 權杖（Personal access token）。</p>'+
-    '<div class="tokrow"><input id="tokIn" type="password" autocomplete="off" placeholder="ghp_… 或 github_pat_…"><button class="btn primary" type="button" id="tokSave">儲存並同步</button></div>'+
+    '<div class="tokrow"><input id="tokIn" type="password" autocomplete="off" placeholder="ghp_… 或 github_pat_…"><button class="btn primary" type="button" id="tokSave">儲存，開始自動同步</button></div>'+
     '<p class="prog" style="margin:0">權杖只存在這個瀏覽器裡，不會出現在網頁或 repo 中。</p>';
-  $('tokSave').onclick=()=>{const v=$('tokIn').value.trim();if(!v){$('tokIn').focus();return}lsSet(GH.tokenKey,v);hide();pushRemote()};
+  $('tokSave').onclick=()=>{const v=$('tokIn').value.trim();if(!v){$('tokIn').focus();return}lsSet(GH.tokenKey,v);hide();syncErr='';pushRemote(!cloud.exists)};
   show();
 }
 
@@ -771,7 +801,7 @@ $('sBody').addEventListener('click',e=>{
   if(bad){note('有 '+bad+' 隻的名稱、CP 或 IV 格式不對（紅框），改好再按一次「加入圖鑑」。IV 請寫成 13-14-15 或 96%。',true);return}
   if(!added&&!upd){note('沒有要加入的寶可夢。');hide();return}
   markDirty();stats();render();hide();
-  note('已新增 '+added+' 隻、更新 '+upd+' 隻。按右上角「同步」存到 GitHub，其他裝置才看得到。');
+  note('已新增 '+added+' 隻、更新 '+upd+' 隻。'+(lsGet(GH.tokenKey)?'會自動同步到其他裝置。':'按右上角「設定自動同步」，其他裝置才看得到。'));
 });
 
 
