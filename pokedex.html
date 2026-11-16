@@ -47,9 +47,9 @@ button,input,select{font:inherit;color:inherit}
 .notice b{color:var(--signal)}
 
 /* stats */
-.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1.5px solid var(--ink);background:var(--sheet)}
-.stat{padding:14px 16px;border-right:1px solid var(--rule)}
-.stat:last-child{border-right:0}
+.stats{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;border:1.5px solid var(--ink);background:var(--rule)}
+.stat{padding:14px 16px;background:var(--sheet);min-width:0}
+.stat.shinyst .v{color:var(--shiny)}
 .stat .v{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
 .stat .k{font-size:13px;color:var(--ink-2)}
 .stat.hundo .v{color:var(--signal)}
@@ -164,7 +164,7 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
 .mini[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:700}
 .mini.del{margin-left:auto}.mini.del.armed{border-color:var(--signal);color:var(--signal);font-weight:700}
 .tokrow{display:flex;gap:8px;flex-wrap:wrap}.tokrow input{flex:1 1 220px;min-width:0;border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;padding:8px 10px}
-@media (max-width:860px){.stats{grid-template-columns:repeat(3,1fr)}.stat:nth-child(3){border-right:0}.stat:nth-child(-n+3){border-bottom:1px solid var(--rule)}}
+@media (max-width:860px){.stats{grid-template-columns:repeat(4,1fr)}.stat:last-child{grid-column:span 2}.stat{padding:12px}}
 @media (max-width:560px){
   .rv-f{grid-template-columns:repeat(2,minmax(0,1fr))}
   .art{width:40px;height:40px}.who{gap:4px}
@@ -198,6 +198,7 @@ textarea{width:100%;min-height:110px;border:1.5px solid var(--rule);background:v
     <div class="stat"><div class="v" id="sSpecies">0</div><div class="k">登錄物種</div></div>
     <div class="stat hundo"><div class="v" id="sHundo">0</div><div class="k">100% 完美個體</div></div>
     <div class="stat"><div class="v" id="sHigh">0</div><div class="k">IV ≥ 90%</div></div>
+    <div class="stat shinyst"><div class="v" id="sShiny">0</div><div class="k">異色</div></div>
     <div class="stat"><div class="v" id="sLucky">0</div><div class="k">亮晶晶</div></div>
     <div class="stat"><div class="v" id="sShadow">0</div><div class="k">暗影 / 淨化</div></div>
   </section>
@@ -476,7 +477,7 @@ function stats(){
   const sp=new Set(mons.map(p=>p.dex+'|'+p.name));
   $('sTotal').textContent=mons.length;$('sSpecies').textContent=sp.size;
   $('sHundo').textContent=mons.filter(isHundo).length;$('sHigh').textContent=mons.filter(p=>ivPct(p)>=90).length;
-  $('sLucky').textContent=mons.filter(p=>p.lucky).length;$('sShadow').textContent=mons.filter(p=>p.shadow||p.purified).length;
+  $('sShiny').textContent=mons.filter(p=>p.shiny).length;$('sLucky').textContent=mons.filter(p=>p.lucky).length;$('sShadow').textContent=mons.filter(p=>p.shadow||p.purified).length;
 }
 
 function render(){
