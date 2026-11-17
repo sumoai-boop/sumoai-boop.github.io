@@ -505,6 +505,18 @@
           "amount": 0,
           "cur": "THB",
           "u": 1793879081448
+        },
+        {
+          "id": "mwkstxj6l1whu",
+          "date": "2026-11-24",
+          "time": "",
+          "type": "交通",
+          "title": "泰國esim",
+          "note": "",
+          "end": "",
+          "amount": 381,
+          "cur": "TWD",
+          "u": 1794926394115
         }
       ]
     },
