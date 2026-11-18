@@ -340,6 +340,10 @@
   .rep-row .n small,.rep-row .v small{font-family:var(--f-print);font-size:13px;color:var(--muted);font-weight:400;margin-left:3px;}
   .rep-row.top .v{color:var(--print);}
   .rep-row.top .rep-bar i{background:var(--print-faint);border-left-color:var(--print);}
+  .rep-row.avg{border-top:4px double var(--print);border-bottom:none;margin-top:6px;padding-top:12px;}
+  .rep-row.avg .k{color:var(--print);font-weight:900;}
+  .rep-row.avg .rep-bar i{background:transparent;border:2px dashed var(--pen);border-left-width:3px;border-left-style:solid;}
+  .rep-row.avg .v{font-size:28px;}
   .rep-row.empty .v{color:rgba(35,37,30,.25);}
   .rep-empty{padding:60px 0;text-align:center;font-family:var(--f-print);font-size:17px;color:var(--muted);}
   .rep-years{display:flex;gap:8px;}
@@ -979,6 +983,18 @@ function renderMonthlyPage(){
           <div class="v">${label}</div>
         </div>`;
     });
+    // 每月平均：只算有記錄的月份
+    const used=data.filter(m=>m.total);
+    if(used.length){
+      const avg=Math.round(used.reduce((a,m)=>a+m.total,0)/used.length);
+      const avgCnt=Math.round(used.reduce((a,m)=>a+m.count,0)/used.length);
+      const pct=Math.max(3,Math.round(avg/maxTotal*100));
+      chartHtml+=`<div class="rep-row avg">
+          <div class="k">平均</div>
+          <div class="rep-bar"><i style="width:${pct}%"></i><span>每月約 ${avgCnt} 筆，以 ${used.length} 個月計</span></div>
+          <div class="v">$${avg.toLocaleString()}</div>
+        </div>`;
+    }
     document.getElementById('monthlyChart').innerHTML=chartHtml;
   };
   window.switchMonthYear(currentYear);
