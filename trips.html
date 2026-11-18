@@ -737,11 +737,10 @@ body.is-resizing,body.is-resizing *{cursor:ns-resize!important;}
         <button class="cal-nav" onclick="calNav(1)" aria-label="下一段">›</button>
         <span class="cal-range" id="calRange"></span>
         <div class="cal-seg" role="tablist">
-          <button id="segDay" onclick="setCalMode('day')">日</button>
+          <button id="segRoute" onclick="setCalMode('route')">日</button>
           <button id="segWeek" onclick="setCalMode('week')">週</button>
-          <button id="segRoute" onclick="setCalMode('route')">路線</button>
         </div>
-        <div class="cal-seg rv-scope" id="rvScope" role="tablist" aria-label="路線範圍">
+        <div class="cal-seg rv-scope" id="rvScope" role="tablist" aria-label="顯示範圍">
           <button id="rvOne" onclick="setRouteScope('day')">一日</button>
           <button id="rvAll" onclick="setRouteScope('all')">全部</button>
         </div>
@@ -896,7 +895,7 @@ let DB={trips:[]};
 let currentTripId=null;
 let currentView='log';
 let itSelectedDate=null;
-let calMode=(function(){try{var m=localStorage.getItem('trips_cal_mode');return (m==='week'||m==='route')?m:'day';}catch(e){return 'day';}})();
+let calMode=(function(){try{var m=localStorage.getItem('trips_cal_mode');return m==='week'?'week':'route';}catch(e){return 'route';}})();
 let routeScope=(function(){try{return localStorage.getItem('trips_route_scope')==='all'?'all':'day';}catch(e){return 'day';}})();
 
 // ── 工具 ──
@@ -1118,7 +1117,6 @@ function renderLog(){
     ?'<span class="ds-day">'+fmtMD(wk[0])+' – '+fmtMD(wk[6])+'</span>'+(sub>0?'<span class="ds-sum">本週 NT$ '+num(sub)+'</span>':'')
     :(items.length?'<span class="ds-day">'+fmtMD(itSelectedDate)+' '+weekdayZh(itSelectedDate)+'</span>'
       +(sub>0?'<span class="ds-sum">當日 NT$ '+num(sub)+'</span>':''):'');
-  document.getElementById('segDay').className=calMode==='day'?'on':'';
   document.getElementById('segWeek').className=calMode==='week'?'on':'';
   document.getElementById('segRoute').className=calMode==='route'?'on':'';
   document.getElementById('rvScope').style.display=calMode==='route'?'':'none';
@@ -1516,7 +1514,7 @@ function setRouteScope(s){
   renderLog();
 }
 function setCalMode(m){
-  calMode=(m==='week'||m==='route')?m:'day';
+  calMode=m==='week'?'week':'route';
   try{localStorage.setItem('trips_cal_mode',calMode);}catch(e){}
   renderLog();
 }
