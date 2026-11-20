@@ -517,7 +517,7 @@ function openSheet(it){
       '<div class="row">'+(x.catch?'<span>捕獲 '+esc(x.catch)+'</span>':'')+(x.gender?'<span>'+esc(x.gender)+'</span>':'')+(x.grade?'<span>團戰評級 <b>'+esc(x.grade)+'</b></span>':'')+'</div></div>'+
       '<div><div class="pct'+pctCls(x)+'" style="text-align:left;margin-bottom:6px">'+pctTxt(x)+'<small>%</small></div>'+ivBlock(x)+'</div>'+
       '<div class="moves"><span>招式</span>'+esc(x.quick||'—')+' / '+esc(x.charge||'—')+(x.charge2?' / '+esc(x.charge2):'')+'</div>'+pv+
-      '<div class="acts"><button class="mini" type="button" data-act="shiny" data-id="'+x.id+'" aria-pressed="'+!!x.shiny+'">異色</button><button class="mini" type="button" data-act="lucky" data-id="'+x.id+'" aria-pressed="'+!!x.lucky+'">亮晶晶</button><button class="mini" type="button" data-act="fav" data-id="'+x.id+'" aria-pressed="'+!!x.fav+'">最愛</button><button class="mini" type="button" data-act="purified" data-id="'+x.id+'" aria-pressed="'+!!x.purified+'">淨化</button><button class="mini del" type="button" data-act="del" data-id="'+x.id+'">從圖鑑刪除</button></div></div>'}).join('');
+      '<div class="acts"><button class="mini" type="button" data-act="shiny" data-id="'+x.id+'" aria-pressed="'+!!x.shiny+'">異色</button><button class="mini" type="button" data-act="lucky" data-id="'+x.id+'" aria-pressed="'+!!x.lucky+'">亮晶晶</button><button class="mini" type="button" data-act="fav" data-id="'+x.id+'" aria-pressed="'+!!x.fav+'">最愛</button><button class="mini" type="button" data-act="shadow" data-id="'+x.id+'" aria-pressed="'+!!x.shadow+'">暗影</button><button class="mini" type="button" data-act="purified" data-id="'+x.id+'" aria-pressed="'+!!x.purified+'">淨化</button><button class="mini del" type="button" data-act="del" data-id="'+x.id+'">從圖鑑刪除</button></div></div>'}).join('');
   $('sBody').dataset.mode='detail';$('sBody')._it=it;
   show();
 }
@@ -531,7 +531,10 @@ $('sBody').addEventListener('click',e=>{const b=e.target.closest('[data-act]');i
   if(a==='del'){if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='再按一次確認刪除';setTimeout(()=>{b.classList.remove('armed');b.textContent='從圖鑑刪除'},3000);return}
     mons=mons.filter(m=>m.id!==x.id);markDirty();stats();render();
     const left=mons.filter(m=>key(m)===key(x));if(left.length)openSheet({best:left[0]});else hide();return}
-  x[a]=!x[a];b.setAttribute('aria-pressed',!!x[a]);markDirty();stats();render();if(a==='shiny')openSheet({best:x})});
+  x[a]=!x[a];
+  /* a Pokémon is either shadow or purified, never both */
+  if(x[a]&&(a==='shadow'||a==='purified')){const o=a==='shadow'?'purified':'shadow';x[o]=false;const ob=b.parentNode.querySelector('[data-act="'+o+'"]');if(ob)ob.setAttribute('aria-pressed','false')}
+  b.setAttribute('aria-pressed',!!x[a]);markDirty();stats();render();if(a==='shiny')openSheet({best:x})});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheet').hidden)hide()});
 $('grid').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;openSheet($('grid')._items[+c.dataset.i])});
 
@@ -776,6 +779,7 @@ function renderReview(fail){
       '<label>特殊招式 2<input data-f="charge2" list="dlMoves" value="'+esc(o.charge2)+'"></label>'+
       '<label class="ck"><input type="checkbox" data-f="lucky"'+(o.lucky?' checked':'')+'>亮晶晶</label>'+
       '<label class="ck"><input type="checkbox" data-f="shiny"'+(o.shiny?' checked':'')+'>異色</label>'+
+      '<label class="ck"><input type="checkbox" data-f="shadow"'+(o.shadow?' checked':'')+'>暗影</label>'+
       '<label class="wide actl">處理方式<select data-f="act"><option value="add"'+(o.act==='add'?' selected':'')+'>新增成一隻</option>'+(o.target?'<option value="upd"'+(o.act==='upd'?' selected':'')+'>更新圖鑑裡那隻</option>':'')+'<option value="skip"'+(o.act==='skip'?' selected':'')+'>略過</option></select></label>'+
       '</div><div class="rv-note">'+esc(o.why)+'</div></div>'}).join('')+
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+btn+'<button class="btn" type="button" id="moreShots">再加截圖</button></div>';
@@ -798,8 +802,8 @@ $('sBody').addEventListener('click',e=>{
     const dex=NAMES.indexOf(name)+1;
     const rec={name,form:v('form'),dex,cp,hp:parseInt(v('hp'),10)||0,lv:parseFloat(v('lv'))||'',quick:v('quick'),charge:v('charge'),charge2:v('charge2'),rankU:o.rankU!=null?o.rankU:null};
     Object.assign(rec,iv);
-    if(act==='upd'&&o.target){const t=mons.find(m=>m.id===o.target);if(t){Object.assign(t,rec);if(v('lucky'))t.lucky=true;if(v('shiny'))t.shiny=true;upd++;return}}
-    mons.push(Object.assign({id:rid(),gender:'',grade:'',catch:'',lucky:v('lucky'),shiny:v('shiny'),shadow:false,purified:false,fav:false,rankG:null,rankL:null},rec));added++;
+    if(act==='upd'&&o.target){const t=mons.find(m=>m.id===o.target);if(t){Object.assign(t,rec);if(v('lucky'))t.lucky=true;if(v('shiny'))t.shiny=true;if(v('shadow')){t.shadow=true;t.purified=false}upd++;return}}
+    mons.push(Object.assign({id:rid(),gender:'',grade:'',catch:'',lucky:v('lucky'),shiny:v('shiny'),shadow:v('shadow'),purified:false,fav:false,rankG:null,rankL:null},rec));added++;
   });
   if(bad){note('有 '+bad+' 隻的名稱、CP 或 IV 格式不對（紅框），改好再按一次「加入圖鑑」。IV 請寫成 13-14-15 或 96%。',true);return}
   if(!added&&!upd){note('沒有要加入的寶可夢。');hide();return}
