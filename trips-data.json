@@ -517,6 +517,18 @@
           "amount": 381,
           "cur": "TWD",
           "u": 1794926417634
+        },
+        {
+          "id": "mwrarmeezbcpe",
+          "date": "2026-11-24",
+          "time": "",
+          "type": "交通",
+          "title": "泰國 5G eSIM(公主)",
+          "note": "",
+          "end": "",
+          "amount": 239,
+          "cur": "TWD",
+          "u": 1795319316518
         }
       ]
     },
