@@ -603,6 +603,18 @@
           "amount": 121,
           "cur": "THB",
           "u": 1795681175031
+        },
+        {
+          "id": "mwxaag9vhxawh",
+          "date": "2026-11-26",
+          "time": "14:30",
+          "type": "購物",
+          "title": "Thapae Gate Crafts",
+          "note": "買衣服,我的990,公主1010",
+          "end": "15:00",
+          "amount": 2000,
+          "cur": "THB",
+          "u": 1795681312487
         }
       ]
     },
