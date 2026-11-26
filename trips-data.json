@@ -377,18 +377,6 @@
           "u": 1795685556538
         },
         {
-          "id": "mvyqa1xptzpmk",
-          "date": "2026-11-26",
-          "time": "18:45",
-          "type": "餐飲",
-          "title": "WaanD：芒果糯米飯",
-          "note": "",
-          "end": "19:30",
-          "amount": 0,
-          "cur": "THB",
-          "u": 1793878940110
-        },
-        {
           "id": "mvyqbgxaozgwx",
           "date": "2026-11-26",
           "time": "15:00",
@@ -2016,6 +2004,7 @@
     "mruotmww5lsvc": 1795595329157,
     "mruouh7kuh303": 1795595348205,
     "mruoux4wmfgq5": 1795622113453,
-    "mvyq7i2zdgo00": 1795681140953
+    "mvyq7i2zdgo00": 1795681140953,
+    "mvyqa1xptzpmk": 1795696226332
   }
 }
