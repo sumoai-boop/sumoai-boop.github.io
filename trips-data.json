@@ -687,6 +687,18 @@
           "amount": 119,
           "cur": "THB",
           "u": 1795700713418
+        },
+        {
+          "id": "mwxlw0jm9cbiq",
+          "date": "2026-11-26",
+          "time": "20:00",
+          "type": "購物",
+          "title": "Tops Green Chiang Mai",
+          "note": "公主超市買零食",
+          "end": "20:15",
+          "amount": 320,
+          "cur": "THB",
+          "u": 1795700794310
         }
       ]
     },
