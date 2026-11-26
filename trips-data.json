@@ -365,18 +365,6 @@
           "u": 1793593820624
         },
         {
-          "id": "mvyq7i2zdgo00",
-          "date": "2026-11-26",
-          "time": "13:45",
-          "type": "景點",
-          "title": "Wat Phra Singh帕邢寺",
-          "note": "門票 50 泰銖",
-          "end": "14:30",
-          "amount": 100,
-          "cur": "THB",
-          "u": 1793600400270
-        },
-        {
           "id": "mvyq8ikpzil20",
           "date": "2026-11-26",
           "time": "14:45",
@@ -1979,6 +1967,7 @@
     "mruovl0x3rq8c": 1793604111235,
     "mruotmww5lsvc": 1795595329157,
     "mruouh7kuh303": 1795595348205,
-    "mruoux4wmfgq5": 1795622113453
+    "mruoux4wmfgq5": 1795622113453,
+    "mvyq7i2zdgo00": 1795681140953
   }
 }
