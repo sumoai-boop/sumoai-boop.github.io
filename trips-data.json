@@ -627,6 +627,18 @@
           "amount": 50,
           "cur": "THB",
           "u": 1795686907553
+        },
+        {
+          "id": "mwxj7fg7u6grk",
+          "date": "2026-11-26",
+          "time": "19:00",
+          "type": "購物",
+          "title": "SweetGypsy",
+          "note": "橘色大象娃娃",
+          "end": "19:30",
+          "amount": 299,
+          "cur": "THB",
+          "u": 1795696287995
         }
       ]
     },
