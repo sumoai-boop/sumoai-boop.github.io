@@ -615,6 +615,18 @@
           "amount": 2000,
           "cur": "THB",
           "u": 1795681312487
+        },
+        {
+          "id": "mwxcugiu7ux41",
+          "date": "2026-11-26",
+          "time": "16:45",
+          "type": "購物",
+          "title": "Let's Relax Spa - Chiang Mai Thapae",
+          "note": "公主泰式按摩",
+          "end": "19:00",
+          "amount": 1500,
+          "cur": "THB",
+          "u": 1795685605161
         }
       ]
     },
