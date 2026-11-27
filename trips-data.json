@@ -735,6 +735,18 @@
           "amount": 120,
           "cur": "THB",
           "u": 1795783294286
+        },
+        {
+          "id": "mwz0svtirnk9y",
+          "date": "2026-11-27",
+          "time": "20:15",
+          "type": "餐飲",
+          "title": "PHAPLOEN MARKET",
+          "note": "芒果糯米飯",
+          "end": "20:45",
+          "amount": 60,
+          "cur": "THB",
+          "u": 1795786308634
         }
       ]
     },
