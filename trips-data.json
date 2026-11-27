@@ -771,6 +771,18 @@
           "amount": 330,
           "cur": "THB",
           "u": 1795788533319
+        },
+        {
+          "id": "mwz2h24n5yzn1",
+          "date": "2026-11-27",
+          "time": "19:45",
+          "type": "購物",
+          "title": "The Story Lifestyle",
+          "note": "花瓶磁鐵加棧板",
+          "end": "20:15",
+          "amount": 410,
+          "cur": "THB",
+          "u": 1795789116169
         }
       ]
     },
