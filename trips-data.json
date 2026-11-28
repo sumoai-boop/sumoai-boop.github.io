@@ -879,6 +879,18 @@
           "amount": 150,
           "cur": "THB",
           "u": 1795848006345
+        },
+        {
+          "id": "mx01l2wop4qa9",
+          "date": "2026-11-28",
+          "time": "12:30",
+          "type": "購物",
+          "title": "Tops Green Chiang Mai",
+          "note": "伴手禮",
+          "end": "12:45",
+          "amount": 1285,
+          "cur": "THB",
+          "u": 1795848090364
         }
       ]
     },
