@@ -891,6 +891,18 @@
           "amount": 1285,
           "cur": "THB",
           "u": 1795848105523
+        },
+        {
+          "id": "mx03ik9w0nqo4",
+          "date": "2026-11-28",
+          "time": "14:00",
+          "type": "住宿",
+          "title": "回飯店休息",
+          "note": "The Grand Napat Hotel",
+          "end": "16:00",
+          "amount": 0,
+          "cur": "THB",
+          "u": 1795851332135
         }
       ]
     },
