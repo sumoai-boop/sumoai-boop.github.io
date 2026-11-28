@@ -891,6 +891,18 @@
           "amount": 149,
           "cur": "THB",
           "u": 1795864491108
+        },
+        {
+          "id": "mx0behkjx9jkc",
+          "date": "2026-11-28",
+          "time": "17:45",
+          "type": "購物",
+          "title": "ARUN-One Nimman",
+          "note": "襯衫+短褲",
+          "end": "18:15",
+          "amount": 1000,
+          "cur": "THB",
+          "u": 1795864578935
         }
       ]
     },
