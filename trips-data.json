@@ -209,18 +209,6 @@
           "u": 1795789421163
         },
         {
-          "id": "mvrwgl67bxp1i",
-          "date": "2026-11-28",
-          "time": "17:00",
-          "type": "餐飲",
-          "title": "Huen Muan Jai：必比登 傳統泰北菜",
-          "note": "Huen Muan Jai",
-          "end": "18:00",
-          "amount": 0,
-          "cur": "THB",
-          "u": 1793601994702
-        },
-        {
           "id": "mvtlmtf56go4f",
           "date": "2026-11-29",
           "time": "09:00",
@@ -2283,6 +2271,7 @@
     "mvyq7i2zdgo00": 1795681140953,
     "mvyqa1xptzpmk": 1795696226332,
     "mvddlv4vww0yb": 1795758970127,
-    "mvtlzqdwwetol": 1795837349606
+    "mvtlzqdwwetol": 1795837349606,
+    "mvrwgl67bxp1i": 1795854507629
   }
 }
