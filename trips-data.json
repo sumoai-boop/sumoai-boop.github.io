@@ -245,18 +245,6 @@
           "u": 1793601783944
         },
         {
-          "id": "mvtlzqdwwetol",
-          "date": "2026-11-28",
-          "time": "11:30",
-          "type": "餐飲",
-          "title": "必比登 午餐",
-          "note": "Kang Jingjai",
-          "end": "12:30",
-          "amount": 0,
-          "cur": "THB",
-          "u": 1793879043432
-        },
-        {
           "id": "mvyp30cb0tm7h",
           "date": "2026-11-29",
           "time": "13:30",
@@ -2186,6 +2174,7 @@
     "mruoux4wmfgq5": 1795622113453,
     "mvyq7i2zdgo00": 1795681140953,
     "mvyqa1xptzpmk": 1795696226332,
-    "mvddlv4vww0yb": 1795758970127
+    "mvddlv4vww0yb": 1795758970127,
+    "mvtlzqdwwetol": 1795837349606
   }
 }
