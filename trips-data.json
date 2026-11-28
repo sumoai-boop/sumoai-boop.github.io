@@ -795,6 +795,18 @@
           "amount": 139,
           "cur": "THB",
           "u": 1795789226888
+        },
+        {
+          "id": "mwzv7mgg1c2ad",
+          "date": "2026-11-28",
+          "time": "10:30",
+          "type": "餐飲",
+          "title": "Blue noodle",
+          "note": "紅燒牛筋麵",
+          "end": "11:00",
+          "amount": 70,
+          "cur": "THB",
+          "u": 1795837384819
         }
       ]
     },
