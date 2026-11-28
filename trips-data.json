@@ -915,6 +915,18 @@
           "amount": 750,
           "cur": "THB",
           "u": 1795865782347
+        },
+        {
+          "id": "mx0d78hrzt11q",
+          "date": "2026-11-28",
+          "time": "19:00",
+          "type": "餐飲",
+          "title": "Ginger Farm Kitchen",
+          "note": "",
+          "end": "20:00",
+          "amount": 1250,
+          "cur": "THB",
+          "u": 1795867599809
         }
       ]
     },
