@@ -855,6 +855,18 @@
           "amount": 1380,
           "cur": "THB",
           "u": 1795840007986
+        },
+        {
+          "id": "mwzwt6uy1o9b5",
+          "date": "2026-11-28",
+          "time": "10:45",
+          "type": "餐飲",
+          "title": "I AM THANCOFF TRUCK",
+          "note": "泰奶",
+          "end": "11:00",
+          "amount": 50,
+          "cur": "THB",
+          "u": 1795840070654
         }
       ]
     },
